@@ -4,13 +4,14 @@ import React from 'react'
 
 type PageModule = { default: ComponentType<Record<string, unknown>> }
 
-const pages = import.meta.glob('../pages/**/*.tsx', { eager: true })
+const pages = import.meta.glob('../pages/**/page.tsx', { eager: true })
 const layouts = import.meta.glob('../pages/**/layout.tsx', { eager: true })
 
 const getRoutePath = (filename: string) => {
 	let name = filename.replace(/^\.\.\/pages\//, '').replace(/\.tsx$/, '')
 	name = name.replace(/\[(.+?)\]/g, ':$1')
-	name = name.replace(/\/\((.+?)\)/g, '')
+	name = name.replace(/\/?\(([^)]+)\)/g, '')
+	name = name.replace(/^\/+/, '')
 	if (name === 'page') return '/'
 	if (name.endsWith('/page'))
 		return `/${name.replace('/page', '')}`.length
@@ -72,9 +73,12 @@ Object.entries(pages).forEach(([filename, mod]) => {
 		)
 })
 
-const routes = Array.from(routesMap.entries()).map(([path, { element }]) => ({
+const routes = Array.from(routesMap.entries()).map(([path, { filename }]) => ({
 	path,
-	element,
+	lazy: {
+		Component: async () =>
+			(await import(/* @vite-ignore */ `../pages/${filename}`)).default,
+	},
 }))
 
 const router = createBrowserRouter(routes, {
