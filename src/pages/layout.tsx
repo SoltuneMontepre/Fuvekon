@@ -1,7 +1,11 @@
 import React from 'react'
 
-const MainLayout = (): React.JSX.Element => {
-	return <div>Main Layout</div>
+const MainLayout = ({
+	children,
+}: {
+	children: React.ReactNode
+}): React.ReactElement => {
+	return <>{children}</>
 }
 
 export default MainLayout
