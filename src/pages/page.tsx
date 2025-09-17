@@ -1,7 +1,9 @@
 import React from 'react'
+import { useTranslation } from 'react-i18next'
 
 const LandingPage = (): React.JSX.Element => {
-	return <div>Landing page.</div>
+	const { t } = useTranslation()
+	return <div>{t('welcome')}</div>
 }
 
 export default LandingPage
