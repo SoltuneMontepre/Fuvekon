@@ -1,11 +1,11 @@
 import { createBrowserRouter } from 'react-router'
 import type { ComponentType } from 'react'
-import React from 'react'
 
 type PageModule = { default: ComponentType<Record<string, unknown>> }
+type GlobImport = Record<string, () => Promise<PageModule>>
 
-const pages = import.meta.glob('../pages/**/page.tsx', { eager: true })
-const layouts = import.meta.glob('../pages/**/layout.tsx', { eager: true })
+const pageLoaders = import.meta.glob('../pages/**/page.tsx') as GlobImport
+const layoutLoaders = import.meta.glob('../pages/**/layout.tsx') as GlobImport
 
 const getRoutePath = (filename: string) => {
 	let name = filename.replace(/^\.\.\/pages\//, '').replace(/\.tsx$/, '')
@@ -20,7 +20,7 @@ const getRoutePath = (filename: string) => {
 	return `/${name}`
 }
 
-const getNearestLayout = (filename: string) => {
+const findNearestLayoutKey = (filename: string) => {
 	const folder = filename.replace(/^\.\.\/pages\//, '')
 	const parts = folder.split('/')
 
@@ -28,14 +28,14 @@ const getNearestLayout = (filename: string) => {
 
 	while (parts.length > 0) {
 		const layoutPath = `../pages/${parts.join('/')}/layout.tsx`
-		if (layouts[layoutPath]) {
-			return layouts[layoutPath] as PageModule
+		if (layoutLoaders[layoutPath]) {
+			return layoutPath
 		}
 		parts.pop()
 	}
 
-	if (layouts['../pages/layout.tsx']) {
-		return layouts['../pages/layout.tsx'] as PageModule
+	if (layoutLoaders['../pages/layout.tsx']) {
+		return '../pages/layout.tsx'
 	}
 
 	return null
@@ -43,43 +43,49 @@ const getNearestLayout = (filename: string) => {
 
 const routesMap = new Map<
 	string,
-	{ element: React.JSX.Element; filename: string }
+	{ pageKey: string; layoutKey: string | null }
 >()
 
-Object.entries(pages).forEach(([filename, mod]) => {
-	const component = mod as PageModule
-	const Comp = component.default
-	const Layout = getNearestLayout(filename)?.default
-
-	const element = Layout ? (
-		<Layout>
-			<Comp />
-		</Layout>
-	) : Comp ? (
-		<Comp />
-	) : (
-		<div>Missing Page</div>
-	)
-
-	const path = getRoutePath(filename)
-
+Object.keys(pageLoaders).forEach(pageKey => {
+	const path = getRoutePath(pageKey)
 	const existing = routesMap.get(path)
 
 	if (!existing) {
-		routesMap.set(path, { element, filename })
-	} else
+		const layoutKey = findNearestLayoutKey(pageKey)
+		routesMap.set(path, { pageKey, layoutKey })
+	} else {
 		throw new Error(
-			`Duplicate route path: ${path} \nat ${filename} \nand ${existing.filename}`
+			`Duplicate route path: ${path} \nat ${pageKey} \nand ${existing.pageKey}`
 		)
+	}
 })
 
-const routes = Array.from(routesMap.entries()).map(([path, { filename }]) => ({
-	path,
-	lazy: {
-		Component: async () =>
-			(await import(/* @vite-ignore */ `../pages/${filename}`)).default,
-	},
-}))
+const routes = Array.from(routesMap.entries()).map(
+	([path, { pageKey, layoutKey }]) => ({
+		path,
+		lazy: {
+			Component: async () => {
+				const pageMod = await pageLoaders[pageKey]()
+				const Page = pageMod.default
+
+				if (layoutKey) {
+					const layoutMod = await layoutLoaders[layoutKey]()
+					const Layout = layoutMod.default
+
+					return () => (
+						<Layout>
+							<Page />
+						</Layout>
+					)
+				}
+
+				return Page
+			},
+		},
+	})
+)
+
+console.log(routes)
 
 const router = createBrowserRouter(routes, {
 	future: { v7_startTransition: true },
