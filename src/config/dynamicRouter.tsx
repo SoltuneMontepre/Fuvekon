@@ -85,8 +85,6 @@ const routes = Array.from(routesMap.entries()).map(
 	})
 )
 
-console.log(routes)
-
 const router = createBrowserRouter(routes, {
 	future: { v7_startTransition: true },
 })
