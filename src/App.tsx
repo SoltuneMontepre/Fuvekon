@@ -4,9 +4,9 @@ import { RouterProvider } from 'react-router'
 import router from './config/dynamicRouter'
 import './i18n'
 
-const App = (): React.ReactNode => {
-	registerGSAPPlugins()
+registerGSAPPlugins()
 
+const App = (): React.ReactNode => {
 	return <RouterProvider router={router} />
 }
 
