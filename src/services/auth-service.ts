@@ -1,5 +1,5 @@
 import { axios } from '../config/axios'
-import type { Credentials } from '../types/auth/credentials'
+import type { Credentials } from '../types/models/auth/credentials'
 
 const authApi = {
 	login: (credentials: Credentials) =>
