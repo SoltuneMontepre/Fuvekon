@@ -3,12 +3,12 @@ import registerGSAPPlugins from './config/registerGSAPPlugins'
 import { RouterProvider } from 'react-router'
 import router from './config/dynamicRouter'
 import './config/i18n'
-import { QueryClientProvider, useQueryClient } from '@tanstack/react-query'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
 registerGSAPPlugins()
 
 const App = (): React.ReactNode => {
-	const client = useQueryClient()
+	const client = new QueryClient()
 
 	return (
 		<QueryClientProvider client={client}>

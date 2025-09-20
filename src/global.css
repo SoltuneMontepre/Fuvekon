@@ -4,4 +4,8 @@
 	.center {
 		@apply flex justify-center items-center;
 	}
+
+	.josefin {
+		font-family: 'Josefin Sans', sans-serif;
+	}
 }

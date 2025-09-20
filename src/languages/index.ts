@@ -1,5 +1,5 @@
-import en from './en/en'
-import vi from './vi/vi'
+import en from './en/_index'
+import vi from './vi/_index'
 
 const resources = {
 	en,
