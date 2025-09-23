@@ -20,71 +20,47 @@ const getRoutePath = (filename: string) => {
 	return `/${name}`
 }
 
-const findNearestLayoutKey = (filename: string) => {
-	const folder = filename.replace(/^\.\.\/pages\//, '')
-	const parts = folder.split('/')
-
-	parts.pop()
-
-	while (parts.length > 0) {
-		const layoutPath = `../pages/${parts.join('/')}/layout.tsx`
-		if (layoutLoaders[layoutPath]) {
-			return layoutPath
-		}
-		parts.pop()
-	}
-
-	if (layoutLoaders['../pages/layout.tsx']) {
-		return '../pages/layout.tsx'
-	}
-
-	return null
-}
-
-const routesMap = new Map<
-	string,
-	{ pageKey: string; layoutKey: string | null }
->()
-
-Object.keys(pageLoaders).forEach(pageKey => {
+const routes = Object.keys(pageLoaders).map(pageKey => {
 	const path = getRoutePath(pageKey)
-	const existing = routesMap.get(path)
 
-	if (!existing) {
-		const layoutKey = findNearestLayoutKey(pageKey)
-		routesMap.set(path, { pageKey, layoutKey })
-	} else {
-		throw new Error(
-			`Duplicate route path: ${path} \nat ${pageKey} \nand ${existing.pageKey}`
-		)
-	}
-})
-
-const routes = Array.from(routesMap.entries()).map(
-	([path, { pageKey, layoutKey }]) => ({
+	return {
 		path,
 		lazy: {
 			Component: async () => {
 				const pageMod = await pageLoaders[pageKey]()
-				const Page = pageMod.default
+				let PageComponent = pageMod.default
 
-				if (layoutKey) {
+				const matches: string[] = []
+				const normalizedPageKey = pageKey.replace(/\\/g, '/')
+
+				for (const layoutKey of Object.keys(layoutLoaders)) {
+					const normalizedLayoutKey = layoutKey.replace(/\\/g, '/')
+					const layoutDir = normalizedLayoutKey
+						.replace(/\/layout\.tsx$/, '/')
+						.replace(/\\/g, '/')
+					if (normalizedPageKey.startsWith(layoutDir)) {
+						matches.push(layoutKey)
+					}
+				}
+
+				matches.sort((a, b) => b.length - a.length)
+
+				for (const layoutKey of matches) {
 					const layoutMod = await layoutLoaders[layoutKey]()
 					const Layout = layoutMod.default
-
-					return () => (
+					const Prev = PageComponent
+					PageComponent = () => (
 						<Layout>
-							<Page />
+							<Prev />
 						</Layout>
 					)
 				}
 
-				return Page
+				return PageComponent
 			},
 		},
-	})
-)
-
+	}
+})
 const router = createBrowserRouter(routes, {
 	future: { v7_startTransition: true },
 })
