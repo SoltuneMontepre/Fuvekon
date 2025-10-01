@@ -1,7 +1,7 @@
 import React, { useRef } from 'react'
 import { gsap } from 'gsap'
 
-const Lang = (): React.ReactElement => {
+const Mascot = (): React.ReactElement => {
 	const ref = useRef<HTMLImageElement | null>(null)
 	const overlayRef = useRef<HTMLDivElement | null>(null)
 
@@ -39,20 +39,22 @@ const Lang = (): React.ReactElement => {
 
 	return (
 		<>
-			<img
-				ref={ref}
-				className='landing-bg z-50 sm:left-[20%] pointer-events-auto -bottom-[13%] w-[60%] overflow-visible cursor-pointer'
-				src='/images/landing/bg_5.webp'
-				onMouseEnter={handleMouseEnter}
-				onMouseLeave={handleMouseLeave}
-				alt='lang'
-			/>
-			<div
-				ref={overlayRef}
-				className='w-full h-screen bg-gray-950 opacity-0 z-40 backdrop-blur-sm'
-			/>
+			<div className='flex justify-center items-end w-dvw h-dvh'>
+				<img
+					ref={ref}
+					className='landing-bg z-50 pointer-events-auto max-w-[70%] min-h-[80%] max-h-[85%] overflow-visible cursor-pointer'
+					src='/images/landing/bg_5.webp'
+					onMouseEnter={handleMouseEnter}
+					onMouseLeave={handleMouseLeave}
+					alt='lang'
+				/>
+				<div
+					ref={overlayRef}
+					className='w-full h-screen bg-gray-950 opacity-0 z-40 backdrop-blur-sm'
+				/>
+			</div>
 		</>
 	)
 }
 
-export default Lang
+export default Mascot
