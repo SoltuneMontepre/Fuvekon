@@ -9,7 +9,7 @@ const FuveIcon = ({
 	return (
 		<NavLink to='/' className={className}>
 			<img
-				src='/src/public/images/fuve-logo-nocolor.png'
+				src='src/public/images/common/logo_black.webp'
 				alt='Fuve'
 				className='object-contain size-12'
 			/>

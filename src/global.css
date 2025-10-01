@@ -8,4 +8,12 @@
 	.josefin {
 		font-family: 'Josefin Sans', sans-serif;
 	}
+
+	.landing-bg {
+		@apply object-cover absolute;
+	}
+}
+
+body {
+	@apply overflow-x-hidden;
 }

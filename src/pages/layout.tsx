@@ -9,8 +9,7 @@ const MainLayout = ({
 	return (
 		<>
 			<NavBar />
-			hello
-			<div>{children}</div>
+			<main>{children}</main>
 		</>
 	)
 }
