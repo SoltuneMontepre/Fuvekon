@@ -12,6 +12,14 @@
 	.landing-bg {
 		@apply object-cover absolute;
 	}
+
+	.cap-width {
+		@apply max-w-[2200px];
+	}
+
+	.center-width-cap {
+		@apply left-1/2 -translate-x-1/2 transform;
+	}
 }
 
 body {
