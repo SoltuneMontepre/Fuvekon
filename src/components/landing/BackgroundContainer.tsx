@@ -2,7 +2,7 @@ import React from 'react'
 
 const BackgroundContainer = (): React.ReactElement => {
 	return (
-		<div className='w-dvw flex h-dvh absolute top-0 mx-auto -z-10 overflow-hidden max-w-[2200px]'>
+		<div className='w-dvw flex h-dvh absolute top-0 mx-auto -z-10 overflow-hidden max-w-[2200px] lg:left-1/2 lg:-translate-x-1/2 lg:transform'>
 			<img
 				className='landing-bg z-0 w-dvw h-dvh'
 				src='/images/landing/bg_1.webp'
@@ -29,10 +29,10 @@ const BackgroundContainer = (): React.ReactElement => {
 				alt='lang'
 			/>
 			{/* <img
-				className='landing-bg z-50 bottom-0 w-dvw'
-				src='/images/landing/bg_6.webp'
-				alt='foreground_flowers'
-			/> */}
+        className='landing-bg z-50 bottom-0 w-dvw'
+        src='/images/landing/bg_6.webp'
+        alt='foreground_flowers'
+      /> */}
 		</div>
 	)
 }
