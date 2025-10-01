@@ -11,7 +11,7 @@ const NavBar = (): React.ReactElement => {
 		<nav
 			role='navigation'
 			aria-label='Main Navigation'
-			className='flex w-screen justify-around px-5 sm:px-10 md:px-20 py-2 width-cap'
+			className='flex w-screen justify-around px-5 sm:px-10 md:px-20 py-2 cap-width'
 		>
 			<FuveIcon className='flex-1/5 size-10' />
 			<div className='grow' />
