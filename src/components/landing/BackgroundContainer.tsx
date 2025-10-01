@@ -5,32 +5,32 @@ const BackgroundContainer = (): React.ReactElement => {
 		<div className='w-dvw flex h-dvh absolute top-0 left-0 -z-10 overflow-hidden'>
 			<img
 				className='landing-bg z-0 w-dvw h-dvh'
-				src='src/public/images/landing/bg_1.webp'
+				src='/images/landing/bg_1.webp'
 				alt='background'
 			/>
 			<img
 				className='landing-bg z-10 right-[5%] top-[5%] w-dvw h-[80%] overflow-visible'
-				src='src/public/images/landing/bg_2.webp'
+				src='/images/landing/bg_2.webp'
 				alt='dragon'
 			/>
 			<img
 				className='landing-bg z-20 bottom-0 h-dvh left-0 overflow-visible'
-				src='src/public/images/landing/bg_3.webp'
+				src='/images/landing/bg_3.webp'
 				alt='stones'
 			/>
 			<img
 				className='landing-bg z-30 bottom-0 h-dvh sm:w-dvw overflow-visible'
-				src='src/public/images/landing/bg_4.webp'
+				src='/images/landing/bg_4.webp'
 				alt='flowers'
 			/>
 			<img
-				className='landing-bg z-40 h-[80%] top-[25%] left-[20%] overflow-visible'
-				src='src/public/images/landing/bg_5.webp'
+				className='landing-bg z-40 h-[80%] top-[25%] right-[20%] overflow-visible'
+				src='/images/landing/bg_5.webp'
 				alt='lang'
 			/>
 			{/* <img
 				className='landing-bg z-50 bottom-0 w-dvw'
-				src='src/public/images/landing/bg_6.webp'
+				src='/images/landing/bg_6.webp'
 				alt='foreground_flowers'
 			/> */}
 		</div>
