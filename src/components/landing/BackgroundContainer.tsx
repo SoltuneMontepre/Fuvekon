@@ -3,7 +3,7 @@ import Lang from './Animated/Lang'
 
 const BackgroundContainer = (): React.ReactElement => {
 	return (
-		<div className='w-dvw flex h-dvh absolute top-0 mx-auto -z-10 overflow-hidden center-width-cap'>
+		<div className='w-dvw flex h-dvh absolute top-0 mx-auto -z-10 overflow-hidden center-width-cap select-none'>
 			<img
 				className='landing-bg z-0 w-dvw h-dvh overflow-visible'
 				src='/images/landing/bg_1.webp'
