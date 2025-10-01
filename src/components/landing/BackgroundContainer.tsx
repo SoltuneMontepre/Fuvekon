@@ -2,7 +2,7 @@ import React from 'react'
 
 const BackgroundContainer = (): React.ReactElement => {
 	return (
-		<div className='w-dvw flex h-dvh absolute top-0 left-0 -z-10 overflow-hidden max-w-[2200px]'>
+		<div className='w-dvw flex h-dvh absolute top-0 mx-auto -z-10 overflow-hidden max-w-[2200px]'>
 			<img
 				className='landing-bg z-0 w-dvw h-dvh'
 				src='/images/landing/bg_1.webp'
