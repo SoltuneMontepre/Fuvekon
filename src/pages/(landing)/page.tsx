@@ -1,18 +1,15 @@
 import React, { Suspense } from 'react'
-import { useTranslation } from 'react-i18next'
-import Loading from '../../components/common/Loading'
+import LoadingSequence from '../../components/landing/hero_section/LoadingSequence'
 
 const BackgroundContainer = React.lazy(
-	() => import('../../components/landing/BackgroundContainer')
+	() => import('../../components/landing/HeroSection')
 )
 
 const LandingPage = (): React.JSX.Element => {
-	const { t } = useTranslation()
-
 	return (
 		<>
-			{t('welcome')}
-			<Suspense fallback={<Loading />}>
+			<LoadingSequence />
+			<Suspense>
 				<BackgroundContainer />
 			</Suspense>
 		</>
