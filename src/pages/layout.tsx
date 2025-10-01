@@ -7,10 +7,10 @@ const MainLayout = ({
 	children: React.ReactNode
 }): React.ReactElement => {
 	return (
-		<div className='cap-width'>
+		<>
 			<NavBar />
 			<main>{children}</main>
-		</div>
+		</>
 	)
 }
 
