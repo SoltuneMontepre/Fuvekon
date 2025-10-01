@@ -41,7 +41,7 @@ const Lang = (): React.ReactElement => {
 		<>
 			<img
 				ref={ref}
-				className='landing-bg z-50 h-[80%] sm:left-[20%] pointer-events-auto -bottom-[13%] w-[60%] overflow-visible cursor-pointer'
+				className='landing-bg z-50 sm:left-[20%] pointer-events-auto -bottom-[13%] w-[60%] overflow-visible cursor-pointer'
 				src='/images/landing/bg_5.webp'
 				onMouseEnter={handleMouseEnter}
 				onMouseLeave={handleMouseLeave}
