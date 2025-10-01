@@ -37,4 +37,4 @@ const BackgroundContainer = (): React.ReactElement => {
 	)
 }
 
-export default BackgroundContainer
+export default React.memo(BackgroundContainer)
