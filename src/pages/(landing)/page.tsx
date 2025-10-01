@@ -9,7 +9,7 @@ const LandingPage = (): React.JSX.Element => {
 	const { t } = useTranslation()
 
 	return (
-		<div className='w-dvw h-dvh'>
+		<div className='w-dvw h-dvh center'>
 			{t('welcome')}
 			<Suspense fallback={<Loading />}>
 				<BackgroundContainer />
