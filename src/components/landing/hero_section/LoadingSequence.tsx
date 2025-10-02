@@ -27,6 +27,7 @@ const LoadingSequence = () => {
 				delay: 2,
 			})
 	}, [])
+
 	return (
 		<div
 			className='fixed top-0 left-0 inset-0 center w-screen h-screen bg-black'
