@@ -46,3 +46,27 @@ jobs:
 
       - name: Deploy to Vercel
         run: echo "Deploying to Vercel..."
+
+      - name: Notify failure
+        if: failure()
+        uses: sarisia/actions-status-discord@v1
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          status: failure
+          title: "🚨 Deployment Failed"
+          description: "Deployment for **${{ github.repository }}** failed on commit `${{ github.sha }}` by ${{ github.actor }}"
+          color: 0xff0000
+          username: GitHub Actions
+          avatar_url: https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png
+
+      - name: Notify success
+        if: success()
+        uses: sarisia/actions-status-discord@v1
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          status: success
+          title: "🎉 Deployment Succeeded"
+          description: "Deployment for **${{ github.repository }}** succeeded on commit `${{ github.sha }}` by ${{ github.actor }}"
+          color: 0x00ff00
+          username: GitHub Actions
+          avatar_url: https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png
