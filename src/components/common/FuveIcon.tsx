@@ -1,5 +1,6 @@
+import Image from 'next/image'
+import Link from 'next/link'
 import React from 'react'
-import { NavLink } from 'react-router'
 
 const FuveIcon = ({
 	className,
@@ -7,13 +8,16 @@ const FuveIcon = ({
 	className?: string
 }): React.ReactElement => {
 	return (
-		<NavLink to='/' className={className}>
-			<img
+		<Link href='/' className={className}>
+			<Image
 				src='/images/common/logo_black.webp'
 				alt='Fuve'
 				className='object-contain size-12'
+				width={48}
+				height={48}
+				priority
 			/>
-		</NavLink>
+		</Link>
 	)
 }
 

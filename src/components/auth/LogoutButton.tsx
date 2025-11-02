@@ -1,10 +1,10 @@
+import { useTranslations } from 'next-intl'
 import React from 'react'
-import { useTranslation } from 'react-i18next'
 
 const LogoutButton = (): React.ReactElement => {
-	const { t } = useTranslation()
+	const t = useTranslations('auth')
 
-	return <div>{t('common.logout')}</div>
+	return <div>{t('logout')}</div>
 }
 
 export default LogoutButton

@@ -1,6 +1,6 @@
+import { useTranslations } from 'next-intl'
+import Link from 'next/link'
 import React from 'react'
-import { useTranslation } from 'react-i18next'
-import { NavLink } from 'react-router'
 
 export type NavData = {
 	label: string
@@ -12,19 +12,19 @@ const NavButtons = ({
 }: {
 	className?: string
 }): React.ReactElement => {
-	const { t } = useTranslation()
+	const t = useTranslations('nav')
 
 	const navDatas: NavData[] = [
 		{
-			label: t('nav.register'),
+			label: t('register'),
 			to: '/register',
 		},
 		{
-			label: t('nav.contributes'),
+			label: t('contributes'),
 			to: '/contributes',
 		},
 		{
-			label: t('nav.about'),
+			label: t('about'),
 			to: '/about',
 		},
 	]
@@ -34,15 +34,15 @@ const NavButtons = ({
 			className={`flex justify-center bg-black underline underline-offset-5 text-center ${className}`}
 		>
 			{navDatas.map(navData => (
-				<NavLink
+				<Link
 					key={navData.to}
 					className='flex-1 content-center text-nowrap'
-					to={navData.to}
+					href={navData.to}
 				>
 					{'\u00a0\u00a0\u00a0\u00a0' +
 						navData.label +
 						'\u00a0\u00a0\u00a0\u00a0'}
-				</NavLink>
+				</Link>
 			))}
 		</div>
 	)

@@ -1,5 +1,8 @@
+'use client'
+
 import React, { useRef } from 'react'
 import { gsap } from 'gsap'
+import Image from 'next/image'
 
 const Mascot = (): React.ReactElement => {
 	const ref = useRef<HTMLImageElement | null>(null)
@@ -40,13 +43,15 @@ const Mascot = (): React.ReactElement => {
 	return (
 		<>
 			<div className='flex justify-center items-end w-dvw h-dvh'>
-				<img
+				<Image
 					ref={ref}
 					className='landing-bg z-50 pointer-events-auto max-w-[70%] min-h-[80%] max-h-[85%] overflow-visible cursor-pointer'
 					src='/images/landing/bg_5.webp'
 					onMouseEnter={handleMouseEnter}
 					onMouseLeave={handleMouseLeave}
 					alt='lang'
+					width={800}
+					height={600}
 				/>
 				<div
 					ref={overlayRef}

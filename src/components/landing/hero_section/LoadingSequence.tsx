@@ -1,3 +1,4 @@
+'use client'
 import React from 'react'
 import { useGSAP } from '@gsap/react'
 import gsap from 'gsap'
@@ -19,18 +20,20 @@ const LoadingSequence = () => {
 				y: -10,
 				duration: 1,
 				stagger: 0.04,
+				zIndex: 10,
 				ease: 'power2.inOut',
 			})
 			.to(ref.current, {
 				duration: 1,
 				opacity: 0,
 				delay: 2,
+				zIndex: -10,
 			})
 	}, [])
 
 	return (
 		<div
-			className='fixed top-0 left-0 inset-0 center w-screen h-screen bg-black'
+			className='fixed top-0 pointer-events-none left-0 inset-0 center w-screen h-screen bg-black'
 			ref={ref}
 		>
 			<span

@@ -1,0 +1,14 @@
+{
+	"common": {
+		"welcome": "Welcome to Fuvekon"
+	},
+	"nav": {
+		"register": "Register",
+		"contributes": "Contributes",
+		"about": "About"
+	},
+	"auth": {
+		"login": "Login",
+		"logout": "Logout"
+	}
+}

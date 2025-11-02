@@ -1,0 +1,127 @@
+@import 'tailwindcss';
+
+/* Configure dark mode variant to use class strategy */
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme inline {
+	--color-main: #be79e6;
+	--color-main-light: #d399f0;
+	--color-main-bright: #e0b3f7;
+	--color-main-dark: #8b5bb8;
+	--color-main-darker: #6d4a94;
+	--color-darkest: #4c2e50;
+	--color-available: #10b981;
+
+	/* Dark mode colors - Enhanced for better visibility */
+	--color-dark-bg: #0f172a;
+	--color-dark-surface: #1e293b;
+	--color-dark-card: #334155;
+	--color-dark-border: #475569;
+	--color-dark-text: #f1f5f9;
+	--color-dark-text-secondary: #cbd5e1;
+
+	/* Dark mode accent colors - More vibrant */
+	--color-dark-main: #d399f0;
+	--color-dark-main-hover: #e0b3f7;
+	--color-dark-accent: #a855f7;
+	--color-dark-success: #34d399;
+	--color-dark-warning: #fbbf24;
+	--color-dark-error: #f87171;
+}
+
+@layer components {
+	.center {
+		@apply flex justify-center items-center;
+	}
+
+	.josefin {
+		font-family: 'Josefin Sans', sans-serif;
+	}
+
+	.landing-bg {
+		@apply object-cover absolute;
+	}
+
+	.cap-width {
+		@apply max-w-[2200px];
+	}
+
+	.center-width-cap {
+		@apply left-1/2 -translate-x-1/2 transform;
+	}
+}
+
+/* Dark mode base styles */
+.dark {
+	color-scheme: dark;
+}
+
+/* Enhanced dark mode utilities */
+.dark {
+	--color-main: #d399f0;
+}
+
+body {
+	@apply overflow-x-hidden;
+}
+
+/* Modern Scrollbar Styles */
+.custom-scrollbar {
+	scrollbar-width: thin;
+	scrollbar-color: rgba(156, 163, 175, 0.5) transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+	width: 8px;
+	height: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+	background: transparent;
+	border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+	background: rgba(156, 163, 175, 0.5);
+	border-radius: 10px;
+	transition: background 0.2s ease;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+	background: rgba(156, 163, 175, 0.7);
+}
+
+/* Dark mode scrollbar */
+.dark .custom-scrollbar {
+	scrollbar-color: rgba(71, 85, 105, 0.5) transparent;
+}
+
+.dark .custom-scrollbar::-webkit-scrollbar-thumb {
+	background: rgba(71, 85, 105, 0.5);
+}
+
+.dark .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+	background: rgba(71, 85, 105, 0.7);
+}
+
+body {
+	overflow-x: hidden;
+}
+
+@media (max-width: 639px) {
+	.button {
+		-webkit-tap-highlight-color: transparent;
+		touch-action: manipulation;
+	}
+
+	.button:active {
+		transform: translateY(1px) scale(0.995);
+		transition: all 120ms ease;
+		background-color: #d399f0;
+	}
+
+	.button:focus-visible {
+		outline: none;
+		box-shadow: 0 0 0 3px rgba(211, 153, 240, 0.18);
+	}
+}

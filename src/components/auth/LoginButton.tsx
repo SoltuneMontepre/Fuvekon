@@ -1,18 +1,18 @@
+import { useTranslations } from 'next-intl'
 import { CircleUserRound } from 'lucide-react'
+import Link from 'next/link'
 import React from 'react'
-import { useTranslation } from 'react-i18next'
-import { NavLink } from 'react-router'
 
 const LoginButton = (): React.ReactElement => {
-	const { t } = useTranslation()
+	const t = useTranslations('auth')
 
 	return (
-		<NavLink to='/login' className='center'>
-			<span className='hidden md:block'>{t('common.login')}</span>
+		<Link href='/login' className='center'>
+			<span className='hidden md:block'>{t('login')}</span>
 			<span className='block md:hidden'>
 				<CircleUserRound size={30} />
 			</span>
-		</NavLink>
+		</Link>
 	)
 }
 
