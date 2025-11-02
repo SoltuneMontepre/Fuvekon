@@ -1,8 +1,13 @@
 import React from 'react'
-import { useParams } from 'react-router'
 
-const TicketPurchasePage = (): React.ReactElement => {
-	const { id } = useParams()
+interface TicketPurchasePageProps {
+	params: { id: string }
+}
+
+const TicketPurchasePage = async ({
+	params,
+}: TicketPurchasePageProps): Promise<React.ReactElement> => {
+	const { id } = await params
 	return <div>{id}</div>
 }
 
