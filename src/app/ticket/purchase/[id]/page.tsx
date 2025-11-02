@@ -1,10 +1,12 @@
 import React from 'react'
 
+interface TicketPurchasePageProps {
+	params: Promise<{ id: string }>
+}
+
 const TicketPurchasePage = async ({
 	params,
-}: {
-	params: Promise<{ id: string }>
-}): Promise<React.ReactElement> => {
+}: TicketPurchasePageProps): Promise<React.ReactElement> => {
 	const { id } = await params
 	return <div>{id}</div>
 }
