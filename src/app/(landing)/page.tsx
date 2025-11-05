@@ -12,6 +12,7 @@ const LandingPage = (): React.JSX.Element => {
 			<Suspense>
 				<BackgroundContainer />
 			</Suspense>
+			hehe
 		</>
 	)
 }
