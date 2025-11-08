@@ -126,7 +126,7 @@ This section describes a recommended, repeatable flow for adding a new feature t
 
 Below are concrete guidelines and small examples you can copy.
 
-1. Create types
+#### 1. Create types
 
 - Organize types under `src/types/`:
 
@@ -168,7 +168,7 @@ Notes:
 - Keep `models` simple — they represent what your UI and domain code consume.
 - Keep `api` types close to server contracts; use Zod to validate responses when helpful.
 
-2. Create the API layer (axios + TanStack Query hooks)
+#### 2. Create the API layer (axios + TanStack Query hooks)
 
 - Use the existing `src/common/axios.ts` axios instance. Create small HTTP functions that call axios and return typed data.
 
@@ -206,7 +206,7 @@ Tips:
 - Keep the axios wrapper in `src/common/axios.ts` responsible for baseURL, interceptors, auth headers and error handling.
 - Make HTTP functions small and typed, then make hook wrappers thin.
 
-3. Create the page and routes
+#### 3. Create the page and routes
 
 - Normal route (list view): create `app/items/page.tsx` to show a list of items.
 - Dynamic route (item details): create `app/items/[id]/page.tsx` for an item details page.
@@ -236,7 +236,7 @@ app/
 
 Note: Next.js supports dynamic ([id]), catch-all ([...slug]) and optional-catch-all ([[...slug]]) segments. Route groups (parentheses) let you share layouts or organize code without changing URLs.
 
-4. Wire the page to the API and translations
+#### 4. Wire the page to the API and translations
 
 - On the page component, use the TanStack Query hooks you created (`useItems`, `useCreateItem`) to read and mutate data.
 - Use `next-intl`'s `useTranslations` for component/page translations and keep your message keys in `src/language/*.json` (the repo already contains `en.json`, `th.json`, `vi.json`, `zh.json`). `useTranslations(namespace)` returns a function `t(key)` that maps to keys in the JSON files. Example:
@@ -310,7 +310,7 @@ Notes:
 - Keep data-fetching in hooks and business logic outside of UI components so components remain small and testable.
 - Use `loading.tsx` and `error.tsx` files for UX during suspense or boundary errors.
 
-5. Split components into `components/`
+#### 5. Split components into `components/`
 
 - Create a small component surface for the feature inside `src/components/`:
   - `src/components/items/ItemList.tsx` — renders the list and delegates each item to `ItemCard`.
@@ -325,7 +325,7 @@ src/components/items/ItemCard.tsx
 src/components/items/ItemForm.tsx
 ```
 
-6. Put helpers in `utils/` when applicable
+#### 6. Put helpers in `utils/` when applicable
 
 - Reusable helpers used by API hooks or UI (e.g., pagination helpers, param builders, form helpers) belong in `src/utils/`.
 - If an HTTP helper is specific to the feature, put it under `src/utils/api/<feature>.ts` or `src/utils/<feature>.ts`.
@@ -335,7 +335,7 @@ Example utility placements:
 - `src/utils/api/items.ts` (HTTP functions)
 - `src/utils/pagination.ts` (page math and query param builders)
 
-7. Quick checklist (practical)
+#### 7. Quick checklist (practical)
 
 - [ ] Add Zod schemas in `src/types/api` and export TS types
 - [ ] Add HTTP functions in `src/utils/api` that use `src/common/axios.ts`
