@@ -2,7 +2,7 @@
 
 ## Overview
 
-This document expands the basic steps to get Fuvekon running locally and adds a short explanation of the repository's `src/` layout.
+This document expands the basic steps to get the fuvekon running locally. Each step below preserves the original items and adds brief explanations and copy-paste commands where applicable.
 
 ## Environment setup
 
@@ -22,10 +22,22 @@ npm i
 
 Clone `.env.example` to `.env` using the following command:
 
+Unix/macOS:
+
+```bash
+cp .env.example .env
+```
+
 Windows (PowerShell):
 
 ```pwsh
 Copy-Item .env.example .env
+```
+
+Windows (CMD):
+
+```cmd
+copy .env.example .env
 ```
 
 #### 3. Start the development server

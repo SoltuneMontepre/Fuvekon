@@ -2,7 +2,8 @@ commit_msg=$(cat "$1")
 
 banned_words=("things" "stuff" "changes" "update" "fix" "test" "wip")
 
-commit_regex="^(fix|feat|chore|refactor): .+|^Merge.*|^Revert.*"
+commit_regex="
+^(feat|fix|chore|docs|style|refactor|test|perf|build|ci)(\(.+\))?: .+|^Merge.*|^Revert.*$"
 FAIL_BADGE=$'\u001B[30;41m'  
 INFO='\033[97m'           
 RESET='\033[0m'

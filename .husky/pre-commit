@@ -2,7 +2,7 @@
 branch=$(git symbolic-ref --short HEAD)
 
 # Branch name validation
-branch_regex="^(main$|revert-.+|(feature|fix|task|chore|task)\/.+(?:-.*)?)"
+branch_regex="^(main$|revert-.+|(feat|fix|docs|refactor|chore|task|feature)\/.+)$"
 FAIL_BADGE=$'\u001B[30;41m'  
 INFO='\033[97m'           
 RESET='\033[0m'
