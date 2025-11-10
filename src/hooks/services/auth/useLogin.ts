@@ -2,7 +2,7 @@
 
 import { useMutation } from '@tanstack/react-query'
 import axios from '@/common/axios'
-import type { LoginResponse, LoginRequest } from '@/types/api/auth/login.ts'
+import type { LoginResponse, LoginRequest } from '@/types/api/auth/login'
 
 export function useLogin() {
 	return useMutation({
@@ -11,9 +11,9 @@ export function useLogin() {
 			return data
 		},
 		onSuccess: data => {
-			// Cookie sẽ được set tự động từ BE với httpOnly và secure flag
+			// Cookie will be set automatically by the backend with httpOnly and secure flags
 			console.log('Login successful:', data.message)
-			// Có thể redirect hoặc update state ở đây
+			// Optionally redirect or update application state here
 		},
 		onError: (error: Error) => {
 			console.error('Login failed:', error.message)
