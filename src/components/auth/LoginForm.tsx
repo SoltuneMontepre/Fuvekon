@@ -57,19 +57,19 @@ const LoginForm = (): React.ReactElement => {
 							{/* Form */}
 							<form onSubmit={handleSubmit} className='space-y-6'>
 								{/* Email Input */}
-								<div className='relative w-full'>
+								<div className='relative w-90 mx-auto'>
 									<input
 										id='email'
 										type='email'
 										value={email}
 										onChange={e => setEmail(e.target.value)}
-										className='block w-full px-3 py-3 rounded-xl bg-[#E2EEE2] border border-[#0a131a]/30 text-[#0a131a] text-xl font-normal placeholder-transparent focus:outline-none focus:border-[#48715B] focus:ring-0 shadow-none peer'
+										className='block w-full px-3 py-3 rounded-xl bg-[#E2EEE2] border border-[#8C8C8C]/30 text-[#8C8C8C] text-xl font-normal placeholder-transparent focus:outline-none focus:border-[#48715B] focus:ring-0 shadow-none peer'
 										placeholder='Gmail'
 										required
 									/>
 									<label
 										htmlFor='email'
-										className={`absolute left-3 top-3 text-xl font-normal text-[#0a131a]/70 bg-[#E2EEE2] px-1 transition-all duration-200 pointer-events-none
+										className={`absolute left-3 top-3 text-xl font-normal text-[#8C8C8C]/70 bg-[#E2EEE2] px-1 transition-all duration-200 pointer-events-none
 											${
 												email
 													? 'scale-70 -translate-y-9'
@@ -83,19 +83,19 @@ const LoginForm = (): React.ReactElement => {
 								</div>
 
 								{/* Password Input */}
-								<div className='relative w-full'>
+								<div className='relative w-90 mx-auto'>
 									<input
 										id='password'
 										type='password'
 										value={password}
 										onChange={e => setPassword(e.target.value)}
-										className='block w-full px-3 py-3 rounded-xl bg-[#E2EEE2] border border-[#0a131a]/30 text-[#0a131a] text-xl font-normal placeholder-transparent focus:outline-none focus:border-[#48715B] focus:ring-0 shadow-none peer'
+										className='block w-full px-3 py-3 rounded-xl bg-[#E2EEE2] border border-[#8C8C8C]/30 text-[#8C8C8C] text-xl font-normal placeholder-transparent focus:outline-none focus:border-[#48715B] focus:ring-0 shadow-none peer'
 										placeholder='Mật khẩu'
 										required
 									/>
 									<label
 										htmlFor='password'
-										className={`absolute left-3 top-3 text-xl font-normal text-[#0a131a]/70 bg-[#E2EEE2] px-1 transition-all duration-200 pointer-events-none
+										className={`absolute left-3 top-3 text-xl font-normal text-[#8C8C8C]/70 bg-[#E2EEE2] px-1 transition-all duration-200 pointer-events-none
 											${
 												password
 													? 'scale-70 -translate-y-9'
@@ -111,7 +111,7 @@ const LoginForm = (): React.ReactElement => {
 								{/* Submit Button */}
 								<button
 									type='submit'
-									className='w-full py-3.5 rounded-xl  text-[#48715B] font-semibold text-lg hover:bg-[#48715B]/90 hover:text-[#E2EEE2]  active:bg-[#48715B]/80 focus:outline-none focus:ring-4 focus:ring-[#48715B]/30 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5'
+									className='block mx-auto w-[200px] py-3.5 rounded-xl text-[#48715B] font-semibold text-lg hover:bg-[#48715B]/90 hover:text-[#E2EEE2] active:bg-[#48715B]/80 focus:outline-none focus:ring-4 focus:ring-[#48715B]/30 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5'
 								>
 									Đăng nhập
 								</button>
@@ -120,14 +120,14 @@ const LoginForm = (): React.ReactElement => {
 								<div className='flex items-center justify-center gap-2 text-sm pt-2'>
 									<Link
 										href='/register'
-										className='text-[#48715B] hover:text-[#48715B]/80 font-medium transition-colors duration-200 hover:underline'
+										className='text-[#8C8C8C] hover:text-[#48715B]/80 font-medium transition-colors duration-200 hover:underline'
 									>
 										Đăng ký
 									</Link>
-									<span className='text-[#0A131A]/60'>|</span>
+									<span className='text-[#8C8C8C]/60'>|</span>
 									<Link
 										href='/forgot-password'
-										className='text-[#48715B] hover:text-[#48715B]/80 font-medium transition-colors duration-200 hover:underline'
+										className='text-[#8C8C8C] hover:text-[#48715B]/80 font-medium transition-colors duration-200 hover:underline'
 									>
 										Quên mật khẩu?
 									</Link>
