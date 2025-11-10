@@ -2,7 +2,7 @@
 
 import { useMutation } from '@tanstack/react-query'
 import axios from '@/common/axios'
-import type { LoginResponse } from '@/types/api/auth/login'
+import type { LoginResponse } from '@/types/api/auth/login.ts'
 
 interface LoginPayload {
 	email: string
