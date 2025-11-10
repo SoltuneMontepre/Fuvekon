@@ -138,10 +138,10 @@ Below are concrete guidelines and small examples you can copy.
 ```ts
 // src/types/models/item.ts
 export type Item = {
- id?: string
- title: string
- description?: string
- createdAt?: string
+	id?: string
+	title: string
+	description?: string
+	createdAt?: string
 }
 ```
 
@@ -152,8 +152,8 @@ import type { Item } from '@types/models/item'
 import type { Error } from '@types/api/error'
 
 export const CreateItemSchema = z.object({
- title: z.string().min(1),
- description: z.string().optional(),
+	title: z.string().min(1),
+	description: z.string().optional(),
 })
 
 export type CreateItemRequest = z.infer<typeof CreateItemSchema>
@@ -181,23 +181,23 @@ import axios from 'src/common/axios'
 import type { CreateItemRequest, Item } from 'src/types/api/item'
 
 export const useItems = () => {
- return useQuery<Item[]>(['items'], async () => {
-  const { data } = await axios.get('/items')
-  return data
- })
+	return useQuery<Item[]>(['items'], async () => {
+		const { data } = await axios.get('/items')
+		return data
+	})
 }
 
 export function useCreateItem() {
- const qc = useQueryClient()
- return useMutation(
-  async (payload: CreateItemRequest) => {
-   const { data } = await axios.post<Item>('/items', payload)
-   return data
-  },
-  {
-   onSuccess: () => qc.invalidateQueries(['items']),
-  }
- )
+	const qc = useQueryClient()
+	return useMutation(
+		async (payload: CreateItemRequest) => {
+			const { data } = await axios.post<Item>('/items', payload)
+			return data
+		},
+		{
+			onSuccess: () => qc.invalidateQueries(['items']),
+		}
+	)
 }
 ```
 
@@ -244,14 +244,14 @@ Note: Next.js supports dynamic ([id]), catch-all ([...slug]) and optional-catch-
 ```json
 // src/language/en.json (excerpt)
 {
- "nav": {
-  "register": "Register",
-  "contributes": "Contributes",
-  "about": "About"
- },
- "items": {
-  "title": "Items"
- }
+	"nav": {
+		"register": "Register",
+		"contributes": "Contributes",
+		"about": "About"
+	},
+	"items": {
+		"title": "Items"
+	}
 }
 ```
 
@@ -261,8 +261,8 @@ Usage example with `next-intl` in a small nav component (similar to `src/compone
 import { useTranslations } from 'next-intl'
 
 function NavButtons() {
- const t = useTranslations('nav')
- return <a>{t('register')}</a>
+	const t = useTranslations('nav')
+	return <a>{t('register')}</a>
 }
 ```
 
@@ -281,27 +281,27 @@ import { useTranslations } from 'next-intl'
 import ItemList from 'src/components/items/ItemList'
 
 export default function ItemsPage() {
- const { data: items, isLoading } = useItems()
- const createItem = useCreateItem()
- const t = useTranslations('items')
+	const { data: items, isLoading } = useItems()
+	const createItem = useCreateItem()
+	const t = useTranslations('items')
 
- if (isLoading)
-  return (
-   <div>
-    {
-     t(
-      'loading'
-     ) /* key should exist in src/language/<locale>.json -> items.loading */
-    }
-   </div>
-  )
+	if (isLoading)
+		return (
+			<div>
+				{
+					t(
+						'loading'
+					) /* key should exist in src/language/<locale>.json -> items.loading */
+				}
+			</div>
+		)
 
- return (
-  <main>
-   <h1>{t('title')}</h1>
-   <ItemList items={items ?? []} onCreate={p => createItem.mutate(p)} />
-  </main>
- )
+	return (
+		<main>
+			<h1>{t('title')}</h1>
+			<ItemList items={items ?? []} onCreate={p => createItem.mutate(p)} />
+		</main>
+	)
 }
 ```
 

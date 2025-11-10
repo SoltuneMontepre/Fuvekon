@@ -3,10 +3,18 @@
 import React, { useState, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useLogin } from '@/hooks/services/auth/useLogin'
+
+import { useRouter } from 'next/navigation'
+import { LoginRequestSchema } from '@/types/api/auth/login'
 
 const LoginForm = (): React.ReactElement => {
 	const [email, setEmail] = useState('')
 	const [password, setPassword] = useState('')
+	const [error, setError] = useState('')
+
+	const router = useRouter()
+	const loginMutation = useLogin()
 
 	useEffect(() => {
 		const original = document.body.style.overflow
@@ -16,10 +24,31 @@ const LoginForm = (): React.ReactElement => {
 		}
 	}, [])
 
-	const handleSubmit = (e: React.FormEvent) => {
+	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault()
-		// Handle login logic here
-		console.log('Login attempt:', { email, password })
+		setError('')
+
+		// Validate với Zod
+		const validation = LoginRequestSchema.safeParse({ email, password })
+		if (!validation.success) {
+			setError(validation.error.issues[0].message)
+			return
+		}
+
+		// Call API
+		loginMutation.mutate(validation.data, {
+			onSuccess: data => {
+				if (data.isSuccess) {
+					// Redirect về trang chủ sau khi login thành công
+					router.push('/')
+				} else {
+					setError(data.message)
+				}
+			},
+			onError: err => {
+				setError(err.message || 'Login failed. Please try again.')
+			},
+		})
 	}
 
 	return (
@@ -56,6 +85,13 @@ const LoginForm = (): React.ReactElement => {
 
 							{/* Form */}
 							<form onSubmit={handleSubmit} className='space-y-6'>
+								{/* Error Message */}
+								{error && (
+									<div className='text-red-600 text-sm text-center bg-red-50 border border-red-200 rounded-lg p-3'>
+										{error}
+									</div>
+								)}
+
 								{/* Email Input */}
 								<div className='relative w-90 mx-auto'>
 									<input
@@ -111,9 +147,10 @@ const LoginForm = (): React.ReactElement => {
 								{/* Submit Button */}
 								<button
 									type='submit'
-									className='block mx-auto w-[200px] py-3.5 rounded-xl text-[#48715B] font-semibold text-lg hover:bg-[#48715B]/90 hover:text-[#E2EEE2] active:bg-[#48715B]/80 focus:outline-none focus:ring-4 focus:ring-[#48715B]/30 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5'
+									disabled={loginMutation.isPending}
+									className='block mx-auto w-[200px] py-3.5 rounded-xl text-[#48715B] font-semibold text-lg hover:bg-[#48715B]/90 hover:text-[#E2EEE2] active:bg-[#48715B]/80 focus:outline-none focus:ring-4 focus:ring-[#48715B]/30 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed'
 								>
-									Đăng nhập
+									{loginMutation.isPending ? 'Đang đăng nhập...' : 'Đăng nhập'}
 								</button>
 
 								{/* Links */}

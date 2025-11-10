@@ -1,6 +1,10 @@
 {
 	"common": {
-		"welcome": "Welcome to Fuvekon"
+		"welcome": "Welcome to Fuvekon",
+		"error": "Error",
+		"notFoundMessage": "The page you are looking for could not be found.",
+		"back": "Back",
+		"home": "Home"
 	},
 	"nav": {
 		"register": "Register",

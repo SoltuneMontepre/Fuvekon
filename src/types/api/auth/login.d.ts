@@ -1,9 +1,11 @@
-export type LoginRequest = {
-	email: string
-	password: string
+// Response types theo format của BE
+export interface LoginData {
+	access_token: string
 }
 
-export type LoginResponse = {
-	token: string
-	userId: string
+export interface LoginResponse {
+	isSuccess: boolean
+	message: string
+	data: LoginData
+	statusCode: number
 }
