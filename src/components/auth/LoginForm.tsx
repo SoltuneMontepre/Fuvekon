@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
+import { lockScroll } from '@/utils/scrollLock'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useLogin } from '@/hooks/services/auth/useLogin'
@@ -17,10 +18,9 @@ const LoginForm = (): React.ReactElement => {
 	const loginMutation = useLogin()
 
 	useEffect(() => {
-		const original = document.body.style.overflow
-		document.body.style.overflow = 'hidden'
+		const unlock = lockScroll()
 		return () => {
-			document.body.style.overflow = original
+			unlock()
 		}
 	}, [])
 
