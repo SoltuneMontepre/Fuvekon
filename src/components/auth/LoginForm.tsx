@@ -1,13 +1,20 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import Background from '@/components/landing/hero_section/Background'
 
 const LoginForm = (): React.ReactElement => {
 	const [email, setEmail] = useState('')
 	const [password, setPassword] = useState('')
+
+	useEffect(() => {
+		const original = document.body.style.overflow
+		document.body.style.overflow = 'hidden'
+		return () => {
+			document.body.style.overflow = original
+		}
+	}, [])
 
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault()
@@ -16,14 +23,20 @@ const LoginForm = (): React.ReactElement => {
 	}
 
 	return (
-		<div className='relative max-h-screen flex items-center justify-center overflow-hidden'>
-			{/* Landing background, same as landing page */}
-			<div className='fixed inset-0 -z-10 select-none pointer-events-none'>
-				<Background />
+		<div className='relative min-h-screen w-full flex items-center justify-center overflow-hidden'>
+			<div className='fixed inset-0 w-full h-full z-[-10]'>
+				<Image
+					src='/images/common/background-blured.png'
+					alt='Blurred background'
+					fill
+					className='object-cover select-none pointer-events-none'
+					priority
+					draggable={false}
+				/>
 			</div>
 			<div className='relative pt-30 w-full max-w-5xl min-h-7xl height-auto'>
 				{/* Main Content Panel */}
-				<div className='relative bg-[#E2EEE2] rounded-[32px] overflow-hidden shadow-2xl flex flex-col md:flex-row min-h-[450px]'>
+				<div className='relative bg-[#E2EEE2] -translate-y-25 rounded-[32px] overflow-hidden shadow-2xl flex flex-col md:flex-row min-h-[450px]'>
 					{/* Left Side - Character Illustration (background tràn panel) */}
 					<div className='absolute inset-0 w-full h-full z-10 pointer-events-none select-none'>
 						<Image
@@ -50,17 +63,17 @@ const LoginForm = (): React.ReactElement => {
 										type='email'
 										value={email}
 										onChange={e => setEmail(e.target.value)}
-										className='block w-full px-4 py-5 rounded-xl bg-[#E2EEE2] border border-gray-400 text-gray-600 text-2xl font-semibold placeholder-transparent focus:outline-none focus:border-gray-500 focus:ring-0 shadow-none peer'
+										className='block w-full px-3 py-3 rounded-xl bg-[#E2EEE2] border border-[#0a131a]/30 text-[#0a131a] text-xl font-normal placeholder-transparent focus:outline-none focus:border-[#48715B] focus:ring-0 shadow-none peer'
 										placeholder='Gmail'
 										required
 									/>
 									<label
 										htmlFor='email'
-										className={`absolute left-4 top-4.5 text-2xl font-semibold text-gray-600 bg-[#E2EEE2] px-1 transition-all duration-200 pointer-events-none
+										className={`absolute left-3 top-3 text-xl font-normal text-[#0a131a]/70 bg-[#E2EEE2] px-1 transition-all duration-200 pointer-events-none
 											${
 												email
-													? 'scale-60 -translate-y-11'
-													: 'peer-focus:scale-60 peer-focus:-translate-y-11'
+													? 'scale-70 -translate-y-9'
+													: 'peer-focus:scale-70 peer-focus:-translate-y-9'
 											}
 										`}
 										style={{ transformOrigin: 'left' }}
@@ -76,17 +89,17 @@ const LoginForm = (): React.ReactElement => {
 										type='password'
 										value={password}
 										onChange={e => setPassword(e.target.value)}
-										className='block w-full px-4 py-5  rounded-xl bg-[#E2EEE2] border border-gray-400 text-gray-600 text-2xl font-semibold placeholder-transparent focus:outline-none focus:border-gray-500 focus:ring-0 shadow-none peer'
+										className='block w-full px-3 py-3 rounded-xl bg-[#E2EEE2] border border-[#0a131a]/30 text-[#0a131a] text-xl font-normal placeholder-transparent focus:outline-none focus:border-[#48715B] focus:ring-0 shadow-none peer'
 										placeholder='Mật khẩu'
 										required
 									/>
 									<label
 										htmlFor='password'
-										className={`absolute left-4 top-4.5 text-2xl font-semibold text-gray-600 bg-[#E2EEE2] px-1 transition-all duration-200 pointer-events-none
+										className={`absolute left-3 top-3 text-xl font-normal text-[#0a131a]/70 bg-[#E2EEE2] px-1 transition-all duration-200 pointer-events-none
 											${
 												password
-													? 'scale-60 -translate-y-11'
-													: 'peer-focus:scale-60 peer-focus:-translate-y-11'
+													? 'scale-70 -translate-y-9'
+													: 'peer-focus:scale-70 peer-focus:-translate-y-9'
 											}
 										`}
 										style={{ transformOrigin: 'left' }}
