@@ -100,21 +100,21 @@ const LoginForm = (): React.ReactElement => {
 										value={email}
 										onChange={e => setEmail(e.target.value)}
 										className='block w-full px-3 py-3 rounded-xl bg-[#E2EEE2] border border-[#8C8C8C]/30 text-[#8C8C8C] text-xl font-normal placeholder-transparent focus:outline-none focus:border-[#48715B] focus:ring-0 shadow-none peer'
-										placeholder='Gmail'
+										placeholder='Email'
 										required
 									/>
 									<label
 										htmlFor='email'
 										className={`absolute left-3 top-3 text-xl font-normal text-[#8C8C8C]/70 bg-[#E2EEE2] px-1 transition-all duration-200 pointer-events-none
-											${
+							       ${
 												email
 													? 'scale-70 -translate-y-9'
 													: 'peer-focus:scale-70 peer-focus:-translate-y-9'
 											}
-										`}
+						       `}
 										style={{ transformOrigin: 'left' }}
 									>
-										Gmail:
+										Email:
 									</label>
 								</div>
 
