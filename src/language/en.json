@@ -13,6 +13,13 @@
 	},
 	"auth": {
 		"login": "Login",
-		"logout": "Logout"
+		"logout": "Logout",
+		"loginTitle": "LOGIN",
+		"email": "Email",
+		"password": "Password",
+		"loggingIn": "Logging in...",
+		"register": "Register",
+		"forgotPassword": "Forgot password?",
+		"loginFailed": "Login failed. Please try again."
 	}
 }

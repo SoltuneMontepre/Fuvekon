@@ -5,7 +5,7 @@ import { lockScroll } from '@/utils/scrollLock'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useLogin } from '@/hooks/services/auth/useLogin'
-
+import { useTranslations } from 'next-intl'
 import { useRouter } from 'next/navigation'
 import { LoginRequestSchema } from '@/types/api/auth/login'
 
@@ -14,6 +14,7 @@ const LoginForm = (): React.ReactElement => {
 	const [password, setPassword] = useState('')
 	const [error, setError] = useState('')
 
+	const t = useTranslations('auth')
 	const router = useRouter()
 	const loginMutation = useLogin()
 
@@ -46,7 +47,7 @@ const LoginForm = (): React.ReactElement => {
 				}
 			},
 			onError: err => {
-				setError(err.message || 'Login failed. Please try again.')
+				setError(err.message || t('loginFailed'))
 			},
 		})
 	}
@@ -80,7 +81,7 @@ const LoginForm = (): React.ReactElement => {
 						<div className='space-y-6 sm:space-y-8'>
 							{/* Title */}
 							<h1 className='text-3xl sm:text-4xl md:text-5xl font-bold text-[#48715B] text-center tracking-wide'>
-								ĐĂNG NHẬP
+								{t('loginTitle')}
 							</h1>
 
 							{/* Form */}
@@ -114,7 +115,7 @@ const LoginForm = (): React.ReactElement => {
 										`}
 										style={{ transformOrigin: 'left' }}
 									>
-										Email:
+										{t('email')}:
 									</label>
 								</div>
 
@@ -140,7 +141,7 @@ const LoginForm = (): React.ReactElement => {
 										`}
 										style={{ transformOrigin: 'left' }}
 									>
-										Mật khẩu:
+										{t('password')}:
 									</label>
 								</div>
 
@@ -150,7 +151,7 @@ const LoginForm = (): React.ReactElement => {
 									disabled={loginMutation.isPending}
 									className='block mx-auto w-full max-w-[200px] sm:w-[200px] py-3 sm:py-3.5 rounded-xl text-[#48715B] font-semibold text-base sm:text-lg hover:bg-[#48715B]/90 hover:text-[#E2EEE2] active:bg-[#48715B]/80 focus:outline-none focus:ring-4 focus:ring-[#48715B]/30 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed'
 								>
-									{loginMutation.isPending ? 'Đang đăng nhập...' : 'Đăng nhập'}
+									{loginMutation.isPending ? t('loggingIn') : t('login')}
 								</button>
 
 								{/* Links */}
@@ -159,14 +160,14 @@ const LoginForm = (): React.ReactElement => {
 										href='/register'
 										className='text-[#8C8C8C] hover:text-[#48715B]/80 font-medium transition-colors duration-200 hover:underline'
 									>
-										Đăng ký
+										{t('register')}
 									</Link>
 									<span className='text-[#8C8C8C]/60'>|</span>
 									<Link
 										href='/forgot-password'
 										className='text-[#8C8C8C] hover:text-[#48715B]/80 font-medium transition-colors duration-200 hover:underline'
 									>
-										Quên mật khẩu?
+										{t('forgotPassword')}
 									</Link>
 								</div>
 							</form>
