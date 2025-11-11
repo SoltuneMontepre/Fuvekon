@@ -1,17 +1,14 @@
-// Response types theo format của BE
+import { z } from 'zod'
+import type { ApiResponse } from '../response'
+
+// Response types
 export interface LoginData {
 	access_token: string
 }
 
-export interface LoginResponse {
-	isSuccess: boolean
-	message: string
-	data: LoginData
-	statusCode: number
-}
-import { z } from 'zod'
+export type LoginResponse = ApiResponse<LoginData>
 
-// Request schema với Zod validation
+// Request schema with Zod validation
 export const LoginRequestSchema = z.object({
 	email: z.email('Invalid email address'),
 	password: z.string().min(8, 'Password must be at least 8 characters'),
