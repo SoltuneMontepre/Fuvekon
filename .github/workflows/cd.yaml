@@ -22,41 +22,62 @@ jobs:
           path: .
 
       - name: Set up Node.js
-        if: steps.download-artifact.outcome != 'success'
         uses: actions/setup-node@v4
         with:
           node-version: "22.12"
 
-      - name: Cache dependencies and Next.js build
+      - name: Restore Next.js build cache from CI
+        if: steps.download-artifact.outcome != 'success'
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            ~/.npm
+            ${{ github.workspace }}/.next/cache
+          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx') }}
+          restore-keys: |
+            ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-
+
+      - name: Cache dependencies
         if: steps.download-artifact.outcome != 'success'
         uses: actions/cache@v4
         with:
           path: |
             ~/.npm
             node_modules
-            ${{ github.workspace }}/.next/cache
-          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx') }}
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
-            ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-
+            ${{ runner.os }}-node-
 
       - name: Install dependencies
         if: steps.download-artifact.outcome != 'success'
         run: npm ci
 
-      - name: Deploy to Netlify (with existing build)
-        if: steps.download-artifact.outcome == 'success'
-        run: |
-          npm install -g netlify-cli
-          netlify deploy --prod
-        env:
-          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
-
-      - name: Deploy to Netlify (with build)
+      - name: Build Next.js
         if: steps.download-artifact.outcome != 'success'
-        run: |
-          npm install -g netlify-cli
-          netlify deploy --build --prod
+        run: npm run build
+
+      - name: Save Next.js build cache
+        if: steps.download-artifact.outcome != 'success'
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            ~/.npm
+            ${{ github.workspace }}/.next/cache
+          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx') }}
+
+      - name: Cache Netlify CLI
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-netlify-cli
+          restore-keys: |
+            ${{ runner.os }}-netlify-cli
+
+      - name: Install Netlify CLI
+        run: npm install -g netlify-cli
+
+      - name: Deploy to Netlify
+        run: netlify deploy --prod
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
