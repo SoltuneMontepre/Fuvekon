@@ -1,5 +1,16 @@
 {
-  "common": {
-    "welcome": "ยินดีต้อนรับสู่ Fuvekon"
-  }
+	"common": {
+		"welcome": "ยินดีต้อนรับสู่ Fuvekon"
+	},
+	"auth": {
+		"login": "เข้าสู่ระบบ",
+		"logout": "ออกจากระบบ",
+		"loginTitle": "เข้าสู่ระบบ",
+		"email": "อีเมล",
+		"password": "รหัสผ่าน",
+		"loggingIn": "กำลังเข้าสู่ระบบ...",
+		"register": "ลงทะเบียน",
+		"forgotPassword": "ลืมรหัสผ่าน?",
+		"loginFailed": "เข้าสู่ระบบล้มเหลว กรุณาลองอีกครั้ง"
+	}
 }

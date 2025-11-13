@@ -10,7 +10,7 @@ This document expands the basic steps to get the fuvekon running locally. Each s
 
 - Node 18 | >= 24.3 [[Download here]](https://nodejs.org/en/download)
 
-### Steps:
+### Steps
 
 #### 1. Install dependencies
 
@@ -18,7 +18,7 @@ This document expands the basic steps to get the fuvekon running locally. Each s
 npm i
 ```
 
-#### 2. Create environment variables:
+#### 2. Create environment variables
 
 Clone `.env.example` to `.env` using the following command:
 
@@ -46,11 +46,11 @@ copy .env.example .env
 npm run dev
 ```
 
-#### 4. Start coding!
+#### 4. Start coding
 
 Congratulations — onboarding complete.
 
-## Repo Quickstart:
+## Repo Quickstart
 
 ### 1. Project file structure (src/)
 
@@ -113,7 +113,7 @@ src/
   - `params/` — query param helpers (buildUrlWithParams, mergeQueryParams, pageParams, pageSearchKey, setParams)
   - `validation/` — validation helpers (idValidation.ts)
 
-### 2. Creating a new feature:
+### 2. Creating a new feature
 
 This section describes a recommended, repeatable flow for adding a new feature to the app. It focuses on small, well-typed steps:
 
@@ -427,20 +427,20 @@ Merging:
 - Ensure CI checks pass and approvals are in place before merging.
 - Use "Squash and merge" or follow repo's merge strategy (documented in CONTRIBUTING).
 
-### Example PR flow:
+### Example PR flow
 
-#### 1. Push branch:
+#### 1. Push branch
 
 ```bash
 git push --set-upstream origin feat/ticket-123-add-login
 ```
 
-#### 2. Open PR using title:
+#### 2. Open PR using title
 
 ```
 feat(auth): add login form (closes #123)
 ```
 
-#### 3. Paste the PR description template, run CI, request reviewers, and address feedback.
+#### 3. Paste the PR description template, run CI, request reviewers, and address feedback
 
 This provides clear, consistent branch/commit/PR naming and examples for contributors.

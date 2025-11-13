@@ -1,5 +1,16 @@
 {
-  "common": {
-    "welcome": "Chào mừng bạn đến với Fuvekon"
-  }
+	"common": {
+		"welcome": "Chào mừng bạn đến với Fuvekon"
+	},
+	"auth": {
+		"login": "Đăng nhập",
+		"logout": "Đăng xuất",
+		"loginTitle": "ĐĂNG NHẬP",
+		"email": "Email",
+		"password": "Mật khẩu",
+		"loggingIn": "Đang đăng nhập...",
+		"register": "Đăng ký",
+		"forgotPassword": "Quên mật khẩu?",
+		"loginFailed": "Đăng nhập thất bại. Vui lòng thử lại."
+	}
 }
