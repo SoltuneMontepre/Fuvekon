@@ -13,12 +13,21 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Download build artifacts from CI
+        id: download-artifact
+        continue-on-error: true
+        uses: actions/download-artifact@v4
+        with:
+          name: nextjs-build-${{ github.sha }}
+
       - name: Set up Node.js
+        if: steps.download-artifact.outcome != 'success'
         uses: actions/setup-node@v4
         with:
           node-version: "22.12"
 
       - name: Cache node modules
+        if: steps.download-artifact.outcome != 'success'
         uses: actions/cache@v4
         with:
           path: |
@@ -29,9 +38,11 @@ jobs:
             ${{ runner.os }}-node-
 
       - name: Install dependencies
+        if: steps.download-artifact.outcome != 'success'
         run: npm ci
 
       - name: Cache Next.js build
+        if: steps.download-artifact.outcome != 'success'
         uses: actions/cache@v4
         with:
           path: |
@@ -42,6 +53,7 @@ jobs:
             ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-
 
       - name: Build
+        if: steps.download-artifact.outcome != 'success'
         run: npm run build
 
       - name: Deploy to Netlify
