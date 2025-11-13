@@ -10,7 +10,6 @@ const AdminLayout = ({ revenue, timeline }: AdminLayoutProps) => {
 		<>
 			<section>{revenue}</section>
 			<section>{timeline}</section>
-			<section>Admin Page</section>
 		</>
 	)
 }
