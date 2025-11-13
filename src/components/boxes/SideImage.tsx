@@ -9,7 +9,7 @@ type SideImageProps = {
 const SideImage = ({ src, alt }: SideImageProps) => {
 	return (
 		<Image
-			className='object-contain min-w-[400] transition-opacity duration-300'
+			className='object-contain min-w-[400px] transition-opacity duration-300'
 			src={src}
 			alt={alt}
 			width={400}
