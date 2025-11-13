@@ -3,14 +3,15 @@ import React from 'react'
 
 type SideImageProps = {
 	src: string
+	alt: string
 }
 
-const SideImage = ({ src }: SideImageProps) => {
+const SideImage = ({ src, alt }: SideImageProps) => {
 	return (
 		<Image
 			className='object-contain min-w-[400] transition-opacity duration-300'
 			src={src}
-			alt='Artbook submission badges and requirements'
+			alt={alt}
 			width={400}
 			height={300}
 			priority

@@ -8,7 +8,10 @@ const ArtBookCardSection = () => {
 		<div className='flex h-full max-w-[750px] items-center mx-auto relative'>
 			{/* Left */}
 			<div className='relative z-0 w-1/2 flex justify-center items-center ml-12'>
-				<SideImage src='/images/artbook/badges.png' />
+				<SideImage
+					src='/images/artbook/badges.png'
+					alt='Artbook submission badges and requirements'
+				/>
 			</div>
 
 			{/* Right */}
