@@ -1,3 +1,5 @@
+'use client'
+
 import React, { Suspense } from 'react'
 import LoadingSequence from '../../components/landing/hero_section/LoadingSequence'
 

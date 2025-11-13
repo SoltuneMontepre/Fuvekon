@@ -13,12 +13,21 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Download build artifacts from CI
+        id: download-artifact
+        continue-on-error: true
+        uses: actions/download-artifact@v4
+        with:
+          name: nextjs-build-${{ github.sha }}
+
       - name: Set up Node.js
+        if: steps.download-artifact.outcome != 'success'
         uses: actions/setup-node@v4
         with:
           node-version: "22.12"
 
       - name: Cache node modules
+        if: steps.download-artifact.outcome != 'success'
         uses: actions/cache@v4
         with:
           path: |
@@ -29,9 +38,11 @@ jobs:
             ${{ runner.os }}-node-
 
       - name: Install dependencies
+        if: steps.download-artifact.outcome != 'success'
         run: npm ci
 
       - name: Cache Next.js build
+        if: steps.download-artifact.outcome != 'success'
         uses: actions/cache@v4
         with:
           path: |
@@ -42,10 +53,23 @@ jobs:
             ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-
 
       - name: Build
+        if: steps.download-artifact.outcome != 'success'
         run: npm run build
 
-      - name: Deploy to Vercel
-        run: echo "Deploying to Vercel..."
+      - name: Deploy to Netlify
+        uses: nwtgck/actions-netlify@v3.0
+        with:
+          publish-dir: ./.next
+          production-branch: main
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          deploy-message: "Deploy from GitHub Actions"
+          enable-pull-request-comment: false
+          enable-commit-comment: true
+          overwrites-pull-request-comment: true
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+        timeout-minutes: 10
 
       - name: Notify failure
         if: failure()

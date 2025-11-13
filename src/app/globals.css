@@ -27,6 +27,12 @@
 	--color-dark-success: #34d399;
 	--color-dark-warning: #fbbf24;
 	--color-dark-error: #f87171;
+
+	--color-scroll-cover: #548780;
+	--color-scroll-paper: #e2eee2;
+	--color-scroll-ink: #d2ddd2;
+	--color-scroll-title: #7cbc97;
+	--color-scroll-text: #154c5b;
 }
 
 @layer components {
@@ -48,6 +54,43 @@
 
 	.center-width-cap {
 		@apply left-1/2 -translate-x-1/2 transform;
+	}
+
+	/* Scroll Component Styles */
+	.scroll-bar {
+		@apply h-fit w-full z-10 relative cursor-pointer;
+	}
+
+	.scroll-body {
+		@apply overflow-hidden h-0 mx-8 px-1;
+	}
+
+	.scroll-title {
+		@apply text-3xl sm:text-4xl lg:text-5xl uppercase font-bold text-center text-shadow-lg;
+	}
+
+	/* art card */
+	.artcard-box {
+		@apply w-[400px] p-10 absolute rounded-[60px] top-0 right-0 h-full -ml-12 z-10;
+		position: relative;
+	}
+
+	.artcard-box::before {
+		content: '';
+		position: absolute;
+		inset: -16px;
+		border-radius: 76px;
+		background: radial-gradient(
+				ellipse at center,
+				transparent 0%,
+				transparent calc(100% - 32px),
+				rgba(139, 116, 94, 0.4) calc(100% - 16px),
+				rgba(139, 116, 94, 0.6) 100%
+			),
+			url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch' /%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' /%3E%3C/svg%3E");
+		filter: contrast(170%) brightness(800%);
+		pointer-events: none;
+		z-index: -1;
 	}
 }
 
