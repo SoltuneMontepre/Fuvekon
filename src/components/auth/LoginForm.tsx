@@ -41,7 +41,7 @@ const LoginForm = (): React.ReactElement => {
 			onSuccess: data => {
 				if (data.isSuccess) {
 					// Redirect về trang chủ sau khi login thành công
-					router.push('/')
+					router.push('/account')
 				} else {
 					setError(data.message)
 				}
