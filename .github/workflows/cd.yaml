@@ -40,7 +40,7 @@ jobs:
 
       - name: Install dependencies
         if: steps.download-artifact.outcome != 'success'
-        run: npm ci --omit=optional
+        run: npm ci
 
       - name: Deploy to Netlify (with existing build)
         if: steps.download-artifact.outcome == 'success'
