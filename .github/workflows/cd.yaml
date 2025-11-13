@@ -53,17 +53,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-
 
-      - name: Cache Netlify CLI
-        id: cache-netlify
-        uses: actions/cache@v4
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-netlify-cli
-          restore-keys: |
-            ${{ runner.os }}-netlify-cli
-
       - name: Install Netlify CLI
-        if: steps.cache-netlify.outputs.cache-hit != 'true'
         run: npm install -g netlify-cli
 
       - name: Deploy to Netlify
