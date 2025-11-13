@@ -10,7 +10,7 @@ const SideImage = ({ src }: SideImageProps) => {
 		<Image
 			className='object-contain min-w-[400] transition-opacity duration-300'
 			src={src}
-			alt=''
+			alt='Artbook submission badges and requirements'
 			width={400}
 			height={300}
 			priority

@@ -58,7 +58,7 @@
 
 	/* Scroll Component Styles */
 	.scroll-bar {
-		@apply h-fit w-full z-10 cursor-pointer;
+		@apply h-fit w-full z-10 relative cursor-pointer;
 	}
 
 	.scroll-body {
