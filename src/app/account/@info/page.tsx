@@ -119,11 +119,14 @@ const AccountInfo = () => {
 	}
 
 	return (
-		<div className='rounded-[30px] border border-gray-200 dark:border-dark-border bg-white dark:bg-dark-surface p-8 shadow-sm'>
-			<h1 className='text-3xl font-bold text-gray-900 dark:text-dark-text mb-8 text-center'>
-				TÀI KHOẢN
-			</h1>
-			<form onSubmit={handleSubmit}>
+		<div>
+			<form
+				onSubmit={handleSubmit}
+				className='rounded-[30px] bg-white dark:bg-dark-surface p-8 shadow-sm'
+			>
+				<h1 className='text-3xl font-bold text-gray-900 dark:text-dark-text mb-8 text-center'>
+					TÀI KHOẢN
+				</h1>
 				<div className='space-y-6'>
 					{isEditing ? (
 						<>
@@ -172,52 +175,53 @@ const AccountInfo = () => {
 				</div>
 
 				{/* Edit Information Section */}
-				<div className='mt-8 pt-8'>
-					{!isEditing ? (
-						<button
-							type='button'
-							onClick={() => {
-								// Initialize form data with current account values when entering edit mode
-								setFormData({
-									first_name: account.first_name || '',
-									last_name: account.last_name || '',
-									fursona_name: account.fursona_name || '',
-									country: account.country || '',
-								})
-								setIsEditing(true)
-							}}
-							className='w-full py-3 px-4 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-dark-surface'
-						>
-							Chỉnh sửa thông tin
-						</button>
-					) : (
-						<div className='space-y-4'>
-							{updateMeMutation.isError && (
-								<div className='p-3 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 text-sm'>
-									Cập nhật thất bại. Vui lòng thử lại.
-								</div>
-							)}
-							<div className='flex gap-4'>
-								<button
-									type='submit'
-									disabled={updateMeMutation.isPending}
-									className='flex-1 py-3 px-4 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-dark-surface disabled:opacity-50 disabled:cursor-not-allowed'
-								>
-									{updateMeMutation.isPending ? 'Đang lưu...' : 'Lưu thay đổi'}
-								</button>
-								<button
-									type='button'
-									onClick={handleCancel}
-									disabled={updateMeMutation.isPending}
-									className='flex-1 py-3 px-4 rounded-lg bg-gray-200 hover:bg-gray-300 dark:bg-dark-border dark:hover:bg-gray-600 text-gray-900 dark:text-dark-text font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 dark:focus:ring-offset-dark-surface disabled:opacity-50 disabled:cursor-not-allowed'
-								>
-									Hủy
-								</button>
-							</div>
-						</div>
-					)}
-				</div>
 			</form>
+
+			<div className='pt-10'>
+				{!isEditing ? (
+					<button
+						type='button'
+						onClick={() => {
+							// Initialize form data with current account values when entering edit mode
+							setFormData({
+								first_name: account.first_name || '',
+								last_name: account.last_name || '',
+								fursona_name: account.fursona_name || '',
+								country: account.country || '',
+							})
+							setIsEditing(true)
+						}}
+						className='w-full py-3 px-4 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-dark-surface'
+					>
+						Chỉnh sửa thông tin
+					</button>
+				) : (
+					<div className='space-y-4'>
+						{updateMeMutation.isError && (
+							<div className='p-3 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 text-sm'>
+								Cập nhật thất bại. Vui lòng thử lại.
+							</div>
+						)}
+						<div className='flex gap-4'>
+							<button
+								type='submit'
+								disabled={updateMeMutation.isPending}
+								className='flex-1 py-3 px-4 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-dark-surface disabled:opacity-50 disabled:cursor-not-allowed'
+							>
+								{updateMeMutation.isPending ? 'Đang lưu...' : 'Lưu thay đổi'}
+							</button>
+							<button
+								type='button'
+								onClick={handleCancel}
+								disabled={updateMeMutation.isPending}
+								className='flex-1 py-3 px-4 rounded-lg bg-gray-200 hover:bg-gray-300 dark:bg-dark-border dark:hover:bg-gray-600 text-gray-900 dark:text-dark-text font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 dark:focus:ring-offset-dark-surface disabled:opacity-50 disabled:cursor-not-allowed'
+							>
+								Hủy
+							</button>
+						</div>
+					</div>
+				)}
+			</div>
 		</div>
 	)
 }
