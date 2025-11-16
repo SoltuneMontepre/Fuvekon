@@ -44,3 +44,6 @@ next-env.d.ts
 specs
 /instructions
 .cursor
+
+# Local Netlify folder
+.netlify
