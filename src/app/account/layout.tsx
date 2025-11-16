@@ -11,6 +11,7 @@ import { useRouter } from 'next/navigation'
 
 type AccountLayoutProps = {
 	children: ReactNode
+	info: ReactNode
 }
 
 const sections = [
@@ -30,7 +31,7 @@ const sections = [
 	},
 ]
 
-const AccountLayout = ({ children }: AccountLayoutProps) => {
+const AccountLayout = ({ children, info }: AccountLayoutProps) => {
 	const router = useRouter()
 	const { data, isLoading, isError } = useGetMe()
 	const setAccount = useAuthStore(state => state.setAccount)
@@ -68,8 +69,11 @@ const AccountLayout = ({ children }: AccountLayoutProps) => {
 
 	return (
 		<div className='flex'>
-			<SideBar sections={sections} footer={<LogoutButton />} />
-			<div className='mx-auto flex w-full max-w-6xl flex-col gap-6 px-4 py-8 md:px-8 lg:py-12'>
+			<div className='w-[30%]'>
+				<SideBar sections={sections} footer={<LogoutButton />} />
+			</div>
+			<div className='mx-auto flex w-xl max-w-6xl flex-col gap-6 px-4 py-8 md:px-8 lg:py-12'>
+				{info}
 				{children}
 			</div>
 		</div>
