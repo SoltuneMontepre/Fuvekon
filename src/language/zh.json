@@ -12,5 +12,26 @@
 		"register": "注册",
 		"forgotPassword": "忘记密码？",
 		"loginFailed": "登录失败。请重试。"
+	},
+	"ticket": {
+		"title": "门票",
+		"tier1": "等级 1",
+		"tier2": "等级 2",
+		"tier3": "等级 3",
+		"price": "价格",
+		"includes": "此门票包括：",
+		"buyTicket": "购买门票 !!",
+		"benefits": {
+			"benefit1": "福利 1",
+			"benefit2": "福利 2",
+			"benefit3": "福利 3",
+			"benefit4": "福利 4",
+			"benefit5": "福利 5",
+			"benefit6": "福利 6",
+			"benefit7": "福利 7",
+			"benefit8": "福利 8",
+			"benefit9": "福利 9",
+			"benefit10": "福利 10"
+		}
 	}
 }

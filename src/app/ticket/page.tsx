@@ -1,7 +1,7 @@
+import { redirect } from 'next/navigation'
 import React from 'react'
 
-const TicketPage = (): React.ReactElement => {
-	return <div>Ticket Page</div>
+// Redirect /ticket to /tickets for consistency
+const TicketPage = async (): Promise<never> => {
+	redirect('/tickets')
 }
-
-export default TicketPage

@@ -20,6 +20,10 @@ const NavButtons = ({
 			to: '/register',
 		},
 		{
+			label: t('tickets'),
+			to: '/tickets',
+		},
+		{
 			label: t('contributes'),
 			to: '/contributes',
 		},

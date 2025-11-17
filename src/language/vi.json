@@ -12,5 +12,26 @@
 		"register": "Đăng ký",
 		"forgotPassword": "Quên mật khẩu?",
 		"loginFailed": "Đăng nhập thất bại. Vui lòng thử lại."
+	},
+	"ticket": {
+		"title": "Vé",
+		"tier1": "Tier 1",
+		"tier2": "Tier 2",
+		"tier3": "Tier 3",
+		"price": "Giá",
+		"includes": "Vé này bao gồm:",
+		"buyTicket": "MUA VÉ !!",
+		"benefits": {
+			"benefit1": "Tăng lương 1",
+			"benefit2": "Tăng lương 2",
+			"benefit3": "Tăng lương 3",
+			"benefit4": "Tăng lương 4",
+			"benefit5": "Tăng lương 5",
+			"benefit6": "Tăng lương 6",
+			"benefit7": "Tăng lương 7",
+			"benefit8": "Tăng lương 8",
+			"benefit9": "Tăng lương 9",
+			"benefit10": "Tăng lương 10"
+		}
 	}
 }

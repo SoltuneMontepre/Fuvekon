@@ -44,6 +44,10 @@
 		font-family: 'Josefin Sans', sans-serif;
 	}
 
+	.tier-name {
+		font-family: 'DFVN Tango', 'Josefin Sans', sans-serif;
+	}
+
 	.landing-bg {
 		@apply object-cover absolute;
 	}
