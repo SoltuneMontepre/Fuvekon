@@ -47,8 +47,9 @@ const AccountLayout = ({ children, info }: AccountLayoutProps) => {
 	}, [data, setAccount])
 
 	// Redirect to login if there's an error or authentication fails
+	// Only redirect when we have definitive failure (not when data is undefined/loading)
 	useEffect(() => {
-		if (!isLoading && (isError || (data && !data.isSuccess))) {
+		if (!isLoading && (isError || (data !== undefined && !data.isSuccess))) {
 			router.push('/login')
 		}
 	}, [isError, data, isLoading, router])

@@ -2,14 +2,20 @@
 
 import { useTranslations } from 'next-intl'
 import React from 'react'
+import { useRouter } from 'next/navigation'
 import { useLogout } from '@/hooks/services/auth/useLogout'
 
 const LogoutButton = (): React.ReactElement => {
 	const t = useTranslations('auth')
+	const router = useRouter()
 	const logoutMutation = useLogout()
 
 	const handleLogout = () => {
-		logoutMutation.mutate()
+		logoutMutation.mutate(undefined, {
+			onSuccess: () => {
+				router.push('/login')
+			},
+		})
 	}
 
 	return (

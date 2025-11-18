@@ -15,8 +15,8 @@ export function useLogout() {
 			return data
 		},
 		onSuccess: data => {
-			// Clear account query cache after successful logout
-			queryClient.invalidateQueries({ queryKey: ['account'] })
+			// Remove account query cache completely after successful logout
+			queryClient.removeQueries({ queryKey: ['account'] })
 			// Clear auth store
 			clearAccount()
 			console.log('Logout successful:', data.message)

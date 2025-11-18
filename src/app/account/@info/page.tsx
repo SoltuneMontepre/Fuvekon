@@ -17,10 +17,8 @@ const InfoField = ({
 	editable?: boolean
 	onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
 }) => (
-	<div className='space-y-2'>
-		<label className='text-sm font-medium text-white dark:text-dark-text-secondary'>
-			{label}
-		</label>
+	<div className=''>
+		<label className='text-sm font-medium text-default'>{label}</label>
 		{editable && name ? (
 			<input
 				type='text'
@@ -31,9 +29,7 @@ const InfoField = ({
 				placeholder={`Nhập ${label.toLowerCase()}`}
 			/>
 		) : (
-			<div className='text-base text-white dark:text-dark-text'>
-				{value || 'N/A'}
-			</div>
+			<div className='text-base text-default'>{value || 'N/A'}</div>
 		)}
 	</div>
 )
@@ -119,10 +115,8 @@ const AccountInfo = () => {
 	}
 
 	return (
-		<div className='rounded-[30px] border border-gray-200 dark:border-dark-border bg-white dark:bg-dark-surface p-8 shadow-sm'>
-			<h1 className='text-3xl font-bold text-gray-900 dark:text-dark-text mb-8 text-center'>
-				TÀI KHOẢN
-			</h1>
+		<div className='rounded-[30px]  bg-[#E9F5E7] p-8 shadow-sm text-default'>
+			<h1 className='text-3xl font-bold mb-8 text-center'>TÀI KHOẢN</h1>
 			<form onSubmit={handleSubmit}>
 				<div className='space-y-6'>
 					{isEditing ? (
@@ -186,14 +180,14 @@ const AccountInfo = () => {
 								})
 								setIsEditing(true)
 							}}
-							className='w-full py-3 px-4 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-dark-surface'
+							className='shadow-md w-full py-3 px-4 rounded-lg bg-button  text-default font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-dark-surface'
 						>
 							Chỉnh sửa thông tin
 						</button>
 					) : (
 						<div className='space-y-4'>
 							{updateMeMutation.isError && (
-								<div className='p-3 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 text-sm'>
+								<div className='p-3 rounded-lg bg-error text-default text-sm'>
 									Cập nhật thất bại. Vui lòng thử lại.
 								</div>
 							)}
@@ -201,7 +195,7 @@ const AccountInfo = () => {
 								<button
 									type='submit'
 									disabled={updateMeMutation.isPending}
-									className='flex-1 py-3 px-4 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-dark-surface disabled:opacity-50 disabled:cursor-not-allowed'
+									className='shadow-md flex-1 py-3 px-4 rounded-lg bg-button text-default font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-dark-surface disabled:opacity-50 disabled:cursor-not-allowed'
 								>
 									{updateMeMutation.isPending ? 'Đang lưu...' : 'Lưu thay đổi'}
 								</button>
@@ -209,7 +203,7 @@ const AccountInfo = () => {
 									type='button'
 									onClick={handleCancel}
 									disabled={updateMeMutation.isPending}
-									className='flex-1 py-3 px-4 rounded-lg bg-gray-200 hover:bg-gray-300 dark:bg-dark-border dark:hover:bg-gray-600 text-gray-900 dark:text-dark-text font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 dark:focus:ring-offset-dark-surface disabled:opacity-50 disabled:cursor-not-allowed'
+									className='shadow-md flex-1 py-3 px-4 rounded-lg bg-button text-default font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 dark:focus:ring-offset-dark-surface disabled:opacity-50 disabled:cursor-not-allowed'
 								>
 									Hủy
 								</button>

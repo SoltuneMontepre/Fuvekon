@@ -4,7 +4,7 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme inline {
-	--color-main: #be79e6;
+	--color-main: #e9f5e7;
 	--color-main-light: #d399f0;
 	--color-main-bright: #e0b3f7;
 	--color-main-dark: #8b5bb8;
@@ -33,6 +33,9 @@
 	--color-scroll-ink: #d2ddd2;
 	--color-scroll-title: #7cbc97;
 	--color-scroll-text: #154c5b;
+	--color-default: #48715b;
+	--color-bg-main: #e9f5e7;
+	--color-button: #e2eee2;
 }
 
 @layer components {

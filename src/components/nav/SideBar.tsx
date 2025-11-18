@@ -69,7 +69,7 @@ const SideBar = ({
 	return (
 		<aside
 			ref={sidebarRef}
-			className={`fixed flex flex-col h-[90%] bg-white dark:bg-dark-surface border-r border-slate-200 dark:border-dark-border w-[17%] ${className} ml-[10%] `}
+			className={`fixed flex flex-col h-[90%] bg-main border-r border-slate-200 dark:border-dark-border w-[17%] ${className} ml-[10%] `}
 			aria-label='Sidebar Navigation'
 		>
 			{/* Header */}
@@ -128,7 +128,7 @@ const SidebarItemComponent = ({
 			{Icon && <Icon className='flex-shrink-0 w-15 h-15' aria-hidden='true' />}
 			<span className='flex-1 truncate'>{item.label}</span>
 			{item.badge !== undefined && (
-				<span className='px-2 py-0.5 text-xs font-medium rounded-full bg-main/10 dark:bg-main/20 text-main dark:text-dark-main'>
+				<span className='px-2 py-0.5 text-xs font-medium rounded-full bg-button text-default'>
 					{item.badge}
 				</span>
 			)}
@@ -137,13 +137,9 @@ const SidebarItemComponent = ({
 
 	const baseClasses = `
 		flex flex-col items-center gap-3 px-3 py-2 rounded-lg text-xl font-medium
-		transition-colors duration-150 w-40 mx-auto justify-center
+		transition-colors duration-150 w-40 mx-auto justify-center shadow-md
 		${item.disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
-		${
-			isActive
-				? 'bg-main/10 dark:bg-main/20 text-main dark:text-dark-main'
-				: 'text-slate-700 dark:text-dark-text-secondary hover:bg-slate-100 dark:hover:bg-dark-card'
-		}
+		${isActive ? 'bg-button text-default' : 'text-default hover:bg-button'}
 	`
 
 	if (item.href && !item.disabled) {
