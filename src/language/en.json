@@ -15,6 +15,7 @@
 	"auth": {
 		"login": "Login",
 		"logout": "Logout",
+		"loggingOut": "Logging out...",
 		"loginTitle": "LOGIN",
 		"email": "Email",
 		"password": "Password",
@@ -38,7 +39,10 @@
 			"success": "Ticket created successfully!",
 			"error": "Payment failed. Please try again.",
 			"paymentSuccess": "🎉 Payment completed successfully!",
-			"paymentCancelled": "❌ Payment was cancelled"
+			"paymentCancelled": "❌ Payment was cancelled",
+			"authRequired": "Authentication required. Please log in to continue.",
+			"login": "Login",
+			"userNotFound": "User data not found. Please log in again."
 		},
 		"benefits": {
 			"benefit1": "Benefit 1",

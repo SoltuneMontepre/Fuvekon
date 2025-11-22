@@ -5,6 +5,7 @@ import { useTranslations } from 'next-intl'
 import { useRouter, useSearchParams } from 'next/navigation'
 import toast from 'react-hot-toast'
 import { ticketServiceAxios } from '@/common/axios'
+import { useAuthStore } from '@/stores/authStore'
 import type { TicketTier } from '@/types/models/ticket/ticketTier'
 import { PAYMENT_STATUS } from '@/types/models/ticket/payment'
 
@@ -68,12 +69,10 @@ const mockTicketTiers: Record<string, TicketTier> = {
 
 // Create payment link via API
 const createPaymentLink = async (
-	tierId: string,
-	userId: string
+	tierId: string
 ): Promise<{ checkout_url: string; orderCode: number }> => {
 	const { data } = await ticketServiceAxios.post('/payments/payment-link', {
 		tier_id: tierId,
-		user_id: userId,
 	})
 	return data
 }
@@ -86,6 +85,7 @@ const TicketPurchasePage = ({
 	const router = useRouter()
 	const searchParams = useSearchParams()
 	const t = useTranslations('ticket.purchase')
+	const { isAuthenticated } = useAuthStore()
 
 	// Resolve params
 	useEffect(() => {
@@ -132,9 +132,8 @@ const TicketPurchasePage = ({
 
 		setIsCreatingLink(true)
 		try {
-			// Hardcoded user ID for ticket purchase
-			const userId = 'b3c8e5f4-0a86-4d73-a8b9-3daafe0f6a20'
-			const result = await createPaymentLink(tier.id, userId)
+			// User ID is extracted from JWT token on backend
+			const result = await createPaymentLink(tier.id)
 
 			if (result.checkout_url) {
 				// Open payment URL in a new window/tab for redirection
@@ -154,6 +153,24 @@ const TicketPurchasePage = ({
 		return (
 			<div className='min-h-screen flex items-center justify-center'>
 				<div className='text-white'>{t('loading')}</div>
+			</div>
+		)
+	}
+
+	if (!isAuthenticated) {
+		return (
+			<div className='min-h-screen flex items-center justify-center'>
+				<div className='text-center'>
+					<div className='text-red-400 mb-4'>
+						{t('authRequired')}
+					</div>
+					<button
+						onClick={() => router.push('/login')}
+						className='bg-[#7cbc97] hover:bg-[#6ba885] text-white font-bold py-2 px-4 rounded transition-colors'
+					>
+						{t('login')}
+					</button>
+				</div>
 			</div>
 		)
 	}

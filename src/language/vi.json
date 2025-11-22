@@ -16,6 +16,7 @@
 	"auth": {
 		"login": "Đăng nhập",
 		"logout": "Đăng xuất",
+		"loggingOut": "Đang đăng xuất...",
 		"loginTitle": "ĐĂNG NHẬP",
 		"email": "Email",
 		"password": "Mật khẩu",
@@ -39,7 +40,10 @@
 			"success": "Tạo vé thành công!",
 			"error": "Thanh toán thất bại. Vui lòng thử lại.",
 			"paymentSuccess": "🎉 Thanh toán hoàn tất thành công!",
-			"paymentCancelled": "❌ Thanh toán đã bị hủy"
+			"paymentCancelled": "❌ Thanh toán đã bị hủy",
+			"authRequired": "Yêu cầu xác thực. Vui lòng đăng nhập để tiếp tục.",
+			"login": "Đăng nhập",
+			"userNotFound": "Không tìm thấy dữ liệu người dùng. Vui lòng đăng nhập lại."
 		},
 		"benefits": {
 			"benefit1": "Tăng lương 1",

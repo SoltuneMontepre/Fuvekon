@@ -1,4 +1,5 @@
 import a from 'axios'
+import { useAuthStore } from '@/stores/authStore'
 
 // General service axios instance (auth, users, etc.)
 // Runs on port 8085 in local dev
@@ -8,7 +9,7 @@ const generalServiceAxios = a.create({
 		'Content-Type': 'application/json',
 	},
 	timeout: 10000,
-	withCredentials: true, 
+	withCredentials: true, // Send cookies with requests
 })
 
 // Ticket service axios instance (tickets, payments, etc.)
@@ -19,8 +20,29 @@ const ticketServiceAxios = a.create({
 		'Content-Type': 'application/json',
 	},
 	timeout: 10000,
-	withCredentials: true, 
+	withCredentials: true, // Send cookies with requests
 })
+
+// Add request interceptor to include Authorization header
+const addAuthInterceptor = (instance: any) => {
+	instance.interceptors.request.use(
+		(config: any) => {
+			// Get token from auth store using getState() (works outside React)
+			const { token } = useAuthStore.getState()
+			if (token) {
+				config.headers.Authorization = `Bearer ${token}`
+			}
+			return config
+		},
+		(error: any) => {
+			return Promise.reject(error)
+		}
+	)
+}
+
+// Apply auth interceptor to both instances
+addAuthInterceptor(generalServiceAxios)
+addAuthInterceptor(ticketServiceAxios)
 
 // Default export for backward compatibility (points to general service)
 const axios = generalServiceAxios
