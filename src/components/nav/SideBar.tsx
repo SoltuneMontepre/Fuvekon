@@ -60,7 +60,7 @@ const SideBar = ({
 	)
 
 	const isActive = (item: SidebarItem): boolean => {
-		if (item.href) {
+		if (item.href && pathname) {
 			return pathname === item.href || pathname.startsWith(item.href + '/')
 		}
 		return false
