@@ -11,6 +11,8 @@
 		"loggingIn": "正在登录...",
 		"register": "注册",
 		"forgotPassword": "忘记密码？",
-		"loginFailed": "登录失败。请重试。"
+		"loginFailed": "登录失败。请重试。",
+		"showPassword": "显示密码",
+		"hidePassword": "隐藏密码"
 	}
 }
