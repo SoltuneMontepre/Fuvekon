@@ -1,15 +1,10 @@
-import { NextRequest, NextResponse } from 'next/server'
+import type { NextApiRequest, NextApiResponse } from 'next'
 import { S3Client, GetObjectCommand, NoSuchKey } from '@aws-sdk/client-s3'
 import { Readable } from 'stream'
 
 // ============================================================================
 // Configuration & Constants
 // ============================================================================
-
-const AWS_REGION = process.env.AWS_REGION || 'us-east-1'
-const AWS_ACCESS_KEY_ID = process.env.AWS_ACCESS_KEY_ID
-const AWS_SECRET_ACCESS_KEY = process.env.AWS_SECRET_ACCESS_KEY
-const BUCKET_NAME = process.env.AWS_S3_BUCKET_NAME
 
 // Allowed image MIME types for security
 const ALLOWED_MIME_TYPES = new Set([
@@ -29,21 +24,6 @@ const MAX_FILE_SIZE = 50 * 1024 * 1024
 const CACHE_MAX_AGE = 31536000
 
 // ============================================================================
-// S3 Client Initialization
-// ============================================================================
-
-const s3Client = new S3Client({
-	region: AWS_REGION,
-	credentials:
-		AWS_ACCESS_KEY_ID && AWS_SECRET_ACCESS_KEY
-			? {
-					accessKeyId: AWS_ACCESS_KEY_ID,
-					secretAccessKey: AWS_SECRET_ACCESS_KEY,
-			  }
-			: undefined,
-})
-
-// ============================================================================
 // Validation Helpers
 // ============================================================================
 
@@ -51,6 +31,11 @@ const s3Client = new S3Client({
  * Validates AWS configuration
  */
 function validateAwsConfig(): { isValid: boolean; error?: string } {
+	const AWS_REGION = process.env.AWS_REGION
+	const AWS_ACCESS_KEY_ID = process.env.AWS_ACCESS_KEY_ID
+	const AWS_SECRET_ACCESS_KEY = process.env.AWS_SECRET_ACCESS_KEY
+	const BUCKET_NAME = process.env.AWS_S3_BUCKET_NAME
+
 	const missing: string[] = []
 
 	if (!BUCKET_NAME) missing.push('AWS_S3_BUCKET_NAME')
@@ -72,17 +57,20 @@ function validateAwsConfig(): { isValid: boolean; error?: string } {
  * Validates and sanitizes the S3 key
  * Prevents path traversal attacks and validates format
  */
-function validateAndDecodeKey(key: string | null): {
+function validateAndDecodeKey(key: string | string[] | null | undefined): {
 	isValid: boolean
 	decodedKey?: string
 	error?: string
 } {
-	if (!key || key.trim().length === 0) {
+	if (!key || (typeof key === 'string' && key.trim().length === 0)) {
 		return { isValid: false, error: 'Missing key parameter' }
 	}
 
+	// Handle array case (shouldn't happen, but be safe)
+	const keyStr = Array.isArray(key) ? key[0] : key
+
 	// Decode the key (handle multiple encodings)
-	let decodedKey = key
+	let decodedKey = keyStr
 	try {
 		// Decode up to 3 times to handle multiple encodings
 		for (let i = 0; i < 3; i++) {
@@ -92,7 +80,7 @@ function validateAndDecodeKey(key: string | null): {
 		}
 	} catch {
 		// If decoding fails, use the original key
-		decodedKey = key
+		decodedKey = keyStr
 	}
 
 	// Security: Prevent path traversal attacks
@@ -123,37 +111,6 @@ function isValidImageType(contentType: string | undefined): boolean {
 }
 
 // ============================================================================
-// Stream Utilities
-// ============================================================================
-
-/**
- * Converts Node.js Readable stream to Web ReadableStream for Next.js
- * This allows streaming the response instead of loading entire file into memory
- */
-function nodeStreamToWebStream(
-	nodeStream: Readable
-): ReadableStream<Uint8Array> {
-	return new ReadableStream({
-		start(controller) {
-			nodeStream.on('data', (chunk: Buffer) => {
-				controller.enqueue(new Uint8Array(chunk))
-			})
-
-			nodeStream.on('end', () => {
-				controller.close()
-			})
-
-			nodeStream.on('error', (error: Error) => {
-				controller.error(error)
-			})
-		},
-		cancel() {
-			nodeStream.destroy()
-		},
-	})
-}
-
-// ============================================================================
 // API Route Handler
 // ============================================================================
 
@@ -167,32 +124,51 @@ function nodeStreamToWebStream(
  * - Streams the response for better performance
  * - Applies security checks and proper caching headers
  *
- * @param request - Next.js request object
- * @returns Image response or error
+ * @param req - Next.js API request object
+ * @param res - Next.js API response object
  *
  * @example
  * GET /api/s3/image?key=user-uploads/filename.jpg
  */
-export async function GET(request: NextRequest) {
+export default async function handler(
+	req: NextApiRequest,
+	res: NextApiResponse
+) {
 	const startTime = Date.now()
 
+	// Only allow GET method
+	if (req.method !== 'GET') {
+		return res.status(405).json({ error: 'Method not allowed' })
+	}
+
 	try {
-		// Validate AWS configuration
+		// Validate AWS configuration before initializing S3Client
+		const AWS_REGION = process.env.AWS_REGION
+		const AWS_ACCESS_KEY_ID = process.env.AWS_ACCESS_KEY_ID
+		const AWS_SECRET_ACCESS_KEY = process.env.AWS_SECRET_ACCESS_KEY
+		const BUCKET_NAME = process.env.AWS_S3_BUCKET_NAME
+
 		const configValidation = validateAwsConfig()
 		if (!configValidation.isValid) {
 			console.error(
 				'[S3 Image Proxy] Configuration error:',
 				configValidation.error
 			)
-			return NextResponse.json(
-				{ error: 'Server configuration error' },
-				{ status: 500 }
-			)
+			return res.status(500).json({ error: 'Server configuration error' })
 		}
 
+		// Initialize S3 client only after validation
+		// At this point, all variables are guaranteed to be defined due to validation above
+		const s3Client = new S3Client({
+			region: AWS_REGION!,
+			credentials: {
+				accessKeyId: AWS_ACCESS_KEY_ID!,
+				secretAccessKey: AWS_SECRET_ACCESS_KEY!,
+			},
+		})
+
 		// Extract and validate key parameter
-		const searchParams = request.nextUrl.searchParams
-		const key = searchParams.get('key')
+		const key = req.query.key
 
 		const keyValidation = validateAndDecodeKey(key)
 		if (!keyValidation.isValid || !keyValidation.decodedKey) {
@@ -200,13 +176,13 @@ export async function GET(request: NextRequest) {
 				key,
 				error: keyValidation.error,
 				ip:
-					request.headers.get('x-forwarded-for') ||
-					request.headers.get('x-real-ip'),
+					req.headers['x-forwarded-for'] ||
+					req.headers['x-real-ip'] ||
+					req.socket.remoteAddress,
 			})
-			return NextResponse.json(
-				{ error: keyValidation.error || 'Invalid request' },
-				{ status: 400 }
-			)
+			return res
+				.status(400)
+				.json({ error: keyValidation.error || 'Invalid request' })
 		}
 
 		const decodedKey = keyValidation.decodedKey
@@ -225,7 +201,7 @@ export async function GET(request: NextRequest) {
 			// Handle AWS SDK specific errors
 			if (error instanceof NoSuchKey) {
 				console.warn('[S3 Image Proxy] Image not found:', decodedKey)
-				return NextResponse.json({ error: 'Image not found' }, { status: 404 })
+				return res.status(404).json({ error: 'Image not found' })
 			}
 
 			// Check for access denied errors (AWS SDK v3 uses error codes)
@@ -236,7 +212,7 @@ export async function GET(request: NextRequest) {
 				(error.name === 'AccessDenied' || error.name === 'Forbidden')
 			) {
 				console.error('[S3 Image Proxy] Access denied:', decodedKey)
-				return NextResponse.json({ error: 'Access denied' }, { status: 403 })
+				return res.status(403).json({ error: 'Access denied' })
 			}
 
 			// Re-throw unknown errors
@@ -246,7 +222,7 @@ export async function GET(request: NextRequest) {
 		// Validate response
 		if (!response.Body) {
 			console.warn('[S3 Image Proxy] Empty response body:', decodedKey)
-			return NextResponse.json({ error: 'Image not found' }, { status: 404 })
+			return res.status(404).json({ error: 'Image not found' })
 		}
 
 		// Validate content type
@@ -256,7 +232,7 @@ export async function GET(request: NextRequest) {
 				key: decodedKey,
 				contentType,
 			})
-			return NextResponse.json({ error: 'Invalid file type' }, { status: 400 })
+			return res.status(400).json({ error: 'Invalid file type' })
 		}
 
 		// Check file size if available
@@ -266,34 +242,28 @@ export async function GET(request: NextRequest) {
 				key: decodedKey,
 				size: contentLength,
 			})
-			return NextResponse.json({ error: 'File too large' }, { status: 413 })
+			return res.status(413).json({ error: 'File too large' })
 		}
-
-		// Convert Node.js stream to Web ReadableStream
-		const stream = response.Body as Readable
-		const webStream = nodeStreamToWebStream(stream)
 
 		// Calculate ETag for caching (use S3 ETag if available)
 		const etag = response.ETag?.replace(/"/g, '') || undefined
 
-		// Build response headers
-		const headers = new Headers({
-			'Content-Type': contentType,
-			'Cache-Control': `public, max-age=${CACHE_MAX_AGE}, immutable`,
-		})
+		// Set response headers
+		res.setHeader('Content-Type', contentType)
+		res.setHeader(
+			'Cache-Control',
+			`public, max-age=${CACHE_MAX_AGE}, immutable`
+		)
 
 		// Add ETag for conditional requests
 		if (etag) {
-			headers.set('ETag', `"${etag}"`)
+			res.setHeader('ETag', `"${etag}"`)
 		}
 
 		// Add content length if available
 		if (contentLength) {
-			headers.set('Content-Length', contentLength.toString())
+			res.setHeader('Content-Length', contentLength.toString())
 		}
-
-		// Add CORS headers if needed (adjust based on your requirements)
-		// headers.set('Access-Control-Allow-Origin', '*')
 
 		// Log successful request
 		const duration = Date.now() - startTime
@@ -304,11 +274,30 @@ export async function GET(request: NextRequest) {
 			duration: `${duration}ms`,
 		})
 
-		// Return streamed response
-		return new NextResponse(webStream, {
-			status: 200,
-			headers,
+		// Stream the response
+		// In Pages Router, we can pipe the stream directly to the response
+		const stream = response.Body as Readable
+
+		// Handle stream errors before piping
+		stream.on('error', (error: Error) => {
+			console.error('[S3 Image Proxy] Stream error:', error)
+			if (!res.headersSent) {
+				res.status(500).json({ error: 'Failed to stream image' })
+			} else {
+				// If headers already sent, we can't send JSON, just end the response
+				res.end()
+			}
 		})
+
+		// Handle response close/abort
+		req.on('close', () => {
+			if (stream && !stream.destroyed) {
+				stream.destroy()
+			}
+		})
+
+		// Pipe the stream to the response
+		stream.pipe(res)
 	} catch (error) {
 		// Log error with context
 		const duration = Date.now() - startTime
@@ -319,9 +308,8 @@ export async function GET(request: NextRequest) {
 		})
 
 		// Return generic error (don't expose internal details)
-		return NextResponse.json(
-			{ error: 'Failed to fetch image' },
-			{ status: 500 }
-		)
+		if (!res.headersSent) {
+			return res.status(500).json({ error: 'Failed to fetch image' })
+		}
 	}
 }
