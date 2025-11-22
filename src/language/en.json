@@ -20,6 +20,8 @@
 		"loggingIn": "Logging in...",
 		"register": "Register",
 		"forgotPassword": "Forgot password?",
-		"loginFailed": "Login failed. Please try again."
+		"loginFailed": "Login failed. Please try again.",
+		"showPassword": "Show password",
+		"hidePassword": "Hide password"
 	}
 }

@@ -135,7 +135,10 @@ const LoginForm = (): React.ReactElement => {
 									type='button'
 									onClick={() => setShowPassword(!showPassword)}
 									className='absolute right-3 top-1/2 -translate-y-1/2 text-[#8C8C8C] hover:text-[#48715B] transition-colors duration-200 focus:outline-none'
-									aria-label={showPassword ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'}
+									title={showPassword ? t('hidePassword') : t('showPassword')}
+									aria-label={
+										showPassword ? t('hidePassword') : t('showPassword')
+									}
 								>
 									{showPassword ? (
 										<svg
