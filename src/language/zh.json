@@ -21,6 +21,14 @@
 		"price": "价格",
 		"includes": "此门票包括：",
 		"buyTicket": "购买门票 !!",
+		"purchase": {
+			"title": "购买门票",
+			"loading": "正在加载支付...",
+			"creatingLink": "正在创建支付链接...",
+			"closePayment": "关闭支付",
+			"success": "门票创建成功！",
+			"error": "支付失败。请重试。"
+		},
 		"benefits": {
 			"benefit1": "福利 1",
 			"benefit2": "福利 2",

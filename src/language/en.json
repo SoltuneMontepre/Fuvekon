@@ -31,6 +31,15 @@
 		"price": "Price",
 		"includes": "This ticket includes:",
 		"buyTicket": "BUY TICKET !!",
+		"purchase": {
+			"title": "Purchase Ticket",
+			"loading": "Loading payment...",
+			"creatingLink": "Creating payment link...",
+			"success": "Ticket created successfully!",
+			"error": "Payment failed. Please try again.",
+			"paymentSuccess": "🎉 Payment completed successfully!",
+			"paymentCancelled": "❌ Payment was cancelled"
+		},
 		"benefits": {
 			"benefit1": "Benefit 1",
 			"benefit2": "Benefit 2",
@@ -42,6 +51,15 @@
 			"benefit8": "Benefit 8",
 			"benefit9": "Benefit 9",
 			"benefit10": "Benefit 10"
+		},
+		"status": {
+			"pending": "Pending",
+			"paid": "Paid",
+			"cancelled": "Cancelled",
+			"failed": "Failed",
+			"expired": "Expired",
+			"refunded": "Refunded",
+			"partial_refund": "Partial Refund"
 		}
 	}
 }

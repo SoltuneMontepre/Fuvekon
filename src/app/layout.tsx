@@ -7,6 +7,7 @@ import TanstackProvider from '@/config/Providers/TanstackProvider'
 
 import ThemeProvider from '@/config/Providers/ThemeProvider'
 import ThemePreload from '@/config/Providers/ThemePreload'
+import { Toaster } from 'react-hot-toast'
 
 import './globals.css'
 import Background from '@/components/landing/hero_section/Background'
@@ -44,6 +45,7 @@ export default async function RootLayout({
 			<body
 				className={`${inter.variable} ${montserrat.variable} ${geistMono.variable} antialiased bg-white dark:bg-dark-bg text-slate-900 dark:text-dark-text`}
 			>
+				
 				<ThemeProvider>
 					<TanstackProvider>
 						<NextIntlClientProvider locale={locale} messages={messages}>
@@ -52,6 +54,7 @@ export default async function RootLayout({
 							<div className='fixed w-dvw flex h-dvh top-0 mx-auto -z-10 overflow-hidden center-width-cap select-none'>
 								<Background />
 							</div>
+							<Toaster position='top-right' />
 						</NextIntlClientProvider>
 					</TanstackProvider>
 				</ThemeProvider>

@@ -1,6 +1,17 @@
 {
 	"common": {
-		"welcome": "Chào mừng bạn đến với Fuvekon"
+		"welcome": "Chào mừng bạn đến với Fuvekon",
+		"error": "Error",
+		"notFoundMessage": "Trang bạn đang tìm kiếm không tồn tại.",
+		"back": "Quay lại",
+		"home": "Trang chủ"
+	},
+	"nav": {
+		"home": "Trang chủ",
+		"about": "Giới thiệu",
+		"tickets": "Mua Vé",
+		"contributes": "Đóng góp",
+		"register": "Đăng ký"
 	},
 	"auth": {
 		"login": "Đăng nhập",
@@ -21,6 +32,15 @@
 		"price": "Giá",
 		"includes": "Vé này bao gồm:",
 		"buyTicket": "MUA VÉ !!",
+		"purchase": {
+			"title": "Mua vé",
+			"loading": "Đang tải thanh toán...",
+			"creatingLink": "Đang tạo link thanh toán...",
+			"success": "Tạo vé thành công!",
+			"error": "Thanh toán thất bại. Vui lòng thử lại.",
+			"paymentSuccess": "🎉 Thanh toán hoàn tất thành công!",
+			"paymentCancelled": "❌ Thanh toán đã bị hủy"
+		},
 		"benefits": {
 			"benefit1": "Tăng lương 1",
 			"benefit2": "Tăng lương 2",
@@ -32,6 +52,15 @@
 			"benefit8": "Tăng lương 8",
 			"benefit9": "Tăng lương 9",
 			"benefit10": "Tăng lương 10"
+		},
+		"status": {
+			"pending": "Đang chờ",
+			"paid": "Đã thanh toán",
+			"cancelled": "Đã hủy",
+			"failed": "Thất bại",
+			"expired": "Đã hết hạn",
+			"refunded": "Đã hoàn tiền",
+			"partial_refund": "Hoàn tiền một phần"
 		}
 	}
 }

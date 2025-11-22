@@ -15,7 +15,6 @@ interface TicketTierCardProps {
 
 const TicketTierCard: React.FC<TicketTierCardProps> = ({
 	tier,
-	showBuyButton = false,
 }) => {
 	const t = useTranslations('ticket')
 
@@ -136,19 +135,17 @@ const TicketTierCard: React.FC<TicketTierCardProps> = ({
 						</ul>
 					</div>
 
-					{/* Buy button - only for Tier 3 or if showBuyButton is true */}
-					{(tierNumber === 3 || showBuyButton) && (
-						<div className='mt-8'>
-							<Link
-								href={`/ticket/purchase/${tier.id}`}
-								className='block bg-[#e2eee2] rounded-[12px] shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)] py-4 px-8 text-center hover:opacity-90 transition-opacity'
-							>
-								<span className='josefin text-[32px] font-bold text-[#48715b]'>
-									{t('buyTicket')}
-								</span>
-							</Link>
-						</div>
-					)}
+					{/* Buy button - show for all tiers */}
+					<div className='mt-8'>
+						<Link
+							href={`/ticket/purchase/${tier.id}`}
+							className='block bg-[#e2eee2] rounded-[12px] shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)] py-4 px-8 text-center hover:opacity-90 transition-opacity'
+						>
+							<span className='josefin text-[32px] font-bold text-[#48715b]'>
+								{t('buyTicket')}
+							</span>
+						</Link>
+					</div>
 				</div>
 			</div>
 

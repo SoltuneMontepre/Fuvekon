@@ -8,7 +8,7 @@ import type { TicketTier } from '@/types/models/ticket/ticketTier'
 // Mock data - will be replaced with API call later
 const mockTicketTiers: TicketTier[] = [
 	{
-		id: '1',
+		id: '11111111-1111-1111-1111-111111111111',
 		ticketName: 'Tier 1',
 		description: 'Basic tier ticket',
 		price: 1000000,
@@ -18,7 +18,7 @@ const mockTicketTiers: TicketTier[] = [
 		bannerImage: '/images/ticket/tier1-banner.webp',
 	},
 	{
-		id: '2',
+		id: '22222222-2222-2222-2222-222222222222',
 		ticketName: 'Tier 2',
 		description: 'Standard tier ticket',
 		price: 5000000,
@@ -37,7 +37,7 @@ const mockTicketTiers: TicketTier[] = [
 		bannerImage: '/images/ticket/tier2-banner.webp',
 	},
 	{
-		id: '3',
+		id: '33333333-3333-3333-3333-333333333333',
 		ticketName: 'Tier 3',
 		description: 'Premium tier ticket',
 		price: 15000000,
