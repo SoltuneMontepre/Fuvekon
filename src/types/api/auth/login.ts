@@ -11,7 +11,7 @@ export type LoginResponse = ApiResponse<LoginData>
 // Request schema with Zod validation
 export const LoginRequestSchema = z.object({
 	email: z.email('Invalid email address'),
-	password: z.string().min(8, 'Password must be at least 8 characters'),
+	password: z.string(),
 })
 
 export type LoginRequest = z.infer<typeof LoginRequestSchema>
