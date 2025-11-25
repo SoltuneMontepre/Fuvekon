@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import React from 'react'
 
-const Background = (): React.ReactElement => {
+const BackFlowers = (): React.ReactElement => {
 	return (
 		<>
 			<img
@@ -28,4 +28,4 @@ const Background = (): React.ReactElement => {
 	)
 }
 
-export default Background
+export default BackFlowers

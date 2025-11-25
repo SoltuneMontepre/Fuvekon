@@ -1,7 +1,7 @@
 'use client'
 
 import { useQuery, useMutation } from '@tanstack/react-query'
-import axios from '@/common/axios'
+import { axiosGeneral as axios } from '@/common/axios'
 import type { MeResponse } from '@/types/api/auth/me'
 import type {
 	UpdateMeRequest,

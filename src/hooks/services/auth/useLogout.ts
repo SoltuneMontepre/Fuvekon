@@ -1,7 +1,7 @@
 'use client'
 
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import axios from '@/common/axios'
+import { axiosGeneral as axios } from '@/common/axios'
 import type { LogoutResponse } from '@/types/api/auth/logout'
 import { useAuthStore } from '@/stores/authStore'
 
@@ -15,12 +15,9 @@ export function useLogout() {
 			return data
 		},
 		onSuccess: data => {
-			// Remove account query cache completely after successful logout
 			queryClient.removeQueries({ queryKey: ['account'] })
-			// Clear auth store
 			clearAccount()
 			console.log('Logout successful:', data.message)
-			// Optionally redirect or update application state here
 		},
 		onError: (error: Error) => {
 			console.error('Logout failed:', error.message)

@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import axios from 'axios'
 import { usePresignUrl } from './usePresignUrl'
 import type { PresignRequest } from '@/types/api/s3/presign'
 
@@ -19,7 +20,7 @@ export interface UploadToS3Result {
 
 /**
  * Hook for uploading files to S3 using presigned URLs
- * 
+ *
  * @example
  * ```tsx
  * const { uploadFile, isUploading, error } = useUploadToS3({
@@ -28,7 +29,7 @@ export interface UploadToS3Result {
  *     // Save file info to DB
  *   }
  * })
- * 
+ *
  * const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
  *   const file = e.target.files?.[0]
  *   if (file) {
@@ -69,43 +70,18 @@ export function useUploadToS3(options?: UploadToS3Options): UploadToS3Result {
 			const { presignedUrl, fileKey, fileUrl } = presignResponse.data
 
 			// Step 2: Upload file directly to S3 using presigned URL
-			const xhr = new XMLHttpRequest()
-
-			// Track upload progress
-			xhr.upload.addEventListener('progress', event => {
-				if (event.lengthComputable) {
-					const percentComplete = (event.loaded / event.total) * 100
-					setProgress(percentComplete)
-					options?.onProgress?.(percentComplete)
-				}
-			})
-
-			// Wait for upload to complete
-			await new Promise<void>((resolve, reject) => {
-				xhr.addEventListener('load', () => {
-					if (xhr.status >= 200 && xhr.status < 300) {
-						resolve()
-					} else {
-						reject(
-							new Error(
-								`Upload failed with status ${xhr.status}`
-							)
-						)
+			await axios.put(presignedUrl, file, {
+				headers: {
+					'Content-Type': file.type,
+				},
+				onUploadProgress: progressEvent => {
+					if (progressEvent.total) {
+						const percentComplete =
+							(progressEvent.loaded / progressEvent.total) * 100
+						setProgress(percentComplete)
+						options?.onProgress?.(percentComplete)
 					}
-				})
-
-				xhr.addEventListener('error', () => {
-					reject(new Error('Upload failed'))
-				})
-
-				xhr.addEventListener('abort', () => {
-					reject(new Error('Upload aborted'))
-				})
-
-				// Start the upload
-				xhr.open('PUT', presignedUrl)
-				xhr.setRequestHeader('Content-Type', file.type)
-				xhr.send(file)
+				},
 			})
 
 			// Step 3: Call success callback
@@ -115,8 +91,7 @@ export function useUploadToS3(options?: UploadToS3Options): UploadToS3Result {
 			// This would be a separate API call to your backend
 			// await saveFileInfo({ fileKey, fileUrl, fileName: file.name, ... })
 		} catch (err) {
-			const error =
-				err instanceof Error ? err : new Error('Upload failed')
+			const error = err instanceof Error ? err : new Error('Upload failed')
 			setError(error)
 			options?.onError?.(error)
 			throw error
@@ -133,4 +108,3 @@ export function useUploadToS3(options?: UploadToS3Options): UploadToS3Result {
 		error,
 	}
 }
-
