@@ -3,6 +3,7 @@ import React from 'react'
 const GrainyBox = () => {
 	return (
 		<svg
+			className='pointer-events-none'
 			height='420'
 			width='400'
 			viewBox='0 0 756 869'

@@ -1,7 +1,7 @@
 'use client'
 
 import { useMutation } from '@tanstack/react-query'
-import axios from '@/common/axios'
+import { axiosGeneral as axios } from '@/common/axios'
 import type { LoginResponse, LoginRequest } from '@/types/api/auth/login'
 
 export function useLogin() {
@@ -11,9 +11,7 @@ export function useLogin() {
 			return data
 		},
 		onSuccess: data => {
-			// Cookie will be set automatically by the backend with httpOnly and secure flags
 			console.log('Login successful:', data.message)
-			// Optionally redirect or update application state here
 		},
 		onError: (error: Error) => {
 			console.error('Login failed:', error.message)

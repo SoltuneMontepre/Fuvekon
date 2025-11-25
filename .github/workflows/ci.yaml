@@ -19,6 +19,7 @@ jobs:
           node-version: "22.12"
 
       - name: Cache node modules
+        id: cache-deps
         uses: actions/cache@v4
         with:
           path: |
@@ -29,6 +30,7 @@ jobs:
             ${{ runner.os }}-node-
 
       - name: Install dependencies
+        if: steps.cache-deps.outputs.cache-hit != 'true'
         run: npm ci
 
       - name: Linting
