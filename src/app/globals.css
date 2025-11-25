@@ -45,7 +45,7 @@
 	}
 
 	.landing-bg {
-		@apply object-cover absolute;
+		@apply object-cover object-top absolute overflow-visible;
 	}
 
 	.cap-width {
