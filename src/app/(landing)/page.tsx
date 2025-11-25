@@ -8,7 +8,7 @@ const Background = React.lazy(() => import('@/components/ui/Background'))
 const LandingPage = (): React.JSX.Element => {
 	return (
 		<>
-			<Suspense>
+			<Suspense fallback={<Loading />}>
 				<Background mascot title />
 			</Suspense>
 		</>
