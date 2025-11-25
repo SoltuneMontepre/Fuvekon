@@ -1,8 +1,5 @@
 import { S3Client } from '@aws-sdk/client-s3'
 
-export * from './s3/fileKey'
-export * from './s3/url'
-
 /**
  * Converts an S3 URL to a proxy URL that can be used with Next.js Image optimization
  * @param s3Url - The full S3 URL (e.g., https://bucket.s3.region.amazonaws.com/key)
