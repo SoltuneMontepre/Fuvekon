@@ -1,7 +1,7 @@
 'use client'
 
 import BaseBackground from '@/components/landing/hero_section/BaseBackground'
-import ForegroundFoliage from '@/components/landing/hero_section/ForegroudFoliage'
+import ForegroundFoliage from '@/components/landing/hero_section/ForegroundFoliage'
 import ForegroundFlower from '@/components/landing/hero_section/ForegroundFlower'
 import FurtherMountain from '@/components/landing/hero_section/FurtherMountain'
 import LeftRockSection from '@/components/landing/hero_section/LeftRockSection'
