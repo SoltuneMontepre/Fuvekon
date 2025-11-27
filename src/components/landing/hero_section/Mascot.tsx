@@ -1,64 +1,16 @@
-'use client'
-
-import React, { useRef } from 'react'
-import { gsap } from 'gsap'
 import Image from 'next/image'
+import React from 'react'
 
-const Mascot = (): React.ReactElement => {
-	const ref = useRef<HTMLImageElement | null>(null)
-	const overlayRef = useRef<HTMLDivElement | null>(null)
-
-	const handleMouseEnter = () => {
-		if (!ref.current) return
-		gsap.to(ref.current, {
-			duration: 0.5,
-			scale: 1.05,
-			y: -10,
-			ease: 'power1.inOut',
-		})
-
-		gsap.to(overlayRef.current, {
-			duration: 0.5,
-			opacity: 0.6,
-			ease: 'power1.inOut',
-		})
-	}
-
-	const handleMouseLeave = () => {
-		if (!ref.current) return
-		gsap.to(ref.current, {
-			duration: 0.5,
-			scale: 1,
-			y: 0,
-			ease: 'power1.inOut',
-		})
-
-		gsap.to(overlayRef.current, {
-			duration: 0.5,
-			opacity: 0,
-			ease: 'power1.inOut',
-		})
-	}
-
+const Mascot = ({ className }: { className?: string }) => {
 	return (
-		<>
-			<div className='flex justify-center items-end w-dvw h-dvh'>
-				<Image
-					ref={ref}
-					className='landing-bg z-50 pointer-events-auto max-w-[70%] min-h-[80%] max-h-[85%] overflow-visible cursor-pointer'
-					src='/images/landing/bg_5.webp'
-					onMouseEnter={handleMouseEnter}
-					onMouseLeave={handleMouseLeave}
-					alt='lang'
-					width={800}
-					height={600}
-				/>
-				<div
-					ref={overlayRef}
-					className='w-full h-screen bg-gray-950 opacity-0 z-40 backdrop-blur-sm'
-				/>
-			</div>
-		</>
+		<Image
+			id='mascot'
+			className={`landing-bg ${className ?? ''}`}
+			src='/assets/mascot.png'
+			alt='mascot-image'
+			priority
+			fill
+		/>
 	)
 }
 
