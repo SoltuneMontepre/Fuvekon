@@ -4,7 +4,7 @@ import React from 'react'
 const ThemeTitle = ({ className }: { className?: string }) => {
 	return (
 		<Image
-			className={`landing-bg ${className}`}
+			className={`landing-bg ${className ?? ''}`}
 			src='/assets/theme-title.png'
 			alt='theme-title-image'
 			priority

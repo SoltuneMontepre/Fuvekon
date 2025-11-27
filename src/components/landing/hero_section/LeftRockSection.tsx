@@ -4,7 +4,7 @@ import React from 'react'
 const LeftRockSection = ({ className }: { className?: string }) => {
 	return (
 		<Image
-			className={`landing-bg ${className}`}
+			className={`landing-bg ${className ?? ''}`}
 			src='/assets/bg-rock-left.png'
 			alt='left-rock-background-image'
 			priority

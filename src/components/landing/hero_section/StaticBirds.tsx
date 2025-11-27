@@ -10,7 +10,7 @@ const StaticBirds = ({ className }: { className?: string }) => {
 			alt='Static Bird'
 			fill
 			priority
-			className={`landing-bg ${className}`}
+			className={`landing-bg ${className ?? ''}`}
 		/>
 	)
 }

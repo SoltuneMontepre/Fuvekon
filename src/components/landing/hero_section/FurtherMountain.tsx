@@ -4,7 +4,7 @@ import React from 'react'
 const FurtherMountain = ({ className }: { className?: string }) => {
 	return (
 		<Image
-			className={`landing-bg ${className}`}
+			className={`landing-bg ${className ?? ''}`}
 			src='/assets/bg-darkrock.png'
 			alt='further-mountain-background-image'
 			priority
