@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import { FORM_STYLES, INLINE_STYLES } from './RegisterForm.styles'
 import { PasswordToggleButton } from './PasswordToggleButton'
+import { FORM_STYLES, INLINE_STYLES } from './RegisterForm.styles'
 
 interface FloatingLabelInputProps {
 	id: string
@@ -40,9 +40,13 @@ export const FloatingLabelInput: React.FC<FloatingLabelInputProps> = ({
 				: 'password'
 			: type
 
-	const inputClasses = `${FORM_STYLES.input.base} ${error ? FORM_STYLES.input.error : FORM_STYLES.input.default} ${showPasswordToggle ? FORM_STYLES.input.withIcon : ''}`
+	const inputClasses = `${FORM_STYLES.input.base} ${
+		error ? FORM_STYLES.input.error : FORM_STYLES.input.default
+	} ${showPasswordToggle ? FORM_STYLES.input.withIcon : ''}`
 
-	const labelClasses = `${FORM_STYLES.label.base} ${value ? FORM_STYLES.label.floating : FORM_STYLES.label.focused}`
+	const labelClasses = `${FORM_STYLES.label.base} ${
+		value ? FORM_STYLES.label.floating : FORM_STYLES.label.focused
+	}`
 
 	return (
 		<div className={FORM_STYLES.container.inputWrapper}>
@@ -58,7 +62,11 @@ export const FloatingLabelInput: React.FC<FloatingLabelInputProps> = ({
 				aria-invalid={!!error}
 				aria-describedby={error ? `${id}-error` : undefined}
 			/>
-			<label htmlFor={id} className={labelClasses} style={INLINE_STYLES.labelTransform}>
+			<label
+				htmlFor={id}
+				className={labelClasses}
+				style={INLINE_STYLES.labelTransform}
+			>
 				{label}
 			</label>
 			{showPasswordToggle && (
@@ -68,7 +76,11 @@ export const FloatingLabelInput: React.FC<FloatingLabelInputProps> = ({
 				/>
 			)}
 			{error && (
-				<p id={`${id}-error`} className={FORM_STYLES.error.fieldError} role='alert'>
+				<p
+					id={`${id}-error`}
+					className={FORM_STYLES.error.fieldError}
+					role='alert'
+				>
 					{error}
 				</p>
 			)}

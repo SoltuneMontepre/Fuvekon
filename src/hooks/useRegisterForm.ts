@@ -1,8 +1,14 @@
 import { useState, useCallback } from 'react'
-import { RegisterFormData, FormErrors, RegisterRequest } from '@/types/auth/register'
+import {
+	RegisterFormData,
+	FormErrors,
+	RegisterRequest,
+	RegisterResponse,
+} from '@/types/auth/register'
 import { validateRegisterForm } from '@/utils/validation/registerValidation'
 import { sanitizeFormData } from '@/utils/sanitization'
 import { ERROR_MESSAGES } from '@/utils/validation/registerValidation.constants'
+import { axiosAuth } from '@/common/axios'
 
 /**
  * Rate limiting state
@@ -70,7 +76,7 @@ export const useRegisterForm = () => {
 				})
 			}
 		},
-		[errors],
+		[errors]
 	)
 
 	/**
@@ -112,6 +118,7 @@ export const useRegisterForm = () => {
 	const handleSubmit = useCallback(
 		async (e: React.FormEvent) => {
 			e.preventDefault()
+			console.log('Form submitted - handleSubmit called')
 
 			// Check rate limiting
 			const rateLimitCheck = checkRateLimit()
@@ -143,24 +150,24 @@ export const useRegisterForm = () => {
 				// CRITICAL: Sanitize all inputs before submission
 				const sanitizedData = sanitizeFormData(formData)
 
-				// Prepare registration request (exclude confirmPassword)
-				const { confirmPassword, ...registrationData } = sanitizedData as RegisterFormData
-				const requestData: RegisterRequest = registrationData
+				// Prepare registration request
+				const requestData: RegisterRequest = sanitizedData as RegisterFormData
 
-				// TODO: Replace with actual API call
-				// Example:
-				// const response = await fetch('/api/auth/register', {
-				//   method: 'POST',
-				//   headers: {
-				//     'Content-Type': 'application/json',
-				//     'X-CSRF-Token': getCsrfToken(), // CSRF protection
-				//   },
-				//   body: JSON.stringify(requestData),
-				//   credentials: 'include',
-				// })
+				// Call registration API
+				console.log('Making API request to:', '/register', requestData)
+				const response = await axiosAuth.post<RegisterResponse>(
+					'/register',
+					requestData
+				)
 
-				// Simulate API call
-				await new Promise(resolve => setTimeout(resolve, 1000))
+				// Check response status
+				if (!response.data.isSuccess) {
+					setErrors({
+						general:
+							response.data.message || ERROR_MESSAGES.REGISTRATION_FAILED,
+					})
+					return
+				}
 
 				// SUCCESS: Registration successful
 				setIsSuccess(true)
@@ -173,26 +180,34 @@ export const useRegisterForm = () => {
 
 				// Optional: Redirect to login or dashboard
 				// router.push('/login')
-			} catch (error) {
-				// Handle different error types
-				if (error instanceof TypeError && error.message.includes('fetch')) {
+			} catch (error: any) {
+				// Handle axios errors
+				if (error.response) {
+					// Server responded with error status
+					const errorMessage =
+						error.response.data?.message || ERROR_MESSAGES.REGISTRATION_FAILED
+					setErrors({ general: errorMessage })
+				} else if (error.request) {
+					// Request made but no response received
 					setErrors({ general: ERROR_MESSAGES.NETWORK_ERROR })
-				} else if (error instanceof Error) {
-					setErrors({ general: error.message || ERROR_MESSAGES.REGISTRATION_FAILED })
 				} else {
-					setErrors({ general: ERROR_MESSAGES.REGISTRATION_FAILED })
+					// Something else happened
+					setErrors({
+						general: error.message || ERROR_MESSAGES.REGISTRATION_FAILED,
+					})
 				}
 
 				// Log error for monitoring (but NOT user data)
 				console.error('Registration error:', {
 					timestamp: new Date().toISOString(),
-					errorType: error instanceof Error ? error.constructor.name : typeof error,
+					status: error.response?.status,
+					errorType: error.constructor?.name || typeof error,
 				})
 			} finally {
 				setIsSubmitting(false)
 			}
 		},
-		[formData, resetForm],
+		[formData, resetForm]
 	)
 
 	return {

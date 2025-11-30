@@ -5,8 +5,8 @@ import { lockScroll } from '@/utils/scrollLock'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRegisterForm } from '@/hooks/useRegisterForm'
-import { FloatingLabelInput } from './RegisterForm/FloatingLabelInput'
-import { FORM_STYLES } from './RegisterForm/RegisterForm.styles'
+import { FORM_STYLES } from './RegisterForm.styles'
+import { FloatingLabelInput } from './FloatingLabelInput'
 
 const RegisterForm = (): React.ReactElement => {
 	const {
@@ -36,7 +36,7 @@ const RegisterForm = (): React.ReactElement => {
 						src='/images/landing/tranh full oc.webp'
 						alt='Fantasy Character'
 						fill
-						className='object-cover object-[50%_0%] scale-y-150 scale-x-150  translate-x-[-400px] translate-y-[170px]'
+						className='object-cover object-[50%_15%] scale-y-150 scale-x-150 translate-x-[-450px] translate-y-[150px]'
 						priority
 					/>
 				</div>
@@ -158,7 +158,9 @@ const RegisterForm = (): React.ReactElement => {
 							<button
 								type='submit'
 								disabled={isSubmitting}
-								className={`${FORM_STYLES.button.primary} ${isSubmitting ? FORM_STYLES.button.disabled : ''}`}
+								className={`${FORM_STYLES.button.primary} ${
+									isSubmitting ? FORM_STYLES.button.disabled : ''
+								}`}
 							>
 								{isSubmitting ? 'Đang đăng ký...' : 'Đăng ký'}
 							</button>

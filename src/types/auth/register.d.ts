@@ -26,7 +26,7 @@ export interface FormErrors {
 }
 
 /**
- * Registration API request (without confirmPassword)
+ * Registration API request
  */
 export interface RegisterRequest {
 	fullName: string
@@ -35,6 +35,7 @@ export interface RegisterRequest {
 	country: string
 	idCard: string
 	password: string
+	confirmPassword: string
 }
 
 /**

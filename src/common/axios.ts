@@ -1,11 +1,12 @@
 import a from 'axios'
 import { useAuthStore } from '@/stores/authStore'
 
-const baseURL =
-	`${process.env.NEXT_PUBLIC_API_URL}/api` || 'http://localhost:8085/api'
+const baseURL = process.env.NEXT_PUBLIC_API_URL
+	? process.env.NEXT_PUBLIC_API_URL
+	: 'http://localhost:8085'
 
 const axiosGeneral = a.create({
-	baseURL: `${baseURL}/general`,
+	baseURL: `${baseURL}/api/general`,
 	headers: {
 		'Content-Type': 'application/json',
 	},
@@ -14,7 +15,16 @@ const axiosGeneral = a.create({
 })
 
 const axiosTicket = a.create({
-	baseURL: `${baseURL}/ticket`,
+	baseURL: `${baseURL}/api/ticket`,
+	headers: {
+		'Content-Type': 'application/json',
+	},
+	timeout: 10000,
+	withCredentials: true,
+})
+
+const axiosAuth = a.create({
+	baseURL: `${baseURL}/auth`,
 	headers: {
 		'Content-Type': 'application/json',
 	},
@@ -44,4 +54,15 @@ axiosTicket.interceptors.response.use(
 	}
 )
 
-export { axiosGeneral, axiosTicket }
+axiosAuth.interceptors.response.use(
+	response => response,
+	error => {
+		if (error.response?.status === 403) {
+			const { clearAccount } = useAuthStore.getState()
+			clearAccount()
+		}
+		return Promise.reject(error)
+	}
+)
+
+export { axiosGeneral, axiosTicket, axiosAuth }
