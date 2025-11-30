@@ -180,29 +180,36 @@ export const useRegisterForm = () => {
 
 				// Optional: Redirect to login or dashboard
 				// router.push('/login')
-			} catch (error: any) {
+			} catch (error: unknown) {
 				// Handle axios errors
-				if (error.response) {
+				if (error && typeof error === 'object' && 'response' in error) {
+					const axiosError = error as {
+						response?: { data?: { message?: string }; status?: number }
+						request?: unknown
+						message?: string
+						constructor?: { name?: string }
+					}
 					// Server responded with error status
 					const errorMessage =
-						error.response.data?.message || ERROR_MESSAGES.REGISTRATION_FAILED
+						axiosError.response?.data?.message ||
+						ERROR_MESSAGES.REGISTRATION_FAILED
 					setErrors({ general: errorMessage })
-				} else if (error.request) {
+
+					// Log error for monitoring (but NOT user data)
+					console.error('Registration error:', {
+						timestamp: new Date().toISOString(),
+						status: axiosError.response?.status,
+						errorType: axiosError.constructor?.name || typeof error,
+					})
+				} else if (error && typeof error === 'object' && 'request' in error) {
 					// Request made but no response received
 					setErrors({ general: ERROR_MESSAGES.NETWORK_ERROR })
-				} else {
+				} else if (error instanceof Error) {
 					// Something else happened
-					setErrors({
-						general: error.message || ERROR_MESSAGES.REGISTRATION_FAILED,
-					})
+					setErrors({ general: error.message })
+				} else {
+					setErrors({ general: ERROR_MESSAGES.REGISTRATION_FAILED })
 				}
-
-				// Log error for monitoring (but NOT user data)
-				console.error('Registration error:', {
-					timestamp: new Date().toISOString(),
-					status: error.response?.status,
-					errorType: error.constructor?.name || typeof error,
-				})
 			} finally {
 				setIsSubmitting(false)
 			}

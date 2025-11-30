@@ -1,6 +1,6 @@
 /**
  * Input sanitization utilities to prevent XSS attacks
- * 
+ *
  * CRITICAL SECURITY: Always sanitize user input before processing
  */
 
@@ -25,14 +25,19 @@ export const sanitizeInput = (input: string): string => {
  * Sanitize email - remove potential XSS vectors
  */
 export const sanitizeEmail = (email: string): string => {
-	return email.trim().toLowerCase().replace(/[^\w@.-]/g, '')
+	return email
+		.trim()
+		.toLowerCase()
+		.replace(/[^\w@.-]/g, '')
 }
 
 /**
  * Sanitize name fields - allow letters, spaces, and common name characters
  */
 export const sanitizeName = (name: string): string => {
-	return name.trim().replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+	return name
+		.trim()
+		.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
 }
 
 /**
@@ -52,7 +57,9 @@ export const stripHtmlTags = (input: string): string => {
 /**
  * Sanitize all form data before submission
  */
-export const sanitizeFormData = <T extends Record<string, any>>(data: T): T => {
+export const sanitizeFormData = <T extends Record<string, unknown>>(
+	data: T
+): T => {
 	const sanitized = {} as T
 
 	for (const [key, value] of Object.entries(data)) {
@@ -68,11 +75,11 @@ export const sanitizeFormData = <T extends Record<string, any>>(data: T): T => {
 
 /**
  * NOTE: For production, install and use DOMPurify:
- * 
+ *
  * npm install isomorphic-dompurify
- * 
+ *
  * import DOMPurify from 'isomorphic-dompurify'
- * 
+ *
  * export const sanitizeInput = (input: string): string => {
  *   return DOMPurify.sanitize(input.trim(), { ALLOWED_TAGS: [] })
  * }
