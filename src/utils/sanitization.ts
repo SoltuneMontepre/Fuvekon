@@ -59,14 +59,14 @@ export const stripHtmlTags = (input: string): string => {
  */
 export const sanitizeFormData = <T extends Record<string, unknown>>(
 	data: T
-): T => {
-	const sanitized = {} as T
+): Record<string, string> => {
+	const sanitized: Record<string, string> = {}
 
 	for (const [key, value] of Object.entries(data)) {
 		if (typeof value === 'string') {
-			sanitized[key as keyof T] = sanitizeInput(value) as T[keyof T]
+			sanitized[key] = sanitizeInput(value)
 		} else {
-			sanitized[key as keyof T] = value
+			sanitized[key] = String(value)
 		}
 	}
 

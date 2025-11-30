@@ -9,6 +9,7 @@ export interface RegisterFormData {
 	idCard: string
 	password: string
 	confirmPassword: string
+	[key: string]: string
 }
 
 /**
@@ -23,6 +24,7 @@ export interface FormErrors {
 	password?: string
 	confirmPassword?: string
 	general?: string
+	[key: string]: string | undefined
 }
 
 /**

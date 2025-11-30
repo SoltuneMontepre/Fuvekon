@@ -151,10 +151,8 @@ export const useRegisterForm = () => {
 				const sanitizedData = sanitizeFormData(formData)
 
 				// Prepare registration request
-				const requestData: RegisterRequest = sanitizedData as RegisterFormData
-
-				// Call registration API
-				console.log('Making API request to:', '/register', requestData)
+				const requestData: RegisterRequest =
+					sanitizedData as unknown as RegisterFormData // Call registration API
 				const response = await axiosAuth.post<RegisterResponse>(
 					'/register',
 					requestData
