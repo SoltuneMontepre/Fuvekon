@@ -60,7 +60,7 @@ export default async function handler(
 
 	try {
 		const BUCKET_NAME = process.env.AWS_S3_BUCKET_NAME
-		const AWS_REGION = process.env.AWS_REGION
+		const NLF_AWS_REGION = process.env.NLF_AWS_REGION
 
 		const configValidation = validateAwsConfig()
 		if (!configValidation.isValid) {
@@ -113,7 +113,7 @@ export default async function handler(
 			expiresIn,
 		})
 
-		const fileUrl = generateS3PublicUrl(BUCKET_NAME!, AWS_REGION!, fileKey)
+		const fileUrl = generateS3PublicUrl(BUCKET_NAME!, NLF_AWS_REGION!, fileKey)
 
 		return res.status(200).json({
 			isSuccess: true,

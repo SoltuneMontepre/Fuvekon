@@ -1,8 +1,5 @@
 import { S3Client } from '@aws-sdk/client-s3'
 
-export * from './s3/fileKey'
-export * from './s3/url'
-
 /**
  * Converts an S3 URL to a proxy URL that can be used with Next.js Image optimization
  * @param s3Url - The full S3 URL (e.g., https://bucket.s3.region.amazonaws.com/key)
@@ -46,15 +43,15 @@ export function isS3Url(url: string): boolean {
 }
 
 export function getS3Client() {
-	const AWS_REGION = process.env.AWS_REGION
-	const AWS_ACCESS_KEY_ID = process.env.AWS_ACCESS_KEY_ID
-	const AWS_SECRET_ACCESS_KEY = process.env.AWS_SECRET_ACCESS_KEY
+	const NLF_AWS_REGION = process.env.NLF_AWS_REGION
+	const NLF_AWS_ACCESS_KEY_ID = process.env.NLF_AWS_ACCESS_KEY_ID
+	const NLF_AWS_SECRET_ACCESS_KEY = process.env.NLF_AWS_SECRET_ACCESS_KEY
 
 	return new S3Client({
-		region: AWS_REGION!,
+		region: NLF_AWS_REGION!,
 		credentials: {
-			accessKeyId: AWS_ACCESS_KEY_ID!,
-			secretAccessKey: AWS_SECRET_ACCESS_KEY!,
+			accessKeyId: NLF_AWS_ACCESS_KEY_ID!,
+			secretAccessKey: NLF_AWS_SECRET_ACCESS_KEY!,
 		},
 	})
 }
