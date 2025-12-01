@@ -5,7 +5,7 @@ const baseURL =
 	`${process.env.NEXT_PUBLIC_API_URL}/api` || 'http://localhost:8085/api'
 
 const axiosGeneral = a.create({
-	baseURL: `${baseURL}/general`,
+	baseURL: `${baseURL}/general/v1`,
 	headers: {
 		'Content-Type': 'application/json',
 	},
@@ -14,7 +14,7 @@ const axiosGeneral = a.create({
 })
 
 const axiosTicket = a.create({
-	baseURL: `${baseURL}/ticket`,
+	baseURL: `${baseURL}/ticket/v1`,
 	headers: {
 		'Content-Type': 'application/json',
 	},
@@ -44,4 +44,9 @@ axiosTicket.interceptors.response.use(
 	}
 )
 
-export { axiosGeneral, axiosTicket }
+const axios = {
+	general: axiosGeneral,
+	ticket: axiosTicket,
+}
+
+export default axios

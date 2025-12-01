@@ -1,12 +1,27 @@
+#!/usr/bin/env bash
+
+# If Git (or Husky) runs hooks using sh (eg. 'sh .husky/commit-msg'),
+# the shebang is ignored and the script may be executed by a shell
+# that doesn't support some bash features (eg. `set -o pipefail`).
+# Re-exec the script using bash when not already running in bash.
+if [ -z "${BASH_VERSION:-}" ]; then
+  exec /usr/bin/env bash "$0" "$@"
+fi
+
+set -euo pipefail
+
 commit_msg=$(cat "$1")
 
+# banned words that are too generic for commit messages
 banned_words=("things" "stuff" "changes" "update" "fix" "test" "wip")
 
 commit_regex="^(feat|fix|chore|docs|style|refactor|test|perf|build|ci)(\(.+\))?: .+|^Merge.*|^Revert.*"
-FAIL_BADGE=$'\u001B[30;41m'  
-INFO='\033[97m'           
-RESET='\033[0m'
-SUCCESS_BADGE=$'\u001B[30;42m'
+
+# Use portable ANSI escape sequences with bash ANSI-C quoting
+FAIL_BADGE=$'\e[30;41m'
+INFO=$'\e[97m'
+RESET=$'\e[0m'
+SUCCESS_BADGE=$'\e[30;42m'
 
 if ! echo "$commit_msg" | grep -Eq "$commit_regex"; then
   printf "\n%b\n" "${FAIL_BADGE} FAILED ${RESET} Commit message does not match the required pattern:"
