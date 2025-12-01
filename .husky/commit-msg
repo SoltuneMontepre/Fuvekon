@@ -8,7 +8,7 @@ if [ -z "${BASH_VERSION:-}" ]; then
   exec /usr/bin/env bash "$0" "$@"
 fi
 
-set -euo pipefail
+set -eu
 
 commit_msg=$(cat "$1")
 
@@ -17,11 +17,11 @@ banned_words=("things" "stuff" "changes" "update" "fix" "test" "wip")
 
 commit_regex="^(feat|fix|chore|docs|style|refactor|test|perf|build|ci)(\(.+\))?: .+|^Merge.*|^Revert.*"
 
-# Use portable ANSI escape sequences with bash ANSI-C quoting
-FAIL_BADGE=$'\e[30;41m'
-INFO=$'\e[97m'
-RESET=$'\e[0m'
-SUCCESS_BADGE=$'\e[30;42m'
+# Use printf with octal escape sequences for maximum cross-platform compatibility
+FAIL_BADGE=$(printf '\033[30;41m')
+INFO=$(printf '\033[97m')
+RESET=$(printf '\033[0m')
+SUCCESS_BADGE=$(printf '\033[30;42m')
 
 if ! echo "$commit_msg" | grep -Eq "$commit_regex"; then
   printf "\n%b\n" "${FAIL_BADGE} FAILED ${RESET} Commit message does not match the required pattern:"
