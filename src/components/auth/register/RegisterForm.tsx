@@ -94,25 +94,19 @@ const RegisterForm = (): React.ReactElement => {
 		lastAttemptTime = Date.now()
 
 		try {
-			// CRITICAL: Sanitize all inputs before submission
 			const sanitizedData = sanitizeFormData(data) as Record<
 				keyof RegisterFormData,
 				string
 			>
 
 			// Prepare registration request (remove confirmPassword)
-			const mergedData = {
-				...data,
-				...sanitizedData,
-			} as RegisterFormData
-
 			const requestData: RegisterRequest = {
-				fullName: mergedData.fullName,
-				nickname: mergedData.nickname,
-				email: mergedData.email,
-				country: mergedData.country,
-				idCard: mergedData.idCard,
-				password: mergedData.password,
+				fullName: sanitizedData.fullName,
+				nickname: sanitizedData.nickname,
+				email: sanitizedData.email,
+				country: sanitizedData.country,
+				idCard: sanitizedData.idCard,
+				password: sanitizedData.password,
 			}
 
 			const response = await axiosAuth.post<RegisterResponse>(
