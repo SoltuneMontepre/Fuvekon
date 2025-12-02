@@ -10,151 +10,92 @@ import Moon from '@/components/landing/hero_section/Moon'
 import RightRockSection from '@/components/landing/hero_section/RightRockSection'
 import StaticBirds from '@/components/landing/hero_section/StaticBirds'
 import ThemeTitle from '@/components/landing/hero_section/ThemeTitle'
-import React, { useRef } from 'react'
-import gsap from '@/common/gsap'
-import { useGSAP } from '@gsap/react'
+import { useLandingPageAnimation } from '@/hooks/animation/useLandingPageAnimation'
+import React from 'react'
 
 interface BackgroundProps {
 	mascot?: boolean
 	title?: boolean
+	animated?: boolean
 }
 
-const Background = ({ mascot = false, title = false }: BackgroundProps) => {
-	const containerRef = useRef<HTMLDivElement>(null)
-	const backgroundLayerRef = useRef<HTMLDivElement>(null)
-	const middleLayerRef = useRef<HTMLDivElement>(null)
-	const foregroundLayerRef = useRef<HTMLDivElement>(null)
-
-	useGSAP(
-		() => {
-			// Set perspective for 3D effect
-			gsap.set(containerRef.current, {
-				perspective: 1000,
-				transformStyle: 'preserve-3d',
-			})
-
-			// Set initial 3D properties for layers
-			gsap.set(
-				[
-					backgroundLayerRef.current,
-					middleLayerRef.current,
-					foregroundLayerRef.current,
-				],
-				{
-					transformStyle: 'preserve-3d',
-				}
-			)
-
-			// Create optimized quickTo functions for smooth parallax
-			// Background layer - slowest and most subtle
-			const bgRotateX = gsap.quickTo(backgroundLayerRef.current, 'rotationX', {
-				duration: 0.8,
-				ease: 'power2.out',
-			})
-			const bgRotateY = gsap.quickTo(backgroundLayerRef.current, 'rotationY', {
-				duration: 0.8,
-				ease: 'power2.out',
-			})
-
-			// Middle layer - medium speed and intensity
-			const midRotateX = gsap.quickTo(middleLayerRef.current, 'rotationX', {
-				duration: 0.6,
-				ease: 'power2.out',
-			})
-			const midRotateY = gsap.quickTo(middleLayerRef.current, 'rotationY', {
-				duration: 0.6,
-				ease: 'power2.out',
-			})
-
-			// Foreground layer - fastest and most pronounced
-			const fgRotateX = gsap.quickTo(foregroundLayerRef.current, 'rotationX', {
-				duration: 0.4,
-				ease: 'power2.out',
-			})
-			const fgRotateY = gsap.quickTo(foregroundLayerRef.current, 'rotationY', {
-				duration: 0.4,
-				ease: 'power2.out',
-			})
-
-			// Mouse move handler
-			const handleMouseMove = (e: MouseEvent) => {
-				if (!containerRef.current) return
-
-				const rect = containerRef.current.getBoundingClientRect()
-				const centerX = rect.width / 2
-				const centerY = rect.height / 2
-
-				// Calculate mouse position relative to center (-1 to 1)
-				const x = (e.clientX - rect.left - centerX) / centerX
-				const y = (e.clientY - rect.top - centerY) / centerY
-
-				// Apply different rotation intensities for strong depth effect
-				// Background layer - minimal movement (furthest, 2° max rotation)
-				bgRotateY(x * 2)
-				bgRotateX(-y * 2)
-
-				// Middle layer - moderate movement (10° max rotation)
-				midRotateY(x * 10)
-				midRotateX(-y * 10)
-
-				// Foreground layer - dramatic movement (closest, 20° max rotation)
-				fgRotateY(x * 20)
-				fgRotateX(-y * 20)
-			}
-
-			// Mouse leave handler to reset positions
-			const handleMouseLeave = () => {
-				bgRotateX(0)
-				bgRotateY(0)
-				midRotateX(0)
-				midRotateY(0)
-				fgRotateX(0)
-				fgRotateY(0)
-			}
-
-			// Add event listeners
-			const container = containerRef.current
-			container?.addEventListener('mousemove', handleMouseMove)
-			container?.addEventListener('mouseleave', handleMouseLeave)
-
-			// Cleanup function
-			return () => {
-				container?.removeEventListener('mousemove', handleMouseMove)
-				container?.removeEventListener('mouseleave', handleMouseLeave)
-			}
-		},
-		{ scope: containerRef }
-	)
+const Background = ({
+	mascot = false,
+	title = false,
+	animated = false,
+}: BackgroundProps) => {
+	const {
+		containerRef,
+		backgroundLayerRef,
+		furtherMountainRef,
+		leftRockRef,
+		rightRockRef,
+		middleLayerRef,
+		foregroundFlowerRef,
+		foregroundFoliageRef,
+	} = useLandingPageAnimation(animated)
 
 	return (
 		<div
 			ref={containerRef}
-			className='fixed inset-0 h-dvh w-dvw flex items-center justify-center select-none'
+			className='fixed inset-0 h-dvh w-dvw flex items-center justify-center select-none overflow-hidden'
 		>
-			<div className='relative w-full h-full max-w-[100vw] max-h-[100vh] overflow-hidden'>
-				<div className='absolute inset-0 flex items-center justify-center'>
-					<div className='relative w-full h-full scale-[min(100vw/1920,100vh/1080)] origin-center'>
-						{/* Background Layer */}
-						<div ref={backgroundLayerRef} className='absolute inset-0'>
+			<div className='relative w-full h-full'>
+				<div className='absolute inset-0 flex items-center justify-center overflow-visible'>
+					<div className='relative w-full h-full overflow-visible'>
+						{/* Background Layer - Sky and Base */}
+						<div
+							ref={backgroundLayerRef}
+							className='absolute inset-0 overflow-visible'
+						>
 							<BaseBackground />
-							<Moon className='-translate-x-1/7 -translate-y-30' />
-							<FurtherMountain className='translate-x-10 -translate-y-30' />
-							<LeftRockSection className='left-0 top-0' />
-							<RightRockSection />
+							<Moon className='-translate-x-1/7 -translate-y-30 overflow-visible' />
 						</div>
-
-						{/* Middle Layer */}
-						<div ref={middleLayerRef} className='absolute inset-0'>
-							<StaticBirds className='scale-35 -translate-y-1/3  top-0 overflow-visible max-w-1/2 translate-x-[70%]' />
-							{mascot && <Mascot className='scale-70' />}
+						{/* Further Mountain Layer */}
+						<div
+							ref={furtherMountainRef}
+							className='absolute inset-0 overflow-visible'
+						>
+							<FurtherMountain className='translate-x-10 -translate-y-30 overflow-visible' />
 						</div>
-
-						{/* Foreground Layer */}
-						<div ref={foregroundLayerRef} className='absolute inset-0'>
-							<ForegroundFlower />
-							<ForegroundFoliage className='object-[70%]' />
+						{/* Left Rock Layer */}
+						<div
+							ref={leftRockRef}
+							className='absolute inset-0 overflow-visible'
+						>
+							<LeftRockSection className='left-0 top-0 overflow-visible' />
 						</div>
-
+						{/* Right Rock Layer */}
+						<div
+							ref={rightRockRef}
+							className='absolute inset-0 overflow-visible'
+						>
+							<RightRockSection className='overflow-visible' />
+						</div>
+						{/* Middle Layer - Characters */}
+						<div
+							ref={middleLayerRef}
+							className='absolute inset-0 overflow-visible'
+						>
+							<StaticBirds className='scale-[0.5] -translate-y-[30%] -translate-x-[3%] z-0 overflow-visible' />
+							{mascot && (
+								<Mascot className='scale-[0.7] overflow-visible drop-shadow-[0_25px_20px_rgba(0,0,0,0.4)] [filter:drop-shadow(0_25px_35px_rgba(0,0,0,0.4))_drop-shadow(0_10px_15px_rgba(0,0,0,0.25))]' />
+							)}
+						</div>
+						{/* Foreground Flower Layer */}
+						<div
+							ref={foregroundFlowerRef}
+							className='absolute inset-0 overflow-visible'
+						>
+							<ForegroundFlower className='overflow-visible scale-[1.13]' />
+						</div>
+						{/* Foreground Foliage Layer */}
+						<div
+							ref={foregroundFoliageRef}
+							className='absolute inset-0 overflow-visible'
+						>
+							<ForegroundFoliage className='object-[70%] overflow-visible' />
+						</div>{' '}
 						{title && (
 							<ThemeTitle className='absolute left-1/2 bottom-[10%] -translate-x-1/2 md:w-2xl max-w-[90vw] min-w-[220px] h-auto' />
 						)}
