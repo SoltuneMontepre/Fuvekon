@@ -6,7 +6,7 @@ const baseURL = process.env.NEXT_PUBLIC_API_URL
 	: 'http://localhost:8085'
 
 const axiosGeneral = a.create({
-	baseURL: `${baseURL}/api/general`,
+	baseURL: `${baseURL}/general/v1`,
 	headers: {
 		'Content-Type': 'application/json',
 	},
@@ -15,16 +15,7 @@ const axiosGeneral = a.create({
 })
 
 const axiosTicket = a.create({
-	baseURL: `${baseURL}/api/ticket`,
-	headers: {
-		'Content-Type': 'application/json',
-	},
-	timeout: 10000,
-	withCredentials: true,
-})
-
-const axiosAuth = a.create({
-	baseURL: `${baseURL}/auth`,
+	baseURL: `${baseURL}/ticket/v1`,
 	headers: {
 		'Content-Type': 'application/json',
 	},
@@ -54,15 +45,9 @@ axiosTicket.interceptors.response.use(
 	}
 )
 
-axiosAuth.interceptors.response.use(
-	response => response,
-	error => {
-		if (error.response?.status === 403) {
-			const { clearAccount } = useAuthStore.getState()
-			clearAccount()
-		}
-		return Promise.reject(error)
-	}
-)
+const axios = {
+	general: axiosGeneral,
+	ticket: axiosTicket,
+}
 
-export { axiosGeneral, axiosTicket, axiosAuth }
+export default axios
