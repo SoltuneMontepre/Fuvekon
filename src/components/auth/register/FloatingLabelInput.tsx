@@ -1,37 +1,49 @@
 import React, { useState } from 'react'
+import { useController, type Control, type FieldPath, type FieldValues } from 'react-hook-form'
 import { PasswordToggleButton } from './PasswordToggleButton'
 import { FORM_STYLES, INLINE_STYLES } from './RegisterForm.styles'
 
-interface FloatingLabelInputProps {
+interface FloatingLabelInputProps<
+	TFieldValues extends FieldValues = FieldValues,
+	TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>
+> {
 	id: string
+	name: TName
+	control: Control<TFieldValues>
 	type: 'text' | 'email' | 'password'
-	value: string
-	onChange: (value: string) => void
 	label: string
 	placeholder: string
 	required?: boolean
-	error?: string
 	showPasswordToggle?: boolean
-	onBlur?: () => void
 }
 
 /**
- * Reusable floating label input component
+ * Reusable floating label input component with react-hook-form integration
  * Eliminates 400+ lines of duplication across form fields
  */
-export const FloatingLabelInput: React.FC<FloatingLabelInputProps> = ({
+export const FloatingLabelInput = <
+	TFieldValues extends FieldValues = FieldValues,
+	TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>
+>({
 	id,
+	name,
+	control,
 	type,
-	value,
-	onChange,
 	label,
 	placeholder,
 	required = false,
-	error,
 	showPasswordToggle = false,
-	onBlur,
-}) => {
+}: FloatingLabelInputProps<TFieldValues, TName>) => {
 	const [showPassword, setShowPassword] = useState(false)
+
+	const {
+		field,
+		fieldState: { error },
+	} = useController({
+		name,
+		control,
+		rules: { required },
+	})
 
 	const inputType =
 		showPasswordToggle && type === 'password'
@@ -45,7 +57,7 @@ export const FloatingLabelInput: React.FC<FloatingLabelInputProps> = ({
 	} ${showPasswordToggle ? FORM_STYLES.input.withIcon : ''}`
 
 	const labelClasses = `${FORM_STYLES.label.base} ${
-		value ? FORM_STYLES.label.floating : FORM_STYLES.label.focused
+		field.value ? FORM_STYLES.label.floating : FORM_STYLES.label.focused
 	}`
 
 	return (
@@ -53,9 +65,7 @@ export const FloatingLabelInput: React.FC<FloatingLabelInputProps> = ({
 			<input
 				id={id}
 				type={inputType}
-				value={value}
-				onChange={e => onChange(e.target.value)}
-				onBlur={onBlur}
+				{...field}
 				className={inputClasses}
 				placeholder={placeholder}
 				required={required}
@@ -81,7 +91,7 @@ export const FloatingLabelInput: React.FC<FloatingLabelInputProps> = ({
 					className={FORM_STYLES.error.fieldError}
 					role='alert'
 				>
-					{error}
+					{error.message}
 				</p>
 			)}
 		</div>
