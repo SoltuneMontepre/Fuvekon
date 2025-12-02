@@ -1,5 +1,10 @@
 import React, { useState } from 'react'
-import { useController, type Control, type FieldPath, type FieldValues } from 'react-hook-form'
+import {
+	useController,
+	type Control,
+	type FieldPath,
+	type FieldValues,
+} from 'react-hook-form'
 import { PasswordToggleButton } from './PasswordToggleButton'
 import { FORM_STYLES, INLINE_STYLES } from './RegisterForm.styles'
 
@@ -15,6 +20,7 @@ interface FloatingLabelInputProps<
 	placeholder: string
 	required?: boolean
 	showPasswordToggle?: boolean
+	showError?: boolean
 }
 
 /**
@@ -33,6 +39,7 @@ export const FloatingLabelInput = <
 	placeholder,
 	required = false,
 	showPasswordToggle = false,
+	showError = true,
 }: FloatingLabelInputProps<TFieldValues, TName>) => {
 	const [showPassword, setShowPassword] = useState(false)
 
@@ -85,7 +92,7 @@ export const FloatingLabelInput = <
 					onToggle={() => setShowPassword(!showPassword)}
 				/>
 			)}
-			{error && (
+			{showError && error && (
 				<p
 					id={`${id}-error`}
 					className={FORM_STYLES.error.fieldError}

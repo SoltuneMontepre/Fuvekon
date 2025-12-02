@@ -12,15 +12,18 @@
 export const sanitizeInput = (input: string): string => {
 	if (!input) return ''
 
-	return input
-		.trim()
-		// Remove null bytes and other control characters (except newlines/tabs for some fields)
-		.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '')
-		// Remove ALL HTML tags (prevents XSS vectors like <img onerror="...">, <iframe>, etc.)
-		.replace(/<[^>]*>/g, '')
-		// Remove javascript: and data: URLs
-		.replace(/javascript:/gi, '')
-		.replace(/data:/gi, '')
+	return (
+		input
+			.trim()
+			// Remove null bytes and other control characters (except newlines/tabs for some fields)
+			// biome-ignore lint/suspicious/noControlCharactersInRegex: intentional security filtering
+			.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '')
+			// Remove ALL HTML tags (prevents XSS vectors like <img onerror="...">, <iframe>, etc.)
+			.replace(/<[^>]*>/g, '')
+			// Remove javascript: and data: URLs
+			.replace(/javascript:/gi, '')
+			.replace(/data:/gi, '')
+	)
 }
 
 /**
@@ -58,7 +61,7 @@ export const stripHtmlTags = (input: string): string => {
  * Minimal sanitization for form data - only removes HTML tags and trims
  * Note: Field-specific validation is handled by Zod schemas
  * Backend should handle its own validation and output encoding when rendering
- * 
+ *
  * This function is kept for backward compatibility but should be reconsidered:
  * - Zod validation already ensures data format
  * - Backend should validate and sanitize

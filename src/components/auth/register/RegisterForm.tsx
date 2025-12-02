@@ -6,14 +6,17 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { lockScroll } from '@/utils/scrollLock'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import {
 	RegisterFormSchema,
 	type RegisterFormData,
-	type RegisterRequest,
+	type RegisterFormInput,
+	mapRegisterFormToApiRequest,
 } from '@/types/api/auth/register'
 import { FORM_STYLES } from './RegisterForm.styles'
 import { FloatingLabelInput } from './FloatingLabelInput'
-import { sanitizeFormData } from '@/utils/sanitization'
+import { ValidationSpeechBubble } from './ValidationSpeechBubble'
+import { sanitizeInput } from '@/utils/sanitization'
 import axios from '@/common/axios'
 import type { RegisterResponse } from '@/types/auth/register'
 import { ERROR_MESSAGES } from '@/utils/validation/registerValidation.constants'
@@ -51,6 +54,7 @@ const checkRateLimit = (): { allowed: boolean; waitTime?: number } => {
 
 const RegisterForm = (): React.ReactElement => {
 	const [isSuccess, setIsSuccess] = useState(false)
+	const router = useRouter()
 
 	const {
 		control,
@@ -94,23 +98,20 @@ const RegisterForm = (): React.ReactElement => {
 		lastAttemptTime = Date.now()
 
 		try {
-			// Minimal sanitization: remove HTML tags (defense-in-depth)
+			// Sanitize non-password fields (defense-in-depth)
 			// Note: Zod validation already ensures format and trims whitespace
 			// Backend should handle its own validation and output encoding
-			const sanitizedData = sanitizeFormData(data) as Record<
-				keyof RegisterFormData,
-				string
-			>
-
-			// Prepare registration request (remove confirmPassword)
-			const requestData: RegisterRequest = {
-				fullName: sanitizedData.fullName,
-				nickname: sanitizedData.nickname,
-				email: sanitizedData.email,
-				country: sanitizedData.country,
-				idCard: sanitizedData.idCard,
-				password: sanitizedData.password,
+			const formInput: RegisterFormInput = {
+				fullName: sanitizeInput(data.fullName),
+				nickname: sanitizeInput(data.nickname),
+				email: data.email.trim().toLowerCase(), // Email-specific handling
+				country: sanitizeInput(data.country),
+				idCard: sanitizeInput(data.idCard),
+				password: data.password, // NEVER sanitize password - preserve as-is
 			}
+
+			// Map form data to API request format
+			const requestData = mapRegisterFormToApiRequest(formInput)
 
 			const response = await axios.general.post<RegisterResponse>(
 				'/auth/register',
@@ -135,8 +136,10 @@ const RegisterForm = (): React.ReactElement => {
 			// Clear sensitive data from memory
 			reset()
 
-			// Optional: Redirect to login or dashboard
-			// router.push('/login')
+			// Redirect to login after showing success message
+			setTimeout(() => {
+				router.push('/login')
+			}, 2000) // 2 second delay to show success message
 		} catch (error: unknown) {
 			// Handle axios errors
 			if (error && typeof error === 'object' && 'response' in error) {
@@ -182,8 +185,21 @@ const RegisterForm = (): React.ReactElement => {
 		}
 	}
 
+	// Collect all field errors for speech bubble
+	const fieldErrors: Record<string, string | undefined> = {
+		fullName: errors.fullName?.message,
+		nickname: errors.nickname?.message,
+		email: errors.email?.message,
+		country: errors.country?.message,
+		idCard: errors.idCard?.message,
+		password: errors.password?.message,
+		confirmPassword: errors.confirmPassword?.message,
+	}
+
 	return (
-		<div className={FORM_STYLES.container.wrapper}>
+		<div className={`${FORM_STYLES.container.wrapper} relative`}>
+			{/* Validation Speech Bubble - Moved here to escape stacking context */}
+			<ValidationSpeechBubble errors={fieldErrors} />
 			{/* Main Content Panel */}
 			<div className={FORM_STYLES.container.panel}>
 				{/* Left Side - Character Illustration (background tràn panel) */}
@@ -204,12 +220,15 @@ const RegisterForm = (): React.ReactElement => {
 						{/* Success Message */}
 						{isSuccess && (
 							<div className='text-green-600 text-xs sm:text-sm text-center bg-green-50 border border-green-200 rounded-lg p-2.5 sm:p-3'>
-								Đăng ký thành công! Chuyển hướng...
+								Đăng ký thành công! Đang chuyển hướng đến trang đăng nhập...
 							</div>
 						)}
 
 						{/* Form */}
-						<form onSubmit={handleSubmit(onSubmit)} className={FORM_STYLES.form.wrapper}>
+						<form
+							onSubmit={handleSubmit(onSubmit)}
+							className={FORM_STYLES.form.wrapper}
+						>
 							{/* General Error Message */}
 							{errors.root && (
 								<div className={FORM_STYLES.error.message} role='alert'>
@@ -226,6 +245,7 @@ const RegisterForm = (): React.ReactElement => {
 								label='Họ và tên:'
 								placeholder='Họ và tên'
 								required
+								showError={false}
 							/>
 
 							{/* Nickname Input */}
@@ -237,6 +257,7 @@ const RegisterForm = (): React.ReactElement => {
 								label='Biệt danh:'
 								placeholder='Biệt danh'
 								required
+								showError={false}
 							/>
 
 							{/* Email Input */}
@@ -248,6 +269,7 @@ const RegisterForm = (): React.ReactElement => {
 								label='Gmail:'
 								placeholder='Gmail'
 								required
+								showError={false}
 							/>
 
 							{/* Country Input */}
@@ -259,6 +281,7 @@ const RegisterForm = (): React.ReactElement => {
 								label='Quốc gia:'
 								placeholder='Quốc gia'
 								required
+								showError={false}
 							/>
 
 							{/* ID Card Input */}
@@ -270,6 +293,7 @@ const RegisterForm = (): React.ReactElement => {
 								label='Passport ID/ CCCD:'
 								placeholder='Passport ID/ CCCD'
 								required
+								showError={false}
 							/>
 
 							{/* Password Input */}
@@ -282,6 +306,7 @@ const RegisterForm = (): React.ReactElement => {
 								placeholder='Mật khẩu'
 								required
 								showPasswordToggle
+								showError={false}
 							/>
 
 							{/* Confirm Password Input */}
@@ -294,14 +319,16 @@ const RegisterForm = (): React.ReactElement => {
 								placeholder='Nhập lại mật khẩu'
 								required
 								showPasswordToggle
+								showError={false}
 							/>
 
 							{/* Submit Button */}
 							<button
 								type='submit'
 								disabled={isSubmitting}
-								className={`${FORM_STYLES.button.primary} ${isSubmitting ? FORM_STYLES.button.disabled : ''
-									}`}
+								className={`${FORM_STYLES.button.primary} ${
+									isSubmitting ? FORM_STYLES.button.disabled : ''
+								}`}
 							>
 								{isSubmitting ? 'Đang đăng ký...' : 'Đăng ký'}
 							</button>

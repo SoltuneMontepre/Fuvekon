@@ -8,7 +8,7 @@ import {
 import { validateRegisterForm } from '@/utils/validation/registerValidation'
 import { sanitizeFormData } from '@/utils/sanitization'
 import { ERROR_MESSAGES } from '@/utils/validation/registerValidation.constants'
-import { axiosAuth } from '@/common/axios'
+import axios from '@/common/axios'
 
 /**
  * Rate limiting state
@@ -153,7 +153,7 @@ export const useRegisterForm = () => {
 				// Prepare registration request
 				const requestData: RegisterRequest =
 					sanitizedData as unknown as RegisterFormData // Call registration API
-				const response = await axiosAuth.post<RegisterResponse>(
+				const response = await axios.general.post<RegisterResponse>(
 					'/register',
 					requestData
 				)

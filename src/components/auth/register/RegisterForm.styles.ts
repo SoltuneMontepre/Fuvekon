@@ -5,7 +5,7 @@
 export const FORM_STYLES = {
 	// Input field styles
 	input: {
-		base: 'block w-full px-2.5 py-2 sm:py-2 rounded-xl bg-[#E2EEE2] border text-[#8C8C8C] text-sm sm:text-base font-normal placeholder-transparent focus:outline-none focus:border-[#48715B] focus:ring-0 shadow-none peer transition-colors duration-200',
+		base: 'block w-full  px-2.5 py-2 sm:py-2 rounded-xl bg-[#E2EEE2] border text-[#8C8C8C] text-sm sm:text-base font-normal placeholder-transparent focus:outline-none focus:border-[#48715B] focus:ring-0 shadow-none peer transition-colors duration-200',
 		default: 'border-[#8C8C8C]/30',
 		error: 'border-red-500',
 		withIcon: 'pr-10',
@@ -14,9 +14,9 @@ export const FORM_STYLES = {
 	// Label styles
 	label: {
 		base: 'absolute left-3 top-2 sm:top-2 text-sm sm:text-base font-normal text-[#8C8C8C]/70 bg-[#E2EEE2] px-1 transition-all duration-200 pointer-events-none',
-		floating: 'scale-75 -translate-y-6 sm:-translate-y-6',
+		floating: 'scale-75 -translate-y-7 sm:-translate-y-8',
 		focused:
-			'peer-focus:scale-75 peer-focus:-translate-y-6 sm:peer-focus:-translate-y-6',
+			'peer-focus:scale-75 peer-focus:-translate-y-7 sm:peer-focus:-translate-y-8',
 	},
 
 	// Button styles
@@ -30,20 +30,20 @@ export const FORM_STYLES = {
 	// Container styles
 	container: {
 		wrapper:
-			'relative pt-8 sm:pt-16 md:pt-30 w-full max-w-5xl min-h-[600px] md:min-h-7xl height-auto',
+			'relative pt-8 sm:pt-16 md:pt-32 w-full max-w-5xl min-h-[850px] h-auto',
 		panel:
-			'relative bg-[#E2EEE2] -translate-y-4 sm:-translate-y-6 md:-translate-y-10 rounded-2xl md:rounded-[32px] overflow-hidden shadow-2xl flex flex-col md:flex-row min-h-[600px] items-center justify-center md:justify-start',
+			'relative bg-[#E2EEE2] -translate-y-4 sm:-translate-y-6 md:-translate-y-10 rounded-2xl md:rounded-[32px] overflow-hidden shadow-2xl flex flex-col md:flex-row min-h-[850px] h-auto items-center justify-center md:justify-start',
 		background:
-			'absolute inset-0 w-full h-full z-10 pointer-events-none select-none hidden md:block',
+			'absolute inset-0 w-full h-full z-10 pointer-events-none select-none hidden md:block overflow-hidden',
 		formPanel:
 			'relative md:absolute md:top-0 md:right-0 md:bottom-0 md:my-auto w-full md:w-1/2 p-4 sm:p-6 md:p-5 flex flex-col justify-center z-40 rounded-2xl md:rounded-[32px] bg-[#E2EEE2] md:shadow-2xl',
 		formContent: 'space-y-3 sm:space-y-4',
-		inputWrapper: 'relative w-full max-w-[360px] sm:w-90 mx-auto',
+		inputWrapper: 'relative w-full max-w-[360px] sm:w-96 mx-auto',
 	},
 
 	// Form styles
 	form: {
-		wrapper: 'space-y-2.5 sm:space-y-3',
+		wrapper: 'space-y-6 sm:space-y-7',
 		title:
 			'text-2xl sm:text-3xl md:text-3xl font-bold text-[#48715B] text-center tracking-wide mb-3',
 	},
