@@ -14,7 +14,7 @@ import {
 import { FORM_STYLES } from './RegisterForm.styles'
 import { FloatingLabelInput } from './FloatingLabelInput'
 import { sanitizeFormData } from '@/utils/sanitization'
-import { axiosAuth } from '@/common/axios'
+import axios from '@/common/axios'
 import type { RegisterResponse } from '@/types/auth/register'
 import { ERROR_MESSAGES } from '@/utils/validation/registerValidation.constants'
 
@@ -94,6 +94,9 @@ const RegisterForm = (): React.ReactElement => {
 		lastAttemptTime = Date.now()
 
 		try {
+			// Minimal sanitization: remove HTML tags (defense-in-depth)
+			// Note: Zod validation already ensures format and trims whitespace
+			// Backend should handle its own validation and output encoding
 			const sanitizedData = sanitizeFormData(data) as Record<
 				keyof RegisterFormData,
 				string
@@ -109,8 +112,8 @@ const RegisterForm = (): React.ReactElement => {
 				password: sanitizedData.password,
 			}
 
-			const response = await axiosAuth.post<RegisterResponse>(
-				'/register',
+			const response = await axios.general.post<RegisterResponse>(
+				'/auth/register',
 				requestData
 			)
 
