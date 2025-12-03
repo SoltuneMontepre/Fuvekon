@@ -9,7 +9,6 @@ import Mascot from '@/components/landing/hero_section/Mascot'
 import Moon from '@/components/landing/hero_section/Moon'
 import RightRockSection from '@/components/landing/hero_section/RightRockSection'
 import StaticBirds from '@/components/landing/hero_section/StaticBirds'
-import ThemeTitle from '@/components/landing/hero_section/ThemeTitle'
 import { useLandingPageAnimation } from '@/hooks/animation/useLandingPageAnimation'
 import React from 'react'
 
@@ -19,11 +18,7 @@ interface BackgroundProps {
 	animated?: boolean
 }
 
-const Background = ({
-	mascot = false,
-	title = false,
-	animated = false,
-}: BackgroundProps) => {
+const Background = ({ mascot = false, animated = false }: BackgroundProps) => {
 	const {
 		containerRef,
 		backgroundLayerRef,
@@ -38,7 +33,8 @@ const Background = ({
 	return (
 		<div
 			ref={containerRef}
-			className='fixed inset-0 h-dvh w-dvw flex items-center justify-center select-none overflow-hidden'
+			id='background-container'
+			className='fixed inset-0 h-dvh w-dvw flex items-center justify-center select-none overflow-hidden pointer-events-auto'
 		>
 			<div className='relative w-full h-full'>
 				<div className='absolute inset-0 flex items-center justify-center overflow-visible'>
@@ -85,20 +81,17 @@ const Background = ({
 						{/* Foreground Flower Layer */}
 						<div
 							ref={foregroundFlowerRef}
-							className='absolute inset-0 overflow-visible'
+							className='absolute inset-0 overflow-visible pointer-events-none'
 						>
 							<ForegroundFlower className='overflow-visible scale-[1.13]' />
 						</div>
 						{/* Foreground Foliage Layer */}
 						<div
 							ref={foregroundFoliageRef}
-							className='absolute inset-0 overflow-visible'
+							className='absolute inset-0 overflow-visible pointer-events-none'
 						>
 							<ForegroundFoliage className='object-[70%] overflow-visible' />
 						</div>{' '}
-						{title && (
-							<ThemeTitle className='absolute left-1/2 bottom-[10%] -translate-x-1/2 md:w-2xl max-w-[90vw] min-w-[220px] h-auto' />
-						)}
 					</div>
 				</div>
 			</div>

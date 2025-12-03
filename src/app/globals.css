@@ -72,6 +72,14 @@
 		@apply text-3xl sm:text-4xl lg:text-5xl uppercase font-bold text-center text-shadow-lg;
 	}
 
+	.inverted {
+		filter: invert(1);
+	}
+
+	.invert-text {
+		@apply mix-blend-difference isolate;
+	}
+
 	/* art card */
 	.artcard-box {
 		@apply w-[400px] p-10 absolute rounded-[60px] top-0 right-0 h-full -ml-12 z-10;
@@ -94,6 +102,10 @@
 		filter: contrast(170%) brightness(800%);
 		pointer-events: none;
 		z-index: -1;
+	}
+
+	.nav-button {
+		@apply flex-1 content-center whitespace-nowrap rounded-lg p-2;
 	}
 }
 

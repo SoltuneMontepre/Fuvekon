@@ -5,7 +5,7 @@ const Moon = ({ className }: { className?: string }) => {
 	return (
 		<Image
 			className={`landing-bg ${className ?? ''}`}
-			src='/assets/bg-moon.png'
+			src='/assets/bg-moon.webp'
 			alt='moon-background-image'
 			priority
 			fill

@@ -5,7 +5,7 @@ const RightRockSection = ({ className }: { className?: string }) => {
 	return (
 		<Image
 			className={`landing-bg ${className ?? ''}`}
-			src='/assets/bg-rock-right.png'
+			src='/assets/bg-rock-right.webp'
 			alt='right-rock-background-image'
 			priority
 			fill

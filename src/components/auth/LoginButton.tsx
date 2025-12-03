@@ -8,8 +8,8 @@ const LoginButton = (): React.ReactElement => {
 
 	return (
 		<Link href='/login' className='center'>
-			<span className='hidden md:block'>{t('login')}</span>
-			<span className='block md:hidden'>
+			<span className='hidden lg:block'>{t('login')}</span>
+			<span className='block lg:hidden'>
 				<CircleUserRound size={30} />
 			</span>
 		</Link>

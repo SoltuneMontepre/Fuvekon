@@ -2,6 +2,18 @@
 	"common": {
 		"welcome": "欢迎来到 Fuvekon"
 	},
+	"nav": {
+		"ticket": "票务",
+		"register": "注册",
+		"contributes": "投稿",
+		"talent": "才艺",
+		"panel": "论坛",
+		"volunteer": "志愿者",
+		"artbook": "画册",
+		"dealer": "商家",
+		"schedule": "日程",
+		"about": "关于"
+	},
 	"auth": {
 		"login": "登录",
 		"logout": "登出",

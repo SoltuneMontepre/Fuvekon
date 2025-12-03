@@ -5,7 +5,7 @@ const ThemeTitle = ({ className }: { className?: string }) => {
 	return (
 		<Image
 			className={`landing-bg ${className ?? ''}`}
-			src='/assets/theme-title.png'
+			src='/assets/theme-title.webp'
 			alt='theme-title-image'
 			priority
 			width={400}
