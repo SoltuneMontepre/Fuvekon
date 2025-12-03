@@ -32,6 +32,7 @@ export const sanitizeInput = (input: string): string => {
  * Aggressive character removal breaks valid emails (e.g., user+tag@example.com)
  */
 export const sanitizeEmail = (email: string): string => {
+	if (!email) return ''
 	return email.trim().toLowerCase()
 }
 
@@ -40,6 +41,7 @@ export const sanitizeEmail = (email: string): string => {
  * Removes all HTML to prevent XSS vectors like <img onerror="...">, <iframe>, etc.
  */
 export const sanitizeName = (name: string): string => {
+	if (!name) return ''
 	return name.trim().replace(/<[^>]*>/g, '')
 }
 
@@ -47,6 +49,7 @@ export const sanitizeName = (name: string): string => {
  * Sanitize alphanumeric fields (nickname, ID card)
  */
 export const sanitizeAlphanumeric = (input: string): string => {
+	if (!input) return ''
 	return input.trim().replace(/[^a-zA-Z0-9_-]/g, '')
 }
 
@@ -54,6 +57,7 @@ export const sanitizeAlphanumeric = (input: string): string => {
  * Remove all HTML tags from input
  */
 export const stripHtmlTags = (input: string): string => {
+	if (!input) return ''
 	return input.replace(/<[^>]*>/g, '')
 }
 

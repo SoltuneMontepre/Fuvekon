@@ -17,40 +17,14 @@ import { FORM_STYLES } from './RegisterForm.styles'
 import { FloatingLabelInput } from './FloatingLabelInput'
 import { ValidationSpeechBubble } from './ValidationSpeechBubble'
 import { sanitizeInput } from '@/utils/sanitization'
+import {
+	checkRateLimit,
+	incrementAttemptCount,
+	resetAttemptCount,
+} from '@/utils/rateLimit'
 import axios from '@/common/axios'
 import type { RegisterResponse } from '@/types/auth/register'
 import { ERROR_MESSAGES } from '@/utils/validation/registerValidation.constants'
-
-/**
- * Rate limiting state
- */
-let attemptCount = 0
-let lastAttemptTime = 0
-const MAX_ATTEMPTS = 5
-const LOCKOUT_DURATION = 15 * 60 * 1000 // 15 minutes
-
-/**
- * Check if rate limit is exceeded
- */
-const checkRateLimit = (): { allowed: boolean; waitTime?: number } => {
-	const now = Date.now()
-	const timeSinceLastAttempt = now - lastAttemptTime
-
-	// Reset counter after lockout duration
-	if (timeSinceLastAttempt > LOCKOUT_DURATION) {
-		attemptCount = 0
-	}
-
-	if (attemptCount >= MAX_ATTEMPTS) {
-		const remainingWait = LOCKOUT_DURATION - timeSinceLastAttempt
-		if (remainingWait > 0) {
-			return { allowed: false, waitTime: Math.ceil(remainingWait / 1000 / 60) }
-		}
-		attemptCount = 0 // Reset after lockout
-	}
-
-	return { allowed: true }
-}
 
 const RegisterForm = (): React.ReactElement => {
 	const [isSuccess, setIsSuccess] = useState(false)
@@ -94,8 +68,7 @@ const RegisterForm = (): React.ReactElement => {
 		}
 
 		// Increment attempt counter
-		attemptCount++
-		lastAttemptTime = Date.now()
+		incrementAttemptCount()
 
 		try {
 			// Sanitize non-password fields (defense-in-depth)
@@ -131,7 +104,7 @@ const RegisterForm = (): React.ReactElement => {
 			setIsSuccess(true)
 
 			// Reset attempt counter on success
-			attemptCount = 0
+			resetAttemptCount()
 
 			// Clear sensitive data from memory
 			reset()
