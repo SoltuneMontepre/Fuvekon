@@ -1,23 +1,39 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { lockScroll } from '@/utils/scrollLock'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useLogin } from '@/hooks/services/auth/useLogin'
 import { useTranslations } from 'next-intl'
 import { useRouter } from 'next/navigation'
-import { LoginRequestSchema } from '@/types/api/auth/login'
+import { LoginRequestSchema, type LoginRequest } from '@/types/api/auth/login'
 
 const LoginForm = (): React.ReactElement => {
-	const [email, setEmail] = useState('')
-	const [password, setPassword] = useState('')
-	const [error, setError] = useState('')
 	const [showPassword, setShowPassword] = useState(false)
 
 	const t = useTranslations('auth')
 	const router = useRouter()
 	const loginMutation = useLogin()
+
+	const {
+		register,
+		handleSubmit,
+		watch,
+		formState: { errors, isSubmitting },
+		setError: setFormError,
+	} = useForm<LoginRequest>({
+		resolver: zodResolver(LoginRequestSchema),
+		defaultValues: {
+			email: '',
+			password: '',
+		},
+	})
+
+	const emailValue = watch('email')
+	const passwordValue = watch('password')
 
 	useEffect(() => {
 		const unlock = lockScroll()
@@ -26,33 +42,30 @@ const LoginForm = (): React.ReactElement => {
 		}
 	}, [])
 
-	const handleSubmit = async (e: React.FormEvent) => {
-		e.preventDefault()
-		setError('')
-
-		const validation = LoginRequestSchema.safeParse({ email, password })
-		if (!validation.success) {
-			setError(validation.error.issues[0].message)
-			return
-		}
-
-		loginMutation.mutate(validation.data, {
-			onSuccess: data => {
-				if (data.isSuccess) {
+	const onSubmit = async (data: LoginRequest) => {
+		loginMutation.mutate(data, {
+			onSuccess: responseData => {
+				if (responseData.isSuccess) {
 					// Redirect về trang chủ sau khi login thành công
 					router.push('/account')
 				} else {
-					setError(data.message)
+					setFormError('root', {
+						type: 'manual',
+						message: responseData.message,
+					})
 				}
 			},
 			onError: err => {
-				setError(err.message || t('loginFailed'))
+				setFormError('root', {
+					type: 'manual',
+					message: err.message || t('loginFailed'),
+				})
 			},
 		})
 	}
 
 	return (
-		<div className='relative pt-8 sm:pt-16 md:pt-30 w-full max-w-5xl min-h-[450px] md:min-h-7xl height-auto'>
+		<div className='relative pt-8 sm:pt-16 md:pt-32 w-full max-w-5xl min-h-[450px] md:min-h-screen h-auto'>
 			{/* Main Content Panel */}
 			<div className='relative bg-[#E2EEE2] -translate-y-8 sm:-translate-y-16 md:-translate-y-25 rounded-2xl md:rounded-[32px] overflow-hidden shadow-2xl flex flex-col md:flex-row min-h-[450px] items-center justify-center md:justify-start'>
 				{/* Left Side - Character Illustration (background tràn panel) */}
@@ -73,60 +86,70 @@ const LoginForm = (): React.ReactElement => {
 						</h1>
 
 						{/* Form */}
-						<form onSubmit={handleSubmit} className='space-y-5 sm:space-y-6'>
+						<form
+							onSubmit={handleSubmit(onSubmit)}
+							className='space-y-5 sm:space-y-6'
+						>
 							{/* Error Message */}
-							{error && (
+							{errors.root && (
 								<div className='text-red-600 text-xs sm:text-sm text-center bg-red-50 border border-red-200 rounded-lg p-2.5 sm:p-3'>
-									{error}
+									{errors.root.message}
 								</div>
 							)}
 
 							{/* Email Input */}
-							<div className='relative w-full max-w-[360px] sm:w-90 mx-auto'>
+							<div className='relative w-full max-w-[360px] sm:w-96 mx-auto'>
 								<input
 									id='email'
 									type='email'
-									value={email}
-									onChange={e => setEmail(e.target.value)}
-									className='block w-full px-3 py-2.5 sm:py-3 rounded-xl bg-[#E2EEE2] border border-[#8C8C8C]/30 text-[#8C8C8C] text-lg sm:text-xl font-normal placeholder-transparent focus:outline-none focus:border-[#48715B] focus:ring-0 shadow-none peer'
+									{...register('email')}
+									aria-invalid={!!errors.email}
+									aria-describedby={errors.email ? 'email-error' : undefined}
+									className={`block w-full px-3 py-2.5 sm:py-3 rounded-xl bg-[#E2EEE2] border text-[#8C8C8C] text-lg sm:text-xl font-normal placeholder-transparent focus:outline-none focus:border-[#48715B] focus:ring-0 shadow-none peer ${
+										errors.email ? 'border-red-500' : 'border-[#8C8C8C]/30'
+									}`}
 									placeholder='Email'
-									required
 								/>
 								<label
 									htmlFor='email'
-									className={`absolute left-3 top-2.5 sm:top-3 text-lg sm:text-xl font-normal text-[#8C8C8C]/70 bg-[#E2EEE2] px-1 transition-all duration-200 pointer-events-none
-											${
-												email
-													? 'scale-70 -translate-y-8 sm:-translate-y-9'
-													: 'peer-focus:scale-70 peer-focus:-translate-y-8 sm:peer-focus:-translate-y-9'
-											}
-										`}
+									className={`absolute left-3 top-2.5 sm:top-3 text-lg sm:text-xl font-normal text-[#8C8C8C]/70 bg-[#E2EEE2] px-1 transition-all duration-200 pointer-events-none ${
+										emailValue
+											? 'scale-70 -translate-y-8 sm:-translate-y-9'
+											: 'peer-focus:scale-70 peer-focus:-translate-y-8 sm:peer-focus:-translate-y-9'
+									}`}
 									style={{ transformOrigin: 'left' }}
 								>
 									{t('email')}:
 								</label>
+								{errors.email && (
+									<p
+										id='email-error'
+										className='text-red-600 text-xs mt-0.5'
+										role='alert'
+									>
+										{errors.email.message}
+									</p>
+								)}
 							</div>
 
 							{/* Password Input */}
-							<div className='relative w-full max-w-[360px] sm:w-90 mx-auto'>
+							<div className='relative w-full max-w-[360px] sm:w-96 mx-auto'>
 								<input
 									id='password'
 									type={showPassword ? 'text' : 'password'}
-									value={password}
-									onChange={e => setPassword(e.target.value)}
-									className='block w-full px-3 py-2.5 sm:py-3 pr-12 rounded-xl bg-[#E2EEE2] border border-[#8C8C8C]/30 text-[#8C8C8C] text-lg sm:text-xl font-normal placeholder-transparent focus:outline-none focus:border-[#48715B] focus:ring-0 shadow-none peer'
+									{...register('password')}
+									className={`block w-full px-3 py-2.5 sm:py-3 pr-12 rounded-xl bg-[#E2EEE2] border text-[#8C8C8C] text-lg sm:text-xl font-normal placeholder-transparent focus:outline-none focus:border-[#48715B] focus:ring-0 shadow-none peer ${
+										errors.password ? 'border-red-500' : 'border-[#8C8C8C]/30'
+									}`}
 									placeholder='Mật khẩu'
-									required
 								/>
 								<label
 									htmlFor='password'
-									className={`absolute left-3 top-2.5 sm:top-3 text-lg sm:text-xl font-normal text-[#8C8C8C]/70 bg-[#E2EEE2] px-1 transition-all duration-200 pointer-events-none
-											${
-												password
-													? 'scale-70 -translate-y-8 sm:-translate-y-9'
-													: 'peer-focus:scale-70 peer-focus:-translate-y-8 sm:peer-focus:-translate-y-9'
-											}
-										`}
+									className={`absolute left-3 top-2.5 sm:top-3 text-lg sm:text-xl font-normal text-[#8C8C8C]/70 bg-[#E2EEE2] px-1 transition-all duration-200 pointer-events-none ${
+										passwordValue
+											? 'scale-70 -translate-y-8 sm:-translate-y-9'
+											: 'peer-focus:scale-70 peer-focus:-translate-y-8 sm:peer-focus:-translate-y-9'
+									}`}
 									style={{ transformOrigin: 'left' }}
 								>
 									{t('password')}:
@@ -177,15 +200,22 @@ const LoginForm = (): React.ReactElement => {
 										</svg>
 									)}
 								</button>
+								{errors.password && (
+									<p className='text-red-600 text-xs mt-0.5' role='alert'>
+										{errors.password.message}
+									</p>
+								)}
 							</div>
 
 							{/* Submit Button */}
 							<button
 								type='submit'
-								disabled={loginMutation.isPending}
+								disabled={isSubmitting || loginMutation.isPending}
 								className='block mx-auto w-full max-w-[200px] sm:w-[200px] py-3 sm:py-3.5 rounded-xl text-[#48715B] font-semibold text-base sm:text-lg hover:bg-[#48715B]/90 hover:text-[#E2EEE2] active:bg-[#48715B]/80 focus:outline-none focus:ring-4 focus:ring-[#48715B]/30 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed'
 							>
-								{loginMutation.isPending ? t('loggingIn') : t('login')}
+								{isSubmitting || loginMutation.isPending
+									? t('loggingIn')
+									: t('login')}
 							</button>
 
 							{/* Links */}

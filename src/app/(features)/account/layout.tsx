@@ -3,7 +3,7 @@
 import SideBar from '@/components/nav/SideBar'
 import type { ReactNode } from 'react'
 import { UserCircle, Ticket } from 'lucide-react'
-import LogoutButton from '@/components/auth/LogoutButton'
+import LogoutButton from '@/components/auth/login/LogoutButton'
 import { useGetMe } from '@/hooks/services/auth/useAccount'
 import { useAuthStore } from '@/stores/authStore'
 import { useEffect } from 'react'
