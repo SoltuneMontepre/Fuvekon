@@ -7,6 +7,9 @@ import { useGSAP } from '@gsap/react'
 import Image from 'next/image'
 
 const GOHSection = () => {
+	const [isEnterLeft, setIsEnterLeft] = React.useState(false)
+	const [isEnterRight, setIsEnterRight] = React.useState(false)
+
 	useGSAP(() => {
 		gsap.set('#drum-left', { x: '-100%' })
 		gsap.set('#drum-right', { x: '100%' })
@@ -15,6 +18,8 @@ const GOHSection = () => {
 	}, [])
 
 	const handleLeftHover = (isEnter: boolean) => {
+		setIsEnterLeft(isEnter)
+
 		gsap.to('#drum-left', {
 			x: isEnter ? '0%' : '-100%',
 			duration: 0.8,
@@ -39,6 +44,8 @@ const GOHSection = () => {
 	}
 
 	const handleRightHover = (isEnter: boolean) => {
+		setIsEnterRight(isEnter)
+
 		gsap.to('#drum-right', {
 			x: isEnter ? '0%' : '100%',
 			duration: 0.8,
@@ -71,7 +78,7 @@ const GOHSection = () => {
 			{/* Left Character Box */}
 			<div className='h-full w-full relative flex items-end justify-center'>
 				<div className='absolute inset-0 z-0'>
-					<DrumImage id='drum-left' />
+					<DrumImage id='drum-left' isEnter={isEnterLeft} />
 				</div>
 				<div className='goh-left z-30 relative pointer-events-auto cursor-pointer w-full h-full translate-y-1/3'>
 					<div className='relative w-full h-full'>
@@ -90,7 +97,7 @@ const GOHSection = () => {
 			{/* Right Character Box */}
 			<div className='h-full w-full relative flex items-end justify-center'>
 				<div className='absolute inset-0 z-0'>
-					<DrumImage id='drum-right' reversed />
+					<DrumImage id='drum-right' reversed isEnter={isEnterRight} />
 				</div>
 				<div className='goh-right z-30 relative pointer-events-auto cursor-pointer w-full h-full translate-y-1/3'>
 					<div className='relative w-full h-full'>
