@@ -33,7 +33,7 @@ const NavButton = ({ button }: { button: NavData }) => {
 
 	return (
 		<Link
-			className='nav-button flex-1 text-center z-30 hover:bg-scroll-cover/20 transition-colors duration-200'
+			className='nav-bg text-bg-secondary flex-1 text-center z-30 hover:bg-secondary/20 transition-colors duration-200'
 			href={button.to ?? '/'}
 			prefetch={shouldPrefetch ? true : false}
 			onMouseEnter={() => setShouldPrefetch(true)}
@@ -49,13 +49,13 @@ const CollapsedNavButton = ({ button }: { button: NavData }) => {
 	return (
 		<div className='relative flex-1'>
 			<button
-				className='nav-button w-full text-center underline hover:bg-scroll-cover/20 transition-colors duration-200 underline-offset-5 uppercase'
+				className='nav-bg w-full text-center text-bg-secondary underline hover:bg-secondary/20 transition-colors duration-200 underline-offset-5 uppercase'
 				onClick={() => setIsOpen(!isOpen)}
 			>
 				{'\u00a0\u00a0\u00a0\u00a0' + button.label + '\u00a0\u00a0\u00a0\u00a0'}
 			</button>
 			{isOpen && (
-				<div className='absolute w-full bg-scroll-cover/20 transition-colors duration-200 rounded-2xl flex flex-col gap-1'>
+				<div className='absolute w-full bg-secondary/20 transition-colors duration-200 rounded-2xl flex flex-col gap-1'>
 					{button.children &&
 						button.children.map(child => (
 							<NavButton key={child.label} button={child} />

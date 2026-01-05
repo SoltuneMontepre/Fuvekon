@@ -119,7 +119,7 @@ const GOHSection = () => {
 				className='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-40 pointer-events-none text-white text-center'
 			>
 				<h3>
-					<span className='text-5xl font-thin text-scroll-title'>TÊN</span>
+					<span className='text-5xl font-thin text-primary'>TÊN</span>
 					<br />
 					<span className='text-7xl font-bold'>GOH</span>
 				</h3>

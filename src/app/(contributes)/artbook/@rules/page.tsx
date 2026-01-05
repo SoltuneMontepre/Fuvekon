@@ -27,11 +27,11 @@ const ArtBookRulesSection = () => {
 
 	return (
 		<CollapsibleScroll initialOpen>
-			<h3 className="scroll-title pt-5 josefin bg-[url('/textures/asfalt-dark.png')] bg-scroll-title bg-clip-text text-transparent">
+			<h3 className="scroll-title pt-5 josefin bg-[url('/textures/asfalt-dark.png')] bg-primary bg-clip-text text-transparent">
 				QUY ĐỊNH GIAN HÀNG
 			</h3>
 			<Separator className='w-[95%] mx-auto' />
-			<div className='text-scroll-text text-md font-sm'>
+			<div className='text-text-primary text-md font-sm'>
 				<div>Additional rules can go here</div>
 				{rules.map((rule, index) => (
 					<p key={index}>{rule}</p>

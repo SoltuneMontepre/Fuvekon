@@ -24,14 +24,14 @@ const ArtBookCardSection = () => {
 				<div className='absolute inset-0'>
 					{/* main content */}
 					<section className='relative z-10 flex flex-col justify-around py-10 px-14 h-full'>
-						<h3 className='flex-1 text-2xl text-center font-bold text-scroll-cover'>
+						<h3 className='flex-1 text-2xl text-center font-bold text-secondary'>
 							{t('artbook.card.title')}
 						</h3>
-						<p className='flex-3 grow text-scroll-text mt-4 font-sm'>
+						<p className='flex-3 grow text-text-primary mt-4 font-sm'>
 							{t('artbook.card.description')}
 						</p>
 						<Button>{t('artbook.card.button')}</Button>
-						<div className='text-center text-nowrap text-scroll-cover'>
+						<div className='text-center text-nowrap text-secondary'>
 							<Link href='/login'>{t('artbook.card.login')}</Link>
 							<span> | </span>
 							<Link href='/ticket'>{t('artbook.card.buyticket')}</Link>

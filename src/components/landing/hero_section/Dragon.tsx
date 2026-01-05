@@ -6,7 +6,7 @@ const Dragon = ({ className }: { className?: string }) => {
 		<Image
 			className={`landing-bg ${className ?? ''}`}
 			src='/assets/bg-dragon.webp'
-			alt='dragon-background-image'
+			alt='dragon-bg-image'
 			priority
 			fill
 		/>

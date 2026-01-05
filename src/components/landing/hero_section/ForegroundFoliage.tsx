@@ -6,7 +6,7 @@ const ForegroundFoliage = ({ className }: { className?: string }) => {
 		<Image
 			className={`landing-bg scale-[1.14] ${className ?? ''}`}
 			src='/assets/fg-foliage.webp'
-			alt='foreground-foliage-background-image'
+			alt='foreground-foliage-bg-image'
 			priority
 			fill
 		/>

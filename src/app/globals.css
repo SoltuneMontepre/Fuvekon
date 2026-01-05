@@ -5,37 +5,15 @@
 
 @theme inline {
 	--color-main: #e9f5e7;
-	--color-main-light: #d399f0;
-	--color-main-bright: #e0b3f7;
-	--color-main-dark: #8b5bb8;
-	--color-main-darker: #6d4a94;
-	--color-darkest: #4c2e50;
 	--color-available: #10b981;
 
-	/* Dark mode colors - Enhanced for better visibility */
-	--color-dark-bg: #0f172a;
-	--color-dark-surface: #1e293b;
-	--color-dark-card: #334155;
-	--color-dark-border: #475569;
-	--color-dark-text: #f1f5f9;
-	--color-dark-text-secondary: #cbd5e1;
-
-	/* Dark mode accent colors - More vibrant */
-	--color-dark-main: #d399f0;
-	--color-dark-main-hover: #e0b3f7;
-	--color-dark-accent: #a855f7;
-	--color-dark-success: #34d399;
-	--color-dark-warning: #fbbf24;
-	--color-dark-error: #f87171;
-
-	--color-scroll-cover: #548780;
-	--color-scroll-paper: #e2eee2;
-	--color-scroll-ink: #d2ddd2;
-	--color-scroll-title: #7cbc97;
-	--color-scroll-text: #154c5b;
-	--color-default: #48715b;
-	--color-bg-main: #e9f5e7;
-	--color-button: #e2eee2;
+	--color-secondary: #548780;
+	--color-paper: #e2eee2;
+	--color-bg-secondary: #d2ddd2;
+	--color-primary: #7cbc97;
+	--color-text-primary: #154c5b;
+	--color-text-secondary: #48715b;
+	--color-bg: #e2eee2;
 }
 
 @layer components {
@@ -104,7 +82,7 @@
 		z-index: -1;
 	}
 
-	.nav-button {
+	.nav-bg {
 		@apply flex-1 content-center whitespace-nowrap rounded-lg p-2;
 	}
 }

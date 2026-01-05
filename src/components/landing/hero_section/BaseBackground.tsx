@@ -6,7 +6,7 @@ const BaseBackground = ({ className }: { className?: string }) => {
 		<Image
 			className={`landing-bg w-dvw h-dvh  ${className ?? ''}`}
 			src='/assets/bg-base.webp'
-			alt='base-background-image'
+			alt='base-bg-image'
 			priority
 			fill
 		/>

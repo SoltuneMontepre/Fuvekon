@@ -128,7 +128,7 @@ const SidebarItemComponent = ({
 			{Icon && <Icon className='flex-shrink-0 w-15 h-15' aria-hidden='true' />}
 			<span className='flex-1 truncate'>{item.label}</span>
 			{item.badge !== undefined && (
-				<span className='px-2 py-0.5 text-xs font-medium rounded-full bg-button text-default'>
+				<span className='px-2 py-0.5 text-xs font-medium rounded-full bg-bg text-text-secondary'>
 					{item.badge}
 				</span>
 			)}
@@ -139,7 +139,7 @@ const SidebarItemComponent = ({
 		flex flex-col items-center gap-3 px-3 py-2 rounded-lg text-xl font-medium
 		transition-colors duration-150 w-40 mx-auto justify-center shadow-md
 		${item.disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
-		${isActive ? 'bg-button text-default' : 'text-default hover:bg-button'}
+		${isActive ? 'bg-bg text-text-secondary' : 'text-text-secondary hover:bg-bg'}
 	`
 
 	if (item.href && !item.disabled) {
