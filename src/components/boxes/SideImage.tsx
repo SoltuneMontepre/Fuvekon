@@ -1,5 +1,5 @@
-import Image from 'next/image'
 import React from 'react'
+import S3Image from '@/components/common/S3Image'
 
 type SideImageProps = {
 	src: string
@@ -8,7 +8,7 @@ type SideImageProps = {
 
 const SideImage = ({ src, alt }: SideImageProps) => {
 	return (
-		<Image
+		<S3Image
 			className='object-contain min-w-[400px] transition-opacity duration-300'
 			src={src}
 			alt={alt}

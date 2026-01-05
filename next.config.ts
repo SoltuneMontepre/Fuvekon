@@ -7,16 +7,7 @@ const withNextIntl = createNextIntlPlugin('./src/config/language.ts')
  */
 const nextConfig: NextConfig = {
 	images: {
-		remotePatterns: [
-			{
-				protocol: 'https',
-				hostname: 'trello.com',
-			},
-			{
-				protocol: 'https',
-				hostname: 'via.placeholder.com',
-			},
-		],
+		remotePatterns: [],
 	},
 }
 

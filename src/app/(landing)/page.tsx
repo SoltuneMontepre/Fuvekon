@@ -1,18 +1,15 @@
 'use client'
 
+import Loading from '@/components/common/Loading'
 import React, { Suspense } from 'react'
-import LoadingSequence from '../../components/landing/hero_section/LoadingSequence'
 
-const BackgroundContainer = React.lazy(
-	() => import('../../components/landing/HeroSection')
-)
+const Background = React.lazy(() => import('@/components/ui/Background'))
 
 const LandingPage = (): React.JSX.Element => {
 	return (
 		<>
-			<LoadingSequence />
-			<Suspense>
-				<BackgroundContainer />
+			<Suspense fallback={<Loading />}>
+				<Background mascot title />
 			</Suspense>
 		</>
 	)
