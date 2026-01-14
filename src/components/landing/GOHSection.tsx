@@ -7,7 +7,7 @@ import { useGSAP } from '@gsap/react'
 import Image from 'next/image'
 import { GOH_DETAILS } from '@/config/app'
 
-const GOHSection = () => {
+const GOHSection = ({ disable }: { disable?: boolean }) => {
 	const [isEnterLeft, setIsEnterLeft] = React.useState(false)
 	const [isEnterRight, setIsEnterRight] = React.useState(false)
 
@@ -102,7 +102,7 @@ const GOHSection = () => {
 				{/* Left Character Box */}
 				<div className='h-full w-full relative flex items-end justify-center'>
 					<div className='absolute inset-0 z-0'>
-						<DrumImage id='drum-left' isEnter={isEnterLeft} />
+						<DrumImage id='drum-left' isEnter={isEnterLeft} disable={disable} />
 					</div>
 					<div className='goh-left z-30 relative pointer-events-auto cursor-pointer w-full h-full translate-y-1/3'>
 						<div className='relative w-full h-full'>
@@ -121,7 +121,12 @@ const GOHSection = () => {
 				{/* Right Character Box */}
 				<div className='h-full w-full relative flex items-end justify-center'>
 					<div className='absolute inset-0 z-0'>
-						<DrumImage id='drum-right' reversed isEnter={isEnterRight} />
+						<DrumImage
+							id='drum-right'
+							reversed
+							isEnter={isEnterRight}
+							disable={disable}
+						/>
 					</div>
 					<div className='goh-right z-30 relative pointer-events-auto cursor-pointer w-full h-full translate-y-1/3'>
 						<div className='relative w-full h-full'>

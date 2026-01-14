@@ -7,9 +7,11 @@ import ScrollBar from '../common/scroll/ScrollBar'
 export type CollapsibleScrollProps = {
 	children: React.ReactNode
 	initialOpen?: boolean
+	className?: string
 }
 
 const CollapsibleScroll = ({
+	className,
 	children,
 	initialOpen = false,
 }: CollapsibleScrollProps) => {
@@ -36,7 +38,7 @@ const CollapsibleScroll = ({
 	}, [isOpen])
 
 	return (
-		<div className='flex flex-col '>
+		<div className={`flex flex-col ${className}`}>
 			<ScrollBar onClick={() => setIsOpen(!isOpen)} />
 			<div>
 				<div className='scroll-body bg-secondary w-[95%] mx-auto relative'>

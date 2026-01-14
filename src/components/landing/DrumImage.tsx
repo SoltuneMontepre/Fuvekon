@@ -7,13 +7,17 @@ const DrumImage = ({
 	id,
 	reversed,
 	isEnter,
+	className,
+	disable = true,
 }: {
 	id: string
 	reversed?: boolean
+	disable?: boolean
 	isEnter?: boolean
+	className?: string
 }) => {
 	useGSAP(() => {
-		if (!isEnter) return
+		if (!isEnter || disable) return
 		const tl = gsap.timeline()
 
 		// Smooth roll-in then conscdistent spin
@@ -53,12 +57,12 @@ const DrumImage = ({
 			},
 			0
 		)
-	}, [isEnter, id, reversed])
+	}, [isEnter, id, reversed, disable])
 
 	return (
 		<div
 			id={id}
-			className='z-0 h-dvh w-dvh bg-[#0b100b] opacity-95 relative rounded-full [filter:brightness(1.2)] pointer-events-none flex items-center justify-center'
+			className={`z-0 h-dvh w-dvh bg-[#0b100b] opacity-95 relative rounded-full [filter:brightness(1.2)] pointer-events-none flex items-center justify-center ${className}`}
 		>
 			<Image
 				src='/assets/common/drum_pattern.webp'
