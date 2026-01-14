@@ -6,6 +6,8 @@ import SideBar from '@/components/nav/SideBar'
 import { UserCircle, Ticket } from 'lucide-react'
 import { useGetMe } from '@/hooks/services/auth/useAccount'
 import { useAuthStore } from '@/stores/authStore'
+import { logger } from '@/utils/logger'
+import Loading from '@/components/common/Loading'
 
 type AdminLayoutProps = {
 	revenue: React.ReactElement
@@ -80,15 +82,13 @@ const AdminLayout = ({ revenue, timeline, children }: AdminLayoutProps) => {
 
 	// Show loading state
 	if (isLoading) {
-		return (
-			<div className='flex items-center justify-center min-h-screen'>
-				<div className='text-lg'>Loading...</div>
-			</div>
-		)
+		logger.debug('Admin layout: Loading user data')
+		return <Loading />
 	}
 
 	// Don't render if not authenticated (will redirect)
 	if (isError || (data && !data.isSuccess)) {
+		logger.warn('Admin layout: Authentication failed, redirecting to login')
 		return null
 	}
 
@@ -100,6 +100,9 @@ const AdminLayout = ({ revenue, timeline, children }: AdminLayoutProps) => {
 			data.data.role?.toLowerCase() === 'staff')
 
 	if (!isAuthorized) {
+		logger.warn('Admin layout: User not authorized (not admin/staff)', {
+			role: data?.data?.role,
+		})
 		return null
 	}
 

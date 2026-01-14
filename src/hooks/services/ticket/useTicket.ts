@@ -57,6 +57,12 @@ const TicketAPI = {
 		const { data } = await axios.general.patch<ApiResponse<UpdateBadgeDetailsResponse>>('/tickets/me/badge', payload)
 		return data
 	},
+
+	// Cancel ticket (protected)
+	cancelTicket: async () => {
+		const { data } = await axios.general.delete<ApiResponse<Record<string, never>>>('/tickets/me/cancel')
+		return data
+	},
 }
 
 // ========== Hooks ==========
@@ -86,6 +92,9 @@ export function useGetMyTicket() {
 		queryKey: ['my-ticket'],
 		queryFn: () => TicketAPI.getMyTicket(),
 		retry: false,
+		refetchOnWindowFocus: false,
+		refetchOnMount: false,
+		refetchOnReconnect: false,
 	})
 }
 
@@ -128,6 +137,21 @@ export function useUpdateBadgeDetails() {
 		}) => TicketAPI.updateBadgeDetails(payload),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ['my-ticket'] })
+		},
+	})
+}
+
+// Cancel ticket mutation
+export function useCancelTicket() {
+	const queryClient = getQueryClient()
+
+	return useMutation({
+		mutationFn: () => TicketAPI.cancelTicket(),
+		onSuccess: () => {
+			// Invalidate both my-ticket and tiers (stock will be re-incremented)
+			queryClient.invalidateQueries({ queryKey: ['my-ticket'] })
+			queryClient.invalidateQueries({ queryKey: ['ticket-tiers'] })
+			queryClient.invalidateQueries({ queryKey: ['account'] })
 		},
 	})
 }

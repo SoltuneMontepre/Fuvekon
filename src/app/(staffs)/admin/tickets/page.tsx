@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
 	CheckCircle,
 	XCircle,
@@ -81,6 +81,21 @@ const TicketManagementPage = (): React.ReactElement => {
 	const [showDenyDialog, setShowDenyDialog] = useState(false)
 	const [selectedTicket, setSelectedTicket] = useState<UserTicket | null>(null)
 	const [denyReason, setDenyReason] = useState('')
+
+	// Auto-filter on search input (3+ characters)
+	useEffect(() => {
+		if (searchInput.length >= 3 || searchInput.length === 0) {
+			const timeoutId = setTimeout(() => {
+				setFilter(prev => ({
+					...prev,
+					search: searchInput || undefined,
+					page: 1,
+				}))
+			}, 300) // Debounce 300ms
+
+			return () => clearTimeout(timeoutId)
+		}
+	}, [searchInput])
 
 	// Queries
 	const { data: ticketsData, isLoading: ticketsLoading, refetch: refetchTickets } = useAdminGetTickets(filter)
@@ -418,39 +433,41 @@ const TicketManagementPage = (): React.ReactElement => {
 													</span>
 												</td>
 												<td className='px-4 py-3'>
-													{ticket.status === 'self_confirmed' && (
-														<div className='flex justify-center gap-2'>
-															<button
-																onClick={() => handleApprove(ticket)}
-																disabled={approveMutation.isPending}
-																className='px-3 py-1 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 text-sm font-medium disabled:opacity-50'
-															>
-																{t('approve')}
-															</button>
-															<button
-																onClick={() => handleDenyClick(ticket)}
-																disabled={denyMutation.isPending}
-																className='px-3 py-1 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 text-sm font-medium disabled:opacity-50'
-															>
-																{t('deny')}
-															</button>
+													<div className='flex justify-center gap-2'>
+														<button
+															onClick={() => handleApprove(ticket)}
+															disabled={ticket.status !== 'self_confirmed' || approveMutation.isPending}
+															className='px-3 py-1 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed'
+														>
+															{t('approve')}
+														</button>
+														<button
+															onClick={() => handleDenyClick(ticket)}
+															disabled={ticket.status !== 'self_confirmed' || denyMutation.isPending}
+															className='px-3 py-1 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed'
+														>
+															{t('deny')}
+														</button>
+													</div>
+													{ticket.status === 'approved' && (
+														<div className='text-center mt-2'>
+															<span className='text-xs text-green-600'>
+																{ticket.approved_at
+																	? new Date(ticket.approved_at).toLocaleDateString(
+																			'vi-VN'
+																		)
+																	: '–'}
+															</span>
 														</div>
 													)}
-													{ticket.status === 'approved' && (
-														<span className='text-sm text-green-600'>
-															{ticket.approved_at
-																? new Date(ticket.approved_at).toLocaleDateString(
-																		'vi-VN'
-																	)
-																: '–'}
-														</span>
-													)}
 													{ticket.status === 'denied' && (
-														<span className='text-sm text-red-600'>
-															{ticket.denied_at
-																? new Date(ticket.denied_at).toLocaleDateString('vi-VN')
-																: '–'}
-														</span>
+														<div className='text-center mt-2'>
+															<span className='text-xs text-red-600'>
+																{ticket.denied_at
+																	? new Date(ticket.denied_at).toLocaleDateString('vi-VN')
+																	: '–'}
+															</span>
+														</div>
 													)}
 												</td>
 											</tr>

@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import { Clock, CheckCircle, XCircle, AlertCircle, RefreshCw, ArrowUpCircle } from 'lucide-react'
 import { useTranslations } from 'next-intl'
-import { useGetMyTicket, useUpdateBadgeDetails } from '@/hooks/services/ticket/useTicket'
+import { useGetMyTicket, useUpdateBadgeDetails, useCancelTicket } from '@/hooks/services/ticket/useTicket'
 import type { TicketStatus } from '@/types/models/ticket/ticket'
 
 // Format price in VND
@@ -52,6 +52,7 @@ const MyTicketDisplay = (): React.ReactElement => {
 
 	const { data: ticketData, isLoading, error, refetch } = useGetMyTicket()
 	const updateBadgeMutation = useUpdateBadgeDetails()
+	const cancelTicketMutation = useCancelTicket()
 
 	const ticket = ticketData?.data
 
@@ -76,6 +77,19 @@ const MyTicketDisplay = (): React.ReactElement => {
 				is_fursuit_staff: isFursuitStaff,
 			})
 			setShowBadgeForm(false)
+		} catch {
+			// Error handled by mutation
+		}
+	}
+
+	const handleCancelTicket = async () => {
+		if (!confirm(t('confirmCancelTicket') || 'Are you sure you want to cancel this ticket? The stock will be returned and you can purchase a new ticket.')) {
+			return
+		}
+
+		try {
+			await cancelTicketMutation.mutateAsync()
+			router.push('/ticket')
 		} catch {
 			// Error handled by mutation
 		}
@@ -167,12 +181,21 @@ const MyTicketDisplay = (): React.ReactElement => {
 				{ticket.status === 'pending' && (
 					<div className='bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4'>
 						<p className='text-yellow-800 text-sm'>{t('completePayment')}</p>
-						<button
-							onClick={() => router.push(`/ticket/purchase/${tier?.id}`)}
-							className='mt-3 px-4 py-2 bg-[#7cbc97] text-white rounded-lg hover:bg-[#6aab85] font-semibold'
-						>
-							{t('payNow')}
-						</button>
+						<div className='flex gap-2 mt-3'>
+							<button
+								onClick={() => router.push(`/ticket/purchase/${tier?.id}`)}
+								className='flex-1 px-4 py-2 bg-[#7cbc97] text-white rounded-lg hover:bg-[#6aab85] font-semibold'
+							>
+								{t('payNow')}
+							</button>
+							<button
+								onClick={handleCancelTicket}
+								disabled={cancelTicketMutation.isPending}
+								className='px-4 py-2 border-2 border-red-500 text-red-600 rounded-lg hover:bg-red-50 font-semibold disabled:opacity-50'
+							>
+								{cancelTicketMutation.isPending ? tCommon('processing') : tCommon('cancel')}
+							</button>
+						</div>
 					</div>
 				)}
 
@@ -180,6 +203,13 @@ const MyTicketDisplay = (): React.ReactElement => {
 					<div className='bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4'>
 						<p className='text-blue-800 text-sm'>{t('paymentReceived')}</p>
 						<p className='text-blue-600 text-xs mt-2'>{t('verificationTime')}</p>
+						<button
+							onClick={handleCancelTicket}
+							disabled={cancelTicketMutation.isPending}
+							className='mt-3 w-full px-4 py-2 border-2 border-red-500 text-red-600 rounded-lg hover:bg-red-50 font-semibold disabled:opacity-50'
+						>
+							{cancelTicketMutation.isPending ? tCommon('processing') : tCommon('cancel')}
+						</button>
 					</div>
 				)}
 

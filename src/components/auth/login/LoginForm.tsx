@@ -48,6 +48,9 @@ const LoginForm = (): React.ReactElement => {
 		loginMutation.mutate(data, {
 			onSuccess: async responseData => {
 				if (responseData.isSuccess) {
+					// Small delay to ensure cookie is set before fetching user data
+					await new Promise(resolve => setTimeout(resolve, 100))
+
 					// Fetch user account to get role information
 					const { data: meData } = await refetchMe()
 

@@ -8,6 +8,8 @@ import { useAuthStore } from '@/stores/authStore'
 import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useTranslations } from 'next-intl'
+import { logger } from '@/utils/logger'
+import Loading from '@/components/common/Loading'
 
 type AccountLayoutProps = {
 	children: ReactNode
@@ -17,7 +19,6 @@ type AccountLayoutProps = {
 const AccountLayout = ({ children, info }: AccountLayoutProps) => {
 	const router = useRouter()
 	const t = useTranslations('nav')
-	const tCommon = useTranslations('common')
 	const { data, isLoading, isError } = useGetMe()
 	const setAccount = useAuthStore(state => state.setAccount)
 
@@ -58,15 +59,13 @@ const AccountLayout = ({ children, info }: AccountLayoutProps) => {
 
 	// Show loading state
 	if (isLoading) {
-		return (
-			<div className='flex items-center justify-center min-h-screen'>
-				<div className='text-lg'>{tCommon('loading')}</div>
-			</div>
-		)
+		logger.debug('Account layout: Loading user data')
+		return <Loading />
 	}
 
 	// Don't render if not authenticated (will redirect)
 	if (isError || (data && !data.isSuccess)) {
+		logger.warn('Account layout: Authentication failed, redirecting to login')
 		return null
 	}
 

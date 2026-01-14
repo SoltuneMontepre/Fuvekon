@@ -2,12 +2,14 @@
 
 import React, { useState, use, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { Copy, Check, AlertCircle, QrCode } from 'lucide-react'
+import { Copy, Check, AlertCircle } from 'lucide-react'
 import { useTranslations } from 'next-intl'
+import Image from 'next/image'
 import CollapsibleScroll from '@/components/animated/CollapsibleScroll'
 import Separator from '@/components/common/scroll/Separator'
 import { useGetMyTicket, useConfirmPayment } from '@/hooks/services/ticket/useTicket'
 import Background from '@/components/ui/Background'
+import Loading from '@/components/common/Loading'
 
 interface TicketPurchasePageProps {
 	params: Promise<{ id: string }>
@@ -45,7 +47,7 @@ const TicketPurchasePage = ({ params }: TicketPurchasePageProps): React.ReactEle
 	// Redirect if ticket is already confirmed or approved
 	useEffect(() => {
 		if (ticket && (ticket.status === 'self_confirmed' || ticket.status === 'approved')) {
-			router.push('/account')
+			router.push('/account/ticket')
 		}
 	}, [ticket, router])
 
@@ -73,8 +75,8 @@ const TicketPurchasePage = ({ params }: TicketPurchasePageProps): React.ReactEle
 		try {
 			const result = await confirmMutation.mutateAsync()
 			if (result.isSuccess) {
-				// Redirect to account page to see ticket status
-				router.push('/account')
+				// Redirect to ticket page to see ticket status
+				router.push('/account/ticket')
 			}
 		} catch {
 			// Error handled by mutation
@@ -82,11 +84,7 @@ const TicketPurchasePage = ({ params }: TicketPurchasePageProps): React.ReactEle
 	}
 
 	if (isLoading) {
-		return (
-			<div className='min-h-screen flex items-center justify-center'>
-				<div className='text-[#48715b] text-xl'>{tCommon('loading')}</div>
-			</div>
-		)
+		return <Loading />
 	}
 
 	if (error || !ticket) {
@@ -179,15 +177,17 @@ const TicketPurchasePage = ({ params }: TicketPurchasePageProps): React.ReactEle
 								</div>
 							</div>
 
-							{/* QR Code Placeholder */}
+							{/* QR Code */}
 							<div className='flex flex-col md:flex-row gap-6 mb-6'>
 								<div className='flex-shrink-0'>
-									<div className='w-48 h-48 bg-white rounded-lg border-2 border-[#548780] flex items-center justify-center'>
-										{/* Placeholder QR - in production, this would be the actual bank QR */}
-										<div className='text-center text-[#48715b]'>
-											<QrCode className='w-24 h-24 mx-auto mb-2' />
-											<p className='text-xs'>{t('qrTransfer')}</p>
-										</div>
+									<div className='w-48 h-48 bg-white rounded-lg border-2 border-[#548780] p-2 flex items-center justify-center'>
+										<Image
+											src='/images/qr.png'
+											alt={t('qrTransfer')}
+											width={176}
+											height={176}
+											className='w-full h-full object-contain'
+										/>
 									</div>
 								</div>
 
@@ -250,22 +250,32 @@ const TicketPurchasePage = ({ params }: TicketPurchasePageProps): React.ReactEle
 							)}
 
 							{/* Confirm Button */}
-							<button
-								onClick={() => setShowConfirmDialog(true)}
-								disabled={confirmMutation.isPending}
-								className={`
-									w-full py-4 px-6 rounded-[12px] font-semibold text-lg uppercase tracking-wide
-									transition-all duration-200
-									shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)]
-									${
-										confirmMutation.isPending
-											? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-											: 'bg-[#7cbc97] text-white hover:bg-[#6aab85] active:translate-y-0.5'
-									}
-								`}
-							>
-								{confirmMutation.isPending ? tCommon('processing') : t('iHavePaid')}
-							</button>
+							<div className='space-y-3'>
+								<button
+									onClick={() => setShowConfirmDialog(true)}
+									disabled={confirmMutation.isPending}
+									className={`
+										w-full py-4 px-6 rounded-[12px] font-semibold text-lg uppercase tracking-wide
+										transition-all duration-200
+										shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)]
+										${
+											confirmMutation.isPending
+												? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+												: 'bg-[#7cbc97] text-white hover:bg-[#6aab85] active:translate-y-0.5'
+										}
+									`}
+								>
+									{confirmMutation.isPending ? tCommon('processing') : t('iHavePaid')}
+								</button>
+
+								<button
+									onClick={() => router.push('/account')}
+									disabled={confirmMutation.isPending}
+									className='w-full py-3 px-6 rounded-[12px] font-semibold text-base border-2 border-[#48715b] text-[#48715b] hover:bg-[#e9f5e7] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed'
+								>
+									{tCommon('cancel')}
+								</button>
+							</div>
 
 							<p className='text-center text-sm text-[#48715b] mt-4'>{t('clickAfterPayment')}</p>
 						</div>

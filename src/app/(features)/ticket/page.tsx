@@ -10,6 +10,7 @@ import { useGetTiers, useGetMyTicket, usePurchaseTicket } from '@/hooks/services
 import { useAuthStore } from '@/stores/authStore'
 import Background from '@/components/ui/Background'
 import type { TicketTier } from '@/types/models/ticket/ticket'
+import Loading from '@/components/common/Loading'
 
 // Format price in VND
 const formatPrice = (price: number): string => {
@@ -83,11 +84,7 @@ const TicketPage = (): React.ReactElement => {
 	]
 
 	if (tiersLoading || ticketLoading) {
-		return (
-			<div className='min-h-screen flex items-center justify-center'>
-				<div className='text-[#48715b] text-xl'>{tCommon('loading')}</div>
-			</div>
-		)
+		return <Loading />
 	}
 
 	if (tiersError) {
@@ -214,7 +211,9 @@ const TicketPage = (): React.ReactElement => {
 					{purchaseMutation.error && (
 						<div className='mt-6 text-center'>
 							<p className='text-sm text-red-300'>
-								{(purchaseMutation.error as Error).message || t('errorOccurred')}
+								{(purchaseMutation.error as any)?.response?.data?.message ||
+								 (purchaseMutation.error as Error).message ||
+								 t('errorOccurred')}
 							</p>
 						</div>
 					)}

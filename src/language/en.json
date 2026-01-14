@@ -114,7 +114,8 @@
 		"soldOut": "Sold Out",
 		"remaining": "{count} remaining",
 		"errorOccurred": "An error occurred. Please try again.",
-		"ticketIncludes": "Ticket includes"
+		"ticketIncludes": "Ticket includes",
+		"confirmCancelTicket": "Are you sure you want to cancel this ticket? The stock will be returned and you can purchase a new ticket."
 	},
 	"admin": {
 		"ticketManagement": "Ticket Management",

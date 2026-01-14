@@ -17,13 +17,6 @@
 		"copy": "Sao chép"
 	},
 	"nav": {
-		"register": "Đăng ký",
-		"contributes": "Đóng góp",
-		"about": "Về chúng tôi",
-		"myTicket": "Vé của tôi",
-		"account": "Tài khoản"
-	},
-	"nav": {
 		"ticket": "Vé",
 		"register": "Đăng ký",
 		"contributes": "Đóng góp",
@@ -33,7 +26,9 @@
 		"artbook": "Artbook",
 		"dealer": "Gian hàng",
 		"schedule": "Lịch trình",
-		"about": "Giới thiệu"
+		"about": "Giới thiệu",
+		"myTicket": "Vé của tôi",
+		"account": "Tài khoản"
 	},
 	"auth": {
 		"login": "Đăng nhập",
@@ -65,7 +60,7 @@
 		"notice1": "Mỗi tài khoản chỉ được mua 1 vé duy nhất.",
 		"notice2": "Sau khi chọn vé, bạn sẽ được chuyển đến trang thanh toán.",
 		"notice3": "Vui lòng chuyển khoản đúng số tiền và nội dung theo hướng dẫn.",
-		"notice4": "Sau khi chuyển khoản, bấm \"Tôi đã thanh toán\" để nhân viên xác minh.",
+		"notice4": "Sau khi chuyển khoản, bấm \"Tôi đã thanh toán\" để staff xác minh.",
 		"notice5": "Thời gian xác minh: 1-24 giờ làm việc.",
 		"notice6": "Không hoàn tiền sau khi mua vé thành công.",
 		"referenceCode": "Mã vé",
@@ -85,7 +80,7 @@
 		"payNow": "Thanh toán ngay",
 		"tryAnotherTicket": "Thử mua vé khác",
 		"completePayment": "Vui lòng hoàn tất thanh toán để xác nhận vé của bạn.",
-		"paymentReceived": "Chúng tôi đã nhận được xác nhận thanh toán của bạn. Vui lòng chờ nhân viên xác minh.",
+		"paymentReceived": "Chúng tôi đã nhận được xác nhận thanh toán của bạn. Vui lòng chờ staff xác minh.",
 		"verificationTime": "Thời gian xác minh: 1-24 giờ làm việc",
 		"ticketDenied": "Vé của bạn đã bị từ chối.",
 		"denialReason": "Lý do",
@@ -119,7 +114,8 @@
 		"soldOut": "Hết vé",
 		"remaining": "Còn {count} vé",
 		"errorOccurred": "Có lỗi xảy ra. Vui lòng thử lại.",
-		"ticketIncludes": "Vé này bao gồm"
+		"ticketIncludes": "Vé này bao gồm",
+		"confirmCancelTicket": "Bạn có chắc chắn muốn hủy vé này không? Số lượng vé sẽ được hoàn lại và bạn có thể mua vé mới."
 	},
 	"admin": {
 		"ticketManagement": "Quản lý vé",
@@ -154,6 +150,14 @@
 		"denyReasonPlaceholder": "VD: Không tìm thấy giao dịch, thông tin không khớp...",
 		"confirmDeny": "Xác nhận từ chối",
 		"noTickets": "Không có vé nào",
-		"page": "Trang {current} / {total}"
+		"page": "Trang {current} / {total}",
+		"landing": {
+			"suggestion": "Cuộn xuống để xem thêm!",
+			"theme": {
+				"theme": "Chủ đề",
+				"title": "Chủ đề sự kiện",
+				"description": "Khám phá chủ đề mê hoặc của Fuvekon năm nay, nơi thế giới tưởng tượng hòa quyện với hiện thực trong một lễ hội sáng tạo và trí tưởng tượng."
+			}
+		}
 	}
 }

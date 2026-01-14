@@ -1,5 +1,6 @@
 import a from 'axios'
 import { useAuthStore } from '@/stores/authStore'
+import { logger } from '@/utils/logger'
 
 const baseURL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8085'
 
@@ -33,9 +34,40 @@ const axiosTicket = a.create({
 })
 
 axiosGeneral.interceptors.response.use(
-	response => response,
+	response => {
+		logger.debug('API Response', {
+			url: response.config.url,
+			status: response.status,
+			method: response.config.method,
+		})
+		return response
+	},
 	error => {
-		if (error.response?.status === 403) {
+		logger.error('API Error', error, {
+			url: error.config?.url,
+			status: error.response?.status,
+			method: error.config?.method,
+		})
+
+		if (error.response?.status === 401) {
+			logger.warn('401 Unauthorized - Clearing account')
+			const { clearAccount, isAuthenticated } = useAuthStore.getState()
+
+			// Only redirect if we thought we were authenticated
+			// This prevents race conditions from logging the user out
+			if (isAuthenticated) {
+				clearAccount()
+				// Use router instead of window.location to avoid losing state
+				// But only if we're in a browser environment
+				if (typeof window !== 'undefined' && !window.location.pathname.includes('/login')) {
+					// Wait a bit to allow other operations to complete
+					setTimeout(() => {
+						window.location.href = '/login'
+					}, 100)
+				}
+			}
+		} else if (error.response?.status === 403) {
+			logger.warn('403 Forbidden - Clearing account')
 			const { clearAccount } = useAuthStore.getState()
 			clearAccount()
 		}
@@ -44,9 +76,40 @@ axiosGeneral.interceptors.response.use(
 )
 
 axiosTicket.interceptors.response.use(
-	response => response,
+	response => {
+		logger.debug('API Response', {
+			url: response.config.url,
+			status: response.status,
+			method: response.config.method,
+		})
+		return response
+	},
 	error => {
-		if (error.response?.status === 403) {
+		logger.error('API Error', error, {
+			url: error.config?.url,
+			status: error.response?.status,
+			method: error.config?.method,
+		})
+
+		if (error.response?.status === 401) {
+			logger.warn('401 Unauthorized - Clearing account')
+			const { clearAccount, isAuthenticated } = useAuthStore.getState()
+
+			// Only redirect if we thought we were authenticated
+			// This prevents race conditions from logging the user out
+			if (isAuthenticated) {
+				clearAccount()
+				// Use router instead of window.location to avoid losing state
+				// But only if we're in a browser environment
+				if (typeof window !== 'undefined' && !window.location.pathname.includes('/login')) {
+					// Wait a bit to allow other operations to complete
+					setTimeout(() => {
+						window.location.href = '/login'
+					}, 100)
+				}
+			}
+		} else if (error.response?.status === 403) {
+			logger.warn('403 Forbidden - Clearing account')
 			const { clearAccount } = useAuthStore.getState()
 			clearAccount()
 		}
@@ -55,9 +118,40 @@ axiosTicket.interceptors.response.use(
 )
 
 axiosLocal.interceptors.response.use(
-	response => response,
+	response => {
+		logger.debug('API Response', {
+			url: response.config.url,
+			status: response.status,
+			method: response.config.method,
+		})
+		return response
+	},
 	error => {
-		if (error.response?.status === 403) {
+		logger.error('API Error', error, {
+			url: error.config?.url,
+			status: error.response?.status,
+			method: error.config?.method,
+		})
+
+		if (error.response?.status === 401) {
+			logger.warn('401 Unauthorized - Clearing account')
+			const { clearAccount, isAuthenticated } = useAuthStore.getState()
+
+			// Only redirect if we thought we were authenticated
+			// This prevents race conditions from logging the user out
+			if (isAuthenticated) {
+				clearAccount()
+				// Use router instead of window.location to avoid losing state
+				// But only if we're in a browser environment
+				if (typeof window !== 'undefined' && !window.location.pathname.includes('/login')) {
+					// Wait a bit to allow other operations to complete
+					setTimeout(() => {
+						window.location.href = '/login'
+					}, 100)
+				}
+			}
+		} else if (error.response?.status === 403) {
+			logger.warn('403 Forbidden - Clearing account')
 			const { clearAccount } = useAuthStore.getState()
 			clearAccount()
 		}
