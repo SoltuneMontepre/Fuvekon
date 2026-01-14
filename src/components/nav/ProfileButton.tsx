@@ -4,6 +4,7 @@ import React, { useState, useRef, useEffect } from 'react'
 import { useTranslations } from 'next-intl'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import Image from 'next/image'
 import { useAuthStore } from '@/stores/authStore'
 import { useLogout } from '@/hooks/services/auth/useLogout'
 
@@ -17,9 +18,9 @@ const ProfileButton = (): React.ReactElement => {
 	const [imageError, setImageError] = useState(false)
 	const dropdownRef = useRef<HTMLDivElement>(null)
 
-	const handleLogout = () => {
-		logoutMutation.mutate(undefined)
+	const handleLogout = async () => {
 		setIsOpen(false)
+		await logoutMutation.mutateAsync(undefined)
 		router.replace('/login')
 	}
 
@@ -47,10 +48,11 @@ const ProfileButton = (): React.ReactElement => {
 			>
 				<div className='relative size-8 rounded-full overflow-hidden bg-[#154c5b] border-2 border-white/30'>
 					{showAvatar ? (
-						<img
+						<Image
 							src={account.avatar}
 							alt={displayName}
-							className='w-full h-full object-cover'
+							fill
+							className='object-cover'
 							onError={() => setImageError(true)}
 						/>
 					) : (

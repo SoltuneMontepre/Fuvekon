@@ -15,7 +15,10 @@ export type ConfirmPaymentResponse = UserTicket
 export type UpdateBadgeDetailsResponse = UserTicket
 
 // Admin responses
-export type AdminGetTicketsResponse = UserTicket[]
+export interface AdminGetTicketsResponse {
+	items: UserTicket[]
+	meta: PaginationMeta
+}
 
 export type GetTicketByIdResponse = UserTicket
 

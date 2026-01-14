@@ -4,6 +4,7 @@ import React from 'react'
 import { useRouter } from 'next/navigation'
 import { useTranslations } from 'next-intl'
 import { Check } from 'lucide-react'
+import { AxiosError } from 'axios'
 import CollapsibleScroll from '@/components/animated/CollapsibleScroll'
 import Separator from '@/components/common/scroll/Separator'
 import { useGetTiers, useGetMyTicket, usePurchaseTicket } from '@/hooks/services/ticket/useTicket'
@@ -211,7 +212,7 @@ const TicketPage = (): React.ReactElement => {
 					{purchaseMutation.error && (
 						<div className='mt-6 text-center'>
 							<p className='text-sm text-red-300'>
-								{(purchaseMutation.error as any)?.response?.data?.message ||
+								{(purchaseMutation.error as AxiosError<{ message?: string }>)?.response?.data?.message ||
 								 (purchaseMutation.error as Error).message ||
 								 t('errorOccurred')}
 							</p>

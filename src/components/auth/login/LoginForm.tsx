@@ -48,25 +48,37 @@ const LoginForm = (): React.ReactElement => {
 		loginMutation.mutate(data, {
 			onSuccess: async responseData => {
 				if (responseData.isSuccess) {
-					// Small delay to ensure cookie is set before fetching user data
-					await new Promise(resolve => setTimeout(resolve, 100))
+					// Poll for user data to confirm session is established
+					const maxRetries = 5
+					let retryCount = 0
 
-					// Fetch user account to get role information
-					const { data: meData } = await refetchMe()
+					const attemptFetchUser = async (): Promise<void> => {
+						const { data: meData } = await refetchMe()
 
-					if (meData?.isSuccess && meData.data) {
-						const userRole = meData.data.role?.toLowerCase()
+						if (meData?.isSuccess && meData.data) {
+							const userRole = meData.data.role?.toLowerCase()
 
-						// Redirect based on role
-						if (userRole === 'admin' || userRole === 'staff') {
-							router.push('/admin/tickets')
-						} else {
-							router.push('/account')
+							// Redirect based on role
+							if (userRole === 'admin' || userRole === 'staff') {
+								router.push('/admin/tickets')
+							} else {
+								router.push('/account')
+							}
+							return
 						}
-					} else {
-						// Fallback to /account if we can't get user data
+
+						// Retry if session not yet established
+						retryCount++
+						if (retryCount < maxRetries) {
+							await new Promise(resolve => setTimeout(resolve, 50 * retryCount))
+							return attemptFetchUser()
+						}
+
+						// Fallback to /account if we can't get user data after retries
 						router.push('/account')
 					}
+
+					await attemptFetchUser()
 				} else {
 					setFormError('root', {
 						type: 'manual',

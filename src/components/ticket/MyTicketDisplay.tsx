@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import { Clock, CheckCircle, XCircle, AlertCircle, RefreshCw, ArrowUpCircle } from 'lucide-react'
@@ -80,7 +80,7 @@ const MyTicketDisplay = (): React.ReactElement => {
 			})
 			setShowBadgeForm(false)
 			toast.success(t('badgeUpdatedSuccess') || 'Badge details updated successfully!')
-		} catch (error) {
+		} catch {
 			toast.error(t('badgeUpdateError') || 'Failed to update badge details. Please try again.')
 		}
 	}
@@ -91,10 +91,17 @@ const MyTicketDisplay = (): React.ReactElement => {
 			await cancelTicketMutation.mutateAsync()
 			toast.success(t('ticketCancelledSuccess') || 'Ticket cancelled successfully!')
 			router.push('/ticket')
-		} catch (error) {
+		} catch {
 			toast.error(t('ticketCancelError') || 'Failed to cancel ticket. Please try again.')
 		}
 	}
+
+	// Show error toast when error occurs
+	useEffect(() => {
+		if (error) {
+			toast.error(t('couldNotLoadTicket') || 'Could not load ticket information')
+		}
+	}, [error, t])
 
 	if (isLoading) {
 		return (
@@ -105,7 +112,6 @@ const MyTicketDisplay = (): React.ReactElement => {
 	}
 
 	if (error) {
-		toast.error(t('couldNotLoadTicket') || 'Could not load ticket information')
 		return (
 			<div className='p-6 bg-[#e2eee2] rounded-xl border-2 border-[#548780]'>
 				<div className='text-center text-[#48715b]'>
@@ -209,7 +215,7 @@ const MyTicketDisplay = (): React.ReactElement => {
 						<p className='text-blue-800 text-sm'>{t('paymentReceived')}</p>
 						<p className='text-blue-600 text-xs mt-2'>{t('verificationTime')}</p>
 						<button
-							onClick={handleCancelTicket}
+							onClick={() => setShowCancelDialog(true)}
 							disabled={cancelTicketMutation.isPending}
 							className='mt-3 w-full px-4 py-2 border-2 border-red-500 text-red-600 rounded-lg hover:bg-red-50 font-semibold disabled:opacity-50'
 						>

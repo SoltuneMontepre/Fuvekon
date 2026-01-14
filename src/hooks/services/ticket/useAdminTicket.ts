@@ -36,7 +36,7 @@ const AdminTicketAPI = {
 		if (filter.page) params.append('page', filter.page.toString())
 		if (filter.page_size) params.append('page_size', filter.page_size.toString())
 
-		const { data } = await axios.general.get<ApiResponse<AdminGetTicketsResponse> & { meta?: PaginationMeta }>(
+		const { data } = await axios.general.get<ApiResponse<AdminGetTicketsResponse>>(
 			`/admin/tickets?${params.toString()}`
 		)
 		return data

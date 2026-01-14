@@ -86,7 +86,7 @@ const TicketPurchasePage = ({ params }: TicketPurchasePageProps): React.ReactEle
 				// Redirect to ticket page to see ticket status
 				router.push('/account/ticket')
 			}
-		} catch (error) {
+		} catch {
 			toast.error(t('paymentConfirmError') || 'Failed to confirm payment. Please try again.')
 		}
 	}

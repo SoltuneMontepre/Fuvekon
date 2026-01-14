@@ -141,7 +141,7 @@ const SidebarItemComponent = ({
 		<>
 			{Icon && (
 				<Icon
-					className='sidebar-item-icon flex-shrink-0 w-15 h-15'
+					className='sidebar-item-icon flex-shrink-0 w-5 h-5'
 					aria-hidden='true'
 				/>
 			)}

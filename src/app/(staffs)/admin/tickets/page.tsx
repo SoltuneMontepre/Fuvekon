@@ -13,6 +13,7 @@ import {
 	ChevronRight,
 } from 'lucide-react'
 import { useTranslations } from 'next-intl'
+import { toast } from 'sonner'
 import {
 	useAdminGetTickets,
 	useGetTicketStatistics,
@@ -22,6 +23,7 @@ import {
 } from '@/hooks/services/ticket/useAdminTicket'
 import { useGetTiers } from '@/hooks/services/ticket/useTicket'
 import type { TicketStatus, UserTicket } from '@/types/models/ticket/ticket'
+import { logger } from '@/utils/logger'
 
 // Format price in VND
 const formatPrice = (price: number): string => {
@@ -106,10 +108,10 @@ const TicketManagementPage = (): React.ReactElement => {
 	const approveMutation = useApproveTicket()
 	const denyMutation = useDenyTicket()
 
-	const tickets = ticketsData?.data || []
+	const tickets = ticketsData?.data?.items || []
 	const stats = statsData?.data
 	const tiers = tiersData?.data || []
-	const pagination = (ticketsData as { meta?: { totalPages: number; currentPage: number } })?.meta
+	const pagination = ticketsData?.data?.meta
 
 	// Handle search
 	const handleSearch = () => {
@@ -159,8 +161,10 @@ const TicketManagementPage = (): React.ReactElement => {
 	const handleApprove = async (ticket: UserTicket) => {
 		try {
 			await approveMutation.mutateAsync(ticket.id)
-		} catch {
-			// Error handled by mutation
+			toast.success(t('ticketApproved') || 'Ticket approved successfully')
+		} catch (error) {
+			logger.error('Failed to approve ticket', error, { ticketId: ticket.id })
+			toast.error(t('approveError') || 'Failed to approve ticket. Please try again.')
 		}
 	}
 
@@ -180,8 +184,10 @@ const TicketManagementPage = (): React.ReactElement => {
 			})
 			setShowDenyDialog(false)
 			setSelectedTicket(null)
-		} catch {
-			// Error handled by mutation
+			toast.success(t('ticketDenied') || 'Ticket denied successfully')
+		} catch (error) {
+			logger.error('Failed to deny ticket', error, { ticketId: selectedTicket.id })
+			toast.error(t('denyError') || 'Failed to deny ticket. Please try again.')
 		}
 	}
 
