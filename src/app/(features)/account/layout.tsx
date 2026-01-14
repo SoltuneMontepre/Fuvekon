@@ -3,7 +3,6 @@
 import SideBar from '@/components/nav/SideBar'
 import type { ReactNode } from 'react'
 import { UserCircle, Ticket } from 'lucide-react'
-import LogoutButton from '@/components/auth/login/LogoutButton'
 import { useGetMe } from '@/hooks/services/auth/useAccount'
 import { useAuthStore } from '@/stores/authStore'
 import { useEffect } from 'react'
@@ -81,7 +80,7 @@ const AccountLayout = ({ children, info }: AccountLayoutProps) => {
 				id='account-background'
 				className='account-background fixed inset-0 z-0'
 				style={{
-					backgroundImage: `url('/images/landing/tranh full oc.webp')`,
+					backgroundImage: `url('/assets/bg-base.webp')`,
 					backgroundSize: 'cover',
 					backgroundPosition: 'center',
 					backgroundRepeat: 'no-repeat',
@@ -97,7 +96,7 @@ const AccountLayout = ({ children, info }: AccountLayoutProps) => {
 				className='account-sidebar-container relative z-10 w-[200px] ml-6 my-6'
 			>
 				<div className='bg-main/95 dark:bg-dark-surface/95 backdrop-blur-md rounded-2xl shadow-2xl border border-slate-300/20 dark:border-dark-border/20'>
-					<SideBar sections={sections} footer={<LogoutButton />} />
+					<SideBar sections={sections} />
 				</div>
 			</div>
 

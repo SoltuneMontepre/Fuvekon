@@ -11,11 +11,9 @@ const LogoutButton = (): React.ReactElement => {
 	const logoutMutation = useLogout()
 
 	const handleLogout = () => {
-		logoutMutation.mutate(undefined, {
-			onSuccess: () => {
-				router.push('/login')
-			},
-		})
+		logoutMutation.mutate(undefined)
+		// Redirect immediately after triggering logout
+		router.replace('/login')
 	}
 
 	return (

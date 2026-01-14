@@ -98,7 +98,7 @@ const LoginForm = (): React.ReactElement => {
 				>
 					<Image
 						src='/images/landing/tranh full oc.webp'
-						alt='Fantasy Character'
+						alt='Fantasy Character' 
 						fill
 						className='login-illustration object-cover object-[50%_0%] scale-y-130 scale-x-130  translate-x-[-380px] translate-y-[-17px]'
 						priority
