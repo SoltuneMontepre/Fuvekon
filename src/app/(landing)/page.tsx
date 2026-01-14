@@ -1,8 +1,6 @@
 'use client'
 
 import gsap from '@/common/gsap'
-import CollapsibleScroll from '@/components/animated/CollapsibleScroll'
-import ScrollBar from '@/components/common/scroll/ScrollBar'
 import DrumImage from '@/components/landing/DrumImage'
 import GOHSection from '@/components/landing/GOHSection'
 import HeroSection from '@/components/landing/HeroSection'
