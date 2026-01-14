@@ -35,6 +35,7 @@ const Background = ({ mascot = false, animated = false }: BackgroundProps) => {
 			ref={containerRef}
 			id='background-container'
 			className='fixed inset-0 h-dvh w-dvw flex items-center justify-center select-none overflow-hidden pointer-events-auto'
+			style={{ willChange: 'transform' }}
 		>
 			<div className='relative w-full h-full'>
 				<div className='absolute inset-0 flex items-center justify-center overflow-visible'>
@@ -45,14 +46,14 @@ const Background = ({ mascot = false, animated = false }: BackgroundProps) => {
 							className='absolute inset-0 overflow-visible'
 						>
 							<BaseBackground />
-							<Moon className='-translate-x-1/7 -translate-y-30 overflow-visible' />
+							<Moon className='overflow-visible' />
 						</div>
 						{/* Further Mountain Layer */}
 						<div
 							ref={furtherMountainRef}
 							className='absolute inset-0 overflow-visible'
 						>
-							<FurtherMountain className='translate-x-10 -translate-y-30 overflow-visible' />
+							<FurtherMountain className='overflow-visible' />
 						</div>
 						{/* Left Rock Layer */}
 						<div
@@ -73,9 +74,9 @@ const Background = ({ mascot = false, animated = false }: BackgroundProps) => {
 							ref={middleLayerRef}
 							className='absolute inset-0 overflow-visible'
 						>
-							<StaticBirds className='scale-[0.5] -translate-y-[30%] -translate-x-[3%] z-0 overflow-visible' />
+							<StaticBirds className='z-0 overflow-visible scale-[0.5] -translate-y-[30%] -translate-x-[3%]' />
 							{mascot && (
-								<Mascot className='scale-[0.7] overflow-visible drop-shadow-[0_25px_20px_rgba(0,0,0,0.4)] [filter:drop-shadow(0_25px_35px_rgba(0,0,0,0.4))_drop-shadow(0_10px_15px_rgba(0,0,0,0.25))]' />
+								<Mascot className='overflow-visible drop-shadow-[0_25px_20px_rgba(0,0,0,0.4)] [filter:drop-shadow(0_25px_35px_rgba(0,0,0,0.4))_drop-shadow(0_10px_15px_rgba(0,0,0,0.25))]' />
 							)}
 						</div>
 						{/* Foreground Flower Layer */}
@@ -83,7 +84,7 @@ const Background = ({ mascot = false, animated = false }: BackgroundProps) => {
 							ref={foregroundFlowerRef}
 							className='absolute inset-0 overflow-visible pointer-events-none'
 						>
-							<ForegroundFlower className='overflow-visible scale-[1.13]' />
+							<ForegroundFlower className='overflow-visible' />
 						</div>
 						{/* Foreground Foliage Layer */}
 						<div
@@ -91,7 +92,7 @@ const Background = ({ mascot = false, animated = false }: BackgroundProps) => {
 							className='absolute inset-0 overflow-visible pointer-events-none'
 						>
 							<ForegroundFoliage className='object-[70%] overflow-visible' />
-						</div>{' '}
+						</div>
 					</div>
 				</div>
 			</div>

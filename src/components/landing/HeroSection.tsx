@@ -14,7 +14,7 @@ const HeroSection = () => {
 			<div className='absolute inset-0 pointer-events-none'>
 				<Background mascot animated />
 			</div>
-			<ThemeTitle className='absolute left-1/2 bottom-[14%] -translate-x-1/2 z-50 md:w-2xl max-w-[90vw] min-w-[220px] h-auto pointer-events-auto drop-shadow-[0_10px_8px_rgba(0,0,0,0.18)] [filter:contrast(1.2)_saturate(1.5)]' />
+			<ThemeTitle className='absolute left-1/2 bottom-[14%] -translate-x-1/2 z-50 md:w-2xl max-w-[90vw] min-w-[220px] h-auto pointer-events-auto' />
 			<p className='absolute left-1/2 -translate-x-1/2 bottom-[10%] z-50 text-primary/70 text-sm md:text-base lg:text-lg font-semibold pointer-events-auto select-none invert-text'>
 				{t('suggestion')}
 			</p>

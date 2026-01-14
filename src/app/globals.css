@@ -98,7 +98,7 @@
 }
 
 body {
-	@apply overflow-x-hidden;
+	@apply overflow-x-hidden bg-black;
 }
 
 /* Modern Scrollbar Styles */

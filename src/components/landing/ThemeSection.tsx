@@ -4,16 +4,27 @@ import { useGSAP } from '@gsap/react'
 import gsap from '@/common/gsap'
 import { useTranslations } from 'next-intl'
 
-const ThemeSection = () => {
+interface ThemeSectionProps {
+	prefersReducedMotion?: boolean
+}
+
+const ThemeSection = ({ prefersReducedMotion = false }: ThemeSectionProps) => {
 	const t = useTranslations('landing')
 
 	useGSAP(() => {
+		if (prefersReducedMotion) {
+			gsap.set('.crane', { clearProps: 'all' })
+			gsap.set('.crane-reversed', { clearProps: 'all' })
+			return
+		}
+
 		const tl = gsap.timeline({
 			scrollTrigger: {
 				trigger: '.crane',
 				start: 'top bottom',
 				end: 'bottom top',
 				scrub: 2,
+				invalidateOnRefresh: true,
 			},
 		})
 
@@ -21,8 +32,13 @@ const ThemeSection = () => {
 			'.crane',
 			{
 				x: '100%',
+				force3D: true,
 			},
-			{ x: '0%' }
+			{
+				x: '0%',
+				force3D: true,
+				ease: 'none',
+			}
 		)
 
 		const tlReversed = gsap.timeline({
@@ -31,6 +47,7 @@ const ThemeSection = () => {
 				start: 'top bottom',
 				end: 'bottom top',
 				scrub: 2,
+				invalidateOnRefresh: true,
 			},
 		})
 
@@ -38,10 +55,15 @@ const ThemeSection = () => {
 			'.crane-reversed',
 			{
 				x: '-100%',
+				force3D: true,
 			},
-			{ x: '0%' }
+			{
+				x: '0%',
+				force3D: true,
+				ease: 'none',
+			}
 		)
-	}, [])
+	}, [prefersReducedMotion])
 
 	return (
 		<div className='h-dvh w-dvw flex flex-col pointer-events-none relative z-10 section theme-section'>

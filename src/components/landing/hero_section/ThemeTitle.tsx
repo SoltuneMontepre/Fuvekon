@@ -4,6 +4,7 @@ import React from 'react'
 const ThemeTitle = ({ className }: { className?: string }) => {
 	return (
 		<Image
+			id='theme-title'
 			className={`landing-bg ${className ?? ''}`}
 			src='/assets/theme-title.webp'
 			alt='theme-title-image'

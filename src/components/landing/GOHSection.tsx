@@ -5,6 +5,7 @@ import DrumImage from './DrumImage'
 import gsap from '@/common/gsap'
 import { useGSAP } from '@gsap/react'
 import Image from 'next/image'
+import { GOH_DETAILS } from '@/config/app'
 
 const GOHSection = () => {
 	const [isEnterLeft, setIsEnterLeft] = React.useState(false)
@@ -70,61 +71,73 @@ const GOHSection = () => {
 		})
 	}
 
+	const selectedGOH = isEnterLeft
+		? GOH_DETAILS.first
+		: isEnterRight
+		? GOH_DETAILS.second
+		: null
+
 	return (
-		<div
-			id='goh-section'
-			className='h-dvh grid-cols-2 grid w-dvw relative z-10 section overflow-hidden'
-		>
-			{/* Left Character Box */}
-			<div className='h-full w-full relative flex items-end justify-center'>
-				<div className='absolute inset-0 z-0'>
-					<DrumImage id='drum-left' isEnter={isEnterLeft} />
-				</div>
-				<div className='goh-left z-30 relative pointer-events-auto cursor-pointer w-full h-full translate-y-1/3'>
-					<div className='relative w-full h-full'>
-						<Image
-							src='/images/landing/goh-image-1.png'
-							onMouseEnter={() => handleLeftHover(true)}
-							onMouseLeave={() => handleLeftHover(false)}
-							alt='Character 1'
-							fill
-							className='goh-left-image object-contain drop-shadow-2xl'
-						/>
-					</div>
-				</div>
-			</div>
-
-			{/* Right Character Box */}
-			<div className='h-full w-full relative flex items-end justify-center'>
-				<div className='absolute inset-0 z-0'>
-					<DrumImage id='drum-right' reversed isEnter={isEnterRight} />
-				</div>
-				<div className='goh-right z-30 relative pointer-events-auto cursor-pointer w-full h-full translate-y-1/3'>
-					<div className='relative w-full h-full'>
-						<Image
-							onMouseEnter={() => handleRightHover(true)}
-							onMouseLeave={() => handleRightHover(false)}
-							src='/images/landing/goh-image-1.png'
-							alt='Character 2'
-							fill
-							className='goh-right-image object-contain drop-shadow-2xl'
-						/>
-					</div>
-				</div>
-			</div>
-
+		<>
 			{/* Info Box */}
 			<div
 				id='goh-info-box'
-				className='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-40 pointer-events-none text-white text-center'
+				className={`absolute flex h-screen w-screen items-center z-40 pointer-events-none text-white ${
+					isEnterLeft ? 'pl-[50%]' : null
+				} ${isEnterRight ? 'pl-[20%]' : null}`}
 			>
 				<h3>
-					<span className='text-5xl font-thin text-primary'>TÊN</span>
+					<span className='text-5xl font-thin text-primary'>
+						{selectedGOH?.name}
+					</span>
 					<br />
-					<span className='text-7xl font-bold'>GOH</span>
+					<span className='text-7xl font-bold'>{selectedGOH?.description}</span>
 				</h3>
 			</div>
-		</div>
+
+			<div
+				id='goh-section'
+				className='h-dvh grid-cols-2 grid w-dvw relative z-10 section overflow-hidden'
+			>
+				{/* Left Character Box */}
+				<div className='h-full w-full relative flex items-end justify-center'>
+					<div className='absolute inset-0 z-0'>
+						<DrumImage id='drum-left' isEnter={isEnterLeft} />
+					</div>
+					<div className='goh-left z-30 relative pointer-events-auto cursor-pointer w-full h-full translate-y-1/3'>
+						<div className='relative w-full h-full'>
+							<Image
+								src={GOH_DETAILS.first.image}
+								onMouseEnter={() => handleLeftHover(true)}
+								onMouseLeave={() => handleLeftHover(false)}
+								alt='Character 1'
+								fill
+								className='goh-left-image object-contain drop-shadow-2xl'
+							/>
+						</div>
+					</div>
+				</div>
+
+				{/* Right Character Box */}
+				<div className='h-full w-full relative flex items-end justify-center'>
+					<div className='absolute inset-0 z-0'>
+						<DrumImage id='drum-right' reversed isEnter={isEnterRight} />
+					</div>
+					<div className='goh-right z-30 relative pointer-events-auto cursor-pointer w-full h-full translate-y-1/3'>
+						<div className='relative w-full h-full'>
+							<Image
+								onMouseEnter={() => handleRightHover(true)}
+								onMouseLeave={() => handleRightHover(false)}
+								src='/images/landing/goh-image-1.png'
+								alt='Character 2'
+								fill
+								className='goh-right-image object-contain drop-shadow-2xl'
+							/>
+						</div>
+					</div>
+				</div>
+			</div>
+		</>
 	)
 }
 

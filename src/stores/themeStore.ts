@@ -4,17 +4,20 @@ export type Theme = 'light' | 'dark' | 'system'
 
 export type ThemeState = {
 	theme: Theme
+	prefersReducedMotion: boolean
 }
 
 export type ThemeActions = {
 	setTheme: (theme: Theme) => void
 	toggleTheme: () => void
+	setPrefersReducedMotion: (value: boolean) => void
 }
 
 export type ThemeStore = ThemeState & ThemeActions
 
 export const defaultInitState: ThemeState = {
 	theme: 'system',
+	prefersReducedMotion: false,
 }
 
 // Get the actual theme to apply (resolves 'system' to 'light' or 'dark')
@@ -39,7 +42,7 @@ export const initThemeStore = (): ThemeState => {
 				const { theme } = JSON.parse(stored)
 				// Validate the theme value
 				if (theme === 'light' || theme === 'dark' || theme === 'system') {
-					return { theme }
+					return { theme, prefersReducedMotion: false }
 				}
 			} catch {
 				return defaultInitState
@@ -71,6 +74,9 @@ export const createThemeStore = (initState: ThemeState = defaultInitState) => {
 				}
 				return { theme: newTheme }
 			})
+		},
+		setPrefersReducedMotion: value => {
+			set({ prefersReducedMotion: value })
 		},
 	}))
 }

@@ -32,52 +32,55 @@ export const useLandingPageAnimation = (
 			gsap.set(containerRef.current, {
 				perspective: 1500,
 				transformStyle: 'preserve-3d',
+				force3D: true,
 			})
 
 			gsap.set(backgroundLayerRef.current, {
 				transformStyle: 'preserve-3d',
 				z: -150,
+				force3D: true,
 			})
 			gsap.set(furtherMountainRef.current, {
 				transformStyle: 'preserve-3d',
 				z: -100,
+				force3D: true,
 			})
 			gsap.set(leftRockRef.current, {
 				transformStyle: 'preserve-3d',
 				z: -60,
+				force3D: true,
 			})
 			gsap.set(rightRockRef.current, {
 				transformStyle: 'preserve-3d',
 				z: -50,
+				force3D: true,
 			})
 			gsap.set(middleLayerRef.current, {
 				transformStyle: 'preserve-3d',
 				z: 0,
+				force3D: true,
 			})
 			gsap.set(foregroundFlowerRef.current, {
 				transformStyle: 'preserve-3d',
 				z: 75,
+				force3D: true,
 			})
 			gsap.set(foregroundFoliageRef.current, {
 				transformStyle: 'preserve-3d',
 				z: 150,
+				force3D: true,
 			})
 
-			const bgRotateX = gsap.quickTo(backgroundLayerRef.current, 'rotationX', {
-				duration: 1.2,
-				ease: 'power3.out',
+			// Set initial scale for mascot
+			gsap.set('#mascot', {
+				scale: 0.7,
+				force3D: true,
 			})
-			const bgRotateY = gsap.quickTo(backgroundLayerRef.current, 'rotationY', {
-				duration: 1.2,
-				ease: 'power3.out',
-			})
-			const bgTranslateX = gsap.quickTo(backgroundLayerRef.current, 'x', {
-				duration: 1.2,
-				ease: 'power3.out',
-			})
+
 			const bgTranslateY = gsap.quickTo(backgroundLayerRef.current, 'y', {
 				duration: 1.2,
 				ease: 'power3.out',
+				force3D: true,
 			})
 
 			const furtherMtnRotateX = gsap.quickTo(
@@ -86,6 +89,7 @@ export const useLandingPageAnimation = (
 				{
 					duration: 1.1,
 					ease: 'power3.out',
+					force3D: true,
 				}
 			)
 			const furtherMtnRotateY = gsap.quickTo(
@@ -94,6 +98,7 @@ export const useLandingPageAnimation = (
 				{
 					duration: 1.1,
 					ease: 'power3.out',
+					force3D: true,
 				}
 			)
 			const furtherMtnTranslateX = gsap.quickTo(
@@ -102,6 +107,7 @@ export const useLandingPageAnimation = (
 				{
 					duration: 1.1,
 					ease: 'power3.out',
+					force3D: true,
 				}
 			)
 			const furtherMtnTranslateY = gsap.quickTo(
@@ -110,58 +116,71 @@ export const useLandingPageAnimation = (
 				{
 					duration: 1.1,
 					ease: 'power3.out',
+					force3D: true,
 				}
 			)
 
 			const leftRockRotateX = gsap.quickTo(leftRockRef.current, 'rotationX', {
 				duration: 0.95,
 				ease: 'power3.out',
+				force3D: true,
 			})
 			const leftRockRotateY = gsap.quickTo(leftRockRef.current, 'rotationY', {
 				duration: 0.95,
 				ease: 'power3.out',
+				force3D: true,
 			})
 			const leftRockTranslateX = gsap.quickTo(leftRockRef.current, 'x', {
 				duration: 0.95,
 				ease: 'power3.out',
+				force3D: true,
 			})
 			const leftRockTranslateY = gsap.quickTo(leftRockRef.current, 'y', {
 				duration: 0.95,
 				ease: 'power3.out',
+				force3D: true,
 			})
 
 			const rightRockRotateX = gsap.quickTo(rightRockRef.current, 'rotationX', {
 				duration: 0.9,
 				ease: 'power3.out',
+				force3D: true,
 			})
 			const rightRockRotateY = gsap.quickTo(rightRockRef.current, 'rotationY', {
 				duration: 0.9,
 				ease: 'power3.out',
+				force3D: true,
 			})
 			const rightRockTranslateX = gsap.quickTo(rightRockRef.current, 'x', {
 				duration: 0.9,
 				ease: 'power3.out',
+				force3D: true,
 			})
 			const rightRockTranslateY = gsap.quickTo(rightRockRef.current, 'y', {
 				duration: 0.9,
 				ease: 'power3.out',
+				force3D: true,
 			})
 
 			const midRotateX = gsap.quickTo(middleLayerRef.current, 'rotationX', {
 				duration: 0.8,
 				ease: 'power3.out',
+				force3D: true,
 			})
 			const midRotateY = gsap.quickTo(middleLayerRef.current, 'rotationY', {
 				duration: 0.8,
 				ease: 'power3.out',
+				force3D: true,
 			})
 			const midTranslateX = gsap.quickTo(middleLayerRef.current, 'x', {
 				duration: 0.8,
 				ease: 'power3.out',
+				force3D: true,
 			})
 			const midTranslateY = gsap.quickTo(middleLayerRef.current, 'y', {
 				duration: 0.8,
 				ease: 'power3.out',
+				force3D: true,
 			})
 
 			const flowerRotateX = gsap.quickTo(
@@ -170,6 +189,7 @@ export const useLandingPageAnimation = (
 				{
 					duration: 0.6,
 					ease: 'power3.out',
+					force3D: true,
 				}
 			)
 			const flowerRotateY = gsap.quickTo(
@@ -178,15 +198,18 @@ export const useLandingPageAnimation = (
 				{
 					duration: 0.6,
 					ease: 'power3.out',
+					force3D: true,
 				}
 			)
 			const flowerTranslateX = gsap.quickTo(foregroundFlowerRef.current, 'x', {
 				duration: 0.6,
 				ease: 'power3.out',
+				force3D: true,
 			})
 			const flowerTranslateY = gsap.quickTo(foregroundFlowerRef.current, 'y', {
 				duration: 0.6,
 				ease: 'power3.out',
+				force3D: true,
 			})
 
 			const foliageRotateX = gsap.quickTo(
@@ -195,6 +218,7 @@ export const useLandingPageAnimation = (
 				{
 					duration: 0.4,
 					ease: 'power3.out',
+					force3D: true,
 				}
 			)
 			const foliageRotateY = gsap.quickTo(
@@ -203,6 +227,7 @@ export const useLandingPageAnimation = (
 				{
 					duration: 0.4,
 					ease: 'power3.out',
+					force3D: true,
 				}
 			)
 			const foliageTranslateX = gsap.quickTo(
@@ -211,6 +236,7 @@ export const useLandingPageAnimation = (
 				{
 					duration: 0.4,
 					ease: 'power3.out',
+					force3D: true,
 				}
 			)
 			const foliageTranslateY = gsap.quickTo(
@@ -219,6 +245,7 @@ export const useLandingPageAnimation = (
 				{
 					duration: 0.4,
 					ease: 'power3.out',
+					force3D: true,
 				}
 			)
 
@@ -232,9 +259,6 @@ export const useLandingPageAnimation = (
 				const x = (e.clientX - rect.left - centerX) / centerX
 				const y = (e.clientY - rect.top - centerY) / centerY
 
-				bgRotateY(x * 2)
-				bgRotateX(-y * 2)
-				bgTranslateX(x * 8)
 				bgTranslateY(y * 8)
 
 				furtherMtnRotateY(x * 4)
@@ -269,9 +293,6 @@ export const useLandingPageAnimation = (
 			}
 
 			const handleMouseLeave = () => {
-				bgRotateX(0)
-				bgRotateY(0)
-				bgTranslateX(0)
 				bgTranslateY(0)
 				furtherMtnRotateX(0)
 				furtherMtnRotateY(0)
