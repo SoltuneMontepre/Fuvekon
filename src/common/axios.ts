@@ -1,8 +1,9 @@
 import a from 'axios'
 import { useAuthStore } from '@/stores/authStore'
 
-const baseURL =
-	`${process.env.NEXT_PUBLIC_API_URL}/api` || 'http://localhost:8085/api'
+const baseURL = process.env.NEXT_PUBLIC_API_URL
+	? process.env.NEXT_PUBLIC_API_URL
+	: 'http://localhost:8085'
 
 const isLocal = `${process.env.NEXT_PUBLIC_API_URL}`.includes('localhost')
 

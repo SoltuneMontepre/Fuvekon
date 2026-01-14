@@ -2,8 +2,8 @@
 
 import React, { useEffect, useState } from 'react'
 import FuveIcon from '../common/FuveIcon'
-import LoginButton from '../auth/LoginButton'
-import LogoutButton from '../auth/LogoutButton'
+import LoginButton from '../auth/login/LoginButton'
+import LogoutButton from '../auth/login/LogoutButton'
 import NavButtons from './NavButtons'
 import { useAuthStore } from '@/stores/authStore'
 import Loading from '../common/Loading'

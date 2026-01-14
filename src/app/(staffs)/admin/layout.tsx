@@ -3,10 +3,10 @@
 import React, { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import SideBar from '@/components/nav/SideBar'
-import LogoutButton from '@/components/auth/LogoutButton'
 import { UserCircle, Ticket } from 'lucide-react'
 import { useGetMe } from '@/hooks/services/auth/useAccount'
 import { useAuthStore } from '@/stores/authStore'
+import LogoutButton from '@/components/auth/login/LogoutButton'
 
 type AdminLayoutProps = {
 	revenue: React.JSX.Element
