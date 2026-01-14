@@ -115,7 +115,13 @@
 		"remaining": "Còn {count} vé",
 		"errorOccurred": "Có lỗi xảy ra. Vui lòng thử lại.",
 		"ticketIncludes": "Vé này bao gồm",
-		"confirmCancelTicket": "Bạn có chắc chắn muốn hủy vé này không? Số lượng vé sẽ được hoàn lại và bạn có thể mua vé mới."
+		"confirmCancelTicket": "Bạn có chắc chắn muốn hủy vé này không?",
+		"confirmCancelTicketDesc": "Số lượng vé sẽ được hoàn lại và bạn có thể mua vé mới.",
+		"confirmCancel": "Xác nhận hủy",
+		"ticketCancelledSuccess": "Hủy vé thành công!",
+		"ticketCancelError": "Không thể hủy vé. Vui lòng thử lại.",
+		"badgeUpdatedSuccess": "Cập nhật thông tin badge thành công!",
+		"badgeUpdateError": "Không thể cập nhật badge. Vui lòng thử lại."
 	},
 	"admin": {
 		"ticketManagement": "Quản lý vé",
@@ -150,14 +156,14 @@
 		"denyReasonPlaceholder": "VD: Không tìm thấy giao dịch, thông tin không khớp...",
 		"confirmDeny": "Xác nhận từ chối",
 		"noTickets": "Không có vé nào",
-		"page": "Trang {current} / {total}",
-		"landing": {
-			"suggestion": "Cuộn xuống để xem thêm!",
-			"theme": {
-				"theme": "Chủ đề",
-				"title": "Chủ đề sự kiện",
-				"description": "Khám phá chủ đề mê hoặc của Fuvekon năm nay, nơi thế giới tưởng tượng hòa quyện với hiện thực trong một lễ hội sáng tạo và trí tưởng tượng."
-			}
+		"page": "Trang {current} / {total}"
+	},
+	"landing": {
+		"suggestion": "Cuộn xuống để xem thêm!",
+		"theme": {
+			"theme": "Chủ đề",
+			"title": "Chủ đề sự kiện",
+			"description": "Khám phá chủ đề mê hoặc của Fuvekon năm nay, nơi thế giới tưởng tượng hòa quyện với hiện thực trong một lễ hội sáng tạo và trí tưởng tượng."
 		}
 	}
 }

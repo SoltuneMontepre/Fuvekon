@@ -4,6 +4,7 @@ import React, { useState, use, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { Copy, Check, AlertCircle } from 'lucide-react'
 import { useTranslations } from 'next-intl'
+import { toast } from 'sonner'
 import Image from 'next/image'
 import CollapsibleScroll from '@/components/animated/CollapsibleScroll'
 import Separator from '@/components/common/scroll/Separator'
@@ -57,16 +58,22 @@ const TicketPurchasePage = ({ params }: TicketPurchasePageProps): React.ReactEle
 			await navigator.clipboard.writeText(text)
 			setCopied(field)
 			setTimeout(() => setCopied(null), 2000)
+			toast.success(t('copiedToClipboard') || 'Copied to clipboard!')
 		} catch {
 			// Fallback for older browsers
-			const textArea = document.createElement('textarea')
-			textArea.value = text
-			document.body.appendChild(textArea)
-			textArea.select()
-			document.execCommand('copy')
-			document.body.removeChild(textArea)
-			setCopied(field)
-			setTimeout(() => setCopied(null), 2000)
+			try {
+				const textArea = document.createElement('textarea')
+				textArea.value = text
+				document.body.appendChild(textArea)
+				textArea.select()
+				document.execCommand('copy')
+				document.body.removeChild(textArea)
+				setCopied(field)
+				setTimeout(() => setCopied(null), 2000)
+				toast.success(t('copiedToClipboard') || 'Copied to clipboard!')
+			} catch {
+				toast.error(t('copyFailed') || 'Failed to copy to clipboard')
+			}
 		}
 	}
 
@@ -75,11 +82,12 @@ const TicketPurchasePage = ({ params }: TicketPurchasePageProps): React.ReactEle
 		try {
 			const result = await confirmMutation.mutateAsync()
 			if (result.isSuccess) {
+				toast.success(t('paymentConfirmed') || 'Payment confirmed successfully!')
 				// Redirect to ticket page to see ticket status
 				router.push('/account/ticket')
 			}
-		} catch {
-			// Error handled by mutation
+		} catch (error) {
+			toast.error(t('paymentConfirmError') || 'Failed to confirm payment. Please try again.')
 		}
 	}
 
@@ -239,15 +247,6 @@ const TicketPurchasePage = ({ params }: TicketPurchasePageProps): React.ReactEle
 									<li>{t('instruction5')}</li>
 								</ol>
 							</div>
-
-							{/* Error message */}
-							{confirmMutation.error && (
-								<div className='bg-red-50 border border-red-200 rounded-lg p-4 mb-6'>
-									<p className='text-red-800'>
-										{(confirmMutation.error as Error).message || t('errorOccurred')}
-									</p>
-								</div>
-							)}
 
 							{/* Confirm Button */}
 							<div className='space-y-3'>

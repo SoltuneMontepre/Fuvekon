@@ -22,7 +22,7 @@ const useNavDatas = (): NavData[] => {
 	return [
 		{
 			label: t('ticket'),
-			to: '/register',
+			to: '/ticket',
 		},
 		{
 			label: t('contributes'),

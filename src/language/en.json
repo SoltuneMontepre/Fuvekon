@@ -115,7 +115,13 @@
 		"remaining": "{count} remaining",
 		"errorOccurred": "An error occurred. Please try again.",
 		"ticketIncludes": "Ticket includes",
-		"confirmCancelTicket": "Are you sure you want to cancel this ticket? The stock will be returned and you can purchase a new ticket."
+		"confirmCancelTicket": "Are you sure you want to cancel this ticket?",
+		"confirmCancelTicketDesc": "The stock will be returned and you can purchase a new ticket.",
+		"confirmCancel": "Confirm Cancel",
+		"ticketCancelledSuccess": "Ticket cancelled successfully!",
+		"ticketCancelError": "Failed to cancel ticket. Please try again.",
+		"badgeUpdatedSuccess": "Badge details updated successfully!",
+		"badgeUpdateError": "Failed to update badge details. Please try again."
 	},
 	"admin": {
 		"ticketManagement": "Ticket Management",
@@ -150,14 +156,14 @@
 		"denyReasonPlaceholder": "E.g.: Transaction not found, information mismatch...",
 		"confirmDeny": "Confirm Denial",
 		"noTickets": "No tickets found",
-		"page": "Page {current} / {total}",
-		"landing": {
-			"suggestion": "Scroll down for more!",
-			"theme": {
-				"theme": "Theme",
-				"title": "Event Theme",
-				"description": "Discover the enchanting theme of this year's Fuvekon, where fantasy meets reality in a celebration of creativity and imagination. Discover the enchanting theme of this year's Fuvekon, where fantasy meets reality in a celebration of creativity and imagination. Discover the enchanting theme of this year's Fuvekon, where fantasy meets reality in a celebration of creativity and imagination. Discover the enchanting theme of this year's Fuvekon, where fantasy meets reality in a celebration of creativity and imagination."
-			}
+		"page": "Page {current} / {total}"
+	},
+	"landing": {
+		"suggestion": "Scroll down for more!",
+		"theme": {
+			"theme": "Theme",
+			"title": "Event Theme",
+			"description": "Discover the enchanting theme of this year's Fuvekon, where fantasy meets reality in a celebration of creativity and imagination."
 		}
 	}
 }

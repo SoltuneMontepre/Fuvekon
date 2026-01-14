@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import { Clock, CheckCircle, XCircle, AlertCircle, RefreshCw, ArrowUpCircle } from 'lucide-react'
 import { useTranslations } from 'next-intl'
+import { toast } from 'sonner'
 import { useGetMyTicket, useUpdateBadgeDetails, useCancelTicket } from '@/hooks/services/ticket/useTicket'
 import type { TicketStatus } from '@/types/models/ticket/ticket'
 
@@ -46,6 +47,7 @@ const MyTicketDisplay = (): React.ReactElement => {
 	const t = useTranslations('ticket')
 	const tCommon = useTranslations('common')
 	const [showBadgeForm, setShowBadgeForm] = useState(false)
+	const [showCancelDialog, setShowCancelDialog] = useState(false)
 	const [badgeName, setBadgeName] = useState('')
 	const [isFursuiter, setIsFursuiter] = useState(false)
 	const [isFursuitStaff, setIsFursuitStaff] = useState(false)
@@ -77,21 +79,20 @@ const MyTicketDisplay = (): React.ReactElement => {
 				is_fursuit_staff: isFursuitStaff,
 			})
 			setShowBadgeForm(false)
-		} catch {
-			// Error handled by mutation
+			toast.success(t('badgeUpdatedSuccess') || 'Badge details updated successfully!')
+		} catch (error) {
+			toast.error(t('badgeUpdateError') || 'Failed to update badge details. Please try again.')
 		}
 	}
 
 	const handleCancelTicket = async () => {
-		if (!confirm(t('confirmCancelTicket') || 'Are you sure you want to cancel this ticket? The stock will be returned and you can purchase a new ticket.')) {
-			return
-		}
-
+		setShowCancelDialog(false)
 		try {
 			await cancelTicketMutation.mutateAsync()
+			toast.success(t('ticketCancelledSuccess') || 'Ticket cancelled successfully!')
 			router.push('/ticket')
-		} catch {
-			// Error handled by mutation
+		} catch (error) {
+			toast.error(t('ticketCancelError') || 'Failed to cancel ticket. Please try again.')
 		}
 	}
 
@@ -104,12 +105,16 @@ const MyTicketDisplay = (): React.ReactElement => {
 	}
 
 	if (error) {
+		toast.error(t('couldNotLoadTicket') || 'Could not load ticket information')
 		return (
-			<div className='p-6 bg-red-50 rounded-xl border-2 border-red-200'>
-				<div className='text-center text-red-600'>{t('couldNotLoadTicket')}</div>
+			<div className='p-6 bg-[#e2eee2] rounded-xl border-2 border-[#548780]'>
+				<div className='text-center text-[#48715b]'>
+					<AlertCircle className='w-12 h-12 mx-auto mb-4' />
+					<p>{t('couldNotLoadTicket')}</p>
+				</div>
 				<button
 					onClick={() => refetch()}
-					className='mt-4 px-4 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 mx-auto block'
+					className='mt-4 px-4 py-2 bg-[#7cbc97] text-white rounded-lg hover:bg-[#6aab85] mx-auto block'
 				>
 					{tCommon('retry')}
 				</button>
@@ -189,7 +194,7 @@ const MyTicketDisplay = (): React.ReactElement => {
 								{t('payNow')}
 							</button>
 							<button
-								onClick={handleCancelTicket}
+								onClick={() => setShowCancelDialog(true)}
 								disabled={cancelTicketMutation.isPending}
 								className='px-4 py-2 border-2 border-red-500 text-red-600 rounded-lg hover:bg-red-50 font-semibold disabled:opacity-50'
 							>
@@ -311,9 +316,6 @@ const MyTicketDisplay = (): React.ReactElement => {
 														<span className='text-[#154c5b]'>{t('fursuitStaff')}</span>
 													</label>
 												</div>
-												{updateBadgeMutation.error && (
-													<p className='text-red-600 text-sm'>{t('errorOccurred')}</p>
-												)}
 												<div className='flex gap-3'>
 													<button
 														onClick={() => setShowBadgeForm(false)}
@@ -351,6 +353,34 @@ const MyTicketDisplay = (): React.ReactElement => {
 					</>
 				)}
 			</div>
+
+			{/* Cancel Confirmation Dialog */}
+			{showCancelDialog && (
+				<div className='fixed inset-0 z-50 flex items-center justify-center bg-black/50'>
+					<div className='bg-white rounded-xl p-6 max-w-md mx-4 shadow-2xl'>
+						<h3 className='text-xl font-semibold text-[#154c5b] mb-4'>{t('confirmCancelTicket')}</h3>
+						<p className='text-[#48715b] mb-6'>
+							{t('confirmCancelTicketDesc') || 'Bạn có chắc chắn muốn hủy vé này không? Số lượng vé sẽ được hoàn lại và bạn có thể mua vé mới.'}
+						</p>
+						<div className='flex gap-3'>
+							<button
+								onClick={() => setShowCancelDialog(false)}
+								disabled={cancelTicketMutation.isPending}
+								className='flex-1 py-2 px-4 rounded-lg border border-[#48715b] text-[#48715b] hover:bg-[#e9f5e7] disabled:opacity-50'
+							>
+								{tCommon('cancel')}
+							</button>
+							<button
+								onClick={handleCancelTicket}
+								disabled={cancelTicketMutation.isPending}
+								className='flex-1 py-2 px-4 rounded-lg bg-red-500 text-white hover:bg-red-600 disabled:opacity-50'
+							>
+								{cancelTicketMutation.isPending ? tCommon('processing') : t('confirmCancel') || 'Xác nhận hủy'}
+							</button>
+						</div>
+					</div>
+				</div>
+			)}
 		</div>
 	)
 }
