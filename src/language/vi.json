@@ -2,6 +2,18 @@
 	"common": {
 		"welcome": "Chào mừng bạn đến với Fuvekon"
 	},
+	"nav": {
+		"ticket": "Vé",
+		"register": "Đăng ký",
+		"contributes": "Đóng góp",
+		"talent": "Tài năng",
+		"panel": "Hội thảo",
+		"volunteer": "Tình nguyện viên",
+		"artbook": "Artbook",
+		"dealer": "Gian hàng",
+		"schedule": "Lịch trình",
+		"about": "Giới thiệu"
+	},
 	"auth": {
 		"login": "Đăng nhập",
 		"logout": "Đăng xuất",

@@ -7,8 +7,15 @@
 		"home": "Home"
 	},
 	"nav": {
+		"ticket": "Ticket",
 		"register": "Register",
 		"contributes": "Contributes",
+		"talent": "Talent",
+		"panel": "Panel",
+		"volunteer": "Volunteer",
+		"artbook": "Artbook",
+		"dealer": "Dealer",
+		"schedule": "Schedule",
 		"about": "About"
 	},
 	"auth": {
@@ -23,5 +30,13 @@
 		"loginFailed": "Login failed. Please try again.",
 		"showPassword": "Show password",
 		"hidePassword": "Hide password"
+	},
+	"landing": {
+		"suggestion": "Scroll down for more!",
+		"theme": {
+			"theme": "Theme",
+			"title": "Event Theme",
+			"description": "Discover the enchanting theme of this year's Fuvekon, where fantasy meets reality in a celebration of creativity and imagination. Discover the enchanting theme of this year's Fuvekon, where fantasy meets reality in a celebration of creativity and imagination. Discover the enchanting theme of this year's Fuvekon, where fantasy meets reality in a celebration of creativity and imagination. Discover the enchanting theme of this year's Fuvekon, where fantasy meets reality in a celebration of creativity and imagination."
+		}
 	}
 }

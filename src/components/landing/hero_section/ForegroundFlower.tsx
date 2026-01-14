@@ -5,7 +5,7 @@ const ForegroundFlower = ({ className }: { className?: string }) => {
 	return (
 		<Image
 			className={`landing-bg ${className ?? ''}`}
-			src='/assets/fg-flower.png'
+			src='/assets/fg-flower.webp'
 			alt='foreground-flower-image'
 			priority
 			fill

@@ -56,6 +56,17 @@ axiosTicket.interceptors.response.use(
 	}
 )
 
+axiosLocal.interceptors.response.use(
+	response => response,
+	error => {
+		if (error.response?.status === 403) {
+			const { clearAccount } = useAuthStore.getState()
+			clearAccount()
+		}
+		return Promise.reject(error)
+	}
+)
+
 const axios = {
 	general: isLocal ? axiosLocal : axiosGeneral,
 	ticket: isLocal ? axiosLocal : axiosTicket,
