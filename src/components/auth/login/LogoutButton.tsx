@@ -20,11 +20,12 @@ const LogoutButton = (): React.ReactElement => {
 
 	return (
 		<button
+			id='logout-button'
+			className='logout-button flex flex-col items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-150 w-full max-w-[140px] mx-auto justify-center text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 disabled:opacity-50 disabled:cursor-not-allowed shadow-md'
 			onClick={handleLogout}
 			disabled={logoutMutation.isPending}
-			className='flex flex-col items-center gap-3 px-3 py-2 rounded-lg text-xl font-medium transition-colors duration-150 w-40 mx-auto justify-center text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 disabled:opacity-50 disabled:cursor-not-allowed'
 		>
-			<span className='flex-1 truncate'>
+			<span id='logout-button-text' className='logout-button-text flex-1 truncate'>
 				{logoutMutation.isPending
 					? t('loggingOut') || 'Logging out...'
 					: t('logout')}

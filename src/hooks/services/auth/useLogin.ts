@@ -13,11 +13,5 @@ export function useLogin() {
 			)
 			return data
 		},
-		onSuccess: data => {
-			console.log('Login successful:', data.message)
-		},
-		onError: (error: Error) => {
-			console.error('Login failed:', error.message)
-		},
 	})
 }

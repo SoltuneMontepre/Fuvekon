@@ -12,6 +12,8 @@ export interface Account {
 	identification_id?: string
 	passport_id?: string
 	is_verified?: boolean
+	is_blacklisted?: boolean
+	denial_count?: number
 	created_at?: string // ISO date string
 	modified_at?: string // ISO date string
 	deleted_at?: string | null // ISO date string, nullable

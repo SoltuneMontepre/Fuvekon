@@ -4,7 +4,7 @@ import { setNewParamString } from '@/utils/params/setParams'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
-const useLanguage = (serverLocale: Language = 'en') => {
+const useLanguage = (serverLocale: Language = 'vi') => {
 	const [locale, setLocale] = useState<Language>(serverLocale)
 	const router = useRouter()
 	const params = useSearchParams()
@@ -36,7 +36,7 @@ const useLanguage = (serverLocale: Language = 'en') => {
 				router.replace(newPath)
 			}
 		} else {
-			const defaultLocale = (navigator.language.slice(0, 2) as Language) || 'en'
+			const defaultLocale = (navigator.language.slice(0, 2) as Language) || 'vi'
 			if (SUPPORTED_LANGS.includes(defaultLocale)) {
 				setLocale(defaultLocale)
 				document.cookie = `locale=${defaultLocale}; path=/; max-age=31536000`

@@ -46,8 +46,5 @@ export function useUpdateMe() {
 			}
 			queryClient.invalidateQueries({ queryKey: ['account'] })
 		},
-		onError: (error: Error) => {
-			console.error('Update account failed:', error.message)
-		},
 	})
 }

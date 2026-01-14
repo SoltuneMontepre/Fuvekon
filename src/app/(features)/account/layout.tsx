@@ -8,33 +8,36 @@ import { useGetMe } from '@/hooks/services/auth/useAccount'
 import { useAuthStore } from '@/stores/authStore'
 import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import { useTranslations } from 'next-intl'
 
 type AccountLayoutProps = {
 	children: ReactNode
 	info: ReactNode
 }
 
-const sections = [
-	{
-		items: [
-			{
-				label: 'Account',
-				href: '/account',
-				icon: UserCircle,
-			},
-			{
-				label: 'ticket',
-				href: '/account/ticket',
-				icon: Ticket,
-			},
-		],
-	},
-]
-
 const AccountLayout = ({ children, info }: AccountLayoutProps) => {
 	const router = useRouter()
+	const t = useTranslations('nav')
+	const tCommon = useTranslations('common')
 	const { data, isLoading, isError } = useGetMe()
 	const setAccount = useAuthStore(state => state.setAccount)
+
+	const sections = [
+		{
+			items: [
+				{
+					label: t('account'),
+					href: '/account',
+					icon: UserCircle,
+				},
+				{
+					label: t('myTicket'),
+					href: '/account/ticket',
+					icon: Ticket,
+				},
+			],
+		},
+	]
 
 	// Save account data to Zustand store when fetched
 	useEffect(() => {
@@ -58,7 +61,7 @@ const AccountLayout = ({ children, info }: AccountLayoutProps) => {
 	if (isLoading) {
 		return (
 			<div className='flex items-center justify-center min-h-screen'>
-				<div className='text-lg'>Loading...</div>
+				<div className='text-lg'>{tCommon('loading')}</div>
 			</div>
 		)
 	}
@@ -69,13 +72,48 @@ const AccountLayout = ({ children, info }: AccountLayoutProps) => {
 	}
 
 	return (
-		<div className='flex'>
-			<div className='w-[30%]'>
-				<SideBar sections={sections} footer={<LogoutButton />} />
+		<div
+			id='account-layout'
+			className='account-layout relative flex min-h-screen w-full overflow-hidden'
+		>
+			{/* Background Image - Behind everything */}
+			<div
+				id='account-background'
+				className='account-background fixed inset-0 z-0'
+				style={{
+					backgroundImage: `url('/images/landing/tranh full oc.webp')`,
+					backgroundSize: 'cover',
+					backgroundPosition: 'center',
+					backgroundRepeat: 'no-repeat',
+				}}
+			/>
+
+			{/* Dark overlay for better contrast */}
+			<div className='fixed inset-0 z-[1] bg-black/40' />
+
+			{/* Sidebar - Compact with card style */}
+			<div
+				id='account-sidebar-container'
+				className='account-sidebar-container relative z-10 w-[200px] ml-6 my-6'
+			>
+				<div className='bg-main/95 dark:bg-dark-surface/95 backdrop-blur-md rounded-2xl shadow-2xl border border-slate-300/20 dark:border-dark-border/20'>
+					<SideBar sections={sections} footer={<LogoutButton />} />
+				</div>
 			</div>
-			<div className='mx-auto flex w-xl max-w-6xl flex-col gap-6 px-4 py-8 md:px-8 lg:py-12'>
-				{info}
-				{children}
+
+			{/* Main Content - Card-based layout with dark background visible */}
+			<div
+				id='account-content'
+				className='account-content relative z-10 flex-1 flex flex-col gap-6 px-8 py-8 mr-6'
+			>
+				<div className='bg-main/95 dark:bg-dark-surface/95 backdrop-blur-md rounded-2xl shadow-2xl p-8 border border-slate-300/20 dark:border-dark-border/20'>
+					<section id='account-info-section' className='account-info-section mb-6'>
+						{info}
+					</section>
+					<section id='account-main-section' className='account-main-section'>
+						{children}
+					</section>
+				</div>
 			</div>
 		</div>
 	)

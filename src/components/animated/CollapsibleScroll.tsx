@@ -19,8 +19,8 @@ const CollapsibleScroll = ({
 		if (!isOpen) {
 			gsap.to('.scroll-body', {
 				height: 0,
-				duration: 0.15,
-				ease: 'power2.in',
+				duration: 0.6,
+				ease: 'power3.inOut',
 				opacity: 0,
 				outlineStyle: 'none',
 				outlineWidth: 0,
@@ -28,8 +28,8 @@ const CollapsibleScroll = ({
 		} else {
 			gsap.to('.scroll-body', {
 				height: 'auto',
-				duration: 0.15,
-				ease: 'power2.out',
+				duration: 0.8,
+				ease: 'elastic.out(1, 0.5)',
 				opacity: 1,
 			})
 		}

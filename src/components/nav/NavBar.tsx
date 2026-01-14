@@ -1,28 +1,38 @@
+'use client'
+
 import React from 'react'
 import FuveIcon from '../common/FuveIcon'
 import LoginButton from '../auth/login/LoginButton'
-import LogoutButton from '../auth/login/LogoutButton'
 import NavButtons from './NavButtons'
+import { useAuthStore } from '@/stores/authStore'
 
 const NavBar = (): React.ReactElement => {
-	const isLoggedIn = false
+	const account = useAuthStore(state => state.account)
+	const isLoggedIn = !!account
 
 	return (
 		<nav
+			id='navbar'
 			role='navigation'
 			aria-label='Main Navigation'
-			className='relative z-50 flex w-screen justify-around px-5 sm:px-10 md:px-20 py-2 cap-width mx-auto'
+			className='navbar relative z-50 flex w-screen justify-around px-5 sm:px-10 md:px-20 py-2 cap-width mx-auto'
 		>
-			<FuveIcon className='flex-1/5 size-10' />
+			<div id='navbar-logo-container' className='navbar-logo-container flex-1/5'>
+				<FuveIcon className='navbar-logo size-10' />
+			</div>
 
-			<div className='grow' />
+			<div className='navbar-spacer-left grow' />
 
-			<NavButtons className='flex-2/5 josefin font-medium text-white uppercase' />
+			{!isLoggedIn && (
+				<div id='navbar-buttons-container' className='navbar-buttons-container flex-2/5'>
+					<NavButtons className='navbar-buttons josefin font-medium text-white uppercase' />
+				</div>
+			)}
 
-			<div className='grow' />
+			<div className='navbar-spacer-right grow' />
 
-			<div className='flex-1/5 flex justify-end'>
-				{isLoggedIn ? <LogoutButton /> : <LoginButton />}
+			<div id='navbar-auth-container' className='navbar-auth-container flex-1/5 flex justify-end'>
+				{!isLoggedIn && <LoginButton />}
 			</div>
 		</nav>
 	)

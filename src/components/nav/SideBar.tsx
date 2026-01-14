@@ -45,10 +45,10 @@ const SideBar = ({
 					sidebarRef.current,
 					{
 						y: -1000,
-						opacity: 1,
+						opacity: 0,
 					},
 					{
-						y: -70,
+						y: 0,
 						opacity: 1,
 						duration: 0.8,
 						ease: 'elastic.out(0.8, 1.5)',
@@ -68,23 +68,30 @@ const SideBar = ({
 
 	return (
 		<aside
+			id='sidebar'
 			ref={sidebarRef}
-			className={`fixed flex flex-col h-[90%] bg-main border-r border-slate-200 dark:border-dark-border w-[17%] ${className} ml-[10%] `}
+			className={`sidebar sticky top-0 flex flex-col h-fit max-h-[calc(100vh-3rem)] bg-transparent border-none overflow-hidden ${className}`}
 			aria-label='Sidebar Navigation'
 		>
 			{/* Header */}
 			{logo && (
-				<div className='flex items-center p-4 border-b border-slate-200 dark:border-dark-border'>
+				<div
+					id='sidebar-header'
+					className='sidebar-header flex items-center p-4 border-b border-slate-200 dark:border-dark-border'
+				>
 					<div className='flex-1'>{logo}</div>
 				</div>
 			)}
 
 			{/* Navigation Sections */}
-			<nav className='flex-1 flex flex-col justify-center overflow-y-auto p-4 space-y-6'>
+			<nav
+				id='sidebar-nav'
+				className='sidebar-nav flex flex-col items-center justify-center overflow-y-auto py-6 px-4 space-y-3'
+			>
 				{sections.map((section, sectionIndex) => (
-					<div key={sectionIndex} className='space-y-1'>
+					<div key={sectionIndex} className='sidebar-section space-y-1'>
 						{section.title && (
-							<h3 className='px-3 py-2 text-xs font-semibold text-slate-500 dark:text-dark-text-secondary uppercase tracking-wider'>
+							<h3 className='sidebar-section-title px-3 py-2 text-xs font-semibold text-slate-500 dark:text-dark-text-secondary uppercase tracking-wider'>
 								{section.title}
 							</h3>
 						)}
@@ -97,13 +104,17 @@ const SideBar = ({
 						))}
 					</div>
 				))}
-				{/* Footer */}
-				{footer && (
-					<div className='p-4 border-t border-slate-200 dark:border-dark-border'>
-						{footer}
-					</div>
-				)}
 			</nav>
+
+			{/* Footer */}
+			{footer && (
+				<div
+					id='sidebar-footer'
+					className='sidebar-footer p-4 border-t border-slate-200/30 dark:border-dark-border/30'
+				>
+					{footer}
+				</div>
+			)}
 		</aside>
 	)
 }
@@ -123,12 +134,20 @@ const SidebarItemComponent = ({
 		item.onClick?.()
 	}
 
+	// Create ID-safe label
+	const itemId = item.label.toLowerCase().replace(/\s+/g, '-')
+
 	const content = (
 		<>
-			{Icon && <Icon className='flex-shrink-0 w-15 h-15' aria-hidden='true' />}
-			<span className='flex-1 truncate'>{item.label}</span>
+			{Icon && (
+				<Icon
+					className='sidebar-item-icon flex-shrink-0 w-15 h-15'
+					aria-hidden='true'
+				/>
+			)}
+			<span className='sidebar-item-label flex-1 truncate'>{item.label}</span>
 			{item.badge !== undefined && (
-				<span className='px-2 py-0.5 text-xs font-medium rounded-full bg-button text-default'>
+				<span className='sidebar-item-badge px-2 py-0.5 text-xs font-medium rounded-full bg-button text-default'>
 					{item.badge}
 				</span>
 			)}
@@ -136,8 +155,8 @@ const SidebarItemComponent = ({
 	)
 
 	const baseClasses = `
-		flex flex-col items-center gap-3 px-3 py-2 rounded-lg text-xl font-medium
-		transition-colors duration-150 w-40 mx-auto justify-center shadow-md
+		sidebar-item flex flex-col items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium
+		transition-colors duration-150 w-full max-w-[140px] justify-center shadow-md
 		${item.disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
 		${isActive ? 'bg-button text-default' : 'text-default hover:bg-button'}
 	`
@@ -145,6 +164,7 @@ const SidebarItemComponent = ({
 	if (item.href && !item.disabled) {
 		return (
 			<Link
+				id={`sidebar-item-${itemId}`}
 				href={item.href}
 				className={baseClasses}
 				onClick={handleClick}
@@ -157,6 +177,7 @@ const SidebarItemComponent = ({
 
 	return (
 		<button
+			id={`sidebar-item-${itemId}`}
 			onClick={handleClick}
 			disabled={item.disabled}
 			className={baseClasses + ' w-full text-left'}

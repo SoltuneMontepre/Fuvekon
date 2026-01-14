@@ -13,8 +13,5 @@ export function usePresignUrl() {
 			)
 			return data
 		},
-		onError: (error: Error) => {
-			console.error('Failed to get presigned URL:', error.message)
-		},
 	})
 }

@@ -1,14 +1,12 @@
 import a from 'axios'
 import { useAuthStore } from '@/stores/authStore'
 
-const baseURL = process.env.NEXT_PUBLIC_API_URL
-	? process.env.NEXT_PUBLIC_API_URL
-	: 'http://localhost:8085'
+const baseURL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8085'
 
-const isLocal = `${process.env.NEXT_PUBLIC_API_URL}`.includes('localhost')
+const isLocal = baseURL.includes('localhost')
 
 const axiosLocal = a.create({
-	baseURL: `${process.env.NEXT_PUBLIC_API_URL}/v1`,
+	baseURL: `${baseURL}/v1`,
 	headers: {
 		'Content-Type': 'application/json',
 	},
