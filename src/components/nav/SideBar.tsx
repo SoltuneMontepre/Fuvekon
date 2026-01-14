@@ -147,7 +147,7 @@ const SidebarItemComponent = ({
 			)}
 			<span className='sidebar-item-label flex-1 truncate'>{item.label}</span>
 			{item.badge !== undefined && (
-				<span className='sidebar-item-badge px-2 py-0.5 text-xs font-medium rounded-full bg-button text-default'>
+				<span className='px-2 py-0.5 text-xs font-medium rounded-full bg-bg text-text-secondary'>
 					{item.badge}
 				</span>
 			)}
@@ -158,7 +158,7 @@ const SidebarItemComponent = ({
 		sidebar-item flex flex-col items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium
 		transition-colors duration-150 w-full max-w-[140px] justify-center shadow-md
 		${item.disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
-		${isActive ? 'bg-button text-default' : 'text-default hover:bg-button'}
+		${isActive ? 'bg-bg text-text-secondary' : 'text-text-secondary hover:bg-bg'}
 	`
 
 	if (item.href && !item.disabled) {

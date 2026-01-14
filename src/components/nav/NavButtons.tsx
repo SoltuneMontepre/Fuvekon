@@ -1,51 +1,68 @@
-import { useTranslations } from 'next-intl'
-import Link from 'next/link'
-import React from 'react'
+'use client'
 
-export type NavData = {
-	label: string
-	to: string
-}
+import { NavData, useNavDatas } from '@/config/nav'
+import Link from 'next/link'
+import React, { useState } from 'react'
 
 const NavButtons = ({
 	className,
 }: {
 	className?: string
 }): React.ReactElement => {
-	const t = useTranslations('nav')
-
-	const navDatas: NavData[] = [
-		{
-			label: t('register'),
-			to: '/register',
-		},
-		{
-			label: t('contributes'),
-			to: '/contributes',
-		},
-		{
-			label: t('about'),
-			to: '/about',
-		},
-	]
+	const buttons = useNavDatas()
 
 	return (
-		<div
-			className={`flex justify-center bg-black underline underline-offset-5 text-center ${className}`}
-		>
-			{navDatas.map(navData => (
-				<Link
-					key={navData.to}
-					className='flex-1 content-center text-nowrap'
-					href={navData.to}
-				>
-					{'\u00a0\u00a0\u00a0\u00a0' +
-						navData.label +
-						'\u00a0\u00a0\u00a0\u00a0'}
-				</Link>
-			))}
-		</div>
+		<>
+			<div
+				className={`lg:flex hidden underline underline-offset-5 items-center gap-0 ${className}`}
+			>
+				{buttons.map(button =>
+					button.to && !button.children ? (
+						<NavButton key={button.to ?? button.label} button={button} />
+					) : (
+						<CollapsedNavButton key={button.label} button={button} />
+					)
+				)}
+			</div>
+		</>
 	)
 }
 
+const NavButton = ({ button }: { button: NavData }) => {
+	const [shouldPrefetch, setShouldPrefetch] = useState(false)
+
+	return (
+		<Link
+			className='nav-bg text-bg-secondary flex-1 text-center z-30 hover:bg-secondary/20 transition-colors duration-200'
+			href={button.to ?? '/'}
+			prefetch={shouldPrefetch ? true : false}
+			onMouseEnter={() => setShouldPrefetch(true)}
+		>
+			{'\u00a0\u00a0\u00a0\u00a0' + button.label + '\u00a0\u00a0\u00a0\u00a0'}
+		</Link>
+	)
+}
+
+const CollapsedNavButton = ({ button }: { button: NavData }) => {
+	const [isOpen, setIsOpen] = useState(false)
+
+	return (
+		<div className='relative flex-1'>
+			<button
+				className='nav-bg w-full text-center text-bg-secondary underline hover:bg-secondary/20 transition-colors duration-200 underline-offset-5 uppercase'
+				onClick={() => setIsOpen(!isOpen)}
+			>
+				{'\u00a0\u00a0\u00a0\u00a0' + button.label + '\u00a0\u00a0\u00a0\u00a0'}
+			</button>
+			{isOpen && (
+				<div className='absolute w-full bg-secondary/20 transition-colors duration-200 rounded-2xl flex flex-col gap-1'>
+					{button.children &&
+						button.children.map(child => (
+							<NavButton key={child.label} button={child} />
+						))}
+				</div>
+			)}
+		</div>
+	)
+}
 export default NavButtons

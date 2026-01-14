@@ -10,7 +10,7 @@ const FuveIcon = ({
 	return (
 		<Link href='/' className={className}>
 			<Image
-				src='/images/common/logo_black.webp'
+				src='/assets/common/logo_black.webp'
 				alt='Fuve'
 				className='object-contain size-12'
 				width={48}

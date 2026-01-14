@@ -18,7 +18,7 @@ const InfoField = ({
 	onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
 }) => (
 	<div className=''>
-		<label className='text-sm font-medium text-default'>{label}</label>
+		<label className='text-sm font-medium text-text-secondary'>{label}</label>
 		{editable && name ? (
 			<input
 				type='text'
@@ -29,7 +29,7 @@ const InfoField = ({
 				placeholder={`Nhập ${label.toLowerCase()}`}
 			/>
 		) : (
-			<div className='text-base text-default'>{value || 'N/A'}</div>
+			<div className='text-base text-text-secondary'>{value || 'N/A'}</div>
 		)}
 	</div>
 )
@@ -115,7 +115,7 @@ const AccountInfo = () => {
 	}
 
 	return (
-		<div className='rounded-[30px]  bg-[#E9F5E7] p-8 shadow-sm text-default'>
+		<div className='rounded-[30px]  bg-[#E9F5E7] p-8 shadow-sm text-text-secondary'>
 			<h1 className='text-3xl font-bold mb-8 text-center'>TÀI KHOẢN</h1>
 			<form onSubmit={handleSubmit}>
 				<div className='space-y-6'>
@@ -180,14 +180,14 @@ const AccountInfo = () => {
 								})
 								setIsEditing(true)
 							}}
-							className='shadow-md w-full py-3 px-4 rounded-lg bg-button  text-default font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-dark-surface'
+							className='shadow-md w-full py-3 px-4 rounded-lg bg-bg  text-text-secondary font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-dark-surface'
 						>
 							Chỉnh sửa thông tin
 						</button>
 					) : (
 						<div className='space-y-4'>
 							{updateMeMutation.isError && (
-								<div className='p-3 rounded-lg bg-error text-default text-sm'>
+								<div className='p-3 rounded-lg bg-error text-text-secondary text-sm'>
 									Cập nhật thất bại. Vui lòng thử lại.
 								</div>
 							)}
@@ -195,7 +195,7 @@ const AccountInfo = () => {
 								<button
 									type='submit'
 									disabled={updateMeMutation.isPending}
-									className='shadow-md flex-1 py-3 px-4 rounded-lg bg-button text-default font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-dark-surface disabled:opacity-50 disabled:cursor-not-allowed'
+									className='shadow-md flex-1 py-3 px-4 rounded-lg bg-bg text-text-secondary font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-dark-surface disabled:opacity-50 disabled:cursor-not-allowed'
 								>
 									{updateMeMutation.isPending ? 'Đang lưu...' : 'Lưu thay đổi'}
 								</button>
@@ -203,7 +203,7 @@ const AccountInfo = () => {
 									type='button'
 									onClick={handleCancel}
 									disabled={updateMeMutation.isPending}
-									className='shadow-md flex-1 py-3 px-4 rounded-lg bg-button text-default font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 dark:focus:ring-offset-dark-surface disabled:opacity-50 disabled:cursor-not-allowed'
+									className='shadow-md flex-1 py-3 px-4 rounded-lg bg-bg text-text-secondary font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 dark:focus:ring-offset-dark-surface disabled:opacity-50 disabled:cursor-not-allowed'
 								>
 									Hủy
 								</button>

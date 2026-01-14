@@ -1,40 +1,54 @@
 'use client'
 
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import FuveIcon from '../common/FuveIcon'
 import LoginButton from '../auth/login/LoginButton'
 import NavButtons from './NavButtons'
 import { useAuthStore } from '@/stores/authStore'
+import Loading from '../common/Loading'
+import { useLinkStatus } from 'next/link'
+import LogoutButton from '../auth/login/LogoutButton'
 
 const NavBar = (): React.ReactElement => {
-	const account = useAuthStore(state => state.account)
-	const isLoggedIn = !!account
+	const isLoggedIn = useAuthStore(state => state.isAuthenticated)
+	const { pending } = useLinkStatus()
+	const [isNavigating, setIsNavigating] = useState(false)
+
+	useEffect(() => {
+		let timer: ReturnType<typeof setTimeout> | undefined
+		if (pending) {
+			timer = setTimeout(() => setIsNavigating(true), 120)
+		} else {
+			if (timer) clearTimeout(timer)
+			const closeTimer = setTimeout(() => setIsNavigating(false), 80)
+			return () => clearTimeout(closeTimer)
+		}
+		return () => timer && clearTimeout(timer)
+	}, [pending])
 
 	return (
-		<nav
-			id='navbar'
-			role='navigation'
-			aria-label='Main Navigation'
-			className='navbar relative z-50 flex w-screen justify-around px-5 sm:px-10 md:px-20 py-2 cap-width mx-auto'
-		>
-			<div id='navbar-logo-container' className='navbar-logo-container flex-1/5'>
-				<FuveIcon className='navbar-logo size-10' />
-			</div>
-
-			<div className='navbar-spacer-left grow' />
-
-			{!isLoggedIn && (
-				<div id='navbar-buttons-container' className='navbar-buttons-container flex-2/5'>
-					<NavButtons className='navbar-buttons josefin font-medium text-white uppercase' />
+		<>
+			{isNavigating && <Loading />}
+			<nav
+				role='navigation'
+				aria-label='Main Navigation'
+				className='relative z-50 flex w-screen justify-around px-5 sm:px-10 md:px-20 py-2 cap-width mx-auto pointer-events-none'
+			>
+				<div className='flex-none'>
+					<FuveIcon className='size-10 pointer-events-auto' />
 				</div>
-			)}
 
-			<div className='navbar-spacer-right grow' />
+				<div className='grow pointer-events-none' />
 
-			<div id='navbar-auth-container' className='navbar-auth-container flex-1/5 flex justify-end'>
-				{!isLoggedIn && <LoginButton />}
-			</div>
-		</nav>
+				<NavButtons className='josefin font-medium uppercase pointer-events-auto' />
+
+				<div className='grow pointer-events-none' />
+
+				<div className='flex justify-end pointer-events-auto'>
+					{isLoggedIn ? <LogoutButton /> : <LoginButton />}
+				</div>
+			</nav>
+		</>
 	)
 }
 

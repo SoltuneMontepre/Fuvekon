@@ -4,9 +4,9 @@ import React from 'react'
 const ForegroundFoliage = ({ className }: { className?: string }) => {
 	return (
 		<Image
-			className={`landing-bg ${className ?? ''}`}
-			src='/assets/fg-foliage.png'
-			alt='foreground-foliage-background-image'
+			className={`landing-bg scale-[1.14] ${className ?? ''}`}
+			src='/assets/fg-foliage.webp'
+			alt='foreground-foliage-bg-image'
 			priority
 			fill
 		/>

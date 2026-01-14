@@ -7,15 +7,9 @@ const LoginButton = (): React.ReactElement => {
 	const t = useTranslations('auth')
 
 	return (
-		<Link
-			id='login-button'
-			href='/login'
-			className='login-button center'
-		>
-			<span id='login-button-text' className='login-button-text hidden md:block'>
-				{t('login')}
-			</span>
-			<span id='login-button-icon' className='login-button-icon block md:hidden'>
+		<Link href='/login' className='center'>
+			<span className='hidden lg:block'>{t('login')}</span>
+			<span className='block lg:hidden'>
 				<CircleUserRound size={30} />
 			</span>
 		</Link>

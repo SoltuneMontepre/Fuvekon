@@ -5,8 +5,8 @@ const Dragon = ({ className }: { className?: string }) => {
 	return (
 		<Image
 			className={`landing-bg ${className ?? ''}`}
-			src='/assets/bg-dragon.png'
-			alt='dragon-background-image'
+			src='/assets/bg-dragon.webp'
+			alt='dragon-bg-image'
 			priority
 			fill
 		/>

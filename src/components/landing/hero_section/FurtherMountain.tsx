@@ -5,8 +5,8 @@ const FurtherMountain = ({ className }: { className?: string }) => {
 	return (
 		<Image
 			className={`landing-bg ${className ?? ''}`}
-			src='/assets/bg-darkrock.png'
-			alt='further-mountain-background-image'
+			src='/assets/bg-darkrock.webp'
+			alt='further-mountain-bg-image'
 			priority
 			fill
 		/>

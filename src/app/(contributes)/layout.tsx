@@ -5,7 +5,7 @@ const ContributeLayout = ({ children }: { children: React.ReactNode }) => {
 	return (
 		<>
 			<div>{children}</div>
-			<Background />
+			<Background animated />
 		</>
 	)
 }

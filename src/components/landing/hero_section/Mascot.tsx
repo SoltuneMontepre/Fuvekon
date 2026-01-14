@@ -6,7 +6,7 @@ const Mascot = ({ className }: { className?: string }) => {
 		<Image
 			id='mascot'
 			className={`landing-bg ${className ?? ''}`}
-			src='/assets/mascot.png'
+			src='/assets/mascot.webp'
 			alt='mascot-image'
 			priority
 			fill
