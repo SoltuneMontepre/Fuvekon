@@ -1,3 +1,5 @@
+'use client'
+
 import React, { useEffect } from 'react'
 import { Loader2 } from 'lucide-react'
 import { logger } from '@/utils/logger'
