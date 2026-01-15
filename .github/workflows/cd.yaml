@@ -39,8 +39,7 @@ jobs:
             ${{ runner.os }}-node-
 
       - name: Install dependencies
-        if: steps.download-artifact.outcome != 'success' && steps.cache-deps.outputs.cache-hit != 'true'
-        run: npm ci
+        run: npm i
 
       - name: Cache Next.js build
         if: steps.download-artifact.outcome != 'success'
