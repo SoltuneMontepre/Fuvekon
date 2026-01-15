@@ -47,7 +47,7 @@ const ProfileButton = (): React.ReactElement => {
 				aria-label='Profile menu'
 			>
 				<div className='relative size-8 rounded-full overflow-hidden bg-[#154c5b] border-2 border-white/30'>
-					{showAvatar ? (
+					{showAvatar && account?.avatar ? (
 						<Image
 							src={account.avatar}
 							alt={displayName}
