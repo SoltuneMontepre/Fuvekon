@@ -1,7 +1,20 @@
-import React from 'react'
+'use client'
+
+import React, { useEffect } from 'react'
 import { Loader2 } from 'lucide-react'
+import { logger } from '@/utils/logger'
 
 const Loading = (): React.ReactElement => {
+	useEffect(() => {
+		logger.debug('Loading component mounted')
+		const startTime = Date.now()
+
+		return () => {
+			const duration = Date.now() - startTime
+			logger.debug('Loading component unmounted', { durationMs: duration })
+		}
+	}, [])
+
 	return (
 		<div
 			className='fixed inset-0 flex items-center justify-center backdrop-blur-sm z-50'

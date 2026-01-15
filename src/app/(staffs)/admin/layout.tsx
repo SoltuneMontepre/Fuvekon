@@ -6,12 +6,13 @@ import SideBar from '@/components/nav/SideBar'
 import { UserCircle, Ticket } from 'lucide-react'
 import { useGetMe } from '@/hooks/services/auth/useAccount'
 import { useAuthStore } from '@/stores/authStore'
-import LogoutButton from '@/components/auth/login/LogoutButton'
+import { logger } from '@/utils/logger'
+import Loading from '@/components/common/Loading'
 
 type AdminLayoutProps = {
-	revenue: React.JSX.Element
-	timeline: React.JSX.Element
-	children: React.JSX.Element
+	revenue: React.ReactElement
+	timeline: React.ReactElement
+	children: React.ReactElement
 }
 
 const sections = [
@@ -26,6 +27,11 @@ const sections = [
 				label: 'Dashboard',
 				href: '/admin/dashboard',
 				icon: UserCircle,
+			},
+			{
+				label: 'Quản lý vé',
+				href: '/admin/tickets',
+				icon: Ticket,
 			},
 			{
 				label: 'Quét vé',
@@ -76,15 +82,13 @@ const AdminLayout = ({ revenue, timeline, children }: AdminLayoutProps) => {
 
 	// Show loading state
 	if (isLoading) {
-		return (
-			<div className='flex items-center justify-center min-h-screen'>
-				<div className='text-lg'>Loading...</div>
-			</div>
-		)
+		logger.debug('Admin layout: Loading user data')
+		return <Loading />
 	}
 
 	// Don't render if not authenticated (will redirect)
 	if (isError || (data && !data.isSuccess)) {
+		logger.warn('Admin layout: Authentication failed, redirecting to login')
 		return null
 	}
 
@@ -96,18 +100,58 @@ const AdminLayout = ({ revenue, timeline, children }: AdminLayoutProps) => {
 			data.data.role?.toLowerCase() === 'staff')
 
 	if (!isAuthorized) {
+		logger.warn('Admin layout: User not authorized (not admin/staff)', {
+			role: data?.data?.role,
+		})
 		return null
 	}
 
 	return (
-		<div className='flex'>
-			<div className='w-[30%]'>
-				<SideBar sections={sections} footer={<LogoutButton />} />
+		<div
+			id='admin-layout'
+			className='admin-layout relative flex min-h-screen w-full overflow-hidden'
+		>
+			{/* Background Image - Behind everything */}
+			<div
+				id='admin-background'
+				className='admin-background fixed inset-0 z-0'
+				style={{
+					backgroundImage: `url('/assets/bg-base.webp')`,
+					backgroundSize: 'cover',
+					backgroundPosition: 'center',
+					backgroundRepeat: 'no-repeat',
+				}}
+			/>
+
+			{/* Dark overlay for better contrast */}
+			<div className='fixed inset-0 z-[1] bg-black/40' />
+
+			{/* Sidebar - Compact with card style */}
+			<div
+				id='admin-sidebar-container'
+				className='admin-sidebar-container relative z-10 w-[200px] ml-6 my-6'
+			>
+				<div className='bg-main/95 dark:bg-dark-surface/95 backdrop-blur-md rounded-2xl shadow-2xl border border-slate-300/20 dark:border-dark-border/20'>
+					<SideBar sections={sections} />
+				</div>
 			</div>
-			<div className='mx-auto flex w-xl max-w-6xl flex-col gap-6 px-4 py-8 md:px-8 lg:py-12'>
-				<section>{revenue}</section>
-				<section>{timeline}</section>
-				<section>{children}</section>
+
+			{/* Main Content - Card-based layout with dark background visible */}
+			<div
+				id='admin-content'
+				className='admin-content relative z-10 flex-1 flex flex-col gap-6 px-8 py-8 mr-6'
+			>
+				<div className='bg-main/95 dark:bg-dark-surface/95 backdrop-blur-md rounded-2xl shadow-2xl p-8 border border-slate-300/20 dark:border-dark-border/20'>
+					<section id='admin-revenue-section' className='admin-revenue-section mb-6'>
+						{revenue}
+					</section>
+					<section id='admin-timeline-section' className='admin-timeline-section mb-6'>
+						{timeline}
+					</section>
+					<section id='admin-main-section' className='admin-main-section'>
+						{children}
+					</section>
+				</div>
 			</div>
 		</div>
 	)

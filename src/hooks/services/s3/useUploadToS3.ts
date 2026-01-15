@@ -25,7 +25,6 @@ export interface UploadToS3Result {
  * ```tsx
  * const { uploadFile, isUploading, error } = useUploadToS3({
  *   onSuccess: (fileUrl, fileKey) => {
- *     console.log('Uploaded:', fileUrl)
  *     // Save file info to DB
  *   }
  * })

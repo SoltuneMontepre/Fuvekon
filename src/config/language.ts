@@ -8,7 +8,7 @@ export default getRequestConfig(async ({ locale }) => {
   const validLocale =
     SUPPORTED_LANGS.includes(locale as Language) && typeof locale === "string"
       ? locale
-      : cookieLocale ?? "en";
+      : cookieLocale ?? "vi";
 
   return {
     locale: validLocale,

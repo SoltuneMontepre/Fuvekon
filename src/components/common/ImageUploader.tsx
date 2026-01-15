@@ -118,9 +118,8 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
 					expiresIn,
 				}
 				await uploadFile(file, presignOptions)
-			} catch (err) {
+			} catch {
 				// Error is already handled by the hook's onError callback
-				console.error('Upload error:', err)
 			}
 		},
 		[uploadFile, folder, expiresIn, maxSizeMB, onUploadError]

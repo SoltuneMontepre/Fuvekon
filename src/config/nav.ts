@@ -1,4 +1,5 @@
 import { useTranslations } from 'next-intl'
+import { useAuthStore } from '@/stores/authStore'
 
 export type NavData = {
 	label: string
@@ -8,11 +9,20 @@ export type NavData = {
 
 const useNavDatas = (): NavData[] => {
 	const t = useTranslations('nav')
+	const account = useAuthStore(state => state.account)
+
+	// Check if user is admin or staff
+	const isAdminOrStaff = account?.role && ['admin', 'staff'].includes(account.role.toLowerCase())
+
+	// If user is admin/staff, return empty array to hide all nav items
+	if (isAdminOrStaff) {
+		return []
+	}
 
 	return [
 		{
 			label: t('ticket'),
-			to: '/register',
+			to: '/ticket',
 		},
 		{
 			label: t('contributes'),

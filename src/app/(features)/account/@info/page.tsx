@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState, useEffect, useCallback } from 'react'
+import { toast } from 'sonner'
 import { useAuthStore } from '@/stores/authStore'
 import { useUpdateMe } from '@/hooks/services/auth/useAccount'
 
@@ -108,7 +109,11 @@ const AccountInfo = () => {
 				onSuccess: data => {
 					if (data.isSuccess) {
 						setIsEditing(false)
+						toast.success('Cập nhật thông tin thành công!')
 					}
+				},
+				onError: () => {
+					toast.error('Cập nhật thất bại. Vui lòng thử lại.')
 				},
 			}
 		)
@@ -186,11 +191,6 @@ const AccountInfo = () => {
 						</button>
 					) : (
 						<div className='space-y-4'>
-							{updateMeMutation.isError && (
-								<div className='p-3 rounded-lg bg-error text-text-secondary text-sm'>
-									Cập nhật thất bại. Vui lòng thử lại.
-								</div>
-							)}
 							<div className='flex gap-4'>
 								<button
 									type='submit'

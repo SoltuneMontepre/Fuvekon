@@ -25,10 +25,18 @@ const Account = {
 }
 
 export function useGetMe() {
+	const isAuthenticated = useAuthStore(state => state.isAuthenticated)
+
 	return useQuery<MeResponse>({
 		queryKey: ['account'],
 		queryFn: () => Account.getMe(),
+		enabled: isAuthenticated, // Only run query if user is authenticated
 		retry: false,
+		staleTime: 5 * 60 * 1000, // Consider data fresh for 5 minutes
+		gcTime: 10 * 60 * 1000, // Keep in cache for 10 minutes
+		refetchOnWindowFocus: false, // Don't refetch on window focus
+		refetchOnMount: false, // Don't refetch on component mount if data exists
+		refetchOnReconnect: false, // Don't refetch on reconnect
 	})
 }
 
@@ -45,9 +53,6 @@ export function useUpdateMe() {
 				setAccount(data.data)
 			}
 			queryClient.invalidateQueries({ queryKey: ['account'] })
-		},
-		onError: (error: Error) => {
-			console.error('Update account failed:', error.message)
 		},
 	})
 }

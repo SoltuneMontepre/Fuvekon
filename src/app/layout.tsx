@@ -7,6 +7,7 @@ import TanstackProvider from '@/config/Providers/TanstackProvider'
 
 import ThemeProvider from '@/config/Providers/ThemeProvider'
 import ThemePreload from '@/config/Providers/ThemePreload'
+import ToastProvider from '@/components/common/ToastProvider'
 
 import './globals.css'
 
@@ -46,6 +47,7 @@ export default async function RootLayout({
 				<ThemeProvider>
 					<TanstackProvider>
 						<NextIntlClientProvider locale={locale} messages={messages}>
+							<ToastProvider />
 							<NavBar />
 							<main>{children}</main>
 						</NextIntlClientProvider>

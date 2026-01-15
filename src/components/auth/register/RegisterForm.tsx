@@ -130,13 +130,6 @@ const RegisterForm = (): React.ReactElement => {
 					type: 'manual',
 					message: errorMessage,
 				})
-
-				// Log error for monitoring (but NOT user data)
-				console.error('Registration error:', {
-					timestamp: new Date().toISOString(),
-					status: axiosError.response?.status,
-					errorType: axiosError.constructor?.name || typeof error,
-				})
 			} else if (error && typeof error === 'object' && 'request' in error) {
 				// Request made but no response received
 				setError('root', {

@@ -3,11 +3,11 @@
 import React, { useEffect, useState } from 'react'
 import FuveIcon from '../common/FuveIcon'
 import LoginButton from '../auth/login/LoginButton'
-import LogoutButton from '../auth/login/LogoutButton'
 import NavButtons from './NavButtons'
 import { useAuthStore } from '@/stores/authStore'
 import Loading from '../common/Loading'
 import { useLinkStatus } from 'next/link'
+import ProfileButton from './ProfileButton'
 
 const NavBar = (): React.ReactElement => {
 	const isLoggedIn = useAuthStore(state => state.isAuthenticated)
@@ -45,7 +45,7 @@ const NavBar = (): React.ReactElement => {
 				<div className='grow pointer-events-none' />
 
 				<div className='flex justify-end pointer-events-auto'>
-					{isLoggedIn ? <LogoutButton /> : <LoginButton />}
+					{isLoggedIn ? <ProfileButton /> : <LoginButton />}
 				</div>
 			</nav>
 		</>

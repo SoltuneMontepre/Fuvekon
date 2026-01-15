@@ -9,8 +9,7 @@ export const useCopyToClipboard = () => {
 			setCopied(true)
 			setTimeout(() => setCopied(false), 2000)
 			return true
-		} catch (err) {
-			console.error('Failed to copy:', err)
+		} catch {
 			return false
 		}
 	}
