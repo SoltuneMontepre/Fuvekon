@@ -43,6 +43,7 @@ const AccountInfo = () => {
 		last_name: '',
 		fursona_name: '',
 		country: '',
+		id_card: '',
 	})
 	const updateMeMutation = useUpdateMe()
 
@@ -65,6 +66,7 @@ const AccountInfo = () => {
 				last_name: account.last_name || '',
 				fursona_name: account.fursona_name || '',
 				country: account.country || '',
+				id_card: account.id_card || '',
 			})
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -91,6 +93,7 @@ const AccountInfo = () => {
 			last_name: account.last_name || '',
 			fursona_name: account.fursona_name || '',
 			country: account.country || '',
+			id_card: account.id_card || '',
 		})
 		setIsEditing(false)
 	}
@@ -104,6 +107,7 @@ const AccountInfo = () => {
 				last_name: formData.last_name || undefined,
 				fursona_name: formData.fursona_name || undefined,
 				country: formData.country || undefined,
+				id_card: formData.id_card || undefined,
 			},
 			{
 				onSuccess: data => {
@@ -142,31 +146,37 @@ const AccountInfo = () => {
 									onChange={handleInputChange}
 								/>
 							</div>
+						<InfoField
+							label='Tên fursona'
+							value={formData.fursona_name}
+							name='fursona_name'
+							editable={isEditing}
+							onChange={handleInputChange}
+						/>
+						<InfoField label='Gmail' value={account.email} />
+						<InfoField
+							label='Quốc gia'
+							value={formData.country}
+							name='country'
+							editable={isEditing}
+							onChange={handleInputChange}
+						/>
 							<InfoField
-								label='Tên fursona'
-								value={formData.fursona_name}
-								name='fursona_name'
-								editable={isEditing}
-								onChange={handleInputChange}
-							/>
-							<InfoField label='Gmail' value={account.email} />
-							<InfoField label='Số điện thoại' value={undefined} />
-							<InfoField
-								label='Quốc gia'
-								value={formData.country}
-								name='country'
+								label='Số CMND/CCCD'
+								value={formData.id_card}
+								name='id_card'
 								editable={isEditing}
 								onChange={handleInputChange}
 							/>
 						</>
 					) : (
-						<>
-							<InfoField label='Họ và Tên' value={fullName} />
-							<InfoField label='Tên fursona' value={account.fursona_name} />
-							<InfoField label='Gmail' value={account.email} />
-							<InfoField label='Số điện thoại' value={undefined} />
-							<InfoField label='Quốc gia' value={account.country} />
-						</>
+					<>
+						<InfoField label='Họ và Tên' value={fullName} />
+						<InfoField label='Tên fursona' value={account.fursona_name} />
+						<InfoField label='Gmail' value={account.email} />
+						<InfoField label='Quốc gia' value={account.country} />
+						<InfoField label='Số CMND/CCCD' value={account.id_card} />
+					</>
 					)}
 				</div>
 
@@ -182,6 +192,7 @@ const AccountInfo = () => {
 									last_name: account.last_name || '',
 									fursona_name: account.fursona_name || '',
 									country: account.country || '',
+									id_card: account.id_card || '',
 								})
 								setIsEditing(true)
 							}}

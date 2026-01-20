@@ -10,8 +10,7 @@ export interface UpdateMeRequest {
 	first_name?: string
 	last_name?: string
 	country?: string
-	identification_id?: string
-	passport_id?: string
+	id_card?: string
 }
 
 /**

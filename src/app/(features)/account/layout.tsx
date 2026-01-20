@@ -72,7 +72,7 @@ const AccountLayout = ({ children, info }: AccountLayoutProps) => {
 	return (
 		<div
 			id='account-layout'
-			className='account-layout relative flex min-h-screen w-full overflow-hidden'
+			className='account-layout relative flex min-h-screen w-full '
 		>
 			{/* Background Image - Behind everything */}
 			<div
@@ -92,19 +92,17 @@ const AccountLayout = ({ children, info }: AccountLayoutProps) => {
 			{/* Sidebar - Compact with card style */}
 			<div
 				id='account-sidebar-container'
-				className='account-sidebar-container relative z-10 w-[200px] ml-6 my-6'
+				className='account-sidebar-container relative z-10 w-[20%] mx-6'
 			>
-				<div className='bg-main/95 dark:bg-dark-surface/95 backdrop-blur-md rounded-2xl shadow-2xl border border-slate-300/20 dark:border-dark-border/20'>
-					<SideBar sections={sections} />
-				</div>
+				<SideBar sections={sections} />
 			</div>
 
 			{/* Main Content - Card-based layout with dark background visible */}
 			<div
 				id='account-content'
-				className='account-content relative z-10 flex-1 flex flex-col gap-6 px-8 py-8 mr-6'
+				className='account-content relative z-10 flex-1 flex flex-col gap-6 p-8 mr-6'
 			>
-				<div className='bg-main/95 dark:bg-dark-surface/95 backdrop-blur-md rounded-2xl shadow-2xl p-8 border border-slate-300/20 dark:border-dark-border/20'>
+				<div className=' dark:bg-dark-surface/95 backdrop-blur-md rounded-2xl shadow-2xl'>
 					<section id='account-info-section' className='account-info-section mb-6'>
 						{info}
 					</section>
