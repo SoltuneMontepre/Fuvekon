@@ -71,7 +71,7 @@ const SideBar = ({
 		<aside
 			id='sidebar'
 			ref={sidebarRef}
-			className={`flex flex-col h-[90%]  bg-main border-r-10 border-r-[154C5B] border-l-10 border-l-[154C5B]  ${className}`}
+			className={`flex flex-col bg-main border-r-10 border-r-[154C5B] border-l-10 border-l-[154C5B] py-10  ${className}`}
 			style={{
 				backgroundImage: 'url(/images/sidebar/sidebarBG.png)',
 				backgroundSize: 'cover',

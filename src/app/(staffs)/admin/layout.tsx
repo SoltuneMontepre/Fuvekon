@@ -47,7 +47,7 @@ const sections = [
 	},
 ]
 
-const AdminLayout = ({ revenue, timeline, children }: AdminLayoutProps) => {
+const AdminLayout = ({ children }: AdminLayoutProps) => {
 	const router = useRouter()
 	const { data, isLoading, isError } = useGetMe()
 	const setAccount = useAuthStore(state => state.setAccount)
@@ -109,7 +109,7 @@ const AdminLayout = ({ revenue, timeline, children }: AdminLayoutProps) => {
 	return (
 		<div
 			id='admin-layout'
-			className='admin-layout relative flex min-h-screen w-full overflow-hidden'
+			className='admin-layout relative flex min-h-screen w-full'
 		>
 			{/* Background Image - Behind everything */}
 			<div
@@ -129,11 +129,10 @@ const AdminLayout = ({ revenue, timeline, children }: AdminLayoutProps) => {
 			{/* Sidebar - Compact with card style */}
 			<div
 				id='admin-sidebar-container'
-				className='admin-sidebar-container relative z-10 w-[200px] ml-6 my-6'
+				className='admin-sidebar-container relative z-10 w-[200px] ml-20 my-6'
 			>
-				<div className='bg-main/95 dark:bg-dark-surface/95 backdrop-blur-md rounded-2xl shadow-2xl border border-slate-300/20 dark:border-dark-border/20'>
-					<SideBar sections={sections} />
-				</div>
+				<SideBar sections={sections} />
+				
 			</div>
 
 			{/* Main Content - Card-based layout with dark background visible */}
@@ -142,12 +141,7 @@ const AdminLayout = ({ revenue, timeline, children }: AdminLayoutProps) => {
 				className='admin-content relative z-10 flex-1 flex flex-col gap-6 px-8 py-8 mr-6'
 			>
 				<div className='bg-main/95 dark:bg-dark-surface/95 backdrop-blur-md rounded-2xl shadow-2xl p-8 border border-slate-300/20 dark:border-dark-border/20'>
-					<section id='admin-revenue-section' className='admin-revenue-section mb-6'>
-						{revenue}
-					</section>
-					<section id='admin-timeline-section' className='admin-timeline-section mb-6'>
-						{timeline}
-					</section>
+					
 					<section id='admin-main-section' className='admin-main-section'>
 						{children}
 					</section>

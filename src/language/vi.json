@@ -14,7 +14,13 @@
 		"processing": "Đang xử lý...",
 		"yes": "Có",
 		"no": "Không",
-		"copy": "Sao chép"
+		"copy": "Sao chép",
+		"itemsPerPage": "Số mục mỗi trang",
+		"showing": "Hiển thị",
+		"to": "đến",
+		"of": "trong tổng số",
+		"results": "kết quả",
+		"page": "Trang"
 	},
 	"nav": {
 		"ticket": "Vé",
@@ -126,6 +132,8 @@
 	"admin": {
 		"ticketManagement": "Quản lý vé",
 		"ticketManagementDesc": "Xem và duyệt các vé đã đăng ký",
+		"userManagement": "Quản lý người dùng",
+		"userManagementDesc": "Xem và quản lý tất cả người dùng",
 		"totalTickets": "Tổng số vé",
 		"pendingPayment": "Chờ thanh toán",
 		"verifying": "Đang xác minh",
@@ -151,6 +159,14 @@
 		"denyTicketTitle": "Từ chối vé",
 		"denyingTicket": "Bạn đang từ chối vé {code}",
 		"user": "Người dùng",
+		"email": "Email",
+		"role": "Vai trò",
+		"verified": "Đã xác minh",
+		"unverified": "Chưa xác minh",
+		"blacklisted": "Bị chặn",
+		"denials": "Số lần từ chối",
+		"noUsers": "Không có người dùng nào",
+		"noSearchResults": "Không tìm thấy người dùng nào phù hợp với tìm kiếm",
 		"blacklistWarning": "Cảnh báo: Người dùng này đã bị từ chối {count} lần. Từ chối thêm sẽ khiến họ bị blacklist!",
 		"denyReason": "Lý do từ chối (tùy chọn)",
 		"denyReasonPlaceholder": "VD: Không tìm thấy giao dịch, thông tin không khớp...",

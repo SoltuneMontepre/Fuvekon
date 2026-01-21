@@ -92,7 +92,7 @@ const AccountLayout = ({ children, info }: AccountLayoutProps) => {
 			{/* Sidebar - Compact with card style */}
 			<div
 				id='account-sidebar-container'
-				className='account-sidebar-container relative z-10 w-[20%] mx-6'
+				className='account-sidebar-container relative z-10 w-[200px] ml-20 mx-6'
 			>
 				<SideBar sections={sections} />
 			</div>

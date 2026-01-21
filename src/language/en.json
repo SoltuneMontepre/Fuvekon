@@ -14,7 +14,13 @@
 		"processing": "Processing...",
 		"yes": "Yes",
 		"no": "No",
-		"copy": "Copy"
+		"copy": "Copy",
+		"itemsPerPage": "Items per page",
+		"showing": "Showing",
+		"to": "to",
+		"of": "of",
+		"results": "results",
+		"page": "Page"
 	},
 	"nav": {
 		"ticket": "Ticket",
@@ -126,6 +132,8 @@
 	"admin": {
 		"ticketManagement": "Ticket Management",
 		"ticketManagementDesc": "View and approve registered tickets",
+		"userManagement": "User Management",
+		"userManagementDesc": "View and manage all users",
 		"totalTickets": "Total Tickets",
 		"pendingPayment": "Pending Payment",
 		"verifying": "Verifying",
@@ -151,6 +159,14 @@
 		"denyTicketTitle": "Deny Ticket",
 		"denyingTicket": "You are denying ticket {code}",
 		"user": "User",
+		"email": "Email",
+		"role": "Role",
+		"verified": "Verified",
+		"unverified": "Unverified",
+		"blacklisted": "Blacklisted",
+		"denials": "Denials",
+		"noUsers": "No users found",
+		"noSearchResults": "No users found matching your search",
 		"blacklistWarning": "Warning: This user has been denied {count} times. Denying again will blacklist them!",
 		"denyReason": "Denial reason (optional)",
 		"denyReasonPlaceholder": "E.g.: Transaction not found, information mismatch...",
