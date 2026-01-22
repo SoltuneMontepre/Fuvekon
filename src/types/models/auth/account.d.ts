@@ -11,6 +11,7 @@ export interface Account {
 	role: Role
 	id_card?: string
 	is_verified?: boolean
+	is_dealer?: boolean
 	is_blacklisted?: boolean
 	denial_count?: number
 	created_at?: string // ISO date string

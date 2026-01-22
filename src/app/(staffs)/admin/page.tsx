@@ -6,7 +6,7 @@ import { useTranslations } from 'next-intl'
 import { useAdminGetUsers, type AdminUserFilter } from '@/hooks/services/user/useAdminUser'
 import type { Account } from '@/types/models/auth/account'
 import Loading from '@/components/common/Loading'
-import Image from 'next/image'
+import S3Image from '@/components/common/S3Image'
 
 // Format datetime
 const formatDateTime = (dateString?: string): string => {
@@ -198,7 +198,7 @@ const UserManagementPage = (): React.ReactElement => {
 												<td className='px-4 py-3'>
 													<div className='flex items-center gap-3'>
 														{user.avatar ? (
-															<Image
+															<S3Image
 																src={user.avatar}
 																alt={user.fursona_name || user.email}
 																className='w-10 h-10 rounded-full object-cover'

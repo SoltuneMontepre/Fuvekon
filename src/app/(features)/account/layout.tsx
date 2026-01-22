@@ -2,7 +2,7 @@
 
 import SideBar from '@/components/nav/SideBar'
 import type { ReactNode } from 'react'
-import { UserCircle, Ticket } from 'lucide-react'
+import { UserCircle, Ticket, Store } from 'lucide-react'
 import { useGetMe } from '@/hooks/services/auth/useAccount'
 import { useAuthStore } from '@/stores/authStore'
 import { useEffect } from 'react'
@@ -21,6 +21,7 @@ const AccountLayout = ({ children, info }: AccountLayoutProps) => {
 	const t = useTranslations('nav')
 	const { data, isLoading, isError } = useGetMe()
 	const setAccount = useAuthStore(state => state.setAccount)
+	const account = useAuthStore(state => state.account)
 
 	const sections = [
 		{
@@ -35,6 +36,16 @@ const AccountLayout = ({ children, info }: AccountLayoutProps) => {
 					href: '/account/ticket',
 					icon: Ticket,
 				},
+				// Only show register dealer option if user is not already a dealer
+				...(account?.is_dealer || data?.data?.is_dealer
+					? []
+					: [
+							{
+								label: t('registerDealer'),
+								href: '/account/dealer/register',
+								icon: Store,
+							},
+					  ]),
 			],
 		},
 	]

@@ -206,37 +206,47 @@ const AccountInfo = () => {
 									onChange={handleInputChange}
 								/>
 							</div>
-						<InfoField
-							label='Tên fursona'
-							value={formData.fursona_name}
-							name='fursona_name'
-							editable={isEditing}
-							onChange={handleInputChange}
-						/>
-						<InfoField label='Gmail' value={account.email} />
-						<InfoField
-							label='Quốc gia'
-							value={formData.country}
-							name='country'
-							editable={isEditing}
-							onChange={handleInputChange}
-						/>
-							<InfoField
-								label='Số CMND/CCCD'
-								value={formData.id_card}
-								name='id_card'
-								editable={isEditing}
-								onChange={handleInputChange}
-							/>
+							<div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
+								<div className='space-y-6'>
+									<InfoField
+										label='Tên fursona'
+										value={formData.fursona_name}
+										name='fursona_name'
+										editable={isEditing}
+										onChange={handleInputChange}
+									/>
+									<InfoField label='Gmail' value={account.email} />
+								</div>
+								<div className='space-y-6'>
+									<InfoField
+										label='Quốc gia'
+										value={formData.country}
+										name='country'
+										editable={isEditing}
+										onChange={handleInputChange}
+									/>
+									<InfoField
+										label='Số CMND/CCCD'
+										value={formData.id_card}
+										name='id_card'
+										editable={isEditing}
+										onChange={handleInputChange}
+									/>
+								</div>
+							</div>
 						</>
 					) : (
-					<>
-						<InfoField label='Họ và Tên' value={fullName} />
-						<InfoField label='Tên fursona' value={account.fursona_name} />
-						<InfoField label='Gmail' value={account.email} />
-						<InfoField label='Quốc gia' value={account.country} />
-						<InfoField label='Số CMND/CCCD' value={account.id_card} />
-					</>
+					<div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
+						<div className='space-y-6'>
+							<InfoField label='Họ và Tên' value={fullName} />
+							<InfoField label='Tên fursona' value={account.fursona_name} />
+							<InfoField label='Gmail' value={account.email} />
+						</div>
+						<div className='space-y-6'>
+							<InfoField label='Quốc gia' value={account.country} />
+							<InfoField label='Số CMND/CCCD' value={account.id_card} />
+						</div>
+					</div>
 					)}
 				</div>
 

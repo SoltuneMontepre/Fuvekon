@@ -57,6 +57,8 @@ export function useRegisterDealer() {
 			// Invalidate dealer-related queries
 			queryClient.invalidateQueries({ queryKey: ['dealer'] })
 			queryClient.invalidateQueries({ queryKey: ['admin-dealers'] })
+			// Invalidate account query to update is_dealer status
+			queryClient.invalidateQueries({ queryKey: ['account'] })
 		},
 	})
 }
