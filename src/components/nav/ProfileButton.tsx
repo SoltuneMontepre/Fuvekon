@@ -4,7 +4,7 @@ import React, { useState, useRef, useEffect } from 'react'
 import { useTranslations } from 'next-intl'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import Image from 'next/image'
+import S3Image from '@/components/common/S3Image'
 import { useAuthStore } from '@/stores/authStore'
 import { useLogout } from '@/hooks/services/auth/useLogout'
 
@@ -48,7 +48,7 @@ const ProfileButton = (): React.ReactElement => {
 			>
 				<div className='relative size-8 rounded-full overflow-hidden bg-[#154c5b] border-2 border-white/30'>
 					{showAvatar && account?.avatar ? (
-						<Image
+						<S3Image
 							src={account.avatar}
 							alt={displayName}
 							fill

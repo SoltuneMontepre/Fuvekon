@@ -3,7 +3,9 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import { toast } from 'sonner'
 import { useAuthStore } from '@/stores/authStore'
-import { useUpdateMe } from '@/hooks/services/auth/useAccount'
+import { useUpdateMe, useUpdateAvatar } from '@/hooks/services/auth/useAccount'
+import ImageUploader from '@/components/common/ImageUploader'
+import S3Image from '@/components/common/S3Image'
 
 const InfoField = ({
 	label,
@@ -46,6 +48,26 @@ const AccountInfo = () => {
 		id_card: '',
 	})
 	const updateMeMutation = useUpdateMe()
+	const updateAvatarMutation = useUpdateAvatar()
+
+	const handleAvatarUploadSuccess = useCallback(
+		(fileUrl: string) => {
+			updateAvatarMutation.mutate(
+				{ avatar: fileUrl },
+				{
+					onSuccess: data => {
+						if (data.isSuccess) {
+							toast.success('Cập nhật avatar thành công!')
+						}
+					},
+					onError: () => {
+						toast.error('Cập nhật avatar thất bại. Vui lòng thử lại.')
+					},
+				}
+			)
+		},
+		[updateAvatarMutation]
+	)
 
 	const handleInputChange = useCallback(
 		(e: React.ChangeEvent<HTMLInputElement>) => {
@@ -126,6 +148,44 @@ const AccountInfo = () => {
 	return (
 		<div className='rounded-[30px]  bg-[#E9F5E7] p-8 shadow-sm text-text-secondary'>
 			<h1 className='text-3xl font-bold mb-8 text-center'>TÀI KHOẢN</h1>
+			
+			{/* Avatar Section */}
+			<div className='mb-8 mx-auto'>
+				<label className='block text-sm font-medium text-[#48715B] mb-4'>Ảnh đại diện</label>
+				<div className='flex items-center gap-4'>
+					{/* Profile Avatar Display */}
+					<div className='relative w-64 h-64 rounded-full overflow-hidden border-2 border-[#48715B]/30 bg-[#E2EEE2] flex-shrink-0'>
+						{account.avatar ? (
+							<S3Image
+								src={account.avatar}
+								alt={account.fursona_name || account.first_name || 'Avatar'}
+								fill
+								className='object-cover'
+							/>
+						) : (
+							<div className='w-full h-full flex items-center justify-center text-[#48715B] text-4xl font-bold'>
+								{(account.fursona_name || account.first_name || account.email?.charAt(0) || 'U').charAt(0).toUpperCase()}
+							</div>
+						)}
+					</div>
+					{/* Upload Controls */}
+					<div className='flex-shrink-0'>
+						<ImageUploader
+							buttonText='Chọn ảnh đại diện'
+							initialImageUrl={account.avatar}
+							onUploadSuccess={handleAvatarUploadSuccess}
+							onUploadError={error => {
+								toast.error(`Lỗi upload: ${error.message}`)
+							}}
+							folder='user-uploads'
+							maxSizeMB={10}
+							showPreview={false}
+							disabled={updateAvatarMutation.isPending}
+						/>
+					</div>
+				</div>
+			</div>
+
 			<form onSubmit={handleSubmit}>
 				<div className='space-y-6'>
 					{isEditing ? (

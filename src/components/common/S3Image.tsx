@@ -74,10 +74,14 @@ const S3Image: React.FC<S3ImageProps> = ({
 	}, [proxyUrl])
 
 	// Handle image load error
-	const handleError = () => {
+	const handleError = (event: React.SyntheticEvent<HTMLImageElement, Event>) => {
 		if (!hasError && fallbackSrc) {
 			setImageSrc(fallbackSrc)
 			setHasError(true)
+		}
+		// Call user-provided onError handler if it exists
+		if (props.onError) {
+			props.onError(event)
 		}
 	}
 
@@ -88,7 +92,7 @@ const S3Image: React.FC<S3ImageProps> = ({
 			alt={alt}
 			className={className}
 			unoptimized={isS3}
-			onError={fallbackSrc ? handleError : undefined}
+			onError={fallbackSrc || props.onError ? handleError : undefined}
 		/>
 	)
 }
