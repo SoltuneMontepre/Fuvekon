@@ -1,6 +1,6 @@
 'use client'
 
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import axios from '@/common/axios'
 import type { ApiResponse } from '@/types/api/response'
 import type {
@@ -10,6 +10,7 @@ import type {
 	JoinDealerResponse,
 	RemoveStaffRequest,
 	RemoveStaffResponse,
+	GetDealerByIdResponse,
 } from '@/types/api/dealer/dealer'
 import { getQueryClient } from '@/utils/getQueryClient'
 
@@ -43,6 +44,14 @@ const DealerAPI = {
 		)
 		return data
 	},
+
+	// Get current user's dealer booth
+	getMyDealer: async () => {
+		const { data } = await axios.general.get<ApiResponse<GetDealerByIdResponse>>(
+			'/dealer/me'
+		)
+		return data
+	},
 }
 
 // ========== Hooks ==========
@@ -73,6 +82,8 @@ export function useJoinDealer() {
 			// Invalidate dealer-related queries
 			queryClient.invalidateQueries({ queryKey: ['dealer'] })
 			queryClient.invalidateQueries({ queryKey: ['admin-dealers'] })
+			// Invalidate account query to update is_dealer status
+			queryClient.invalidateQueries({ queryKey: ['account'] })
 		},
 	})
 }
@@ -88,5 +99,15 @@ export function useRemoveStaff() {
 			queryClient.invalidateQueries({ queryKey: ['dealer'] })
 			queryClient.invalidateQueries({ queryKey: ['admin-dealers'] })
 		},
+	})
+}
+
+// Get current user's dealer booth
+export function useGetMyDealer(enabled: boolean = true) {
+	return useQuery({
+		queryKey: ['dealer', 'me'],
+		queryFn: () => DealerAPI.getMyDealer(),
+		retry: false, // Don't retry if user is not a dealer
+		enabled, // Only enable query when user is a dealer
 	})
 }

@@ -23,13 +23,6 @@
 		"page": "หน้า"
 	},
 	"nav": {
-		"register": "ลงทะเบียน",
-		"contributes": "มีส่วนร่วม",
-		"about": "เกี่ยวกับเรา",
-		"myTicket": "ตั๋วของฉัน",
-		"account": "บัญชี"
-	},
-	"nav": {
 		"ticket": "บัตร",
 		"register": "ลงทะเบียน",
 		"contributes": "ร่วมส่งผลงาน",
@@ -39,8 +32,11 @@
 		"artbook": "อาร์ตบุ๊ก",
 		"dealer": "ร้านค้า",
 		"registerDealer": "ลงทะเบียน Dealer",
+		"myDealerBooth": "ร้านค้าของฉัน",
 		"schedule": "กำหนดการ",
-		"about": "เกี่ยวกับ"
+		"about": "เกี่ยวกับ",
+		"myTicket": "ตั๋วของฉัน",
+		"account": "บัญชี"
 	},
 	"auth": {
 		"login": "เข้าสู่ระบบ",
@@ -169,6 +165,19 @@
 		"denyReasonPlaceholder": "เช่น: ไม่พบธุรกรรม ข้อมูลไม่ตรงกัน...",
 		"confirmDeny": "ยืนยันการปฏิเสธ",
 		"noTickets": "ไม่พบตั๋ว",
-		"page": "หน้า {current} / {total}"
+		"page": "หน้า {current} / {total}",
+		"dealerManagement": "การจัดการ Dealer",
+		"dealerManagementDesc": "จัดการและตรวจสอบร้านค้า Dealer",
+		"totalDealers": "Dealer ทั้งหมด",
+		"verifiedDealers": "ยืนยันแล้ว",
+		"unverifiedDealers": "ยังไม่ยืนยัน",
+		"noDealers": "ไม่พบ Dealer",
+		"boothName": "ชื่อร้าน",
+		"boothNumber": "หมายเลขร้าน",
+		"description": "คำอธิบาย",
+		"staff": "พนักงาน",
+		"verify": "ยืนยัน",
+		"dealerVerified": "ยืนยัน Dealer สำเร็จ",
+		"verifyError": "ไม่สามารถยืนยัน Dealer ได้ กรุณาลองอีกครั้ง"
 	}
 }

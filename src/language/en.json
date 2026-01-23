@@ -34,6 +34,7 @@
 		"artbook": "Artbook",
 		"dealer": "Dealer",
 		"registerDealer": "Register Dealer",
+		"myDealerBooth": "My Dealer Booth",
 		"schedule": "Schedule",
 		"about": "About"
 	},
@@ -173,7 +174,20 @@
 		"denyReasonPlaceholder": "E.g.: Transaction not found, information mismatch...",
 		"confirmDeny": "Confirm Denial",
 		"noTickets": "No tickets found",
-		"page": "Page {current} / {total}"
+		"page": "Page {current} / {total}",
+		"dealerManagement": "Dealer Management",
+		"dealerManagementDesc": "Manage and verify dealer booths",
+		"totalDealers": "Total Dealers",
+		"verifiedDealers": "Verified",
+		"unverifiedDealers": "Unverified",
+		"noDealers": "No dealers found",
+		"boothName": "Booth Name",
+		"boothNumber": "Booth Number",
+		"description": "Description",
+		"staff": "Staff",
+		"verify": "Verify",
+		"dealerVerified": "Dealer verified successfully",
+		"verifyError": "Failed to verify dealer. Please try again."
 	},
 	"landing": {
 		"suggestion": "Scroll down for more!",

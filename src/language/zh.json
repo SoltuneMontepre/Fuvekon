@@ -23,13 +23,6 @@
 		"page": "页"
 	},
 	"nav": {
-		"register": "注册",
-		"contributes": "贡献",
-		"about": "关于我们",
-		"myTicket": "我的门票",
-		"account": "账户"
-	},
-	"nav": {
 		"ticket": "票务",
 		"register": "注册",
 		"contributes": "投稿",
@@ -39,8 +32,11 @@
 		"artbook": "画册",
 		"dealer": "商家",
 		"registerDealer": "注册Dealer",
+		"myDealerBooth": "我的商家展位",
 		"schedule": "日程",
-		"about": "关于"
+		"about": "关于",
+		"myTicket": "我的门票",
+		"account": "账户"
 	},
 	"auth": {
 		"login": "登录",
@@ -169,6 +165,19 @@
 		"denyReasonPlaceholder": "例如：未找到交易、信息不匹配...",
 		"confirmDeny": "确认拒绝",
 		"noTickets": "未找到门票",
-		"page": "第 {current} / {total} 页"
+		"page": "第 {current} / {total} 页",
+		"dealerManagement": "商家管理",
+		"dealerManagementDesc": "管理和验证商家展位",
+		"totalDealers": "商家总数",
+		"verifiedDealers": "已验证",
+		"unverifiedDealers": "未验证",
+		"noDealers": "未找到商家",
+		"boothName": "展位名称",
+		"boothNumber": "展位号",
+		"description": "描述",
+		"staff": "员工",
+		"verify": "验证",
+		"dealerVerified": "商家验证成功",
+		"verifyError": "验证商家失败。请重试。"
 	}
 }

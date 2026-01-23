@@ -3,7 +3,7 @@
 import React, { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import SideBar from '@/components/nav/SideBar'
-import { UserCircle, Ticket } from 'lucide-react'
+import { UserCircle, Ticket, Store } from 'lucide-react'
 import { useGetMe } from '@/hooks/services/auth/useAccount'
 import { useAuthStore } from '@/stores/authStore'
 import { logger } from '@/utils/logger'
@@ -42,6 +42,11 @@ const sections = [
 				label: 'Art submit',
 				href: '/admin/art-submit',
 				icon: Ticket,
+			},
+			{
+				label: 'Quản lý Dealer',
+				href: '/admin/dealers',
+				icon: Store,
 			},
 		],
 	},
