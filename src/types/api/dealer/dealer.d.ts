@@ -1,5 +1,4 @@
 import type { DealerBooth, DealerBoothDetail } from '../../../models/dealer/dealer'
-import type { PaginationMeta } from '../ticket/ticket'
 
 // ========== Request Types ==========
 

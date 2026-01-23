@@ -84,7 +84,7 @@ const RegisterForm = (): React.ReactElement => {
 			}
 
 			// Map form data to API request format
-			const requestData = mapRegisterFormToApiRequest(formInput)
+			const requestData = mapRegisterFormToApiRequest(formInput, data.confirmPassword)
 
 			const response = await axios.general.post<RegisterResponse>(
 				'/auth/register',
