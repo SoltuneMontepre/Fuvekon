@@ -100,11 +100,23 @@ export default async function handler(
 
 		const { fileName, fileType, folder, expiresIn = 3600 } = body
 
+		// Double-check environment variables (defensive programming)
+		if (!BUCKET_NAME || !NLF_AWS_REGION) {
+			return res.status(500).json({
+				isSuccess: false,
+				message: 'Server configuration error: Missing AWS configuration',
+				code: ErrorCodes.INTERNAL_SERVER_ERROR,
+				error: 'Missing AWS_S3_BUCKET_NAME or NLF_AWS_REGION',
+				data: null,
+				statusCode: 500,
+			})
+		}
+
 		const s3Client = getS3Client()
 		const fileKey = generateFileKey(fileName, folder)
 
 		const command = new PutObjectCommand({
-			Bucket: BUCKET_NAME!,
+			Bucket: BUCKET_NAME,
 			Key: fileKey,
 			ContentType: fileType,
 		})
@@ -113,7 +125,7 @@ export default async function handler(
 			expiresIn,
 		})
 
-		const fileUrl = generateS3PublicUrl(BUCKET_NAME!, NLF_AWS_REGION!, fileKey)
+		const fileUrl = generateS3PublicUrl(BUCKET_NAME, NLF_AWS_REGION, fileKey)
 
 		return res.status(200).json({
 			isSuccess: true,
@@ -127,13 +139,20 @@ export default async function handler(
 		})
 	} catch (error) {
 		console.error('[S3 Presign] Error generating presigned URL:', error)
+		
+		// Extract error message
+		let errorMessage = 'Failed to generate presigned URL'
+		if (error instanceof Error) {
+			errorMessage = error.message
+		} else if (typeof error === 'object' && error !== null) {
+			errorMessage = JSON.stringify(error)
+		}
+		
 		return res.status(500).json({
 			isSuccess: false,
-			message:
-				error instanceof Error
-					? error.message
-					: 'Failed to generate presigned URL',
+			message: errorMessage,
 			code: ErrorCodes.INTERNAL_SERVER_ERROR,
+			error: errorMessage,
 			data: null,
 			statusCode: 500,
 		})

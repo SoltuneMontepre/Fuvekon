@@ -23,6 +23,7 @@ import {
 } from '@/hooks/services/ticket/useAdminTicket'
 import { useGetTiers } from '@/hooks/services/ticket/useTicket'
 import type { TicketStatus, UserTicket } from '@/types/models/ticket/ticket'
+import type { PaginationMeta } from '@/types/api/ticket/ticket'
 import { logger } from '@/utils/logger'
 
 // Format price in VND
@@ -108,10 +109,10 @@ const TicketManagementPage = (): React.ReactElement => {
 	const approveMutation = useApproveTicket()
 	const denyMutation = useDenyTicket()
 
-	const tickets = ticketsData?.data?.items || []
+	const tickets = ticketsData?.data || []
 	const stats = statsData?.data
 	const tiers = tiersData?.data || []
-	const pagination = ticketsData?.data?.meta
+	const pagination: PaginationMeta | undefined = ticketsData?.meta as PaginationMeta | undefined
 
 	// Handle search
 	const handleSearch = () => {

@@ -48,7 +48,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
 	showPreview = true,
 	className = '',
 	disabled = false,
-	label = 'Upload Image',
+	label = '',
 	buttonText = 'Choose File',
 }) => {
 	const fileInputRef = useRef<HTMLInputElement>(null)
@@ -178,13 +178,13 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
 				{/* Preview or Upload Button */}
 				{showPreview && previewUrl ? (
 					<div className='relative group'>
-						<div className='relative w-full h-64 rounded-xl overflow-hidden border-2 border-[#48715B]/30 bg-[#E2EEE2]'>
+						<div className='relative h-64 rounded-xl overflow-hidden border-2 border-[#48715B]/30 bg-[#E2EEE2]'>
 							<Image
 								src={previewUrl}
 								alt='Preview'
 								fill
 								className='object-contain'
-								sizes='(max-width: 768px) 100vw, 50vw'
+								sizes=''
 								unoptimized={previewUrl?.startsWith('/api/s3/image')}
 							/>
 							{/* Overlay with actions */}
@@ -195,7 +195,8 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
 											<button
 												type='button'
 												onClick={handleClick}
-												className='px-4 py-2 bg-[#48715B] text-white rounded-lg hover:bg-[#48715B]/90 transition-colors flex items-center gap-2'
+												disabled={disabled || isUploading}
+												className='shadow-md py-3 px-4 rounded-lg bg-bg text-text-secondary font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-dark-surface disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2'
 											>
 												<Upload className='w-4 h-4' />
 												Replace
@@ -203,7 +204,8 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
 											<button
 												type='button'
 												onClick={handleRemove}
-												className='px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors flex items-center gap-2'
+												disabled={disabled || isUploading}
+												className='shadow-md py-3 px-4 rounded-lg bg-bg text-text-secondary font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 dark:focus:ring-offset-dark-surface disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2'
 											>
 												<X className='w-4 h-4' />
 												Remove
@@ -228,6 +230,46 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
 							<div className='absolute top-2 right-2 bg-red-50 border border-red-200 rounded-lg px-3 py-2 shadow-lg flex items-center gap-2'>
 								<AlertCircle className='w-4 h-4 text-red-600' />
 								<span className='text-sm text-red-600 font-medium'>Error</span>
+							</div>
+						)}
+					</div>
+				) : !showPreview && (previewUrl || initialImageUrl) ? (
+					/* Action Buttons when preview is hidden but image exists */
+					<div className='flex flex-col items-center gap-4'>
+						{isUploading && (
+							<div className='bg-white/90 backdrop-blur-sm rounded-lg px-3 py-2 shadow-lg flex items-center gap-2'>
+								<Loader2 className='w-4 h-4 animate-spin text-[#48715B]' />
+								<span className='text-sm text-[#48715B] font-medium'>
+									Uploading... {Math.round(progress)}%
+								</span>
+							</div>
+						)}
+						{error && (
+							<div className='bg-red-50 border border-red-200 rounded-lg px-3 py-2 shadow-lg flex items-center gap-2'>
+								<AlertCircle className='w-4 h-4 text-red-600' />
+								<span className='text-sm text-red-600 font-medium'>Error</span>
+							</div>
+						)}
+						{!disabled && !isUploading && (
+							<div className='flex gap-2'>
+								<button
+									type='button'
+									onClick={handleClick}
+									disabled={disabled || isUploading}
+									className='shadow-md py-3 px-4 rounded-lg bg-bg text-text-secondary font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-dark-surface disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2'
+								>
+									<Upload className='w-4 h-4' />
+									Replace
+								</button>
+								<button
+									type='button'
+									onClick={handleRemove}
+									disabled={disabled || isUploading}
+									className='shadow-md py-3 px-4 rounded-lg bg-bg text-text-secondary font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 dark:focus:ring-offset-dark-surface disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2'
+								>
+									<X className='w-4 h-4' />
+									Remove
+								</button>
 							</div>
 						)}
 					</div>

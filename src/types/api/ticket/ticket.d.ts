@@ -15,10 +15,9 @@ export type ConfirmPaymentResponse = UserTicket
 export type UpdateBadgeDetailsResponse = UserTicket
 
 // Admin responses
-export interface AdminGetTicketsResponse {
-	items: UserTicket[]
-	meta: PaginationMeta
-}
+// Note: For GetTicketsForAdmin, data is an array of tickets directly,
+// and meta is at the root level of ApiResponse
+export type AdminGetTicketsResponse = UserTicket[]
 
 export type GetTicketByIdResponse = UserTicket
 

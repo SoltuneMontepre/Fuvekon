@@ -9,9 +9,9 @@ export interface Account {
 	email: string
 	avatar?: string // image url
 	role: Role
-	identification_id?: string
-	passport_id?: string
+	id_card?: string
 	is_verified?: boolean
+	is_dealer?: boolean
 	is_blacklisted?: boolean
 	denial_count?: number
 	created_at?: string // ISO date string

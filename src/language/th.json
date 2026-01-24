@@ -14,14 +14,13 @@
 		"processing": "กำลังดำเนินการ...",
 		"yes": "ใช่",
 		"no": "ไม่",
-		"copy": "คัดลอก"
-	},
-	"nav": {
-		"register": "ลงทะเบียน",
-		"contributes": "มีส่วนร่วม",
-		"about": "เกี่ยวกับเรา",
-		"myTicket": "ตั๋วของฉัน",
-		"account": "บัญชี"
+		"copy": "คัดลอก",
+		"itemsPerPage": "รายการต่อหน้า",
+		"showing": "แสดง",
+		"to": "ถึง",
+		"of": "จากทั้งหมด",
+		"results": "ผลลัพธ์",
+		"page": "หน้า"
 	},
 	"nav": {
 		"ticket": "บัตร",
@@ -32,8 +31,12 @@
 		"volunteer": "อาสาสมัคร",
 		"artbook": "อาร์ตบุ๊ก",
 		"dealer": "ร้านค้า",
+		"registerDealer": "ลงทะเบียน Dealer",
+		"myDealerBooth": "ร้านค้าของฉัน",
 		"schedule": "กำหนดการ",
-		"about": "เกี่ยวกับ"
+		"about": "เกี่ยวกับ",
+		"myTicket": "ตั๋วของฉัน",
+		"account": "บัญชี"
 	},
 	"auth": {
 		"login": "เข้าสู่ระบบ",
@@ -122,6 +125,8 @@
 	"admin": {
 		"ticketManagement": "การจัดการตั๋ว",
 		"ticketManagementDesc": "ดูและอนุมัติตั๋วที่ลงทะเบียน",
+		"userManagement": "การจัดการผู้ใช้",
+		"userManagementDesc": "ดูและจัดการผู้ใช้ทั้งหมด",
 		"totalTickets": "ตั๋วทั้งหมด",
 		"pendingPayment": "รอการชำระเงิน",
 		"verifying": "กำลังตรวจสอบ",
@@ -147,11 +152,32 @@
 		"denyTicketTitle": "ปฏิเสธตั๋ว",
 		"denyingTicket": "คุณกำลังปฏิเสธตั๋ว {code}",
 		"user": "ผู้ใช้",
+		"email": "อีเมล",
+		"role": "บทบาท",
+		"verified": "ยืนยันแล้ว",
+		"unverified": "ยังไม่ยืนยัน",
+		"blacklisted": "ถูกบล็อก",
+		"denials": "จำนวนครั้งที่ถูกปฏิเสธ",
+		"noUsers": "ไม่พบผู้ใช้",
+		"noSearchResults": "ไม่พบผู้ใช้ที่ตรงกับการค้นหา",
 		"blacklistWarning": "คำเตือน: ผู้ใช้นี้ถูกปฏิเสธ {count} ครั้งแล้ว การปฏิเสธอีกครั้งจะทำให้ถูก blacklist!",
 		"denyReason": "เหตุผลการปฏิเสธ (ไม่บังคับ)",
 		"denyReasonPlaceholder": "เช่น: ไม่พบธุรกรรม ข้อมูลไม่ตรงกัน...",
 		"confirmDeny": "ยืนยันการปฏิเสธ",
 		"noTickets": "ไม่พบตั๋ว",
-		"page": "หน้า {current} / {total}"
+		"page": "หน้า {current} / {total}",
+		"dealerManagement": "การจัดการ Dealer",
+		"dealerManagementDesc": "จัดการและตรวจสอบร้านค้า Dealer",
+		"totalDealers": "Dealer ทั้งหมด",
+		"verifiedDealers": "ยืนยันแล้ว",
+		"unverifiedDealers": "ยังไม่ยืนยัน",
+		"noDealers": "ไม่พบ Dealer",
+		"boothName": "ชื่อร้าน",
+		"boothNumber": "หมายเลขร้าน",
+		"description": "คำอธิบาย",
+		"staff": "พนักงาน",
+		"verify": "ยืนยัน",
+		"dealerVerified": "ยืนยัน Dealer สำเร็จ",
+		"verifyError": "ไม่สามารถยืนยัน Dealer ได้ กรุณาลองอีกครั้ง"
 	}
 }

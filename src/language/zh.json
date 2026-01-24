@@ -14,14 +14,13 @@
 		"processing": "处理中...",
 		"yes": "是",
 		"no": "否",
-		"copy": "复制"
-	},
-	"nav": {
-		"register": "注册",
-		"contributes": "贡献",
-		"about": "关于我们",
-		"myTicket": "我的门票",
-		"account": "账户"
+		"copy": "复制",
+		"itemsPerPage": "每页项目数",
+		"showing": "显示",
+		"to": "到",
+		"of": "共",
+		"results": "条结果",
+		"page": "页"
 	},
 	"nav": {
 		"ticket": "票务",
@@ -32,8 +31,12 @@
 		"volunteer": "志愿者",
 		"artbook": "画册",
 		"dealer": "商家",
+		"registerDealer": "注册Dealer",
+		"myDealerBooth": "我的商家展位",
 		"schedule": "日程",
-		"about": "关于"
+		"about": "关于",
+		"myTicket": "我的门票",
+		"account": "账户"
 	},
 	"auth": {
 		"login": "登录",
@@ -122,6 +125,8 @@
 	"admin": {
 		"ticketManagement": "门票管理",
 		"ticketManagementDesc": "查看和审批已注册的门票",
+		"userManagement": "用户管理",
+		"userManagementDesc": "查看和管理所有用户",
 		"totalTickets": "总门票数",
 		"pendingPayment": "待付款",
 		"verifying": "验证中",
@@ -147,11 +152,32 @@
 		"denyTicketTitle": "拒绝门票",
 		"denyingTicket": "您正在拒绝门票 {code}",
 		"user": "用户",
+		"email": "电子邮件",
+		"role": "角色",
+		"verified": "已验证",
+		"unverified": "未验证",
+		"blacklisted": "已列入黑名单",
+		"denials": "拒绝次数",
+		"noUsers": "未找到用户",
+		"noSearchResults": "未找到匹配搜索的用户",
 		"blacklistWarning": "警告：此用户已被拒绝 {count} 次。再次拒绝将导致其被加入黑名单！",
 		"denyReason": "拒绝原因（可选）",
 		"denyReasonPlaceholder": "例如：未找到交易、信息不匹配...",
 		"confirmDeny": "确认拒绝",
 		"noTickets": "未找到门票",
-		"page": "第 {current} / {total} 页"
+		"page": "第 {current} / {total} 页",
+		"dealerManagement": "商家管理",
+		"dealerManagementDesc": "管理和验证商家展位",
+		"totalDealers": "商家总数",
+		"verifiedDealers": "已验证",
+		"unverifiedDealers": "未验证",
+		"noDealers": "未找到商家",
+		"boothName": "展位名称",
+		"boothNumber": "展位号",
+		"description": "描述",
+		"staff": "员工",
+		"verify": "验证",
+		"dealerVerified": "商家验证成功",
+		"verifyError": "验证商家失败。请重试。"
 	}
 }

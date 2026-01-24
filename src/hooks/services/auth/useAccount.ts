@@ -7,6 +7,10 @@ import type {
 	UpdateMeRequest,
 	UpdateMeResponse,
 } from '@/types/api/auth/updateMe'
+import type {
+	UpdateAvatarRequest,
+	UpdateAvatarResponse,
+} from '@/types/api/auth/updateAvatar'
 import { useAuthStore } from '@/stores/authStore'
 import { getQueryClient } from '@/utils/getQueryClient'
 
@@ -18,6 +22,13 @@ const Account = {
 	updateMe: async (payload: UpdateMeRequest) => {
 		const { data } = await axios.general.put<UpdateMeResponse>(
 			'/users/me',
+			payload
+		)
+		return data
+	},
+	updateAvatar: async (payload: UpdateAvatarRequest) => {
+		const { data } = await axios.general.patch<UpdateAvatarResponse>(
+			'/users/me/avatar',
 			payload
 		)
 		return data
@@ -47,6 +58,23 @@ export function useUpdateMe() {
 	return useMutation({
 		mutationFn: async (payload: UpdateMeRequest) => {
 			return Account.updateMe(payload)
+		},
+		onSuccess: data => {
+			if (data.isSuccess && data.data) {
+				setAccount(data.data)
+			}
+			queryClient.invalidateQueries({ queryKey: ['account'] })
+		},
+	})
+}
+
+export function useUpdateAvatar() {
+	const queryClient = getQueryClient()
+	const setAccount = useAuthStore(state => state.setAccount)
+
+	return useMutation({
+		mutationFn: async (payload: UpdateAvatarRequest) => {
+			return Account.updateAvatar(payload)
 		},
 		onSuccess: data => {
 			if (data.isSuccess && data.data) {

@@ -1,8 +1,11 @@
-import type { Account } from '../../models/auth/account'
-
-export interface RegisterRequest extends Account {
+export interface RegisterRequest {
+	fullName: string
+	nickname: string
 	email: string
+	country: string
+	idCard: string
 	password: string
+	confirmPassword: string
 }
 
 export type RegisterResponse = {

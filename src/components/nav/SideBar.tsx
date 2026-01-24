@@ -7,6 +7,7 @@ import { LucideIcon } from 'lucide-react'
 import { IconType } from 'react-icons'
 import { useGSAP } from '@gsap/react'
 import gsap from '@/common/gsap'
+import Image from 'next/image'
 
 export type SidebarItem = {
 	label: string
@@ -32,7 +33,7 @@ export type SidebarProps = {
 const SideBar = ({
 	sections,
 	className = '',
-	logo,
+	// logo,
 	footer,
 }: SidebarProps): React.ReactElement => {
 	const pathname = usePathname()
@@ -48,7 +49,7 @@ const SideBar = ({
 						opacity: 0,
 					},
 					{
-						y: 0,
+						y: -100,
 						opacity: 1,
 						duration: 0.8,
 						ease: 'elastic.out(0.8, 1.5)',
@@ -70,31 +71,36 @@ const SideBar = ({
 		<aside
 			id='sidebar'
 			ref={sidebarRef}
-			className={`sidebar sticky top-0 flex flex-col h-fit max-h-[calc(100vh-3rem)] bg-transparent border-none overflow-hidden ${className}`}
+			className={`flex flex-col bg-main border-r-10 border-r-[154C5B] border-l-10 border-l-[154C5B] py-10  ${className}`}
+			style={{
+				backgroundImage: 'url(/images/sidebar/sidebarBG.png)',
+				backgroundSize: 'cover',
+				backgroundPosition: 'center',
+				backgroundRepeat: 'no-repeat',
+			}}
 			aria-label='Sidebar Navigation'
 		>
-			{/* Header */}
-			{logo && (
-				<div
-					id='sidebar-header'
-					className='sidebar-header flex items-center p-4 border-b border-slate-200 dark:border-dark-border'
-				>
-					<div className='flex-1'>{logo}</div>
-				</div>
-			)}
 
+			<div className='fixed bottom-0 translate-y-1/2 w-[140%] left-[-20%]'>
+				<Image
+					src='/images/sidebar/sidebarScrollThing.png'
+					alt='Sidebar Background'
+					width={409}
+					height={64}
+					draggable={false}
+					className=''
+				/>
+			</div>
+			
+			
 			{/* Navigation Sections */}
 			<nav
 				id='sidebar-nav'
-				className='sidebar-nav flex flex-col items-center justify-center overflow-y-auto py-6 px-4 space-y-3'
+				className='sidebar-nav flex flex-col items-center justify-center w-full h-full py-6 space-y-3'
 			>
 				{sections.map((section, sectionIndex) => (
-					<div key={sectionIndex} className='sidebar-section space-y-1'>
-						{section.title && (
-							<h3 className='sidebar-section-title px-3 py-2 text-xs font-semibold text-slate-500 dark:text-dark-text-secondary uppercase tracking-wider'>
-								{section.title}
-							</h3>
-						)}
+					<div key={sectionIndex} className='sidebar-section space-y-1 '>
+						
 						{section.items.map((item, itemIndex) => (
 							<SidebarItemComponent
 								key={itemIndex}
@@ -141,7 +147,7 @@ const SidebarItemComponent = ({
 		<>
 			{Icon && (
 				<Icon
-					className='sidebar-item-icon flex-shrink-0 w-5 h-5'
+					className='sidebar-item-icon flex-shrink-0 w-30 h-20'
 					aria-hidden='true'
 				/>
 			)}
@@ -156,9 +162,9 @@ const SidebarItemComponent = ({
 
 	const baseClasses = `
 		sidebar-item flex flex-col items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium
-		transition-colors duration-150 w-full max-w-[140px] justify-center shadow-md
+		transition-colors duration-150  justify-center shadow-md bg-bg w-full
 		${item.disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
-		${isActive ? 'bg-bg text-text-secondary' : 'text-text-secondary hover:bg-bg'}
+		${isActive ? ' text-text-secondary' : 'text-text-secondary hover:bg-bg'}
 	`
 
 	if (item.href && !item.disabled) {
@@ -180,7 +186,7 @@ const SidebarItemComponent = ({
 			id={`sidebar-item-${itemId}`}
 			onClick={handleClick}
 			disabled={item.disabled}
-			className={baseClasses + ' w-full text-left'}
+			className={baseClasses + ' text-left'}
 		>
 			{content}
 		</button>

@@ -8,6 +8,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useLogin } from '@/hooks/services/auth/useLogin'
 import { useGetMe } from '@/hooks/services/auth/useAccount'
+import { useAuthStore } from '@/stores/authStore'
 import { useTranslations } from 'next-intl'
 import { useRouter } from 'next/navigation'
 import { LoginRequestSchema, type LoginRequest } from '@/types/api/auth/login'
@@ -19,6 +20,7 @@ const LoginForm = (): React.ReactElement => {
 	const router = useRouter()
 	const loginMutation = useLogin()
 	const { refetch: refetchMe } = useGetMe()
+	const setAccount = useAuthStore(state => state.setAccount)
 
 	const {
 		register,
@@ -56,6 +58,9 @@ const LoginForm = (): React.ReactElement => {
 						const { data: meData } = await refetchMe()
 
 						if (meData?.isSuccess && meData.data) {
+							// Update account store
+							setAccount(meData.data)
+
 							const userRole = meData.data.role?.toLowerCase()
 
 							// Redirect based on role

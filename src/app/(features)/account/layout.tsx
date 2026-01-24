@@ -2,11 +2,11 @@
 
 import SideBar from '@/components/nav/SideBar'
 import type { ReactNode } from 'react'
-import { UserCircle, Ticket } from 'lucide-react'
+import { UserCircle, Ticket, Store } from 'lucide-react'
 import { useGetMe } from '@/hooks/services/auth/useAccount'
 import { useAuthStore } from '@/stores/authStore'
 import { useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 import { useTranslations } from 'next-intl'
 import { logger } from '@/utils/logger'
 import Loading from '@/components/common/Loading'
@@ -18,9 +18,11 @@ type AccountLayoutProps = {
 
 const AccountLayout = ({ children, info }: AccountLayoutProps) => {
 	const router = useRouter()
+	const pathname = usePathname()
 	const t = useTranslations('nav')
 	const { data, isLoading, isError } = useGetMe()
 	const setAccount = useAuthStore(state => state.setAccount)
+	const account = useAuthStore(state => state.account)
 
 	const sections = [
 		{
@@ -35,6 +37,22 @@ const AccountLayout = ({ children, info }: AccountLayoutProps) => {
 					href: '/account/ticket',
 					icon: Ticket,
 				},
+				// Show dealer page if user is a dealer, otherwise show register option
+				...(account?.is_dealer || data?.data?.is_dealer
+					? [
+							{
+								label: t('myDealerBooth'),
+								href: '/account/dealer',
+								icon: Store,
+							},
+					  ]
+					: [
+							{
+								label: t('registerDealer'),
+								href: '/account/dealer/register',
+								icon: Store,
+							},
+					  ]),
 			],
 		},
 	]
@@ -72,7 +90,7 @@ const AccountLayout = ({ children, info }: AccountLayoutProps) => {
 	return (
 		<div
 			id='account-layout'
-			className='account-layout relative flex min-h-screen w-full overflow-hidden'
+			className='account-layout relative flex min-h-screen w-full '
 		>
 			{/* Background Image - Behind everything */}
 			<div
@@ -92,20 +110,22 @@ const AccountLayout = ({ children, info }: AccountLayoutProps) => {
 			{/* Sidebar - Compact with card style */}
 			<div
 				id='account-sidebar-container'
-				className='account-sidebar-container relative z-10 w-[200px] ml-6 my-6'
+				className='account-sidebar-container relative z-10 w-[200px] ml-20 mx-6'
 			>
-				<div className='bg-main/95 dark:bg-dark-surface/95 backdrop-blur-md rounded-2xl shadow-2xl border border-slate-300/20 dark:border-dark-border/20'>
-					<SideBar sections={sections} />
-				</div>
+				<SideBar sections={sections} />
 			</div>
 
 			{/* Main Content - Card-based layout with dark background visible */}
 			<div
 				id='account-content'
-				className='account-content relative z-10 flex-1 flex flex-col gap-6 px-8 py-8 mr-6'
+				className='account-content relative z-10 flex-1 flex flex-col gap-6 p-8 mr-6'
 			>
-				<div className='bg-main/95 dark:bg-dark-surface/95 backdrop-blur-md rounded-2xl shadow-2xl p-8 border border-slate-300/20 dark:border-dark-border/20'>
-					<section id='account-info-section' className='account-info-section mb-6'>
+				<div className=' dark:bg-dark-surface/95 backdrop-blur-md rounded-2xl shadow-2xl'>
+					<section 
+						id='account-info-section' 
+						className='account-info-section mb-6'
+						key={pathname}
+					>
 						{info}
 					</section>
 					<section id='account-main-section' className='account-main-section'>
