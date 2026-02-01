@@ -9,11 +9,22 @@ import ThemeSection from '@/components/landing/ThemeSection'
 import { useThemeStore } from '@/config/Providers/ThemeProvider'
 import { useGSAP } from '@gsap/react'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { useRouter } from 'next/navigation'
+import { useEffect } from 'react'
 
 const LandingPage = (): React.JSX.Element => {
 	const prefersReducedMotion = useThemeStore(
 		state => state.prefersReducedMotion
 	)
+
+	const router = useRouter()
+	useEffect(() => {
+		if (typeof window === 'undefined') return
+		const hash = window.location.hash
+		if (hash && hash.includes('token=')) {
+			router.push(`/reset-password${hash}`)
+		}
+	}, [router])
 
 	useGSAP(() => {
 		if (prefersReducedMotion) {
