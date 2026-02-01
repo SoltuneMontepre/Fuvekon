@@ -72,7 +72,7 @@ const ResetPasswordForm = (): React.ReactElement => {
 
 	const onSubmit = async (data: ResetPasswordFormData) => {
 		try {
-			const tokenToUse = initialToken || (data as any).token
+			const tokenToUse = initialToken || data.token
 			if (!tokenToUse) {
 				setFormError('root', { type: 'manual', message: 'No token found. Please use the link sent by email.' })
 				setIsSuccess(false)
