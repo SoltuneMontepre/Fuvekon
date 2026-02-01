@@ -23,6 +23,12 @@ const LandingPage = (): React.JSX.Element => {
 		const hash = window.location.hash
 		if (hash && hash.includes('token=')) {
 			router.push(`/reset-password${hash}`)
+			return
+		}
+		const params = new URLSearchParams(window.location.search)
+		const q = params.get('token')
+		if (q) {
+			router.push(`/reset-password${window.location.search}`)
 		}
 	}, [router])
 

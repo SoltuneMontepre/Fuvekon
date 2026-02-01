@@ -105,7 +105,7 @@ const ForgotPasswordForm = (): React.ReactElement => {
 
 						{isSuccess && (
 							<div className='text-green-600 text-xs sm:text-sm text-center bg-green-50 border border-green-200 rounded-lg p-2.5 sm:p-3'>
-								Nếu có bạn tài khoản với email đó, bạn sẽ sớm nhận được hướng dẫn để đặt lại mật khẩu trong giây lát.
+								Nếu bạn có tài khoản với email đó, bạn sẽ sớm nhận được hướng dẫn để đặt lại mật khẩu trong giây lát.
 							</div>
 						)}
 
