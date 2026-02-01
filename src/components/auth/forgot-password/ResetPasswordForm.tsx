@@ -80,8 +80,10 @@ const ResetPasswordForm = (): React.ReactElement => {
 			}
 			const body = { token: tokenToUse, new_password: data.newPassword, confirm_password: data.confirmPassword }
 			console.debug('ResetPassword - request', {
+                //mask
 				tokenPreview: tokenToUse ? `${tokenToUse.slice(0, 6)}...${tokenToUse.slice(-6)}` : null,
-				body,
+				newPasswordLength: data.newPassword ? data.newPassword.length : 0,
+				confirmPasswordLength: data.confirmPassword ? data.confirmPassword.length : 0,
 			})
 			const response = await axios.general.post('/auth/reset-password/confirm', body)
 
@@ -102,7 +104,7 @@ const ResetPasswordForm = (): React.ReactElement => {
 				const e = err as { response?: { status?: number; data?: { message?: string } }; message?: string }
 				console.debug('ResetPassword - error', e.response || e)
 				if (e.response?.status === 401) {
-					message = e.response?.data?.message || 'Invalid or expired token. Please request a new reset link.'
+					message = e.response?.data?.message || 'Token hết hạn hoặc không hợp lệ. Vui lòng gửi lại yêu cầu đặt lại mật khẩu mới!'
 				} else {
 					message = e.response?.data?.message || e.message || message
 				}
