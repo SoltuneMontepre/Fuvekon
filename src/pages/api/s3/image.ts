@@ -4,7 +4,7 @@ import { Readable } from 'stream'
 import { validateAwsConfig } from '@/utils/validation/awsConfigValidation'
 import { validateAndDecodeKey } from '@/utils/validation/validateAndDecodeKey'
 import { isValidImageType } from '@/utils/validation/isValidImageType'
-import { getS3Client } from '@/utils/s3'
+import { getS3Client, getBucketName } from '@/utils/s3'
 import { ErrorCodes } from '@/common/errors'
 import { CACHE_MAX_AGE, MAX_FILE_SIZE } from '@/config/app'
 
@@ -90,7 +90,7 @@ export default async function handler(
 	}
 
 	try {
-		const BUCKET_NAME = process.env.AWS_S3_BUCKET_NAME
+		const BUCKET_NAME = getBucketName()
 
 		const configValidation = validateAwsConfig()
 		if (!configValidation.isValid) {
@@ -113,7 +113,7 @@ export default async function handler(
 		const s3Client = getS3Client()
 
 		const command = new GetObjectCommand({
-			Bucket: BUCKET_NAME!,
+			Bucket: BUCKET_NAME,
 			Key: decodedKey,
 		})
 

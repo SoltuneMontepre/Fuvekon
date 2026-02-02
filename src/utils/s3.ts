@@ -42,22 +42,33 @@ export function isS3Url(url: string): boolean {
 	}
 }
 
+const STRIP_QUOTES_REGEX = /^["'\s]+|["'\s]+$/g
+
+/** Returns value with surrounding quotes/whitespace stripped (avoids invalid values when env has quotes). */
+export function stripEnvValue(value: string | undefined): string {
+	return (value ?? '').replace(STRIP_QUOTES_REGEX, '')
+}
+
 /** Returns NLF_AWS_REGION with surrounding quotes/whitespace stripped (avoids "invalid hostname" when env has quotes). */
 export function getAwsRegion(): string {
-	const r = process.env.NLF_AWS_REGION ?? ''
-	return r.replace(/^["'\s]+|["'\s]+$/g, '')
+	return stripEnvValue(process.env.NLF_AWS_REGION)
+}
+
+/** Returns AWS_S3_BUCKET_NAME with surrounding quotes/whitespace stripped. */
+export function getBucketName(): string {
+	return stripEnvValue(process.env.AWS_S3_BUCKET_NAME)
 }
 
 export function getS3Client() {
 	const region = getAwsRegion()
-	const NLF_AWS_ACCESS_KEY_ID = process.env.NLF_AWS_ACCESS_KEY_ID
-	const NLF_AWS_SECRET_ACCESS_KEY = process.env.NLF_AWS_SECRET_ACCESS_KEY
+	const accessKeyId = stripEnvValue(process.env.NLF_AWS_ACCESS_KEY_ID)
+	const secretAccessKey = stripEnvValue(process.env.NLF_AWS_SECRET_ACCESS_KEY)
 
 	return new S3Client({
 		region,
 		credentials: {
-			accessKeyId: NLF_AWS_ACCESS_KEY_ID!,
-			secretAccessKey: NLF_AWS_SECRET_ACCESS_KEY!,
+			accessKeyId,
+			secretAccessKey,
 		},
 	})
 }

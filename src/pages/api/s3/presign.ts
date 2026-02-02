@@ -5,7 +5,7 @@ import { validateAwsConfig } from '@/utils/validation/awsConfigValidation'
 import { validateFolder } from '@/utils/validation/folderValidation'
 import { generateFileKey } from '@/utils/s3/fileKey'
 import { generateS3PublicUrl } from '@/utils/s3/url'
-import { getS3Client, getAwsRegion } from '@/utils/s3'
+import { getS3Client, getAwsRegion, getBucketName } from '@/utils/s3'
 import { ErrorCodes } from '@/common/errors'
 import type { PresignRequest } from '@/types/api/s3/presign'
 
@@ -59,7 +59,7 @@ export default async function handler(
 	}
 
 	try {
-		const BUCKET_NAME = process.env.AWS_S3_BUCKET_NAME
+		const BUCKET_NAME = getBucketName()
 		const region = getAwsRegion()
 
 		const configValidation = validateAwsConfig()
