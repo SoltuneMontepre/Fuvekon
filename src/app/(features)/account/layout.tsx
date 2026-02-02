@@ -6,19 +6,17 @@ import { UserCircle, Ticket, Store } from 'lucide-react'
 import { useGetMe } from '@/hooks/services/auth/useAccount'
 import { useAuthStore } from '@/stores/authStore'
 import { useEffect } from 'react'
-import { useRouter, usePathname } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { useTranslations } from 'next-intl'
 import { logger } from '@/utils/logger'
 import Loading from '@/components/common/Loading'
 
 type AccountLayoutProps = {
 	children: ReactNode
-	info: ReactNode
 }
 
-const AccountLayout = ({ children, info }: AccountLayoutProps) => {
+const AccountLayout = ({ children }: AccountLayoutProps) => {
 	const router = useRouter()
-	const pathname = usePathname()
 	const t = useTranslations('nav')
 	const { data, isLoading, isError } = useGetMe()
 	const setAccount = useAuthStore(state => state.setAccount)
@@ -37,7 +35,7 @@ const AccountLayout = ({ children, info }: AccountLayoutProps) => {
 					href: '/account/ticket',
 					icon: Ticket,
 				},
-				// Show dealer page if user is a dealer, otherwise show register option
+				// Show dealer booth if user is a dealer; show register only when user has a ticket
 				...(account?.is_dealer || data?.data?.is_dealer
 					? [
 							{
@@ -46,13 +44,15 @@ const AccountLayout = ({ children, info }: AccountLayoutProps) => {
 								icon: Store,
 							},
 					  ]
-					: [
+					: account?.is_has_ticket || data?.data?.is_has_ticket
+					? [
 							{
 								label: t('registerDealer'),
 								href: '/account/dealer/register',
 								icon: Store,
 							},
-					  ]),
+					  ]
+					: []),
 			],
 		},
 	]
@@ -121,13 +121,6 @@ const AccountLayout = ({ children, info }: AccountLayoutProps) => {
 				className='account-content relative z-10 flex-1 flex flex-col gap-6 p-8 mr-6'
 			>
 				<div className=' dark:bg-dark-surface/95 backdrop-blur-md rounded-2xl shadow-2xl'>
-					<section 
-						id='account-info-section' 
-						className='account-info-section mb-6'
-						key={pathname}
-					>
-						{info}
-					</section>
 					<section id='account-main-section' className='account-main-section'>
 						{children}
 					</section>
