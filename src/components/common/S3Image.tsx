@@ -15,30 +15,30 @@ export interface S3ImageProps extends Omit<ImageProps, 'src'> {
 
 /**
  * S3Image - A wrapper around Next.js Image component that automatically handles S3 URLs
- * 
+ *
  * This component automatically converts S3 URLs to proxy URLs and handles
  * optimization settings appropriately.
- * 
+ *
  * @example
  * ```tsx
  * // S3 URL - automatically proxied
- * <S3Image 
+ * <S3Image
  *   src="https://bucket.s3.region.amazonaws.com/user-uploads/image.jpg"
  *   alt="User image"
  *   width={400}
  *   height={300}
  * />
- * 
+ *
  * // Regular URL - works normally
- * <S3Image 
+ * <S3Image
  *   src="/images/logo.png"
  *   alt="Logo"
  *   width={200}
  *   height={200}
  * />
- * 
+ *
  * // With fallback
- * <S3Image 
+ * <S3Image
  *   src={s3Url}
  *   fallbackSrc="/images/placeholder.png"
  *   alt="Image"
@@ -74,7 +74,9 @@ const S3Image: React.FC<S3ImageProps> = ({
 	}, [proxyUrl])
 
 	// Handle image load error
-	const handleError = (event: React.SyntheticEvent<HTMLImageElement, Event>) => {
+	const handleError = (
+		event: React.SyntheticEvent<HTMLImageElement, Event>
+	) => {
 		if (!hasError && fallbackSrc) {
 			setImageSrc(fallbackSrc)
 			setHasError(true)
@@ -98,4 +100,3 @@ const S3Image: React.FC<S3ImageProps> = ({
 }
 
 export default S3Image
-

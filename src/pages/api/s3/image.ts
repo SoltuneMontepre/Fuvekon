@@ -6,7 +6,7 @@ import { validateAndDecodeKey } from '@/utils/validation/validateAndDecodeKey'
 import { isValidImageType } from '@/utils/validation/isValidImageType'
 import { getS3Client, getBucketName } from '@/utils/s3'
 import { ErrorCodes } from '@/common/errors'
-import { CACHE_MAX_AGE, MAX_FILE_SIZE } from '@/config/app'
+import { MAX_FILE_SIZE } from '@/config/app'
 
 function handleS3Error(
 	error: unknown,
@@ -43,7 +43,7 @@ function setupResponseHeaders(
 	contentLength?: number
 ) {
 	res.setHeader('Content-Type', contentType)
-	res.setHeader('Cache-Control', `public, max-age=${CACHE_MAX_AGE}, immutable`)
+	res.setHeader('Cache-Control', 'no-store')
 
 	if (etag) {
 		res.setHeader('ETag', `"${etag}"`)
