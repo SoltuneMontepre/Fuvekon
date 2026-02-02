@@ -5,7 +5,7 @@ import { validateAwsConfig } from '@/utils/validation/awsConfigValidation'
 import { validateFolder } from '@/utils/validation/folderValidation'
 import { generateFileKey } from '@/utils/s3/fileKey'
 import { generateS3PublicUrl } from '@/utils/s3/url'
-import { getS3Client } from '@/utils/s3'
+import { getS3Client, getAwsRegion } from '@/utils/s3'
 import { ErrorCodes } from '@/common/errors'
 import type { PresignRequest } from '@/types/api/s3/presign'
 
@@ -60,7 +60,7 @@ export default async function handler(
 
 	try {
 		const BUCKET_NAME = process.env.AWS_S3_BUCKET_NAME
-		const NLF_AWS_REGION = process.env.NLF_AWS_REGION
+		const region = getAwsRegion()
 
 		const configValidation = validateAwsConfig()
 		if (!configValidation.isValid) {
@@ -101,7 +101,7 @@ export default async function handler(
 		const { fileName, fileType, folder, expiresIn = 3600 } = body
 
 		// Double-check environment variables (defensive programming)
-		if (!BUCKET_NAME || !NLF_AWS_REGION) {
+		if (!BUCKET_NAME || !region) {
 			return res.status(500).json({
 				isSuccess: false,
 				message: 'Server configuration error: Missing AWS configuration',
@@ -125,7 +125,7 @@ export default async function handler(
 			expiresIn,
 		})
 
-		const fileUrl = generateS3PublicUrl(BUCKET_NAME, NLF_AWS_REGION, fileKey)
+		const fileUrl = generateS3PublicUrl(BUCKET_NAME, region, fileKey)
 
 		return res.status(200).json({
 			isSuccess: true,
@@ -139,7 +139,7 @@ export default async function handler(
 		})
 	} catch (error) {
 		console.error('[S3 Presign] Error generating presigned URL:', error)
-		
+
 		// Extract error message
 		let errorMessage = 'Failed to generate presigned URL'
 		if (error instanceof Error) {
@@ -147,7 +147,7 @@ export default async function handler(
 		} else if (typeof error === 'object' && error !== null) {
 			errorMessage = JSON.stringify(error)
 		}
-		
+
 		return res.status(500).json({
 			isSuccess: false,
 			message: errorMessage,

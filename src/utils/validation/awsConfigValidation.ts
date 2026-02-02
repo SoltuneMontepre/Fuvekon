@@ -1,5 +1,8 @@
 function validateAwsConfig(): { isValid: boolean; error?: string } {
-	const NLF_AWS_REGION = process.env.NLF_AWS_REGION
+	const NLF_AWS_REGION = (process.env.NLF_AWS_REGION ?? '').replace(
+		/^["'\s]+|["'\s]+$/g,
+		''
+	)
 	const NLF_AWS_ACCESS_KEY_ID = process.env.NLF_AWS_ACCESS_KEY_ID
 	const NLF_AWS_SECRET_ACCESS_KEY = process.env.NLF_AWS_SECRET_ACCESS_KEY
 	const BUCKET_NAME = process.env.AWS_S3_BUCKET_NAME

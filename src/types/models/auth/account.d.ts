@@ -13,6 +13,7 @@ export interface Account {
 	is_verified?: boolean
 	is_dealer?: boolean
 	is_blacklisted?: boolean
+	is_has_ticket?: boolean
 	denial_count?: number
 	created_at?: string // ISO date string
 	modified_at?: string // ISO date string

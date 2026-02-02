@@ -42,13 +42,19 @@ export function isS3Url(url: string): boolean {
 	}
 }
 
+/** Returns NLF_AWS_REGION with surrounding quotes/whitespace stripped (avoids "invalid hostname" when env has quotes). */
+export function getAwsRegion(): string {
+	const r = process.env.NLF_AWS_REGION ?? ''
+	return r.replace(/^["'\s]+|["'\s]+$/g, '')
+}
+
 export function getS3Client() {
-	const NLF_AWS_REGION = process.env.NLF_AWS_REGION
+	const region = getAwsRegion()
 	const NLF_AWS_ACCESS_KEY_ID = process.env.NLF_AWS_ACCESS_KEY_ID
 	const NLF_AWS_SECRET_ACCESS_KEY = process.env.NLF_AWS_SECRET_ACCESS_KEY
 
 	return new S3Client({
-		region: NLF_AWS_REGION!,
+		region,
 		credentials: {
 			accessKeyId: NLF_AWS_ACCESS_KEY_ID!,
 			secretAccessKey: NLF_AWS_SECRET_ACCESS_KEY!,

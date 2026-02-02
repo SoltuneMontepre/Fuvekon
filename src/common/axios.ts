@@ -2,7 +2,7 @@ import a from 'axios'
 import { useAuthStore } from '@/stores/authStore'
 import { logger } from '@/utils/logger'
 
-const baseURL = process.env.NEXT_PUBLIC_API_URL + '/api' || 'http://localhost:8085'
+const baseURL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8085'
 // const baseURL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8085'
 
 const isLocal = baseURL.includes('localhost')
@@ -60,7 +60,10 @@ axiosGeneral.interceptors.response.use(
 				clearAccount()
 				// Use router instead of window.location to avoid losing state
 				// But only if we're in a browser environment
-				if (typeof window !== 'undefined' && !window.location.pathname.includes('/login')) {
+				if (
+					typeof window !== 'undefined' &&
+					!window.location.pathname.includes('/login')
+				) {
 					// Wait a bit to allow other operations to complete
 					setTimeout(() => {
 						window.location.href = '/login'
@@ -102,7 +105,10 @@ axiosTicket.interceptors.response.use(
 				clearAccount()
 				// Use router instead of window.location to avoid losing state
 				// But only if we're in a browser environment
-				if (typeof window !== 'undefined' && !window.location.pathname.includes('/login')) {
+				if (
+					typeof window !== 'undefined' &&
+					!window.location.pathname.includes('/login')
+				) {
 					// Wait a bit to allow other operations to complete
 					setTimeout(() => {
 						window.location.href = '/login'
@@ -144,7 +150,10 @@ axiosLocal.interceptors.response.use(
 				clearAccount()
 				// Use router instead of window.location to avoid losing state
 				// But only if we're in a browser environment
-				if (typeof window !== 'undefined' && !window.location.pathname.includes('/login')) {
+				if (
+					typeof window !== 'undefined' &&
+					!window.location.pathname.includes('/login')
+				) {
 					// Wait a bit to allow other operations to complete
 					setTimeout(() => {
 						window.location.href = '/login'
