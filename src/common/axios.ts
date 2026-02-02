@@ -2,7 +2,8 @@ import a from 'axios'
 import { useAuthStore } from '@/stores/authStore'
 import { logger } from '@/utils/logger'
 
-const baseURL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8085'
+const baseURL =
+	process.env.NEXT_PUBLIC_API_URL + '/api' || 'http://localhost:8085'
 // const baseURL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8085'
 
 const isLocal = baseURL.includes('localhost')
