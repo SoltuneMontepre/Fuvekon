@@ -39,6 +39,7 @@ const ResetPasswordForm = (): React.ReactElement => {
 		setError: setFormError,
 		formState: { errors, isSubmitting },
 		reset,
+		watch,
 	} = useForm<ResetPasswordFormData>({
 		resolver: zodResolver(ResetPasswordSchema),
 		defaultValues: { newPassword: '', confirmPassword: '', token: '' },
@@ -51,16 +52,44 @@ const ResetPasswordForm = (): React.ReactElement => {
 
 	useEffect(() => {
 		if (typeof window === 'undefined') return
+
+		const extractToken = (str: string | null) => {
+			if (!str) return null
+			const jwtMatch = str.match(/([A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+)/)
+			if (jwtMatch && jwtMatch[1]) return jwtMatch[1]
+
+			// // Fallback to token= capture (stop at &, whitespace)
+			// const match = str.match(/token=([^&\\s]+)/)
+			// if (match && match[1]) {
+			// 	try {
+			// 		return decodeURIComponent(match[1])
+			// 	} catch (e) {
+			// 		// Malformed encoding; return raw value instead of throwing
+			// 		console.debug('ResetPassword - decodeURIComponent failed for token, using raw value', match[1])
+			// 		return match[1]
+			// 	}
+			// }
+
+			return null
+		}
+
 		const hash = window.location.hash
-		if (hash && hash.includes('token=')) {
-			const match = hash.match(/token=([^&]*)/)
-			if (match && match[1]) {
-				setInitialToken(decodeURIComponent(match[1]))
-			}
-		} else {
+		let token: string | null = null
+		if (hash) {
+			token = extractToken(hash)
+		}
+
+		if (!token) {
 			const params = new URLSearchParams(window.location.search)
 			const q = params.get('token')
-			if (q) setInitialToken(q)
+			if (q) token = q
+		}
+
+		if (token) {
+			console.debug('ResetPassword - extracted token', token ? `${token.slice(0,6)}...${token.slice(-6)}` : null)
+			setInitialToken(token)
+		} else {
+			console.debug('ResetPassword - no token found in URL')
 		}
 	}, [])
 
@@ -104,7 +133,7 @@ const ResetPasswordForm = (): React.ReactElement => {
 				const e = err as { response?: { status?: number; data?: { message?: string } }; message?: string }
 				console.debug('ResetPassword - error', e.response || e)
 				if (e.response?.status === 401) {
-					message = e.response?.data?.message || 'Token hết hạn hoặc không hợp lệ. Vui lòng gửi lại yêu cầu đặt lại mật khẩu mới!'
+					message = e.response?.data?.message || 'Yêu cầu hết hạn hoặc không hợp lệ. Vui lòng gửi lại yêu cầu đặt lại mật khẩu mới!'
 				} else {
 					message = e.response?.data?.message || e.message || message
 				}
@@ -138,8 +167,16 @@ const ResetPasswordForm = (): React.ReactElement => {
 							</div>
 						)}
 
-						<form id='reset-form' className='reset-form space-y-5 sm:space-y-6' onSubmit={handleSubmit(onSubmit)}>
-							<input type='hidden' {...register('token')} />
+				<form id='reset-form' className='reset-form space-y-5 sm:space-y-6' onSubmit={handleSubmit(onSubmit)}>
+					{initialToken ? (
+						<input type='hidden' {...register('token')} />
+					) : (
+						<div className='token-input-container text-center'>
+							{/* <label htmlFor='token-input' className='text-sm text-[#8C8C8C] mb-1 block'>Không tìm thấy token tự động — dán token từ email ở đây</label> */}
+							<label htmlFor='token-input' className='text-sm text-[#8C8C8C] mb-1 block'></label>
+							<input id='token-input' type='text' {...register('token')} className='input block w-full px-3 py-2.5 rounded-xl bg-[#E2EEE2] border text-[#8C8C8C] text-sm sm:text-base mx-auto max-w-[360px]' placeholder='Dán token tại đây' />
+						</div>
+					)}
 
 							<div className='password-input-container relative w-full max-w-[360px] sm:w-96 mx-auto'>
 								<input id='new-password' type='password' {...register('newPassword')} aria-invalid={!!errors.newPassword} className={`input block w-full px-3 py-2.5 sm:py-3 rounded-xl bg-[#E2EEE2] border text-[#8C8C8C] text-lg sm:text-xl font-normal focus:outline-none focus:border-[#48715B] focus:ring-0 shadow-none ${errors.newPassword ? 'border-red-500' : 'border-[#8C8C8C]/30'}`} placeholder='Mật khẩu mới' />
@@ -151,7 +188,7 @@ const ResetPasswordForm = (): React.ReactElement => {
 								{errors.confirmPassword && <p className='text-red-600 text-xs mt-0.5'>{errors.confirmPassword.message}</p>}
 							</div>
 
-							<button id='reset-submit-button' type='submit' className='reset-submit-button block mx-auto w-full max-w-[200px] sm:w-[200px] py-3 sm:py-3.5 rounded-xl text-[#48715B] font-semibold text-base sm:text-lg hover:bg-[#48715B]/90 hover:text-[#E2EEE2] active:bg-[#48715B]/80 focus:outline-none focus:ring-4 focus:ring-[#48715B]/30 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed' disabled={isSubmitting || !initialToken}>
+							<button id='reset-submit-button' type='submit' className='reset-submit-button block mx-auto w-full max-w-[200px] sm:w-[200px] py-3 sm:py-3.5 rounded-xl text-[#48715B] font-semibold text-base sm:text-lg hover:bg-[#48715B]/90 hover:text-[#E2EEE2] active:bg-[#48715B]/80 focus:outline-none focus:ring-4 focus:ring-[#48715B]/30 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed' disabled={isSubmitting || !(initialToken || watch('token'))}>
 								{isSubmitting ? 'Đang đổi...' : 'Xác nhận'}
 							</button>
 

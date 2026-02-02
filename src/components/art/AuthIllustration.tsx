@@ -10,7 +10,6 @@ const AuthIllustration = (): React.ReactElement => {
 			className='login-illustration-container absolute inset-0 w-full h-full z-10 pointer-events-none select-none hidden md:block overflow-hidden'
 		>
 			<Image
-			// why is this image even working ???
 				src='/images/landing/tranh full oc.webp'
 				alt='Fantasy Character'
 				fill
