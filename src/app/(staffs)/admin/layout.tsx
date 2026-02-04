@@ -15,47 +15,53 @@ type AdminLayoutProps = {
 	children: React.ReactElement
 }
 
-const sections = [
-	{
-		items: [
-			{
-				label: 'Thông số',
-				href: '/admin',
-				icon: UserCircle,
-			},
-			{
-				label: 'Dashboard',
-				href: '/admin/dashboard',
-				icon: UserCircle,
-			},
-			{
-				label: 'Quản lý vé',
-				href: '/admin/tickets',
-				icon: Ticket,
-			},
-			{
-				label: 'Quét vé',
-				href: '/admin/scan-ticket',
-				icon: Ticket,
-			},
-			{
-				label: 'Art submit',
-				href: '/admin/art-submit',
-				icon: Ticket,
-			},
-			{
-				label: 'Quản lý Dealer',
-				href: '/admin/dealers',
-				icon: Store,
-			},
-		],
-	},
-]
-
 const AdminLayout = ({ children }: AdminLayoutProps) => {
 	const router = useRouter()
 	const { data, isLoading, isError } = useGetMe()
 	const setAccount = useAuthStore(state => state.setAccount)
+
+	const isAdmin = data?.isSuccess && data.data?.role?.toLowerCase() === 'admin'
+
+	const sections = [
+		{
+			items: [
+				{
+					label: 'Thông số',
+					href: '/admin',
+					icon: UserCircle,
+				},
+				{
+					label: 'Dashboard',
+					href: '/admin/dashboard',
+					icon: UserCircle,
+				},
+				...(isAdmin
+					? [
+							{
+								label: 'Quản lý vé',
+								href: '/admin/tickets',
+								icon: Ticket,
+							},
+					  ]
+					: []),
+				{
+					label: 'Quét vé',
+					href: '/admin/scan-ticket',
+					icon: Ticket,
+				},
+				{
+					label: 'Art submit',
+					href: '/admin/art-submit',
+					icon: Ticket,
+				},
+				{
+					label: 'Quản lý Dealer',
+					href: '/admin/dealers',
+					icon: Store,
+				},
+			],
+		},
+	]
 
 	// Save account data to Zustand store when fetched
 	useEffect(() => {
@@ -137,7 +143,6 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
 				className='admin-sidebar-container relative z-10 w-[200px] ml-20 my-6'
 			>
 				<SideBar sections={sections} />
-				
 			</div>
 
 			{/* Main Content - Card-based layout with dark background visible */}
@@ -146,7 +151,6 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
 				className='admin-content relative z-10 flex-1 flex flex-col gap-6 px-8 py-8 mr-6'
 			>
 				<div className='bg-main/95 dark:bg-dark-surface/95 backdrop-blur-md rounded-2xl shadow-2xl p-8 border border-slate-300/20 dark:border-dark-border/20'>
-					
 					<section id='admin-main-section' className='admin-main-section'>
 						{children}
 					</section>

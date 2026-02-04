@@ -1,9 +1,11 @@
 import { S3Client } from '@aws-sdk/client-s3'
 
 /**
- * Converts an S3 URL to a proxy URL that can be used with Next.js Image optimization
+ * Converts an S3 URL to an API URL that redirects to a signed GET URL.
+ * The API generates a short-lived presigned GET URL and redirects the client,
+ * so the browser loads the image directly from S3 (no streaming through the server).
  * @param s3Url - The full S3 URL (e.g., https://bucket.s3.region.amazonaws.com/key)
- * @returns The proxy URL (e.g., /api/s3/image?key=user-uploads/filename.png)
+ * @returns The API URL (e.g., /api/s3/image?key=user-uploads/filename.png)
  */
 export function getS3ProxyUrl(s3Url: string): string {
 	try {
@@ -16,7 +18,7 @@ export function getS3ProxyUrl(s3Url: string): string {
 			return s3Url
 		}
 
-		// Return the proxy URL
+		// Return the API URL (backend redirects to signed GET URL)
 		return `/api/s3/image?key=${encodeURIComponent(key)}`
 	} catch (error) {
 		// If URL parsing fails, return the original URL

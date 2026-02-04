@@ -10,14 +10,19 @@ import { useThemeStore } from '@/config/Providers/ThemeProvider'
 import { useGSAP } from '@gsap/react'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { useRouter } from 'next/navigation'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 const LandingPage = (): React.JSX.Element => {
+	const [isLoaded, setIsLoaded] = useState(false)
 	const prefersReducedMotion = useThemeStore(
 		state => state.prefersReducedMotion
 	)
 
 	const router = useRouter()
+
+	useEffect(() => {
+		setIsLoaded(true)
+	}, [])
 	useEffect(() => {
 		if (typeof window === 'undefined') return
 		const hash = window.location.hash
@@ -129,7 +134,10 @@ const LandingPage = (): React.JSX.Element => {
 	}, [prefersReducedMotion])
 
 	return (
-		<div className='absolute inset-0 landing-container'>
+		<div
+			className='absolute inset-0 landing-container transition-opacity duration-500 ease-out'
+			style={{ opacity: isLoaded ? 1 : 0 }}
+		>
 			{/* Landing Section */}
 			<HeroSection />
 
