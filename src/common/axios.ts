@@ -2,13 +2,8 @@ import a from 'axios'
 import { useAuthStore } from '@/stores/authStore'
 import { logger } from '@/utils/logger'
 
-const baseURL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8085'
-// const baseURL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8085'
-
-const isLocal = baseURL.includes('localhost')
-
 const axiosLocal = a.create({
-	baseURL: `${baseURL}/v1`,
+	baseURL: '/api/v1',
 	headers: {
 		'Content-Type': 'application/json',
 	},
@@ -17,7 +12,7 @@ const axiosLocal = a.create({
 })
 
 const axiosGeneral = a.create({
-	baseURL: `${baseURL}/api/general/v1`,
+	baseURL: '/api/general/v1',
 	headers: {
 		'Content-Type': 'application/json',
 	},
@@ -26,7 +21,7 @@ const axiosGeneral = a.create({
 })
 
 const axiosTicket = a.create({
-	baseURL: `${baseURL}/api/ticket/v1`,
+	baseURL: '/api/ticket/v1',
 	headers: {
 		'Content-Type': 'application/json',
 	},
@@ -170,8 +165,8 @@ axiosLocal.interceptors.response.use(
 )
 
 const axios = {
-	general: isLocal ? axiosLocal : axiosGeneral,
-	ticket: isLocal ? axiosLocal : axiosTicket,
+	general: axiosGeneral,
+	ticket: axiosTicket,
 }
 
 export default axios
