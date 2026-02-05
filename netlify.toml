@@ -1,6 +1,5 @@
-# Redirect /api/* to API Gateway (proxy, status 200)
 [[redirects]]
   from = "/api/*"
-  to = "https://riw96amgn7.execute-api.ap-southeast-1.amazonaws.com/:splat"
+  to = "https://riw96amgn7.execute-api.ap-southeast-1.amazonaws.com/api/:splat"
   status = 200
   force = true
