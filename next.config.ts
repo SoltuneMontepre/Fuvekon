@@ -14,6 +14,14 @@ const nextConfig: NextConfig = {
 			},
 		],
 	},
+	async rewrites() {
+		return [
+			{
+				source: '/api/:path*',
+				destination: 'https://riw96amgn7.execute-api.ap-southeast-1.amazonaws.com/:path*',
+			},
+		]
+	},
 }
 
 export default withNextIntl(nextConfig)

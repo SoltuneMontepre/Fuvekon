@@ -1,82 +1,13 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { GetObjectCommand, NoSuchKey } from '@aws-sdk/client-s3'
-import { Readable } from 'stream'
+import { GetObjectCommand } from '@aws-sdk/client-s3'
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 import { validateAwsConfig } from '@/utils/validation/awsConfigValidation'
 import { validateAndDecodeKey } from '@/utils/validation/validateAndDecodeKey'
-import { isValidImageType } from '@/utils/validation/isValidImageType'
 import { getS3Client, getBucketName } from '@/utils/s3'
 import { ErrorCodes } from '@/common/errors'
-import { MAX_FILE_SIZE } from '@/config/app'
 
-function handleS3Error(
-	error: unknown,
-	decodedKey: string,
-	res: NextApiResponse
-) {
-	if (error instanceof NoSuchKey) {
-		return res.status(404).json({
-			code: ErrorCodes.NOT_FOUND,
-			message: 'Image not found',
-		})
-	}
-
-	if (
-		error &&
-		typeof error === 'object' &&
-		'name' in error &&
-		(error.name === 'AccessDenied' || error.name === 'Forbidden')
-	) {
-		console.error('[S3 Image Proxy] Access denied:', decodedKey)
-		return res.status(403).json({
-			code: ErrorCodes.FORBIDDEN,
-			message: 'Access denied',
-		})
-	}
-
-	throw error
-}
-
-function setupResponseHeaders(
-	res: NextApiResponse,
-	contentType: string,
-	etag?: string,
-	contentLength?: number
-) {
-	res.setHeader('Content-Type', contentType)
-	res.setHeader('Cache-Control', 'no-store')
-
-	if (etag) {
-		res.setHeader('ETag', `"${etag}"`)
-	}
-
-	if (contentLength) {
-		res.setHeader('Content-Length', contentLength.toString())
-	}
-}
-
-function setupStreamHandlers(
-	stream: Readable,
-	req: NextApiRequest,
-	res: NextApiResponse
-) {
-	stream.on('error', (error: Error) => {
-		if (!res.headersSent) {
-			res.status(500).json({
-				code: ErrorCodes.INTERNAL_SERVER_ERROR,
-				message: 'Error reading image stream',
-				error: error.message,
-			})
-		} else {
-			res.end()
-		}
-	})
-
-	req.on('close', () => {
-		if (!stream.destroyed) {
-			stream.destroy()
-		}
-	})
-}
+/** Signed GET URL expiry in seconds (short-lived; browser loads image immediately). */
+const SIGNED_GET_EXPIRES_IN = 60
 
 export default async function handler(
 	req: NextApiRequest,
@@ -117,51 +48,15 @@ export default async function handler(
 			Key: decodedKey,
 		})
 
-		let response
-		try {
-			response = await s3Client.send(command)
-		} catch (error: unknown) {
-			return handleS3Error(error, decodedKey, res)
-		}
+		const signedUrl = await getSignedUrl(s3Client, command, {
+			expiresIn: SIGNED_GET_EXPIRES_IN,
+		})
 
-		if (!response.Body) {
-			return res.status(404).json({
-				code: ErrorCodes.NOT_FOUND,
-				message: 'Image not found',
-			})
-		}
-
-		const contentType = response.ContentType || 'application/octet-stream'
-
-		if (!isValidImageType(contentType)) {
-			console.warn('[S3 Image Proxy] Invalid content type:', {
-				key: decodedKey,
-				contentType,
-			})
-			return res.status(400).json({
-				code: ErrorCodes.BAD_REQUEST,
-				message: 'Invalid file type',
-			})
-		}
-
-		const contentLength = response.ContentLength
-
-		if (contentLength && contentLength > MAX_FILE_SIZE) {
-			return res.status(413).json({
-				code: ErrorCodes.FILE_TOO_LARGE,
-				message: 'File size exceeds limit',
-			})
-		}
-
-		const etag = response.ETag?.replace(/"/g, '') || undefined
-
-		setupResponseHeaders(res, contentType, etag, contentLength)
-
-		const stream = response.Body as Readable
-		setupStreamHandlers(stream, req, res)
-		stream.pipe(res)
+		// Don't cache redirect: signed URL expires in 60s; CDN (e.g. Netlify) must not serve stale redirects
+		res.setHeader('Cache-Control', 'private, no-store, max-age=0')
+		res.redirect(302, signedUrl)
 	} catch (error) {
-		console.error('[S3 Image Proxy] Unexpected error:', error)
+		console.error('[S3 Image] Error generating signed GET URL:', error)
 		if (!res.headersSent) {
 			return res.status(500).json({
 				code: ErrorCodes.INTERNAL_SERVER_ERROR,

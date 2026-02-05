@@ -7,7 +7,11 @@ import { Check } from 'lucide-react'
 import { AxiosError } from 'axios'
 import CollapsibleScroll from '@/components/animated/CollapsibleScroll'
 import Separator from '@/components/common/scroll/Separator'
-import { useGetTiers, useGetMyTicket, usePurchaseTicket } from '@/hooks/services/ticket/useTicket'
+import {
+	useGetTiers,
+	useGetMyTicket,
+	usePurchaseTicket,
+} from '@/hooks/services/ticket/useTicket'
 import { useAuthStore } from '@/stores/authStore'
 import Background from '@/components/ui/Background'
 import type { TicketTier } from '@/types/models/ticket/ticket'
@@ -45,12 +49,17 @@ const TicketPage = (): React.ReactElement => {
 	const account = useAuthStore(state => state.account)
 
 	// Fetch tiers and user's current ticket
-	const { data: tiersData, isLoading: tiersLoading, error: tiersError } = useGetTiers()
+	const {
+		data: tiersData,
+		isLoading: tiersLoading,
+		error: tiersError,
+	} = useGetTiers()
 	const { data: myTicketData, isLoading: ticketLoading } = useGetMyTicket()
 	const purchaseMutation = usePurchaseTicket()
 
 	// Check if user already has a non-denied ticket
-	const hasActiveTicket = myTicketData?.data && myTicketData.data.status !== 'denied'
+	const hasActiveTicket =
+		myTicketData?.data && myTicketData.data.status !== 'denied'
 
 	// Check if user is blacklisted
 	const isBlacklisted = account?.is_blacklisted
@@ -63,8 +72,7 @@ const TicketPage = (): React.ReactElement => {
 
 		try {
 			const result = await purchaseMutation.mutateAsync(tierId)
-			if (result.isSuccess && result.data) {
-				// Redirect to payment screen
+			if (result?.isSuccess) {
 				router.push(`/ticket/purchase/${tierId}`)
 			}
 		} catch {
@@ -96,7 +104,7 @@ const TicketPage = (): React.ReactElement => {
 		)
 	}
 
-	const tiers = tiersData?.data || []
+	const tiers: TicketTier[] = tiersData?.data ?? []
 	const allBenefits = getAllBenefits(tiers)
 
 	return (
@@ -129,10 +137,14 @@ const TicketPage = (): React.ReactElement => {
 												{tierHasBenefit(tier, benefit) ? (
 													<>
 														<Check className='w-4 h-4 text-[#7cbc97] flex-shrink-0' />
-														<span className='text-sm text-[#154c5b]'>{benefit}</span>
+														<span className='text-sm text-[#154c5b]'>
+															{benefit}
+														</span>
 													</>
 												) : (
-													<span className='text-sm text-gray-400 pl-6'>{benefit}</span>
+													<span className='text-sm text-gray-400 pl-6'>
+														{benefit}
+													</span>
 												)}
 											</li>
 										))}
@@ -168,9 +180,7 @@ const TicketPage = (): React.ReactElement => {
 
 					{tiers.length === 0 && (
 						<div className='text-center py-12'>
-							<p className='text-[#48715b] text-lg'>
-								{t('noTiersAvailable')}
-							</p>
+							<p className='text-[#48715b] text-lg'>{t('noTiersAvailable')}</p>
 						</div>
 					)}
 
@@ -212,9 +222,10 @@ const TicketPage = (): React.ReactElement => {
 					{purchaseMutation.error && (
 						<div className='mt-6 text-center'>
 							<p className='text-sm text-red-300'>
-								{(purchaseMutation.error as AxiosError<{ message?: string }>)?.response?.data?.message ||
-								 (purchaseMutation.error as Error).message ||
-								 t('errorOccurred')}
+								{(purchaseMutation.error as AxiosError<{ message?: string }>)
+									?.response?.data?.message ||
+									(purchaseMutation.error as Error).message ||
+									t('errorOccurred')}
 							</p>
 						</div>
 					)}

@@ -15,6 +15,8 @@ export interface ImageUploaderProps {
 	onUploadSuccess?: (fileUrl: string, fileKey: string) => void
 	/** Callback when upload fails */
 	onUploadError?: (error: Error) => void
+	/** Callback when user removes the image */
+	onRemove?: () => void
 	/** Optional folder path in S3 */
 	folder?: string
 	/** Optional expiration time in seconds */
@@ -40,6 +42,7 @@ export interface ImageUploaderProps {
 const ImageUploader: React.FC<ImageUploaderProps> = ({
 	onUploadSuccess,
 	onUploadError,
+	onRemove,
 	folder,
 	expiresIn = 3600,
 	maxSizeMB = 10,
@@ -137,15 +140,13 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
 	}
 
 	const handleRemove = () => {
-		const url = initialImageUrl || null
-		// Convert S3 URL to proxy URL if needed
-		const displayUrl = url && isS3Url(url) ? getS3ProxyUrl(url) : url
-		setPreviewUrl(displayUrl)
+		setPreviewUrl(null)
 		setSelectedFile(null)
 		setUploadError(null)
 		if (fileInputRef.current) {
 			fileInputRef.current.value = ''
 		}
+		onRemove?.()
 	}
 
 	const handleClick = () => {

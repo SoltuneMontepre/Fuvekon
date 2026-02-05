@@ -69,6 +69,22 @@ const AccountPage = () => {
 		[updateAvatarMutation]
 	)
 
+	const handleAvatarRemove = useCallback(() => {
+		updateAvatarMutation.mutate(
+			{ avatar: '' },
+			{
+				onSuccess: data => {
+					if (data.isSuccess) {
+						toast.success('Đã xóa ảnh đại diện.')
+					}
+				},
+				onError: () => {
+					toast.error('Xóa ảnh đại diện thất bại. Vui lòng thử lại.')
+				},
+			}
+		)
+	}, [updateAvatarMutation])
+
 	const handleInputChange = useCallback(
 		(e: React.ChangeEvent<HTMLInputElement>) => {
 			const { name, value } = e.target
@@ -183,6 +199,7 @@ const AccountPage = () => {
 							buttonText='Chọn ảnh đại diện'
 							initialImageUrl={account.avatar}
 							onUploadSuccess={handleAvatarUploadSuccess}
+							onRemove={handleAvatarRemove}
 							onUploadError={error => {
 								toast.error(`Lỗi upload: ${error.message}`)
 							}}
