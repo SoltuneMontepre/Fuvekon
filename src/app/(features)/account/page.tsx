@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState, useEffect, useCallback } from 'react'
+import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 import { useAuthStore } from '@/stores/authStore'
 import { useUpdateMe, useUpdateAvatar } from '@/hooks/services/auth/useAccount'
@@ -16,12 +17,14 @@ const InfoField = ({
 	name,
 	editable = false,
 	onChange,
+	emptyLabel = 'N/A',
 }: {
 	label: string
 	value: string | undefined
 	name?: string
 	editable?: boolean
 	onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
+	emptyLabel?: string
 }) => {
 	const hasValue = (value || '').trim().length > 0
 	if (editable && name) {
@@ -49,12 +52,14 @@ const InfoField = ({
 	return (
 		<div className='space-y-1'>
 			<label className='text-xs font-medium text-[#48715B]'>{label}</label>
-			<div className='text-sm text-text-secondary'>{value || 'N/A'}</div>
+			<div className='text-sm text-text-secondary'>{value || emptyLabel}</div>
 		</div>
 	)
 }
 
 const AccountPage = () => {
+	const t = useTranslations('account')
+	const tCommon = useTranslations('common')
 	const account = useAuthStore(state => state.account)
 	const [isEditing, setIsEditing] = useState(false)
 	const [formData, setFormData] = useState({
@@ -74,16 +79,16 @@ const AccountPage = () => {
 				{
 					onSuccess: data => {
 						if (data.isSuccess) {
-							toast.success('Cập nhật avatar thành công!')
+							toast.success(t('avatarUpdateSuccess'))
 						}
 					},
 					onError: () => {
-						toast.error('Cập nhật avatar thất bại. Vui lòng thử lại.')
+						toast.error(t('avatarUpdateError'))
 					},
 				}
 			)
 		},
-		[updateAvatarMutation]
+		[updateAvatarMutation, t]
 	)
 
 	const handleAvatarRemove = useCallback(() => {
@@ -92,15 +97,15 @@ const AccountPage = () => {
 			{
 				onSuccess: data => {
 					if (data.isSuccess) {
-						toast.success('Đã xóa ảnh đại diện.')
+						toast.success(t('avatarRemoveSuccess'))
 					}
 				},
 				onError: () => {
-					toast.error('Xóa ảnh đại diện thất bại. Vui lòng thử lại.')
+					toast.error(t('avatarRemoveError'))
 				},
 			}
 		)
-	}, [updateAvatarMutation])
+	}, [updateAvatarMutation, t])
 
 	const handleInputChange = useCallback(
 		(e: React.ChangeEvent<HTMLInputElement>) => {
@@ -131,7 +136,7 @@ const AccountPage = () => {
 		return (
 			<div className='flex items-center justify-center min-h-[200px]'>
 				<div className='text-sm text-gray-500 dark:text-dark-text-secondary'>
-					No account information available
+					{t('noAccountInfo')}
 				</div>
 			</div>
 		)
@@ -168,32 +173,32 @@ const AccountPage = () => {
 				onSuccess: data => {
 					if (data.isSuccess) {
 						setIsEditing(false)
-						toast.success('Cập nhật thông tin thành công!')
+						toast.success(t('updateSuccess'))
 					}
 				},
 				onError: () => {
-					toast.error('Cập nhật thất bại. Vui lòng thử lại.')
+					toast.error(t('updateError'))
 				},
 			}
 		)
 	}
 
 	return (
-		<div className='rounded-2xl bg-[#E9F5E7] p-5 shadow-sm text-text-secondary'>
-			<h1 className='text-2xl font-bold mb-4 text-center'>TÀI KHOẢN</h1>
+		<div className='rounded-[30px] bg-[#E9F5E7] p-5 shadow-sm text-text-secondary'>
+			<h1 className='text-3xl font-bold mb-4 text-center'>{t('title')}</h1>
 
 			<div className='flex flex-col gap-5'>
 				{/* Avatar Section */}
 				<div className='flex-shrink-0'>
 					<label className='block text-xs font-medium text-[#48715B] mb-2'>
-						Ảnh đại diện
+						{t('avatarLabel')}
 					</label>
 					<div className='flex items-center gap-3'>
 						<div className='relative w-34 h-34 rounded-full overflow-hidden border-2 border-[#48715B]/30 bg-[#E2EEE2] flex-shrink-0'>
 							{account.avatar ? (
 								<S3Image
 									src={account.avatar}
-									alt={account.fursona_name || account.first_name || 'Avatar'}
+									alt={account.fursona_name || account.first_name || t('avatarFallback')}
 									fill
 									className='object-cover'
 								/>
@@ -212,12 +217,12 @@ const AccountPage = () => {
 						</div>
 						<div className='flex-shrink-0'>
 							<ImageUploader
-								buttonText='Chọn ảnh'
+								buttonText={t('chooseImage')}
 								initialImageUrl={account.avatar}
 								onUploadSuccess={handleAvatarUploadSuccess}
 								onRemove={handleAvatarRemove}
 								onUploadError={error => {
-									toast.error(`Lỗi upload: ${error.message}`)
+									toast.error(t('uploadError', { message: error.message }))
 								}}
 								folder='user-uploads'
 								maxSizeMB={10}
@@ -225,6 +230,7 @@ const AccountPage = () => {
 								disabled={updateAvatarMutation.isPending}
 								compressImage
 								accept='image/png,image/jpeg,image/jpg'
+								className='min-w-30'
 							/>
 						</div>
 					</div>
@@ -236,29 +242,32 @@ const AccountPage = () => {
 							<>
 								<div className='grid grid-cols-1 sm:grid-cols-2 gap-3'>
 									<InfoField
-										label='Họ'
+										label={t('firstName')}
 										value={formData.first_name}
 										name='first_name'
 										editable={isEditing}
 										onChange={handleInputChange}
+										emptyLabel={t('na')}
 									/>
 									<InfoField
-										label='Tên'
+										label={t('lastName')}
 										value={formData.last_name}
 										name='last_name'
 										editable={isEditing}
 										onChange={handleInputChange}
+										emptyLabel={t('na')}
 									/>
 								</div>
 								<div className='grid grid-cols-1 sm:grid-cols-2 gap-3'>
 									<InfoField
-										label='Tên fursona'
+										label={t('fursonaName')}
 										value={formData.fursona_name}
 										name='fursona_name'
 										editable={isEditing}
 										onChange={handleInputChange}
+										emptyLabel={t('na')}
 									/>
-									<InfoField label='Gmail' value={account.email} />
+									<InfoField label={t('email')} value={account.email} emptyLabel={t('na')} />
 								</div>
 								<div className='grid grid-cols-1 sm:grid-cols-2 gap-3'>
 									<div className='relative w-full'>
@@ -267,7 +276,7 @@ const AccountPage = () => {
 											className='absolute left-3 top-2.5 sm:top-3 text-lg sm:text-xl font-normal text-[#8C8C8C]/70 bg-[#E2EEE2] px-1 transition-all duration-200 pointer-events-none scale-70 -translate-y-8 sm:-translate-y-9'
 											style={{ transformOrigin: 'left' }}
 										>
-											Quốc gia:
+											{t('country')}:
 										</label>
 										<select
 											id='country-select'
@@ -281,7 +290,7 @@ const AccountPage = () => {
 											className='block w-full px-3 py-2.5 sm:py-3 rounded-xl bg-[#E2EEE2] border border-[#8C8C8C]/30 text-[#8C8C8C] text-lg sm:text-xl font-normal focus:outline-none focus:border-[#48715B] focus:ring-0 shadow-none appearance-none cursor-pointer'
 										>
 											<option value='' disabled>
-												Chọn quốc gia
+												{t('selectCountry')}
 											</option>
 											{COUNTRY_NAMES().map(c => (
 												<option key={c} value={c}>
@@ -297,24 +306,26 @@ const AccountPage = () => {
 										</select>
 									</div>
 									<InfoField
-										label='Số CMND/CCCD'
+										label={t('idCard')}
 										value={formData.id_card}
 										name='id_card'
 										editable={isEditing}
 										onChange={handleInputChange}
+										emptyLabel={t('na')}
 									/>
 								</div>
 							</>
 						) : (
 							<div className='grid grid-cols-1 sm:grid-cols-2 gap-3'>
-								<InfoField label='Họ và Tên' value={fullName} />
-								<InfoField label='Tên fursona' value={account.fursona_name} />
-								<InfoField label='Gmail' value={account.email} />
+								<InfoField label={t('fullName')} value={fullName} emptyLabel={t('na')} />
+								<InfoField label={t('fursonaName')} value={account.fursona_name} emptyLabel={t('na')} />
+								<InfoField label={t('email')} value={account.email} emptyLabel={t('na')} />
 								<InfoField
-									label='Quốc gia'
+									label={t('country')}
 									value={getName(account.country || '')}
+									emptyLabel={t('na')}
 								/>
-								<InfoField label='Số CMND/CCCD' value={account.id_card} />
+								<InfoField label={t('idCard')} value={account.id_card} emptyLabel={t('na')} />
 							</div>
 						)}
 					</div>
@@ -334,26 +345,26 @@ const AccountPage = () => {
 									})
 									setIsEditing(true)
 								}}
-								className='shadow-md w-full py-2 px-3 text-sm rounded-lg bg-bg text-text-secondary font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-dark-surface'
+								className='shadow-md w-full py-2 px-3 text-xl rounded-lg bg-bg text-text-secondary font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-dark-surface'
 							>
-								Chỉnh sửa thông tin
+								{t('editInfo')}
 							</button>
 						) : (
 							<div className='flex gap-3'>
 								<button
 									type='submit'
 									disabled={updateMeMutation.isPending}
-									className='shadow-md flex-1 py-2 px-3 text-sm rounded-lg bg-bg text-text-secondary font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-dark-surface disabled:opacity-50 disabled:cursor-not-allowed'
+									className='shadow-md flex-1 py-2 px-3 text-xl rounded-lg bg-bg text-text-secondary font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-dark-surface disabled:opacity-50 disabled:cursor-not-allowed'
 								>
-									{updateMeMutation.isPending ? 'Đang lưu...' : 'Lưu thay đổi'}
+									{updateMeMutation.isPending ? tCommon('saving') : t('saveChanges')}
 								</button>
 								<button
 									type='button'
 									onClick={handleCancel}
 									disabled={updateMeMutation.isPending}
-									className='shadow-md flex-1 py-2 px-3 text-sm rounded-lg bg-bg text-text-secondary font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 dark:focus:ring-offset-dark-surface disabled:opacity-50 disabled:cursor-not-allowed'
+									className='shadow-md flex-1 py-2 px-3 text-xl rounded-lg bg-bg text-text-secondary font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 dark:focus:ring-offset-dark-surface disabled:opacity-50 disabled:cursor-not-allowed'
 								>
-									Hủy
+									{tCommon('cancel')}
 								</button>
 							</div>
 						)}

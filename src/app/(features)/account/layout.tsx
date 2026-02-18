@@ -48,16 +48,16 @@ const AccountLayout = ({ children }: AccountLayoutProps) => {
 								href: '/account/dealer',
 								icon: Store,
 							},
-					  ]
+						]
 					: account?.is_has_ticket || data?.data?.is_has_ticket
-					? [
-							{
-								label: t('registerDealer'),
-								href: '/account/dealer/register',
-								icon: Store,
-							},
-					  ]
-					: []),
+						? [
+								{
+									label: t('registerDealer'),
+									href: '/account/dealer/register',
+									icon: Store,
+								},
+							]
+						: []),
 			],
 		},
 	]
@@ -93,10 +93,7 @@ const AccountLayout = ({ children }: AccountLayoutProps) => {
 	}
 
 	return (
-		<div
-			id='account-layout'
-			className='account-layout relative flex min-h-screen w-full '
-		>
+		<div id='account-layout' className='account-layout relative flex w-full'>
 			{/* Background Image - Behind everything */}
 			<div
 				id='account-background'
@@ -115,7 +112,7 @@ const AccountLayout = ({ children }: AccountLayoutProps) => {
 			{/* Sidebar - Compact with card style */}
 			<div
 				id='account-sidebar-container'
-				className='account-sidebar-container relative z-10 w-[200px] ml-20 mx-6'
+				className='account-sidebar-container relative z-10 w-[250px] ml-20'
 			>
 				<SideBar sections={sections} />
 			</div>
@@ -123,10 +120,10 @@ const AccountLayout = ({ children }: AccountLayoutProps) => {
 			{/* Main Content - Card-based layout with dark background visible */}
 			<div
 				id='account-content'
-				className='account-content relative z-10 flex-1 flex flex-col gap-6 p-8 mr-6'
+				className='relative z-10 gap-6 p-8 mr-6 w-full '
 			>
-				<div className=' dark:bg-dark-surface/95 backdrop-blur-md rounded-2xl shadow-2xl'>
-					<section id='account-main-section' className='account-main-section'>
+				<div className=' dark:bg-dark-surface/95 backdrop-blur-md rounded-2xl shadow-2xl max-w-3xl mx-auto'>
+					<section id='account-main-section' className=''>
 						{children}
 					</section>
 				</div>

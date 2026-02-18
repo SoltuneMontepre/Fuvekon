@@ -68,7 +68,7 @@ const LanguageSelector = ({ className }: LanguageSelectorProps) => {
 				<ul
 					role='listbox'
 					aria-label='Select language'
-					className='absolute right-0 top-full mt-2 min-w-[10rem] rounded-lg shadow-lg z-50 border border-white/10 backdrop-blur text-slate-100 overflow-hidden'
+					className='absolute right-0 top-full mt-2 min-w-[10rem] rounded-lg shadow-lg z-50 border border-white/10 backdrop-blur text-slate-100 overflow-hidden bg-gray-500/20'
 				>
 					{SUPPORTED_LANGS.map(lang => (
 						<li key={lang} role='option' aria-selected={locale === lang}>

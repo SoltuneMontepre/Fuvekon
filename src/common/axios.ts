@@ -65,9 +65,8 @@ axiosGeneral.interceptors.response.use(
 				}
 			}
 		} else if (error.response?.status === 403) {
-			logger.warn('403 Forbidden - Clearing account')
-			const { clearAccount } = useAuthStore.getState()
-			clearAccount()
+			// 403 = Forbidden (insufficient permission), not invalid session – do not clear account
+			logger.warn('403 Forbidden - Request not allowed for this role')
 		}
 		return Promise.reject(error)
 	}
@@ -110,9 +109,8 @@ axiosLocal.interceptors.response.use(
 				}
 			}
 		} else if (error.response?.status === 403) {
-			logger.warn('403 Forbidden - Clearing account')
-			const { clearAccount } = useAuthStore.getState()
-			clearAccount()
+			// 403 = Forbidden (insufficient permission), not invalid session – do not clear account
+			logger.warn('403 Forbidden - Request not allowed for this role')
 		}
 		return Promise.reject(error)
 	}

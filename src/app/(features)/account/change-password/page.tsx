@@ -1,6 +1,7 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useMemo } from 'react'
+import { useTranslations } from 'next-intl'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -8,38 +9,50 @@ import { toast } from 'sonner'
 import {
 	FORM_CONSTANTS,
 	VALIDATION_PATTERNS,
-	ERROR_MESSAGES,
 } from '@/utils/validation/registerValidation.constants'
 import { useChangePassword } from '@/hooks/services/auth/useAccount'
 import { Eye, EyeOff } from 'lucide-react'
 
-const ChangePasswordSchema = z
-	.object({
-		currentPassword: z.string().min(1, ERROR_MESSAGES.REQUIRED_FIELD),
-		newPassword: z
-			.string()
-			.min(FORM_CONSTANTS.MIN_PASSWORD_LENGTH, ERROR_MESSAGES.WEAK_PASSWORD)
-			.max(FORM_CONSTANTS.MAX_PASSWORD_LENGTH, ERROR_MESSAGES.PASSWORD_TOO_LONG)
-			.regex(VALIDATION_PATTERNS.PASSWORD, ERROR_MESSAGES.WEAK_PASSWORD),
-		confirmPassword: z.string().min(1, ERROR_MESSAGES.REQUIRED_FIELD),
-	})
-	.refine(data => data.newPassword === data.confirmPassword, {
-		message: ERROR_MESSAGES.PASSWORD_MISMATCH,
-		path: ['confirmPassword'],
-	})
-	.refine(data => data.currentPassword !== data.newPassword, {
-		message: 'Mật khẩu mới phải khác mật khẩu hiện tại',
-		path: ['newPassword'],
-	})
-
-type ChangePasswordFormData = z.infer<typeof ChangePasswordSchema>
+type ChangePasswordFormData = {
+	currentPassword: string
+	newPassword: string
+	confirmPassword: string
+}
 
 const ChangePasswordPage = () => {
+	const t = useTranslations('changePassword')
+	const tAuth = useTranslations('auth')
 	const [showCurrent, setShowCurrent] = useState(false)
 	const [showNew, setShowNew] = useState(false)
 	const [showConfirm, setShowConfirm] = useState(false)
 
 	const changePasswordMutation = useChangePassword()
+
+	const ChangePasswordSchema = useMemo(
+		() =>
+			z
+				.object({
+					currentPassword: z.string().min(1, t('validation.required')),
+					newPassword: z
+						.string()
+						.min(FORM_CONSTANTS.MIN_PASSWORD_LENGTH, t('validation.weakPassword'))
+						.max(
+							FORM_CONSTANTS.MAX_PASSWORD_LENGTH,
+							t('validation.passwordTooLong')
+						)
+						.regex(VALIDATION_PATTERNS.PASSWORD, t('validation.weakPassword')),
+					confirmPassword: z.string().min(1, t('validation.required')),
+				})
+				.refine(data => data.newPassword === data.confirmPassword, {
+					message: t('validation.passwordMismatch'),
+					path: ['confirmPassword'],
+				})
+				.refine(data => data.currentPassword !== data.newPassword, {
+					message: t('validation.newPasswordDifferent'),
+					path: ['newPassword'],
+				}),
+		[t]
+	)
 
 	const {
 		register,
@@ -66,16 +79,16 @@ const ChangePasswordPage = () => {
 			{
 				onSuccess: response => {
 					if (response.isSuccess) {
-						toast.success('Đổi mật khẩu thành công!')
+						toast.success(t('success'))
 						reset()
 					} else {
-						toast.error(response.message || 'Đổi mật khẩu thất bại.')
+						toast.error(response.message || t('failed'))
 					}
 				},
 				onError: (error: unknown) => {
 					const err = error as { response?: { data?: { message?: string } } }
 					const message =
-						err?.response?.data?.message || 'Đổi mật khẩu thất bại. Vui lòng thử lại.'
+						err?.response?.data?.message || t('failedRetry')
 					toast.error(message)
 					if (
 						message.toLowerCase().includes('current') ||
@@ -94,17 +107,18 @@ const ChangePasswordPage = () => {
 
 	return (
 		<div className='rounded-[30px] bg-[#E9F5E7] p-8 shadow-sm text-text-secondary'>
-			<h1 className='text-3xl font-bold mb-8 text-center'>
-				ĐỔI MẬT KHẨU
-			</h1>
+			<h1 className='text-3xl font-bold mb-8 text-center'>{t('title')}</h1>
 
-			<form onSubmit={handleSubmit(onSubmit)} className='max-w-md mx-auto space-y-6'>
+			<form
+				onSubmit={handleSubmit(onSubmit)}
+				className='max-w-md mx-auto space-y-6'
+			>
 				<div>
 					<label
 						htmlFor='currentPassword'
 						className='block text-sm font-medium text-[#48715B] mb-2'
 					>
-						Mật khẩu hiện tại
+						{t('currentPasswordLabel')}
 					</label>
 					<div className='relative'>
 						<input
@@ -112,14 +126,14 @@ const ChangePasswordPage = () => {
 							type={showCurrent ? 'text' : 'password'}
 							{...register('currentPassword')}
 							className={`${inputBase} ${errors.currentPassword ? inputError : 'border-[#8C8C8C]/30'}`}
-							placeholder='Nhập mật khẩu hiện tại'
+							placeholder={t('currentPasswordPlaceholder')}
 							aria-invalid={!!errors.currentPassword}
 						/>
 						<button
 							type='button'
 							onClick={() => setShowCurrent(!showCurrent)}
 							className='absolute right-3 top-1/2 -translate-y-1/2 text-[#8C8C8C] hover:text-[#48715B]'
-							title={showCurrent ? 'Ẩn' : 'Hiện'}
+							title={showCurrent ? tAuth('hidePassword') : tAuth('showPassword')}
 							tabIndex={-1}
 						>
 							{showCurrent ? (
@@ -141,7 +155,7 @@ const ChangePasswordPage = () => {
 						htmlFor='newPassword'
 						className='block text-sm font-medium text-[#48715B] mb-2'
 					>
-						Mật khẩu mới
+						{t('newPasswordLabel')}
 					</label>
 					<div className='relative'>
 						<input
@@ -149,14 +163,14 @@ const ChangePasswordPage = () => {
 							type={showNew ? 'text' : 'password'}
 							{...register('newPassword')}
 							className={`${inputBase} ${errors.newPassword ? inputError : 'border-[#8C8C8C]/30'}`}
-							placeholder='Ít nhất 8 ký tự, chữ hoa, chữ thường và số'
+							placeholder={t('newPasswordPlaceholder')}
 							aria-invalid={!!errors.newPassword}
 						/>
 						<button
 							type='button'
 							onClick={() => setShowNew(!showNew)}
 							className='absolute right-3 top-1/2 -translate-y-1/2 text-[#8C8C8C] hover:text-[#48715B]'
-							title={showNew ? 'Ẩn' : 'Hiện'}
+							title={showNew ? tAuth('hidePassword') : tAuth('showPassword')}
 							tabIndex={-1}
 						>
 							{showNew ? (
@@ -178,7 +192,7 @@ const ChangePasswordPage = () => {
 						htmlFor='confirmPassword'
 						className='block text-sm font-medium text-[#48715B] mb-2'
 					>
-						Xác nhận mật khẩu mới
+						{t('confirmPasswordLabel')}
 					</label>
 					<div className='relative'>
 						<input
@@ -186,14 +200,14 @@ const ChangePasswordPage = () => {
 							type={showConfirm ? 'text' : 'password'}
 							{...register('confirmPassword')}
 							className={`${inputBase} ${errors.confirmPassword ? inputError : 'border-[#8C8C8C]/30'}`}
-							placeholder='Nhập lại mật khẩu mới'
+							placeholder={t('confirmPasswordPlaceholder')}
 							aria-invalid={!!errors.confirmPassword}
 						/>
 						<button
 							type='button'
 							onClick={() => setShowConfirm(!showConfirm)}
 							className='absolute right-3 top-1/2 -translate-y-1/2 text-[#8C8C8C] hover:text-[#48715B]'
-							title={showConfirm ? 'Ẩn' : 'Hiện'}
+							title={showConfirm ? tAuth('hidePassword') : tAuth('showPassword')}
 							tabIndex={-1}
 						>
 							{showConfirm ? (
@@ -217,8 +231,8 @@ const ChangePasswordPage = () => {
 						className='shadow-md w-full py-3 px-4 rounded-lg bg-bg text-text-secondary font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed'
 					>
 						{changePasswordMutation.isPending
-							? 'Đang xử lý...'
-							: 'Đổi mật khẩu'}
+							? t('submitting')
+							: t('submitButton')}
 					</button>
 				</div>
 			</form>

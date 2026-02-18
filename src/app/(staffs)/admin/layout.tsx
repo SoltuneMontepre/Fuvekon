@@ -1,13 +1,15 @@
 'use client'
 
 import React, { useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 import SideBar from '@/components/nav/SideBar'
 import { UserCircle, Ticket, Store } from 'lucide-react'
 import { useGetMe } from '@/hooks/services/auth/useAccount'
 import { useAuthStore } from '@/stores/authStore'
 import { logger } from '@/utils/logger'
 import Loading from '@/components/common/Loading'
+
+const STAFF_SCAN_PATH = '/admin/scan-ticket'
 
 type AdminLayoutProps = {
 	revenue: React.ReactElement
@@ -17,51 +19,72 @@ type AdminLayoutProps = {
 
 const AdminLayout = ({ children }: AdminLayoutProps) => {
 	const router = useRouter()
+	const pathname = usePathname()
 	const { data, isLoading, isError } = useGetMe()
 	const setAccount = useAuthStore(state => state.setAccount)
 
 	const isAdmin = data?.isSuccess && data.data?.role?.toLowerCase() === 'admin'
+	const isStaff = data?.isSuccess && data.data?.role?.toLowerCase() === 'staff'
 
-	const sections = [
-		{
-			items: [
+	// Staff only: redirect to QR scan page if on any other admin route
+	useEffect(() => {
+		if (!isLoading && isStaff && pathname && pathname !== STAFF_SCAN_PATH) {
+			router.replace(STAFF_SCAN_PATH)
+		}
+	}, [isLoading, isStaff, pathname, router])
+
+	const sections = isStaff
+		? [
 				{
-					label: 'Thông số',
-					href: '/admin',
-					icon: UserCircle,
+					items: [
+						{
+							label: 'Quét vé',
+							href: STAFF_SCAN_PATH,
+							icon: Ticket,
+						},
+					],
 				},
+		  ]
+		: [
 				{
-					label: 'Dashboard',
-					href: '/admin/dashboard',
-					icon: UserCircle,
+					items: [
+						{
+							label: 'Thông số',
+							href: '/admin',
+							icon: UserCircle,
+						},
+						{
+							label: 'Dashboard',
+							href: '/admin/dashboard',
+							icon: UserCircle,
+						},
+						...(isAdmin
+							? [
+									{
+										label: 'Quản lý vé',
+										href: '/admin/tickets',
+										icon: Ticket,
+									},
+							  ]
+							: []),
+						{
+							label: 'Quét vé',
+							href: STAFF_SCAN_PATH,
+							icon: Ticket,
+						},
+						{
+							label: 'Art submit',
+							href: '/admin/art-submit',
+							icon: Ticket,
+						},
+						{
+							label: 'Quản lý Dealer',
+							href: '/admin/dealers',
+							icon: Store,
+						},
+					],
 				},
-				...(isAdmin
-					? [
-							{
-								label: 'Quản lý vé',
-								href: '/admin/tickets',
-								icon: Ticket,
-							},
-					  ]
-					: []),
-				{
-					label: 'Quét vé',
-					href: '/admin/scan-ticket',
-					icon: Ticket,
-				},
-				{
-					label: 'Art submit',
-					href: '/admin/art-submit',
-					icon: Ticket,
-				},
-				{
-					label: 'Quản lý Dealer',
-					href: '/admin/dealers',
-					icon: Store,
-				},
-			],
-		},
-	]
+		  ]
 
 	// Save account data to Zustand store when fetched
 	useEffect(() => {
@@ -115,6 +138,11 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
 			role: data?.data?.role,
 		})
 		return null
+	}
+
+	// Staff must only see scan-ticket: don't render any other page (avoids 403 from admin-only APIs)
+	if (isStaff && pathname !== STAFF_SCAN_PATH) {
+		return <Loading />
 	}
 
 	return (
