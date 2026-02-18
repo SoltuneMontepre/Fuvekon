@@ -20,7 +20,9 @@
 		"to": "đến",
 		"of": "trong tổng số",
 		"results": "kết quả",
-		"page": "Trang"
+		"page": "Trang",
+		"edit": "Sửa",
+		"delete": "Xóa"
 	},
 	"nav": {
 		"ticket": "Vé",
@@ -130,7 +132,16 @@
 		"ticketCancelledSuccess": "Hủy vé thành công!",
 		"ticketCancelError": "Không thể hủy vé. Vui lòng thử lại.",
 		"badgeUpdatedSuccess": "Cập nhật thông tin badge thành công!",
-		"badgeUpdateError": "Không thể cập nhật badge. Vui lòng thử lại."
+		"badgeUpdateError": "Không thể cập nhật badge. Vui lòng thử lại.",
+		"conBadgeName": "Tên badge",
+		"badgeImage": "URL hình badge",
+		"isFursuiter": "Fursuiter",
+		"isFursuitStaff": "Fursuit Staff",
+		"isCheckedIn": "Đã check-in",
+		"copiedToClipboard": "Đã sao chép vào clipboard",
+		"copyFailed": "Sao chép thất bại",
+		"paymentConfirmed": "Xác nhận thanh toán thành công!",
+		"paymentConfirmError": "Không thể xác nhận thanh toán. Vui lòng thử lại."
 	},
 	"admin": {
 		"ticketManagement": "Quản lý vé",
@@ -237,7 +248,40 @@
 		"alreadyCheckedIn": "Đã check-in",
 		"ticketNotFound": "Không tìm thấy vé",
 		"ticketNotFoundHint": "Mã có thể sai hoặc vé không tồn tại.",
-		"fursona": "Fursona"
+		"fursona": "Fursona",
+		"ticketApproved": "Duyệt vé thành công",
+		"approveError": "Không thể duyệt vé. Vui lòng thử lại.",
+		"denyError": "Không thể từ chối vé. Vui lòng thử lại.",
+		"editTicket": "Sửa vé",
+		"ticketTier": "Loại vé",
+		"ticketUpdated": "Cập nhật vé thành công",
+		"updateError": "Không thể cập nhật vé",
+		"deleteTicketTitle": "Xóa vé",
+		"deleteTicketConfirm": "Xóa vé {code}?",
+		"deleteStockWarning": "Số lượng sẽ được hoàn lại cho loại vé này.",
+		"ticketDeleted": "Xóa vé thành công",
+		"deleteError": "Không thể xóa vé",
+		"ticketDenied": "Từ chối vé thành công",
+		"userUpdated": "Cập nhật người dùng thành công",
+		"userUpdateFailed": "Không thể cập nhật người dùng",
+		"userNotFound": "Không tìm thấy người dùng",
+		"userDetail": "Chi tiết người dùng",
+		"editUser": "Sửa người dùng",
+		"firstName": "Tên",
+		"lastName": "Họ",
+		"fursonaName": "Tên Fursona"
+	},
+	"artbook": {
+		"artbook": {
+			"card": {
+				"imageAlt": "Huy hiệu artbook",
+				"title": "Artbook",
+				"description": "Gửi tác phẩm của bạn và trở thành một phần của Fuvekon Artbook!",
+				"button": "Gửi ngay",
+				"login": "Đăng nhập",
+				"buyticket": "Mua vé"
+			}
+		}
 	},
 	"landing": {
 		"suggestion": "Cuộn xuống để xem thêm!",

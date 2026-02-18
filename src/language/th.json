@@ -20,7 +20,9 @@
 		"to": "ถึง",
 		"of": "จากทั้งหมด",
 		"results": "ผลลัพธ์",
-		"page": "หน้า"
+		"page": "หน้า",
+		"edit": "แก้ไข",
+		"delete": "ลบ"
 	},
 	"nav": {
 		"ticket": "บัตร",
@@ -48,6 +50,7 @@
 		"loggingIn": "กำลังเข้าสู่ระบบ...",
 		"register": "ลงทะเบียน",
 		"forgotPassword": "ลืมรหัสผ่าน?",
+		"loggingOut": "กำลังออกจากระบบ...",
 		"loginFailed": "เข้าสู่ระบบล้มเหลว กรุณาลองอีกครั้ง",
 		"showPassword": "แสดงรหัสผ่าน",
 		"hidePassword": "ซ่อนรหัสผ่าน"
@@ -121,7 +124,24 @@
 		"backToTicket": "กลับไปหน้าซื้อตั๋ว",
 		"soldOut": "ขายหมดแล้ว",
 		"remaining": "เหลือ {count} ใบ",
-		"errorOccurred": "เกิดข้อผิดพลาด กรุณาลองอีกครั้ง"
+		"errorOccurred": "เกิดข้อผิดพลาด กรุณาลองอีกครั้ง",
+		"ticketIncludes": "ตั๋วนี้รวมถึง",
+		"confirmCancelTicket": "คุณแน่ใจหรือไม่ว่าต้องการยกเลิกตั๋วนี้?",
+		"confirmCancelTicketDesc": "จำนวนจะถูกคืนและคุณสามารถซื้อตั๋วใหม่ได้",
+		"confirmCancel": "ยืนยันการยกเลิก",
+		"ticketCancelledSuccess": "ยกเลิกตั๋วสำเร็จ!",
+		"ticketCancelError": "ไม่สามารถยกเลิกตั๋ว กรุณาลองอีกครั้ง",
+		"badgeUpdatedSuccess": "อัปเดตข้อมูลป้ายสำเร็จ!",
+		"badgeUpdateError": "ไม่สามารถอัปเดตป้าย กรุณาลองอีกครั้ง",
+		"conBadgeName": "ชื่อป้าย",
+		"badgeImage": "URL รูปป้าย",
+		"isFursuiter": "Fursuiter",
+		"isFursuitStaff": "Fursuit Staff",
+		"isCheckedIn": "เช็คอินแล้ว",
+		"copiedToClipboard": "คัดลอกไปยังคลิปบอร์ดแล้ว",
+		"copyFailed": "คัดลอกไม่สำเร็จ",
+		"paymentConfirmed": "ยืนยันการชำระเงินสำเร็จ!",
+		"paymentConfirmError": "ไม่สามารถยืนยันการชำระเงิน กรุณาลองอีกครั้ง"
 	},
 	"admin": {
 		"ticketManagement": "การจัดการตั๋ว",
@@ -212,6 +232,63 @@
 		"staff": "พนักงาน",
 		"verify": "ยืนยัน",
 		"dealerVerified": "ยืนยัน Dealer สำเร็จ",
-		"verifyError": "ไม่สามารถยืนยัน Dealer ได้ กรุณาลองอีกครั้ง"
+		"verifyError": "ไม่สามารถยืนยัน Dealer ได้ กรุณาลองอีกครั้ง",
+		"scanTicket": "สแกนตั๋ว",
+		"scanTicketDesc": "สแกน QR Code บนตั๋วหรือกรอกรหัสตั๋ว / รหัสอ้างอิงเพื่อตรวจสอบ",
+		"startScanner": "เปิดกล้อง",
+		"stopScanner": "ปิดกล้อง",
+		"manualEntry": "กรอกเอง",
+		"manualEntryPlaceholder": "รหัสตั๋วหรือรหัสอ้างอิง",
+		"lookup": "ค้นหา",
+		"scanSuccess": "สแกนตั๋วแล้ว",
+		"scanCameraError": "ไม่สามารถเข้าถึงกล้อง ตรวจสอบสิทธิ์",
+		"scanInvalidCode": "กรุณากรอกรหัสตั๋วหรือรหัสอ้างอิง",
+		"ticketDetails": "รายละเอียดตั๋ว",
+		"scanNext": "สแกนต่อ",
+		"alreadyCheckedIn": "เช็คอินแล้ว",
+		"ticketNotFound": "ไม่พบตั๋ว",
+		"ticketNotFoundHint": "รหัสอาจผิดหรือตั๋วไม่มีอยู่",
+		"fursona": "Fursona",
+		"ticketApproved": "อนุมัติตั๋วสำเร็จ",
+		"approveError": "ไม่สามารถอนุมัติตั๋ว กรุณาลองอีกครั้ง",
+		"denyError": "ไม่สามารถปฏิเสธตั๋ว กรุณาลองอีกครั้ง",
+		"editTicket": "แก้ไขตั๋ว",
+		"ticketTier": "ประเภทตั๋ว",
+		"ticketUpdated": "อัปเดตตั๋วสำเร็จ",
+		"updateError": "ไม่สามารถอัปเดตตั๋ว",
+		"deleteTicketTitle": "ลบตั๋ว",
+		"deleteTicketConfirm": "ลบตั๋ว {code} หรือไม่?",
+		"deleteStockWarning": "จำนวนจะถูกเพิ่มกลับสำหรับประเภทนี้",
+		"ticketDeleted": "ลบตั๋วสำเร็จ",
+		"deleteError": "ไม่สามารถลบตั๋ว",
+		"ticketDenied": "ปฏิเสธตั๋วสำเร็จ",
+		"userUpdated": "อัปเดตผู้ใช้สำเร็จ",
+		"userUpdateFailed": "ไม่สามารถอัปเดตผู้ใช้",
+		"userNotFound": "ไม่พบผู้ใช้",
+		"userDetail": "รายละเอียดผู้ใช้",
+		"editUser": "แก้ไขผู้ใช้",
+		"firstName": "ชื่อ",
+		"lastName": "นามสกุล",
+		"fursonaName": "ชื่อ Fursona"
+	},
+	"artbook": {
+		"artbook": {
+			"card": {
+				"imageAlt": "ป้ายอาร์ตบุ๊ก",
+				"title": "อาร์ตบุ๊ก",
+				"description": "ส่งผลงานของคุณและเป็นส่วนหนึ่งของ Fuvekon Artbook!",
+				"button": "ส่งผลงาน",
+				"login": "เข้าสู่ระบบ",
+				"buyticket": "ซื้อตั๋ว"
+			}
+		}
+	},
+	"landing": {
+		"suggestion": "เลื่อนลงเพื่อดูเพิ่มเติม!",
+		"theme": {
+			"theme": "ธีม",
+			"title": "ธีมงาน",
+			"description": "ค้นพบธีมอันน่าหลงใหลของ Fuvekon ปีนี้ ที่โลกแห่งจินตนาการมาบรรจบกับความเป็นจริงในเทศกาลแห่งความคิดสร้างสรรค์และจินตนาการ"
+		}
 	}
 }

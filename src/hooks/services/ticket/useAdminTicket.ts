@@ -180,6 +180,34 @@ const AdminTicketAPI = {
 		)
 		return data
 	},
+
+	// Update ticket (admin back-door)
+	updateTicket: async (
+		ticketId: string,
+		payload: {
+			status?: string
+			tier_id?: string
+			con_badge_name?: string
+			badge_image?: string
+			is_fursuiter?: boolean
+			is_fursuit_staff?: boolean
+			is_checked_in?: boolean
+			denial_reason?: string
+		}
+	) => {
+		const { data } = await axios.general.patch<
+			ApiResponse<GetTicketByIdResponse>
+		>(`/admin/tickets/${ticketId}`, payload)
+		return data
+	},
+
+	// Delete ticket (admin back-door - soft delete)
+	deleteTicket: async (ticketId: string) => {
+		const { data } = await axios.general.delete<
+			ApiResponse<GetTicketByIdResponse>
+		>(`/admin/tickets/${ticketId}`)
+		return data
+	},
 }
 
 // ========== Hooks ==========
@@ -349,6 +377,51 @@ export function useDeactivateTier() {
 			queryClient.invalidateQueries({ queryKey: ['ticket-tiers'] })
 			queryClient.invalidateQueries({ queryKey: ['admin-tiers'] })
 			queryClient.invalidateQueries({ queryKey: ['ticket-statistics'] })
+		},
+	})
+}
+
+// Update ticket (admin back-door) mutation
+export function useUpdateTicketForAdmin() {
+	const queryClient = getQueryClient()
+
+	return useMutation({
+		mutationFn: ({
+			ticketId,
+			payload,
+		}: {
+			ticketId: string
+			payload: {
+				status?: string
+				tier_id?: string
+				con_badge_name?: string
+				badge_image?: string
+				is_fursuiter?: boolean
+				is_fursuit_staff?: boolean
+				is_checked_in?: boolean
+				denial_reason?: string
+			}
+		}) => AdminTicketAPI.updateTicket(ticketId, payload),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ['admin-tickets'] })
+			queryClient.invalidateQueries({ queryKey: ['ticket-statistics'] })
+			queryClient.invalidateQueries({ queryKey: ['ticket-tiers'] })
+			queryClient.invalidateQueries({ queryKey: ['admin-tiers'] })
+		},
+	})
+}
+
+// Delete ticket (admin back-door) mutation
+export function useDeleteTicketForAdmin() {
+	const queryClient = getQueryClient()
+
+	return useMutation({
+		mutationFn: (ticketId: string) => AdminTicketAPI.deleteTicket(ticketId),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ['admin-tickets'] })
+			queryClient.invalidateQueries({ queryKey: ['ticket-statistics'] })
+			queryClient.invalidateQueries({ queryKey: ['ticket-tiers'] })
+			queryClient.invalidateQueries({ queryKey: ['admin-tiers'] })
 		},
 	})
 }

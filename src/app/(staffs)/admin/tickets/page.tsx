@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import {
 	CheckCircle,
@@ -35,6 +35,8 @@ import {
 	useDeleteTier,
 	useActivateTier,
 	useDeactivateTier,
+	useUpdateTicketForAdmin,
+	useDeleteTicketForAdmin,
 	type AdminTicketFilter,
 } from '@/hooks/services/ticket/useAdminTicket'
 import { useGetTiers } from '@/hooks/services/ticket/useTicket'
@@ -46,6 +48,8 @@ import type {
 } from '@/types/models/ticket/ticket'
 import type { PaginationMeta } from '@/types/api/ticket/ticket'
 import { useGetMe } from '@/hooks/services/auth/useAccount'
+import { useAdminGetUsers } from '@/hooks/services/user/useAdminUser'
+import type { Account } from '@/types/models/auth/account'
 import { logger } from '@/utils/logger'
 import Loading from '@/components/common/Loading'
 
@@ -125,6 +129,9 @@ const TicketManagementPage = (): React.ReactElement => {
 	const [denyReason, setDenyReason] = useState('')
 	const [createUserId, setCreateUserId] = useState('')
 	const [createTierId, setCreateTierId] = useState('')
+	const [userSearchText, setUserSearchText] = useState('')
+	const [showUserDropdown, setShowUserDropdown] = useState(false)
+	const userSearchRef = useRef<HTMLDivElement>(null)
 	const [showCreateForm, setShowCreateForm] = useState(false)
 	const [showCreateTierForm, setShowCreateTierForm] = useState(false)
 	const [tierName, setTierName] = useState('')
@@ -133,6 +140,18 @@ const TicketManagementPage = (): React.ReactElement => {
 	const [tierPrice, setTierPrice] = useState('')
 	const [tierStock, setTierStock] = useState('')
 	const [tierIsActive, setTierIsActive] = useState(true)
+	// Edit ticket modal state (admin back-door)
+	const [editTicketModal, setEditTicketModal] = useState<UserTicket | null>(null)
+	const [editTicketStatus, setEditTicketStatus] = useState('')
+	const [editTicketTierId, setEditTicketTierId] = useState('')
+	const [editTicketBadgeName, setEditTicketBadgeName] = useState('')
+	const [editTicketBadgeImage, setEditTicketBadgeImage] = useState('')
+	const [editTicketIsFursuiter, setEditTicketIsFursuiter] = useState(false)
+	const [editTicketIsFursuitStaff, setEditTicketIsFursuitStaff] = useState(false)
+	const [editTicketIsCheckedIn, setEditTicketIsCheckedIn] = useState(false)
+	const [editTicketDenialReason, setEditTicketDenialReason] = useState('')
+	const [showDeleteConfirm, setShowDeleteConfirm] = useState<UserTicket | null>(null)
+
 	const [editTierModal, setEditTierModal] = useState<TicketTier | null>(null)
 	const [editTierName, setEditTierName] = useState('')
 	const [editTierDescription, setEditTierDescription] = useState('')
@@ -175,6 +194,35 @@ const TicketManagementPage = (): React.ReactElement => {
 	const deleteTierMutation = useDeleteTier()
 	const activateTierMutation = useActivateTier()
 	const deactivateTierMutation = useDeactivateTier()
+	const updateTicketMutation = useUpdateTicketForAdmin()
+	const deleteTicketMutation = useDeleteTicketForAdmin()
+
+	// Fetch users for user search dropdown (large page to have a good pool)
+	const { data: usersData } = useAdminGetUsers({ page: 1, pageSize: 100 })
+	const allUsers: Account[] = usersData?.data || []
+
+	const filteredUsers = useMemo(() => {
+		if (!userSearchText.trim()) return []
+		const q = userSearchText.toLowerCase()
+		return allUsers.filter(
+			u =>
+				u.email?.toLowerCase().includes(q) ||
+				u.fursona_name?.toLowerCase().includes(q) ||
+				u.first_name?.toLowerCase().includes(q) ||
+				u.last_name?.toLowerCase().includes(q)
+		).slice(0, 8) // cap at 8 suggestions
+	}, [userSearchText, allUsers])
+
+	// Close user dropdown on outside click
+	useEffect(() => {
+		const handleClickOutside = (e: MouseEvent) => {
+			if (userSearchRef.current && !userSearchRef.current.contains(e.target as Node)) {
+				setShowUserDropdown(false)
+			}
+		}
+		document.addEventListener('mousedown', handleClickOutside)
+		return () => document.removeEventListener('mousedown', handleClickOutside)
+	}, [])
 
 	const tickets = ticketsData?.data || []
 	const stats = statsData?.data
@@ -268,6 +316,85 @@ const TicketManagementPage = (): React.ReactElement => {
 		}
 	}
 
+	// Open edit ticket modal
+	const openEditTicketModal = (ticket: UserTicket) => {
+		setEditTicketModal(ticket)
+		setEditTicketStatus(ticket.status)
+		setEditTicketTierId(ticket.tier?.id || '')
+		setEditTicketBadgeName(ticket.con_badge_name || '')
+		setEditTicketBadgeImage(ticket.badge_image || '')
+		setEditTicketIsFursuiter(ticket.is_fursuiter || false)
+		setEditTicketIsFursuitStaff(ticket.is_fursuit_staff || false)
+		setEditTicketIsCheckedIn(ticket.is_checked_in || false)
+		setEditTicketDenialReason(ticket.denial_reason || '')
+	}
+
+	// Handle edit ticket save
+	const handleUpdateTicket = async () => {
+		if (!editTicketModal) return
+		const payload: {
+			status?: string
+			tier_id?: string
+			con_badge_name?: string
+			badge_image?: string
+			is_fursuiter?: boolean
+			is_fursuit_staff?: boolean
+			is_checked_in?: boolean
+			denial_reason?: string
+		} = {}
+
+		if (editTicketStatus !== editTicketModal.status)
+			payload.status = editTicketStatus
+		if (editTicketTierId !== (editTicketModal.tier?.id || ''))
+			payload.tier_id = editTicketTierId
+		if (editTicketBadgeName !== (editTicketModal.con_badge_name || ''))
+			payload.con_badge_name = editTicketBadgeName
+		if (editTicketBadgeImage !== (editTicketModal.badge_image || ''))
+			payload.badge_image = editTicketBadgeImage
+		if (editTicketIsFursuiter !== (editTicketModal.is_fursuiter || false))
+			payload.is_fursuiter = editTicketIsFursuiter
+		if (editTicketIsFursuitStaff !== (editTicketModal.is_fursuit_staff || false))
+			payload.is_fursuit_staff = editTicketIsFursuitStaff
+		if (editTicketIsCheckedIn !== (editTicketModal.is_checked_in || false))
+			payload.is_checked_in = editTicketIsCheckedIn
+		if (editTicketDenialReason !== (editTicketModal.denial_reason || ''))
+			payload.denial_reason = editTicketDenialReason
+
+		if (Object.keys(payload).length === 0) {
+			setEditTicketModal(null)
+			return
+		}
+
+		try {
+			await updateTicketMutation.mutateAsync({
+				ticketId: editTicketModal.id,
+				payload,
+			})
+			setEditTicketModal(null)
+			toast.success(t('ticketUpdated') || 'Ticket updated successfully')
+		} catch (error) {
+			logger.error('Failed to update ticket', error, {
+				ticketId: editTicketModal.id,
+			})
+			toast.error(t('updateError') || 'Failed to update ticket')
+		}
+	}
+
+	// Handle delete ticket
+	const handleDeleteTicket = async () => {
+		if (!showDeleteConfirm) return
+		try {
+			await deleteTicketMutation.mutateAsync(showDeleteConfirm.id)
+			setShowDeleteConfirm(null)
+			toast.success(t('ticketDeleted') || 'Ticket deleted successfully')
+		} catch (error) {
+			logger.error('Failed to delete ticket', error, {
+				ticketId: showDeleteConfirm.id,
+			})
+			toast.error(t('deleteError') || 'Failed to delete ticket')
+		}
+	}
+
 	// Pagination
 	const handlePageChange = (page: number) => {
 		setFilter(prev => ({ ...prev, page }))
@@ -289,6 +416,7 @@ const TicketManagementPage = (): React.ReactElement => {
 			toast.success(t('createTicketSuccess') || 'Ticket created successfully')
 			setCreateUserId('')
 			setCreateTierId('')
+			setUserSearchText('')
 			setShowCreateForm(false)
 		} catch (error) {
 			logger.error('Failed to create ticket', error)
@@ -459,7 +587,7 @@ const TicketManagementPage = (): React.ReactElement => {
 					<button
 						type='button'
 						onClick={() => setShowCreateForm(prev => !prev)}
-						className='inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[#7cbc97] text-white hover:bg-[#6aab85] font-medium'
+						className='btn-primary'
 					>
 						<Plus className='w-4 h-4' />
 						{t('createTicket')}
@@ -472,7 +600,7 @@ const TicketManagementPage = (): React.ReactElement => {
 					<button
 						type='button'
 						onClick={() => setShowCreateTierForm(prev => !prev)}
-						className='inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-[#7cbc97] text-[#154c5b] hover:bg-[#e9f5e7] font-medium dark:border-[#6aab85] dark:hover:bg-gray-800'
+						className='btn-outline'
 					>
 						<Plus className='w-4 h-4' />
 						{t('createTier')}
@@ -495,17 +623,51 @@ const TicketManagementPage = (): React.ReactElement => {
 						{t('createTicketDesc')}
 					</p>
 					<div className='flex flex-wrap gap-4 items-end'>
-						<div className='flex-1 min-w-[200px]'>
+						<div className='flex-1 min-w-[200px] relative' ref={userSearchRef}>
 							<label className='block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1'>
-								{t('user')} ID
+								{t('user')}
 							</label>
 							<input
 								type='text'
-								value={createUserId}
-								onChange={e => setCreateUserId(e.target.value)}
-								placeholder={t('userIdPlaceholder')}
+								value={userSearchText}
+								onChange={e => {
+									setUserSearchText(e.target.value)
+									setShowUserDropdown(true)
+									if (createUserId) setCreateUserId('')
+								}}
+								onFocus={() => userSearchText.trim() && setShowUserDropdown(true)}
+								placeholder={t('searchPlaceholder')}
 								className='w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#7cbc97] dark:bg-dark-surface dark:border-dark-border dark:text-dark-text'
 							/>
+							{showUserDropdown && filteredUsers.length > 0 && (
+								<ul className='absolute z-50 mt-1 w-full bg-white dark:bg-dark-surface border border-slate-300 dark:border-dark-border rounded-lg shadow-lg max-h-60 overflow-y-auto'>
+									{filteredUsers.map(user => (
+										<li
+											key={user.id}
+											className='px-3 py-2 hover:bg-[#2d9b63]/10 cursor-pointer text-sm'
+											onClick={() => {
+												setCreateUserId(user.id)
+												setUserSearchText(
+													user.fursona_name
+														? `${user.fursona_name} (${user.email})`
+														: user.email
+												)
+												setShowUserDropdown(false)
+											}}
+										>
+											<div className='font-medium text-[#154c5b] dark:text-dark-text'>
+												{user.fursona_name || user.first_name || user.email}
+											</div>
+											<div className='text-xs text-[#48715b] dark:text-dark-text-secondary'>
+												{user.email}
+												{user.fursona_name && user.first_name
+													? ` · ${user.first_name} ${user.last_name || ''}`
+													: ''}
+											</div>
+										</li>
+									))}
+								</ul>
+							)}
 						</div>
 						<div className='min-w-[200px]'>
 							<label className='block text-sm font-medium text-gray-700 dark:text-dark-text-secondary mb-1'>
@@ -532,7 +694,7 @@ const TicketManagementPage = (): React.ReactElement => {
 								!createUserId.trim() ||
 								!createTierId
 							}
-							className='px-4 py-2 rounded-lg bg-[#7cbc97] text-white hover:bg-[#6aab85] font-medium disabled:opacity-50 disabled:cursor-not-allowed'
+							className='btn-primary'
 						>
 							{createTicketMutation.isPending
 								? tCommon('processing')
@@ -640,7 +802,7 @@ const TicketManagementPage = (): React.ReactElement => {
 									tierPrice === '' ||
 									tierStock === ''
 								}
-								className='px-4 py-2 rounded-lg bg-[#7cbc97] text-white hover:bg-[#6aab85] font-medium disabled:opacity-50 disabled:cursor-not-allowed'
+								className='btn-primary'
 							>
 								{createTierMutation.isPending
 									? tCommon('processing')
@@ -881,7 +1043,7 @@ const TicketManagementPage = (): React.ReactElement => {
 						</div>
 						<button
 							onClick={handleSearch}
-							className='px-4 py-2 bg-[#7cbc97] text-white rounded-lg hover:bg-[#6aab85]'
+							className='btn-primary'
 						>
 							{t('search')}
 						</button>
@@ -1063,6 +1225,20 @@ const TicketManagementPage = (): React.ReactElement => {
 														>
 															{t('deny')}
 														</button>
+														<button
+															onClick={() => openEditTicketModal(ticket)}
+															className='p-1.5 text-[#48715b] dark:text-dark-text-secondary hover:bg-gray-100 dark:hover:bg-dark-surface/50 rounded-lg'
+															title={tCommon('edit') || 'Edit'}
+														>
+															<Pencil className='w-4 h-4' />
+														</button>
+														<button
+															onClick={() => setShowDeleteConfirm(ticket)}
+															className='p-1.5 text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg'
+															title={tCommon('delete') || 'Delete'}
+														>
+															<Trash2 className='w-4 h-4' />
+														</button>
 													</div>
 													{ticket.status === 'approved' && (
 														<div className='text-center mt-2'>
@@ -1213,6 +1389,196 @@ const TicketManagementPage = (): React.ReactElement => {
 				</div>
 			)}
 
+			{/* Edit Ticket Modal (Admin Back-Door) */}
+			{editTicketModal && (
+				<div className='fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4'>
+					<div className='rounded-xl p-6 max-w-lg w-full shadow-2xl max-h-[90vh] overflow-y-auto border border-slate-300/20 dark:border-dark-border/20 bg-white dark:bg-dark-surface'>
+						<h3 className='text-xl font-semibold text-[#154c5b] dark:text-dark-text mb-1'>
+							{t('editTicket') || 'Edit Ticket'}
+						</h3>
+						<p className='text-sm text-gray-500 dark:text-dark-text-secondary mb-4'>
+							{editTicketModal.reference_code} – {editTicketModal.user?.first_name}{' '}
+							{editTicketModal.user?.last_name}
+						</p>
+
+						<div className='grid grid-cols-1 gap-4'>
+							{/* Status */}
+							<div>
+								<label className='block text-sm font-medium text-gray-700 dark:text-dark-text-secondary mb-1'>
+									{t('status') || 'Status'}
+								</label>
+								<select
+									value={editTicketStatus}
+									onChange={e => setEditTicketStatus(e.target.value)}
+									className='w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#7cbc97] dark:bg-dark-surface dark:border-dark-border dark:text-dark-text'
+								>
+									<option value='pending'>{tTicket('status.pending')}</option>
+									<option value='self_confirmed'>{tTicket('status.selfConfirmed')}</option>
+									<option value='approved'>{tTicket('status.approved')}</option>
+									<option value='denied'>{tTicket('status.denied')}</option>
+								</select>
+							</div>
+
+							{/* Tier */}
+							<div>
+								<label className='block text-sm font-medium text-gray-700 dark:text-dark-text-secondary mb-1'>
+									{t('ticketTier') || 'Tier'}
+								</label>
+								<select
+									value={editTicketTierId}
+									onChange={e => setEditTicketTierId(e.target.value)}
+									className='w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#7cbc97] dark:bg-dark-surface dark:border-dark-border dark:text-dark-text'
+								>
+									<option value=''>–</option>
+									{adminTiers.map(tier => (
+										<option key={tier.id} value={tier.id}>
+											{tier.tier_code} – {tier.ticket_name} ({formatPrice(tier.price)} VND)
+										</option>
+									))}
+								</select>
+							</div>
+
+							{/* Badge Name */}
+							<div>
+								<label className='block text-sm font-medium text-gray-700 dark:text-dark-text-secondary mb-1'>
+									{tTicket('conBadgeName') || 'Badge Name'}
+								</label>
+								<input
+									type='text'
+									value={editTicketBadgeName}
+									onChange={e => setEditTicketBadgeName(e.target.value)}
+									className='w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#7cbc97] dark:bg-dark-surface dark:border-dark-border dark:text-dark-text'
+								/>
+							</div>
+
+							{/* Badge Image */}
+							<div>
+								<label className='block text-sm font-medium text-gray-700 dark:text-dark-text-secondary mb-1'>
+									{tTicket('badgeImage') || 'Badge Image URL'}
+								</label>
+								<input
+									type='text'
+									value={editTicketBadgeImage}
+									onChange={e => setEditTicketBadgeImage(e.target.value)}
+									className='w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#7cbc97] dark:bg-dark-surface dark:border-dark-border dark:text-dark-text'
+								/>
+							</div>
+
+							{/* Checkboxes */}
+							<div className='flex flex-wrap gap-4'>
+								<label className='flex items-center gap-2 text-sm text-gray-700 dark:text-dark-text'>
+									<input
+										type='checkbox'
+										checked={editTicketIsFursuiter}
+										onChange={e => setEditTicketIsFursuiter(e.target.checked)}
+										className='rounded border-gray-300 text-[#7cbc97] focus:ring-[#7cbc97] dark:border-dark-border'
+									/>
+									{tTicket('isFursuiter') || 'Fursuiter'}
+								</label>
+								<label className='flex items-center gap-2 text-sm text-gray-700 dark:text-dark-text'>
+									<input
+										type='checkbox'
+										checked={editTicketIsFursuitStaff}
+										onChange={e => setEditTicketIsFursuitStaff(e.target.checked)}
+										className='rounded border-gray-300 text-[#7cbc97] focus:ring-[#7cbc97] dark:border-dark-border'
+									/>
+									{tTicket('isFursuitStaff') || 'Fursuit Staff'}
+								</label>
+								<label className='flex items-center gap-2 text-sm text-gray-700 dark:text-dark-text'>
+									<input
+										type='checkbox'
+										checked={editTicketIsCheckedIn}
+										onChange={e => setEditTicketIsCheckedIn(e.target.checked)}
+										className='rounded border-gray-300 text-[#7cbc97] focus:ring-[#7cbc97] dark:border-dark-border'
+									/>
+									{tTicket('isCheckedIn') || 'Checked In'}
+								</label>
+							</div>
+
+							{/* Denial Reason */}
+							<div>
+								<label className='block text-sm font-medium text-gray-700 dark:text-dark-text-secondary mb-1'>
+									{t('denyReason') || 'Denial Reason'}
+								</label>
+								<textarea
+									value={editTicketDenialReason}
+									onChange={e => setEditTicketDenialReason(e.target.value)}
+									rows={2}
+									className='w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#7cbc97] dark:bg-dark-surface dark:border-dark-border dark:text-dark-text resize-none'
+								/>
+							</div>
+						</div>
+
+						<div className='flex gap-3 mt-6'>
+							<button
+								type='button'
+								onClick={() => setEditTicketModal(null)}
+								className='flex-1 py-2 px-4 rounded-lg border border-slate-300 dark:border-dark-border text-gray-700 dark:text-dark-text hover:bg-gray-100 dark:hover:bg-dark-surface/50'
+							>
+								{tCommon('cancel')}
+							</button>
+							<button
+								type='button'
+								onClick={handleUpdateTicket}
+								disabled={updateTicketMutation.isPending}
+								className='btn-primary flex-1'
+							>
+								{updateTicketMutation.isPending
+									? tCommon('processing')
+									: tCommon('save')}
+							</button>
+						</div>
+					</div>
+				</div>
+			)}
+
+			{/* Delete Ticket Confirmation */}
+			{showDeleteConfirm && (
+				<div className='fixed inset-0 z-50 flex items-center justify-center bg-black/50'>
+					<div className='rounded-xl p-6 max-w-md mx-4 shadow-2xl border border-slate-300/20 dark:border-dark-border/20 bg-white dark:bg-dark-surface'>
+						<h3 className='text-xl font-semibold text-[#154c5b] dark:text-dark-text mb-4'>
+							{t('deleteTicketTitle') || 'Delete Ticket'}
+						</h3>
+						<p className='text-[#48715b] dark:text-dark-text-secondary mb-2'>
+							{t('deleteTicketConfirm', { code: showDeleteConfirm.reference_code }) ||
+								`Delete ticket ${showDeleteConfirm.reference_code}?`}
+						</p>
+						<p className='text-sm text-gray-500 dark:text-dark-text-secondary mb-2'>
+							{t('user')}: {showDeleteConfirm.user?.first_name}{' '}
+							{showDeleteConfirm.user?.last_name} ({showDeleteConfirm.user?.email})
+						</p>
+						{(showDeleteConfirm.status === 'pending' ||
+							showDeleteConfirm.status === 'self_confirmed' ||
+							showDeleteConfirm.status === 'approved') && (
+							<div className='bg-yellow-50 border border-yellow-200 rounded-lg p-3 mb-4'>
+								<p className='text-yellow-800 text-sm flex items-center gap-2'>
+									<AlertTriangle className='w-4 h-4' />
+									{t('deleteStockWarning') ||
+										'Stock will be re-incremented for this tier.'}
+								</p>
+							</div>
+						)}
+						<div className='flex gap-3'>
+							<button
+								onClick={() => setShowDeleteConfirm(null)}
+								className='flex-1 py-2 px-4 rounded-lg border border-slate-300 dark:border-dark-border text-[#48715b] dark:text-dark-text hover:bg-gray-50 dark:hover:bg-dark-surface/50'
+							>
+								{tCommon('cancel')}
+							</button>
+							<button
+								onClick={handleDeleteTicket}
+								disabled={deleteTicketMutation.isPending}
+								className='flex-1 py-2 px-4 rounded-lg bg-red-500 text-white hover:bg-red-600 disabled:opacity-50'
+							>
+								{deleteTicketMutation.isPending
+									? tCommon('processing')
+									: tCommon('delete') || 'Delete'}
+							</button>
+						</div>
+					</div>
+				</div>
+			)}
+
 			{/* Edit Tier Modal */}
 			{editTierModal && (
 				<div className='fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4'>
@@ -1308,7 +1674,7 @@ const TicketManagementPage = (): React.ReactElement => {
 								type='button'
 								onClick={handleUpdateTier}
 								disabled={updateTierMutation.isPending}
-								className='flex-1 py-2 px-4 rounded-lg bg-[#7cbc97] text-white hover:bg-[#6aab85] disabled:opacity-50'
+								className='btn-primary flex-1'
 							>
 								{updateTierMutation.isPending
 									? tCommon('processing')

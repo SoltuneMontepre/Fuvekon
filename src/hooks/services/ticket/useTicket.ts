@@ -92,9 +92,7 @@ export function useGetMyTicket() {
 		queryKey: ['my-ticket'],
 		queryFn: () => TicketAPI.getMyTicket(),
 		retry: false,
-		refetchOnWindowFocus: false,
-		refetchOnMount: false,
-		refetchOnReconnect: false,
+		staleTime: 1000 * 30, // 30s — prevents excessive refetches while keeping data fresh on navigation
 	})
 }
 
@@ -118,7 +116,11 @@ export function useConfirmPayment() {
 
 	return useMutation({
 		mutationFn: () => TicketAPI.confirmPayment(),
-		onSuccess: () => {
+		onSuccess: (data) => {
+			// Synchronous path returns updated ticket — update cache directly to avoid race condition
+			if (data.data) {
+				queryClient.setQueryData(['my-ticket'], data)
+			}
 			queryClient.invalidateQueries({ queryKey: ['my-ticket'] })
 		},
 	})

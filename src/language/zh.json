@@ -20,7 +20,9 @@
 		"to": "到",
 		"of": "共",
 		"results": "条结果",
-		"page": "页"
+		"page": "页",
+		"edit": "编辑",
+		"delete": "删除"
 	},
 	"nav": {
 		"ticket": "票务",
@@ -46,6 +48,7 @@
 		"email": "电子邮件",
 		"password": "密码",
 		"loggingIn": "正在登录...",
+		"loggingOut": "正在登出...",
 		"register": "注册",
 		"forgotPassword": "忘记密码？",
 		"loginFailed": "登录失败。请重试。",
@@ -121,7 +124,24 @@
 		"backToTicket": "返回购票页面",
 		"soldOut": "已售罄",
 		"remaining": "剩余 {count} 张",
-		"errorOccurred": "发生错误。请重试。"
+		"errorOccurred": "发生错误。请重试。",
+		"ticketIncludes": "此门票包含",
+		"confirmCancelTicket": "确定要取消此门票吗？",
+		"confirmCancelTicketDesc": "库存将被归还，您可以重新购买门票。",
+		"confirmCancel": "确认取消",
+		"ticketCancelledSuccess": "门票取消成功！",
+		"ticketCancelError": "取消门票失败。请重试。",
+		"badgeUpdatedSuccess": "徽章信息更新成功！",
+		"badgeUpdateError": "更新徽章失败。请重试。",
+		"conBadgeName": "徽章名称",
+		"badgeImage": "徽章图片链接",
+		"isFursuiter": "Fursuiter",
+		"isFursuitStaff": "Fursuit 工作人员",
+		"isCheckedIn": "已签到",
+		"copiedToClipboard": "已复制到剪贴板",
+		"copyFailed": "复制失败",
+		"paymentConfirmed": "付款确认成功！",
+		"paymentConfirmError": "无法确认付款。请重试。"
 	},
 	"admin": {
 		"ticketManagement": "门票管理",
@@ -212,6 +232,63 @@
 		"staff": "员工",
 		"verify": "验证",
 		"dealerVerified": "商家验证成功",
-		"verifyError": "验证商家失败。请重试。"
+		"verifyError": "验证商家失败。请重试。",
+		"scanTicket": "扫描门票",
+		"scanTicketDesc": "扫描门票二维码或输入门票ID/参考代码进行查询验证",
+		"startScanner": "开启相机",
+		"stopScanner": "关闭相机",
+		"manualEntry": "手动输入",
+		"manualEntryPlaceholder": "门票ID或参考代码",
+		"lookup": "查询",
+		"scanSuccess": "门票已扫描",
+		"scanCameraError": "无法访问相机。请检查权限。",
+		"scanInvalidCode": "请输入门票ID或参考代码",
+		"ticketDetails": "门票详情",
+		"scanNext": "继续扫描",
+		"alreadyCheckedIn": "已签到",
+		"ticketNotFound": "未找到门票",
+		"ticketNotFoundHint": "ID或代码可能有误，或门票不存在。",
+		"fursona": "Fursona",
+		"ticketApproved": "门票审批通过",
+		"approveError": "审批门票失败。请重试。",
+		"denyError": "拒绝门票失败。请重试。",
+		"editTicket": "编辑门票",
+		"ticketTier": "门票类型",
+		"ticketUpdated": "门票更新成功",
+		"updateError": "更新门票失败",
+		"deleteTicketTitle": "删除门票",
+		"deleteTicketConfirm": "确定删除门票 {code}？",
+		"deleteStockWarning": "该类型的库存将被恢复。",
+		"ticketDeleted": "门票删除成功",
+		"deleteError": "删除门票失败",
+		"ticketDenied": "门票拒绝成功",
+		"userUpdated": "用户更新成功",
+		"userUpdateFailed": "无法更新用户",
+		"userNotFound": "未找到用户",
+		"userDetail": "用户详情",
+		"editUser": "编辑用户",
+		"firstName": "名",
+		"lastName": "姓",
+		"fursonaName": "Fursona 名称"
+	},
+	"artbook": {
+		"artbook": {
+			"card": {
+				"imageAlt": "画册徽章",
+				"title": "画册",
+				"description": "提交您的作品，成为 Fuvekon 画册的一部分！",
+				"button": "立即提交",
+				"login": "登录",
+				"buyticket": "购票"
+			}
+		}
+	},
+	"landing": {
+		"suggestion": "向下滚动查看更多！",
+		"theme": {
+			"theme": "主题",
+			"title": "活动主题",
+			"description": "探索今年 Fuvekon 迷人的主题，幻想与现实在创意和想象的庆典中交汇。"
+		}
 	}
 }

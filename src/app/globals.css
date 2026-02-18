@@ -17,6 +17,34 @@
 }
 
 @layer components {
+	/* ── Button variants ── */
+	.btn-primary {
+		@apply inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-semibold text-sm
+			transition-all duration-150 ease-in-out
+			disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none
+			bg-[#2d9b63] text-white shadow-sm
+			hover:bg-[#248c56] hover:shadow-md
+			active:bg-[#1e7a4a] active:shadow-sm;
+	}
+
+	.btn-outline {
+		@apply inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-semibold text-sm
+			transition-all duration-150 ease-in-out
+			disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none
+			border-2 border-[#2d9b63] text-[#2d9b63]
+			hover:bg-[#2d9b63]/10
+			active:bg-[#2d9b63]/20;
+	}
+
+	.dark .btn-primary {
+		@apply bg-[#34b071] hover:bg-[#2d9b63] active:bg-[#248c56];
+	}
+
+	.dark .btn-outline {
+		@apply border-[#34b071] text-[#34b071]
+			hover:bg-[#34b071]/15 active:bg-[#34b071]/25;
+	}
+
 	.center {
 		@apply flex justify-center items-center;
 	}
