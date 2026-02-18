@@ -8,6 +8,7 @@ import { useAuthStore } from '@/stores/authStore'
 import Loading from '../common/Loading'
 import { useLinkStatus } from 'next/link'
 import ProfileButton from './ProfileButton'
+import LanguageSelector from '@/components/config/LanguageSelector'
 
 const NavBar = (): React.ReactElement => {
 	const isLoggedIn = useAuthStore(state => state.isAuthenticated)
@@ -44,7 +45,8 @@ const NavBar = (): React.ReactElement => {
 
 				<div className='grow pointer-events-none' />
 
-				<div className='flex justify-end pointer-events-auto'>
+				<div className='flex items-center gap-2 justify-end pointer-events-auto'>
+					<LanguageSelector />
 					{isLoggedIn ? <ProfileButton /> : <LoginButton />}
 				</div>
 			</nav>

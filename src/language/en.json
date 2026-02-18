@@ -50,6 +50,9 @@
 		"register": "Register",
 		"forgotPassword": "Forgot password?",
 		"loginFailed": "Login failed. Please try again.",
+		"invalidEmailOrPassword": "Invalid email or password.",
+		"accountLocked": "Too many failed login attempts. Please try again later.",
+		"userNotVerified": "Your account is not verified. Please verify your email first.",
 		"showPassword": "Show password",
 		"hidePassword": "Hide password"
 	},

@@ -11,7 +11,8 @@ import type { DealerStaff } from '@/types/models/dealer/dealer'
 const DealerPage = () => {
 	const account = useAuthStore(state => state.account)
 	const isDealer = account?.is_dealer || false
-	const { data: myDealerData, isLoading: isLoadingDealer } = useGetMyDealer(isDealer)
+	const { data: myDealerData, isLoading: isLoadingDealer } =
+		useGetMyDealer(isDealer)
 
 	const myDealer = myDealerData?.data
 
@@ -24,11 +25,10 @@ const DealerPage = () => {
 					<h1 className='text-3xl font-bold text-center'>GIAN HÀNG</h1>
 				</div>
 				<div className='text-center py-12'>
-					<p className='text-lg text-[#48715B] mb-4'>
-						Bạn chưa có gian hàng
-					</p>
+					<p className='text-lg text-[#48715B] mb-4'>Bạn chưa có gian hàng</p>
 					<p className='text-sm text-gray-600 dark:text-gray-400'>
-						Vui lòng đăng ký hoặc tham gia một gian hàng để xem thông tin tại đây.
+						Vui lòng đăng ký hoặc tham gia một gian hàng để xem thông tin tại
+						đây.
 					</p>
 				</div>
 			</div>
@@ -53,11 +53,10 @@ const DealerPage = () => {
 					<h1 className='text-3xl font-bold text-center'>GIAN HÀNG</h1>
 				</div>
 				<div className='text-center py-12'>
-					<p className='text-lg text-[#48715B] mb-4'>
-						Bạn chưa có gian hàng
-					</p>
+					<p className='text-lg text-[#48715B] mb-4'>Bạn chưa có gian hàng</p>
 					<p className='text-sm text-gray-600 dark:text-gray-400'>
-						Vui lòng đăng ký hoặc tham gia một gian hàng để xem thông tin tại đây.
+						Vui lòng đăng ký hoặc tham gia một gian hàng để xem thông tin tại
+						đây.
 					</p>
 				</div>
 			</div>
@@ -65,8 +64,13 @@ const DealerPage = () => {
 	}
 
 	const staffs = myDealer.staffs || []
-	const isOwner = staffs.some((staff: DealerStaff) => staff.user_id === account?.id && staff.is_owner) || false
-	const currentUserStaff = staffs.find((staff: DealerStaff) => staff.user_id === account?.id)
+	const isOwner =
+		staffs.some(
+			(staff: DealerStaff) => staff.user_id === account?.id && staff.is_owner
+		) || false
+	const currentUserStaff = staffs.find(
+		(staff: DealerStaff) => staff.user_id === account?.id
+	)
 
 	return (
 		<div className='rounded-[30px] bg-[#E9F5E7] p-8 shadow-sm text-text-secondary'>
@@ -77,7 +81,7 @@ const DealerPage = () => {
 
 			<div className='space-y-6'>
 				{/* Booth Information Card */}
-				<div className='p-6 rounded-lg bg-white dark:bg-dark-surface border border-[#48715B]/30'>
+				<div className='p-6 rounded-lg'>
 					<div className='flex items-start justify-between mb-4'>
 						<div>
 							<h2 className='text-2xl font-bold text-[#48715B] mb-2'>
@@ -100,12 +104,12 @@ const DealerPage = () => {
 						</div>
 						<div className='flex items-center gap-2'>
 							{myDealer.is_verified ? (
-								<span className='inline-flex items-center gap-1 px-3 py-1 rounded-full bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-sm font-medium'>
+								<span className='inline-flex items-center gap-1 px-3 py-1 rounded-full dark:bg-green-900/30 text-green-700 dark:text-green-400 text-sm font-medium'>
 									<CheckCircle className='w-4 h-4' />
 									Đã xác minh
 								</span>
 							) : (
-								<span className='inline-flex items-center gap-1 px-3 py-1 rounded-full bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400 text-sm font-medium'>
+								<span className='inline-flex items-center gap-1 px-3 py-1 rounded-full  dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400 text-sm font-medium'>
 									<XCircle className='w-4 h-4' />
 									Chưa xác minh
 								</span>
@@ -118,7 +122,7 @@ const DealerPage = () => {
 						<label className='block text-sm font-medium text-[#48715B] mb-2'>
 							Mã gian hàng
 						</label>
-						<div className='px-4 py-3 rounded-lg bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700'>
+						<div className='px-4 py-3 rounded-lg'>
 							<code className='text-lg font-mono font-bold text-[#48715B]'>
 								{myDealer.booth_number}
 							</code>
