@@ -46,6 +46,20 @@ const LoginForm = (): React.ReactElement => {
 		}
 	}, [])
 
+	// Backend sends errorMessage as i18n key (e.g. "invalidEmailOrPassword"); we translate it
+	const getLoginErrorMessage = (errorMessage?: string): string => {
+		if (errorMessage?.trim()) {
+			try {
+				const translated = t(errorMessage.trim())
+				// If key was missing, next-intl may return the key; treat as fallback
+				return translated !== errorMessage.trim() ? translated : t('loginFailed')
+			} catch {
+				return t('loginFailed')
+			}
+		}
+		return t('loginFailed')
+	}
+
 	const onSubmit = async (data: LoginRequest) => {
 		loginMutation.mutate(data, {
 			onSuccess: async responseData => {
@@ -85,16 +99,18 @@ const LoginForm = (): React.ReactElement => {
 
 					await attemptFetchUser()
 				} else {
+					const api = responseData as { errorMessage?: string }
 					setFormError('root', {
 						type: 'manual',
-						message: responseData.message,
+						message: getLoginErrorMessage(api.errorMessage),
 					})
 				}
 			},
 			onError: err => {
+				const data = (err as { response?: { data?: { errorMessage?: string } } })?.response?.data
 				setFormError('root', {
 					type: 'manual',
-					message: err.message || t('loginFailed'),
+					message: getLoginErrorMessage(data?.errorMessage ?? (err as Error).message),
 				})
 			},
 		})
@@ -166,7 +182,7 @@ const LoginForm = (): React.ReactElement => {
 									aria-describedby={errors.email ? 'email-error' : undefined}
 									className={`email-input block w-full px-3 py-2.5 sm:py-3 rounded-xl bg-[#E2EEE2] border text-[#8C8C8C] text-lg sm:text-xl font-normal placeholder-transparent focus:outline-none focus:border-[#48715B] focus:ring-0 shadow-none peer ${errors.email ? 'border-red-500' : 'border-[#8C8C8C]/30'
 										}`}
-									placeholder='Email'
+									placeholder={t('email')}
 								/>
 								<label
 									htmlFor='email-input'
@@ -200,7 +216,7 @@ const LoginForm = (): React.ReactElement => {
 									{...register('password')}
 									className={`password-input block w-full px-3 py-2.5 sm:py-3 pr-12 rounded-xl bg-[#E2EEE2] border text-[#8C8C8C] text-lg sm:text-xl font-normal placeholder-transparent focus:outline-none focus:border-[#48715B] focus:ring-0 shadow-none peer ${errors.password ? 'border-red-500' : 'border-[#8C8C8C]/30'
 										}`}
-									placeholder='Mật khẩu'
+									placeholder={t('password')}
 								/>
 								<label
 									htmlFor='password-input'

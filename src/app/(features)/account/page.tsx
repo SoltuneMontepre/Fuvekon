@@ -8,12 +8,7 @@ import ImageUploader from '@/components/common/ImageUploader'
 import S3Image from '@/components/common/S3Image'
 import { getNames, getCode, getName } from 'country-list'
 
-const COUNTRY_NAMES = getNames().sort((a, b) => {
-	// Put Vietnam first for Vietnamese locale
-	if (a === 'Vietnam') return -1
-	if (b === 'Vietnam') return 1
-	return a.localeCompare(b)
-})
+const COUNTRY_NAMES = () => getNames()
 
 const InfoField = ({
 	label,
@@ -288,13 +283,13 @@ const AccountPage = () => {
 											<option value='' disabled>
 												Chọn quốc gia
 											</option>
-											{COUNTRY_NAMES.map(c => (
+											{COUNTRY_NAMES().map(c => (
 												<option key={c} value={c}>
 													{c}
 												</option>
 											))}
 											{formData.country &&
-												!COUNTRY_NAMES.includes(formData.country) && (
+												!COUNTRY_NAMES().includes(formData.country) && (
 													<option value={formData.country}>
 														{formData.country}
 													</option>

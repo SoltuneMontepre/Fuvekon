@@ -52,6 +52,9 @@
 		"register": "Đăng ký",
 		"forgotPassword": "Quên mật khẩu?",
 		"loginFailed": "Đăng nhập thất bại. Vui lòng thử lại.",
+		"invalidEmailOrPassword": "Email hoặc mật khẩu không đúng.",
+		"accountLocked": "Đăng nhập thất bại quá nhiều lần. Vui lòng thử lại sau.",
+		"userNotVerified": "Tài khoản chưa được xác minh. Vui lòng xác minh email trước.",
 		"showPassword": "Hiện mật khẩu",
 		"hidePassword": "Ẩn mật khẩu"
 	},

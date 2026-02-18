@@ -52,6 +52,9 @@
 		"register": "注册",
 		"forgotPassword": "忘记密码？",
 		"loginFailed": "登录失败。请重试。",
+		"invalidEmailOrPassword": "邮箱或密码错误。",
+		"accountLocked": "登录失败次数过多，请稍后再试。",
+		"userNotVerified": "您的账户尚未验证，请先验证邮箱。",
 		"showPassword": "显示密码",
 		"hidePassword": "隐藏密码"
 	},
