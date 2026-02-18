@@ -17,6 +17,8 @@ const axiosLocal = a.create({
 	withCredentials: true,
 })
 
+//thing
+
 const axiosGeneral = a.create({
 	baseURL: getBaseUrl('/api/general/v1'),
 	headers: {
