@@ -26,21 +26,6 @@ const formatPrice = (price: number): string => {
 	}).format(price)
 }
 
-// Get all unique benefits across all tiers for comparison display
-const getAllBenefits = (tiers: TicketTier[]): string[] => {
-	const allBenefits = new Set<string>()
-	tiers.forEach(tier => {
-		if (tier.benefits) {
-			tier.benefits.forEach(benefit => allBenefits.add(benefit))
-		}
-	})
-	return Array.from(allBenefits)
-}
-
-// Check if a tier includes a specific benefit
-const tierHasBenefit = (tier: TicketTier, benefit: string): boolean => {
-	return tier.benefits?.includes(benefit) ?? false
-}
 
 const TicketPage = (): React.ReactElement => {
 	const router = useRouter()
@@ -105,7 +90,6 @@ const TicketPage = (): React.ReactElement => {
 	}
 
 	const tiers: TicketTier[] = tiersData?.data ?? []
-	const allBenefits = getAllBenefits(tiers)
 
 	return (
 		<>
@@ -128,27 +112,23 @@ const TicketPage = (): React.ReactElement => {
 
 								{/* Benefits List */}
 								<div className='px-4 py-4'>
-									<p className='text-sm text-[#48715b] font-medium mb-3'>
-										{t('ticketIncludes')}:
-									</p>
-									<ul className='space-y-2'>
-										{allBenefits.map((benefit, index) => (
-											<li key={index} className='flex items-center gap-2'>
-												{tierHasBenefit(tier, benefit) ? (
-													<>
-														<Check className='w-4 h-4 text-[#7cbc97] flex-shrink-0' />
-														<span className='text-sm text-[#154c5b]'>
+									{tier.benefits && tier.benefits.length > 0 && (
+										<>
+											<p className='text-sm text-[#48715b] font-medium mb-3'>
+												{t('ticketIncludes')}:
+											</p>
+											<ul className='space-y-2'>
+												{tier.benefits.map((benefit, index) => (
+													<li key={index} className='flex items-start gap-2'>
+														<Check className='w-4 h-4 text-[#7cbc97] flex-shrink-0 mt-0.5' />
+														<span className='text-sm text-[#154c5b] break-all'>
 															{benefit}
 														</span>
-													</>
-												) : (
-													<span className='text-sm text-gray-400 pl-6'>
-														{benefit}
-													</span>
-												)}
-											</li>
-										))}
-									</ul>
+													</li>
+												))}
+											</ul>
+										</>
+									)}
 
 									{/* Buy Button for this tier */}
 									<div className='mt-6'>

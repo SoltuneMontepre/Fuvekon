@@ -20,7 +20,9 @@
 		"to": "to",
 		"of": "of",
 		"results": "results",
-		"page": "Page"
+		"page": "Page",
+		"edit": "Edit",
+		"delete": "Delete"
 	},
 	"nav": {
 		"ticket": "Ticket",
@@ -133,7 +135,16 @@
 		"ticketCancelledSuccess": "Ticket cancelled successfully!",
 		"ticketCancelError": "Failed to cancel ticket. Please try again.",
 		"badgeUpdatedSuccess": "Badge details updated successfully!",
-		"badgeUpdateError": "Failed to update badge details. Please try again."
+		"badgeUpdateError": "Failed to update badge details. Please try again.",
+		"conBadgeName": "Badge Name",
+		"badgeImage": "Badge Image URL",
+		"isFursuiter": "Fursuiter",
+		"isFursuitStaff": "Fursuit Staff",
+		"isCheckedIn": "Checked In",
+		"copiedToClipboard": "Copied to clipboard",
+		"copyFailed": "Failed to copy",
+		"paymentConfirmed": "Payment confirmed successfully!",
+		"paymentConfirmError": "Failed to confirm payment. Please try again."
 	},
 	"admin": {
 		"ticketManagement": "Ticket Management",
@@ -240,7 +251,40 @@
 		"alreadyCheckedIn": "Already checked in",
 		"ticketNotFound": "Ticket not found",
 		"ticketNotFoundHint": "The ID or code may be wrong, or the ticket does not exist.",
-		"fursona": "Fursona"
+		"fursona": "Fursona",
+		"ticketApproved": "Ticket approved successfully",
+		"approveError": "Failed to approve ticket. Please try again.",
+		"denyError": "Failed to deny ticket. Please try again.",
+		"editTicket": "Edit Ticket",
+		"ticketTier": "Tier",
+		"ticketUpdated": "Ticket updated successfully",
+		"updateError": "Failed to update ticket",
+		"deleteTicketTitle": "Delete Ticket",
+		"deleteTicketConfirm": "Delete ticket {code}?",
+		"deleteStockWarning": "Stock will be re-incremented for this tier.",
+		"ticketDeleted": "Ticket deleted successfully",
+		"deleteError": "Failed to delete ticket",
+		"ticketDenied": "Ticket denied successfully",
+		"userUpdated": "User updated successfully",
+		"userUpdateFailed": "Failed to update user",
+		"userNotFound": "User not found",
+		"userDetail": "User Detail",
+		"editUser": "Edit User",
+		"firstName": "First Name",
+		"lastName": "Last Name",
+		"fursonaName": "Fursona Name"
+	},
+	"artbook": {
+		"artbook": {
+			"card": {
+				"imageAlt": "Artbook badges",
+				"title": "Artbook",
+				"description": "Submit your artwork and be part of the Fuvekon Artbook!",
+				"button": "Submit Now",
+				"login": "Login",
+				"buyticket": "Buy Ticket"
+			}
+		}
 	},
 	"landing": {
 		"suggestion": "Scroll down for more!",
