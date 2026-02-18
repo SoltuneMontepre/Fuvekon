@@ -15,11 +15,11 @@ const nextConfig: NextConfig = {
 		],
 	},
 	async rewrites() {
-		const apiGateway = 'https://riw96amgn7.execute-api.ap-southeast-1.amazonaws.com'
+		const apiBase = 'https://api.fuve.vn'
 		// Only proxy backend API routes; /api/s3/* (image signing, presign) stay as Next.js API routes
 		return [
-			{ source: '/api/general/:path*', destination: `${apiGateway}/api/general/:path*` },
-			{ source: '/api/ticket/:path*', destination: `${apiGateway}/api/ticket/:path*` },
+			{ source: '/api/general/:path*', destination: `${apiBase}/api/general/:path*` },
+			{ source: '/api/ticket/:path*', destination: `${apiBase}/api/ticket/:path*` },
 		]
 	},
 }
