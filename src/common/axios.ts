@@ -6,7 +6,7 @@ const isDev = process.env.NODE_ENV === 'development'
 const devApiBase = process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, '') // no trailing slash
 
 const getBaseUrl = (path: string) =>
-	isDev && devApiBase ? `${devApiBase}/v1` : path
+	isDev && devApiBase ? `${devApiBase}/v1` : `https://api.fuve.vn${path}`
 
 const axiosLocal = a.create({
 	baseURL: getBaseUrl('/v1'),
@@ -16,6 +16,8 @@ const axiosLocal = a.create({
 	timeout: 10000,
 	withCredentials: true,
 })
+
+//thing
 
 const axiosGeneral = a.create({
 	baseURL: getBaseUrl('/api/general/v1'),
