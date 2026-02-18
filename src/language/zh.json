@@ -36,7 +36,8 @@
 		"schedule": "日程",
 		"about": "关于",
 		"myTicket": "我的门票",
-		"account": "账户"
+		"account": "账户",
+		"changePassword": "修改密码"
 	},
 	"auth": {
 		"login": "登录",

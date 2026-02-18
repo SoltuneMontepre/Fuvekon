@@ -36,7 +36,8 @@
 		"schedule": "กำหนดการ",
 		"about": "เกี่ยวกับ",
 		"myTicket": "ตั๋วของฉัน",
-		"account": "บัญชี"
+		"account": "บัญชี",
+		"changePassword": "เปลี่ยนรหัสผ่าน"
 	},
 	"auth": {
 		"login": "เข้าสู่ระบบ",

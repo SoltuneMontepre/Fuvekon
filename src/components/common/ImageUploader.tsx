@@ -9,6 +9,7 @@ import {
 } from '@/hooks/services/s3/useUploadToS3'
 import type { PresignRequest } from '@/types/api/s3/presign'
 import { getS3ProxyUrl, isS3Url } from '@/utils/s3'
+import { compressImage } from '@/utils/imageCompression'
 
 export interface ImageUploaderProps {
 	/** Callback when upload succeeds */
@@ -37,6 +38,8 @@ export interface ImageUploaderProps {
 	label?: string
 	/** Custom button text */
 	buttonText?: string
+	/** Compress image before upload (e.g. for avatars). Default false (e.g. price sheets stay full quality). */
+	compressImage?: boolean
 }
 
 const ImageUploader: React.FC<ImageUploaderProps> = ({
@@ -53,6 +56,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
 	disabled = false,
 	label = '',
 	buttonText = 'Choose File',
+	compressImage: compressImageBeforeUpload = false,
 }) => {
 	const fileInputRef = useRef<HTMLInputElement>(null)
 	// Convert initial S3 URL to proxy URL if needed
@@ -114,18 +118,22 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
 			}
 			reader.readAsDataURL(file)
 
-			// Upload file
+			// Upload file (compress first when requested, e.g. user profile avatar)
 			try {
+				const fileToUpload =
+					compressImageBeforeUpload && file.type.startsWith('image/')
+						? await compressImage(file)
+						: file
 				const presignOptions: Partial<PresignRequest> = {
 					folder,
 					expiresIn,
 				}
-				await uploadFile(file, presignOptions)
+				await uploadFile(fileToUpload, presignOptions)
 			} catch {
 				// Error is already handled by the hook's onError callback
 			}
 		},
-		[uploadFile, folder, expiresIn, maxSizeMB, onUploadError]
+		[uploadFile, folder, expiresIn, maxSizeMB, onUploadError, compressImageBeforeUpload]
 	)
 
 	const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {

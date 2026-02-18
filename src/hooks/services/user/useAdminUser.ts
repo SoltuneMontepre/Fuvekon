@@ -1,9 +1,13 @@
 'use client'
 
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import axios from '@/common/axios'
 import type { ApiResponse } from '@/types/api/response'
-import type { AdminGetUsersResponse, GetUserByIdResponse } from '@/types/api/user/user'
+import type {
+	AdminGetUsersResponse,
+	GetUserByIdResponse,
+	AdminUpdateUserRequest,
+} from '@/types/api/user/user'
 import type { PaginationMeta } from '@/types/api/ticket/ticket'
 
 // Admin filter params
@@ -37,6 +41,15 @@ const AdminUserAPI = {
 		const { data } = await axios.general.get<ApiResponse<GetUserByIdResponse>>(`/admin/users/${userId}`)
 		return data
 	},
+
+	// Update user by ID (admin)
+	updateUserById: async (userId: string, payload: AdminUpdateUserRequest) => {
+		const { data } = await axios.general.put<ApiResponse<GetUserByIdResponse>>(
+			`/admin/users/${userId}`,
+			payload
+		)
+		return data
+	},
 }
 
 // ========== Hooks ==========
@@ -56,5 +69,18 @@ export function useAdminGetUserById(userId: string) {
 		queryKey: ['admin-user', userId],
 		queryFn: () => AdminUserAPI.getUserById(userId),
 		enabled: !!userId,
+	})
+}
+
+// Update user by ID (admin)
+export function useAdminUpdateUser(userId: string) {
+	const queryClient = useQueryClient()
+	return useMutation({
+		mutationFn: (payload: AdminUpdateUserRequest) =>
+			AdminUserAPI.updateUserById(userId, payload),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ['admin-user', userId] })
+			queryClient.invalidateQueries({ queryKey: ['admin-users'] })
+		},
 	})
 }

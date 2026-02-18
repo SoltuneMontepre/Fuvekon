@@ -11,6 +11,10 @@ import type {
 	UpdateAvatarRequest,
 	UpdateAvatarResponse,
 } from '@/types/api/auth/updateAvatar'
+import type {
+	ChangePasswordRequest,
+	ChangePasswordResponse,
+} from '@/types/api/auth/changePassword'
 import { useAuthStore } from '@/stores/authStore'
 import { getQueryClient } from '@/utils/getQueryClient'
 
@@ -29,6 +33,13 @@ const Account = {
 	updateAvatar: async (payload: UpdateAvatarRequest) => {
 		const { data } = await axios.general.patch<UpdateAvatarResponse>(
 			'/users/me/avatar',
+			payload
+		)
+		return data
+	},
+	changePassword: async (payload: ChangePasswordRequest) => {
+		const { data } = await axios.general.post<ChangePasswordResponse>(
+			'/auth/reset-password',
 			payload
 		)
 		return data
@@ -82,5 +93,12 @@ export function useUpdateAvatar() {
 			}
 			queryClient.invalidateQueries({ queryKey: ['account'] })
 		},
+	})
+}
+
+export function useChangePassword() {
+	return useMutation({
+		mutationFn: (payload: ChangePasswordRequest) =>
+			Account.changePassword(payload),
 	})
 }

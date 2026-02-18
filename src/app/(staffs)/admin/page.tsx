@@ -1,24 +1,49 @@
 'use client'
 
 import React, { useState, useEffect, useMemo } from 'react'
-import { UserCircle, RefreshCw, ChevronLeft, ChevronRight, CheckCircle, XCircle, Shield, Search } from 'lucide-react'
+import {
+	UserCircle,
+	RefreshCw,
+	ChevronLeft,
+	ChevronRight,
+	CheckCircle,
+	XCircle,
+	Shield,
+	Search,
+} from 'lucide-react'
 import { useTranslations } from 'next-intl'
-import { useAdminGetUsers, type AdminUserFilter } from '@/hooks/services/user/useAdminUser'
+import { useRouter } from 'next/navigation'
+import {
+	useAdminGetUsers,
+	type AdminUserFilter,
+} from '@/hooks/services/user/useAdminUser'
 import type { Account } from '@/types/models/auth/account'
 import Loading from '@/components/common/Loading'
-import S3Image from '@/components/common/S3Image'
 
 // Format datetime
 const formatDateTime = (dateString?: string): string => {
 	if (!dateString) return '–'
 	const date = new Date(dateString)
-	return date.toLocaleDateString('vi-VN') + ' ' + date.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })
+	return (
+		date.toLocaleDateString('vi-VN') +
+		' ' +
+		date.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })
+	)
 }
 
 // Get role display
-const getRoleDisplay = (role?: string): { label: string; color: string; bgColor: string } => {
-	const roleMap: Record<string, { label: string; color: string; bgColor: string }> = {
-		admin: { label: 'Admin', color: 'text-purple-700', bgColor: 'bg-purple-100' },
+const getRoleDisplay = (
+	role?: string
+): { label: string; color: string; bgColor: string } => {
+	const roleMap: Record<
+		string,
+		{ label: string; color: string; bgColor: string }
+	> = {
+		admin: {
+			label: 'Admin',
+			color: 'text-purple-700',
+			bgColor: 'bg-purple-100',
+		},
 		staff: { label: 'Staff', color: 'text-blue-700', bgColor: 'bg-blue-100' },
 		user: { label: 'User', color: 'text-gray-700', bgColor: 'bg-gray-100' },
 	}
@@ -28,6 +53,7 @@ const getRoleDisplay = (role?: string): { label: string; color: string; bgColor:
 const UserManagementPage = (): React.ReactElement => {
 	const t = useTranslations('admin')
 	const tCommon = useTranslations('common')
+	const router = useRouter()
 
 	// Filter state
 	const [filter, setFilter] = useState<AdminUserFilter>({
@@ -37,7 +63,11 @@ const UserManagementPage = (): React.ReactElement => {
 	const [searchInput, setSearchInput] = useState('')
 
 	// Query - fetch all users (we'll do client-side filtering)
-	const { data: usersData, isLoading: usersLoading, refetch: refetchUsers } = useAdminGetUsers({
+	const {
+		data: usersData,
+		isLoading: usersLoading,
+		refetch: refetchUsers,
+	} = useAdminGetUsers({
 		page: 1,
 		pageSize: 1000, // Fetch more to enable client-side search
 	})
@@ -46,7 +76,7 @@ const UserManagementPage = (): React.ReactElement => {
 	const allUsers = usersData?.data || []
 	const filteredUsers = useMemo(() => {
 		if (!allUsers.length) return []
-		
+
 		if (!searchInput.trim()) {
 			return allUsers
 		}
@@ -121,7 +151,10 @@ const UserManagementPage = (): React.ReactElement => {
 							<Search className='absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400' />
 							<input
 								type='text'
-								placeholder={t('searchPlaceholder') || 'Search by email, name, fursona name...'}
+								placeholder={
+									t('searchPlaceholder') ||
+									'Search by email, name, fursona name...'
+								}
 								value={searchInput}
 								onChange={e => setSearchInput(e.target.value)}
 								className='w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#7cbc97] dark:bg-dark-surface dark:border-dark-border dark:text-dark-text'
@@ -194,22 +227,21 @@ const UserManagementPage = (): React.ReactElement => {
 									{users.map((user: Account) => {
 										const roleDisplay = getRoleDisplay(user.role)
 										return (
-											<tr key={user.id} className='hover:bg-gray-50 dark:hover:bg-dark-surface/50 transition-colors'>
+											<tr
+												key={user.id}
+												role='button'
+												tabIndex={0}
+												onClick={() => router.push(`/admin/users/${user.id}`)}
+												onKeyDown={e => {
+													if (e.key === 'Enter' || e.key === ' ') {
+														e.preventDefault()
+														router.push(`/admin/users/${user.id}`)
+													}
+												}}
+												className='hover:bg-gray-50 dark:hover:bg-dark-surface/50 transition-colors cursor-pointer'
+											>
 												<td className='px-4 py-3'>
 													<div className='flex items-center gap-3'>
-														{user.avatar ? (
-															<S3Image
-																src={user.avatar}
-																alt={user.fursona_name || user.email}
-																className='w-10 h-10 rounded-full object-cover'
-																width={40}
-																height={40}
-															/>
-														) : (
-															<div className='w-10 h-10 rounded-full bg-gray-200 dark:bg-dark-surface flex items-center justify-center'>
-																<UserCircle className='w-6 h-6 text-gray-400' />
-															</div>
-														)}
 														<div>
 															<p className='font-medium text-gray-900 dark:text-dark-text'>
 																{user.first_name || user.last_name
@@ -230,7 +262,9 @@ const UserManagementPage = (): React.ReactElement => {
 													</div>
 												</td>
 												<td className='px-4 py-3'>
-													<p className='text-sm text-gray-900 dark:text-dark-text'>{user.email}</p>
+													<p className='text-sm text-gray-900 dark:text-dark-text'>
+														{user.email}
+													</p>
 												</td>
 												<td className='px-4 py-3'>
 													<span
@@ -255,7 +289,9 @@ const UserManagementPage = (): React.ReactElement => {
 																) : (
 																	<XCircle className='w-3 h-3' />
 																)}
-																{user.is_verified ? t('verified') || 'Verified' : t('unverified') || 'Unverified'}
+																{user.is_verified
+																	? t('verified') || 'Verified'
+																	: t('unverified') || 'Unverified'}
 															</span>
 														)}
 														{user.is_blacklisted && (
@@ -264,11 +300,13 @@ const UserManagementPage = (): React.ReactElement => {
 																{t('blacklisted') || 'Blacklisted'}
 															</span>
 														)}
-														{user.denial_count !== undefined && user.denial_count > 0 && (
-															<span className='text-xs text-orange-600 dark:text-orange-400'>
-																{t('denials') || 'Denials'}: {user.denial_count}
-															</span>
-														)}
+														{user.denial_count !== undefined &&
+															user.denial_count > 0 && (
+																<span className='text-xs text-orange-600 dark:text-orange-400'>
+																	{t('denials') || 'Denials'}:{' '}
+																	{user.denial_count}
+																</span>
+															)}
 													</div>
 												</td>
 												<td className='px-4 py-3 text-sm text-gray-600 dark:text-dark-text-secondary'>
@@ -287,9 +325,9 @@ const UserManagementPage = (): React.ReactElement => {
 								<div className='flex items-center justify-between'>
 									<div className='text-sm text-gray-600 dark:text-dark-text-secondary'>
 										{tCommon('showing') || 'Showing'} {startIndex + 1}{' '}
-										{tCommon('to') || 'to'}{' '}
-										{Math.min(endIndex, totalFiltered)} {tCommon('of') || 'of'}{' '}
-										{totalFiltered} {tCommon('results') || 'results'}
+										{tCommon('to') || 'to'} {Math.min(endIndex, totalFiltered)}{' '}
+										{tCommon('of') || 'of'} {totalFiltered}{' '}
+										{tCommon('results') || 'results'}
 										{searchInput && (
 											<span className='ml-2 text-xs text-gray-500'>
 												({tCommon('filtered') || 'filtered'})
@@ -305,8 +343,8 @@ const UserManagementPage = (): React.ReactElement => {
 											<ChevronLeft className='w-4 h-4' />
 										</button>
 										<span className='text-sm text-gray-600 dark:text-dark-text-secondary px-2'>
-											{tCommon('page') || 'Page'} {currentPage} {tCommon('of') || 'of'}{' '}
-											{totalPages}
+											{tCommon('page') || 'Page'} {currentPage}{' '}
+											{tCommon('of') || 'of'} {totalPages}
 										</span>
 										<button
 											onClick={() => handlePageChange(currentPage + 1)}

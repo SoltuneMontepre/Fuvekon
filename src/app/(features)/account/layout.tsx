@@ -2,7 +2,7 @@
 
 import SideBar from '@/components/nav/SideBar'
 import type { ReactNode } from 'react'
-import { UserCircle, Ticket, Store } from 'lucide-react'
+import { UserCircle, Ticket, Store, Lock } from 'lucide-react'
 import { useGetMe } from '@/hooks/services/auth/useAccount'
 import { useAuthStore } from '@/stores/authStore'
 import { useEffect } from 'react'
@@ -34,6 +34,11 @@ const AccountLayout = ({ children }: AccountLayoutProps) => {
 					label: t('myTicket'),
 					href: '/account/ticket',
 					icon: Ticket,
+				},
+				{
+					label: t('changePassword'),
+					href: '/account/change-password',
+					icon: Lock,
 				},
 				// Show dealer booth if user is a dealer; show register only when user has a ticket
 				...(account?.is_dealer || data?.data?.is_dealer

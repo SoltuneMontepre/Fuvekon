@@ -16,6 +16,8 @@
     "@hookform/resolvers": "^5.2.2",
     "@tanstack/react-query": "^5.90.2",
     "axios": "^1.12.2",
+    "browser-image-compression": "^2.0.2",
+    "country-list": "^2.4.1",
     "gsap": "^3.13.0",
     "html5-qrcode": "^2.3.8",
     "lucide-react": "^0.552.0",

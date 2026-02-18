@@ -36,7 +36,8 @@
 		"schedule": "Lịch trình",
 		"about": "Giới thiệu",
 		"myTicket": "Vé của tôi",
-		"account": "Tài khoản"
+		"account": "Tài khoản",
+		"changePassword": "Đổi mật khẩu"
 	},
 	"auth": {
 		"login": "Đăng nhập",

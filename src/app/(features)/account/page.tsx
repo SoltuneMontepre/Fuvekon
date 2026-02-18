@@ -6,6 +6,14 @@ import { useAuthStore } from '@/stores/authStore'
 import { useUpdateMe, useUpdateAvatar } from '@/hooks/services/auth/useAccount'
 import ImageUploader from '@/components/common/ImageUploader'
 import S3Image from '@/components/common/S3Image'
+import { getNames, getCode, getName } from 'country-list'
+
+const COUNTRY_NAMES = getNames().sort((a, b) => {
+	// Put Vietnam first for Vietnamese locale
+	if (a === 'Vietnam') return -1
+	if (b === 'Vietnam') return 1
+	return a.localeCompare(b)
+})
 
 const InfoField = ({
 	label,
@@ -19,23 +27,37 @@ const InfoField = ({
 	name?: string
 	editable?: boolean
 	onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
-}) => (
-	<div className=''>
-		<label className='text-sm font-medium text-text-secondary'>{label}</label>
-		{editable && name ? (
-			<input
-				type='text'
-				name={name}
-				value={value || ''}
-				onChange={onChange}
-				className='w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-dark-border bg-white dark:bg-dark-surface text-base text-gray-900 dark:text-dark-text focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
-				placeholder={`Nhập ${label.toLowerCase()}`}
-			/>
-		) : (
-			<div className='text-base text-text-secondary'>{value || 'N/A'}</div>
-		)}
-	</div>
-)
+}) => {
+	const hasValue = (value || '').trim().length > 0
+	if (editable && name) {
+		return (
+			<div className='relative w-full'>
+				<input
+					type='text'
+					id={`${name}-input`}
+					name={name}
+					value={value || ''}
+					onChange={onChange}
+					className='block w-full px-3 py-2 rounded-xl bg-[#E2EEE2] border border-[#8C8C8C]/30 text-[#8C8C8C] text-lg sm:text-xl font-normal placeholder-transparent focus:outline-none focus:border-[#48715B] focus:ring-0 shadow-none peer'
+					placeholder={label}
+				/>
+				<label
+					htmlFor={`${name}-input`}
+					className={`absolute left-3 top-2.5 sm:top-3 text-lg sm:text-xl font-normal text-[#8C8C8C]/70  px-1 transition-all duration-200 pointer-events-none ${hasValue ? 'scale-70 -translate-y-8 sm:-translate-y-9' : 'peer-focus:scale-70 peer-focus:-translate-y-8 sm:peer-focus:-translate-y-9'}`}
+					style={{ transformOrigin: 'left' }}
+				>
+					{label}:
+				</label>
+			</div>
+		)
+	}
+	return (
+		<div className='space-y-1'>
+			<label className='text-xs font-medium text-[#48715B]'>{label}</label>
+			<div className='text-sm text-text-secondary'>{value || 'N/A'}</div>
+		</div>
+	)
+}
 
 const AccountPage = () => {
 	const account = useAuthStore(state => state.account)
@@ -112,8 +134,8 @@ const AccountPage = () => {
 
 	if (!account) {
 		return (
-			<div className='flex items-center justify-center min-h-[400px]'>
-				<div className='text-lg text-gray-500 dark:text-dark-text-secondary'>
+			<div className='flex items-center justify-center min-h-[200px]'>
+				<div className='text-sm text-gray-500 dark:text-dark-text-secondary'>
 					No account information available
 				</div>
 			</div>
@@ -144,7 +166,7 @@ const AccountPage = () => {
 				first_name: formData.first_name || undefined,
 				last_name: formData.last_name || undefined,
 				fursona_name: formData.fursona_name || undefined,
-				country: formData.country || undefined,
+				country: getCode(formData.country) || undefined,
 				id_card: formData.id_card || undefined,
 			},
 			{
@@ -162,78 +184,78 @@ const AccountPage = () => {
 	}
 
 	return (
-		<div className='rounded-[30px]  bg-[#E9F5E7] p-8 shadow-sm text-text-secondary'>
-			<h1 className='text-3xl font-bold mb-8 text-center'>TÀI KHOẢN</h1>
+		<div className='rounded-2xl bg-[#E9F5E7] p-5 shadow-sm text-text-secondary'>
+			<h1 className='text-2xl font-bold mb-4 text-center'>TÀI KHOẢN</h1>
 
-			{/* Avatar Section */}
-			<div className='mb-8 mx-auto'>
-				<label className='block text-sm font-medium text-[#48715B] mb-4'>
-					Ảnh đại diện
-				</label>
-				<div className='flex items-center gap-4'>
-					{/* Profile Avatar Display */}
-					<div className='relative w-64 h-64 rounded-full overflow-hidden border-2 border-[#48715B]/30 bg-[#E2EEE2] flex-shrink-0'>
-						{account.avatar ? (
-							<S3Image
-								src={account.avatar}
-								alt={account.fursona_name || account.first_name || 'Avatar'}
-								fill
-								className='object-cover'
+			<div className='flex flex-col gap-5'>
+				{/* Avatar Section */}
+				<div className='flex-shrink-0'>
+					<label className='block text-xs font-medium text-[#48715B] mb-2'>
+						Ảnh đại diện
+					</label>
+					<div className='flex items-center gap-3'>
+						<div className='relative w-34 h-34 rounded-full overflow-hidden border-2 border-[#48715B]/30 bg-[#E2EEE2] flex-shrink-0'>
+							{account.avatar ? (
+								<S3Image
+									src={account.avatar}
+									alt={account.fursona_name || account.first_name || 'Avatar'}
+									fill
+									className='object-cover'
+								/>
+							) : (
+								<div className='w-full h-full flex items-center justify-center text-[#48715B] text-xl font-bold'>
+									{(
+										account.fursona_name ||
+										account.first_name ||
+										account.email?.charAt(0) ||
+										'U'
+									)
+										.charAt(0)
+										.toUpperCase()}
+								</div>
+							)}
+						</div>
+						<div className='flex-shrink-0'>
+							<ImageUploader
+								buttonText='Chọn ảnh'
+								initialImageUrl={account.avatar}
+								onUploadSuccess={handleAvatarUploadSuccess}
+								onRemove={handleAvatarRemove}
+								onUploadError={error => {
+									toast.error(`Lỗi upload: ${error.message}`)
+								}}
+								folder='user-uploads'
+								maxSizeMB={10}
+								showPreview={false}
+								disabled={updateAvatarMutation.isPending}
+								compressImage
+								accept='image/png,image/jpeg,image/jpg'
 							/>
-						) : (
-							<div className='w-full h-full flex items-center justify-center text-[#48715B] text-4xl font-bold'>
-								{(
-									account.fursona_name ||
-									account.first_name ||
-									account.email?.charAt(0) ||
-									'U'
-								)
-									.charAt(0)
-									.toUpperCase()}
-							</div>
-						)}
-					</div>
-					{/* Upload Controls */}
-					<div className='flex-shrink-0'>
-						<ImageUploader
-							buttonText='Chọn ảnh đại diện'
-							initialImageUrl={account.avatar}
-							onUploadSuccess={handleAvatarUploadSuccess}
-							onRemove={handleAvatarRemove}
-							onUploadError={error => {
-								toast.error(`Lỗi upload: ${error.message}`)
-							}}
-							folder='user-uploads'
-							maxSizeMB={10}
-							showPreview={false}
-							disabled={updateAvatarMutation.isPending}
-						/>
+						</div>
 					</div>
 				</div>
-			</div>
 
-			<form onSubmit={handleSubmit}>
-				<div className='space-y-6'>
-					{isEditing ? (
-						<>
-							<div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
-								<InfoField
-									label='Họ'
-									value={formData.first_name}
-									name='first_name'
-									editable={isEditing}
-									onChange={handleInputChange}
-								/>
-								<InfoField
-									label='Tên'
-									value={formData.last_name}
-									name='last_name'
-									editable={isEditing}
-									onChange={handleInputChange}
-								/>
-							</div>
-							<div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
-								<div className='space-y-6'>
+				<form onSubmit={handleSubmit} className='flex-1 min-w-0'>
+					<div className='space-y-5'>
+						{isEditing ? (
+							<>
+								<div className='grid grid-cols-1 sm:grid-cols-2 gap-3'>
+									<InfoField
+										label='Họ'
+										value={formData.first_name}
+										name='first_name'
+										editable={isEditing}
+										onChange={handleInputChange}
+									/>
+									<InfoField
+										label='Tên'
+										value={formData.last_name}
+										name='last_name'
+										editable={isEditing}
+										onChange={handleInputChange}
+									/>
+								</div>
+								<div className='grid grid-cols-1 sm:grid-cols-2 gap-3'>
 									<InfoField
 										label='Tên fursona'
 										value={formData.fursona_name}
@@ -243,14 +265,42 @@ const AccountPage = () => {
 									/>
 									<InfoField label='Gmail' value={account.email} />
 								</div>
-								<div className='space-y-6'>
-									<InfoField
-										label='Quốc gia'
-										value={formData.country}
-										name='country'
-										editable={isEditing}
-										onChange={handleInputChange}
-									/>
+								<div className='grid grid-cols-1 sm:grid-cols-2 gap-3'>
+									<div className='relative w-full'>
+										<label
+											htmlFor='country-select'
+											className='absolute left-3 top-2.5 sm:top-3 text-lg sm:text-xl font-normal text-[#8C8C8C]/70 bg-[#E2EEE2] px-1 transition-all duration-200 pointer-events-none scale-70 -translate-y-8 sm:-translate-y-9'
+											style={{ transformOrigin: 'left' }}
+										>
+											Quốc gia:
+										</label>
+										<select
+											id='country-select'
+											value={getName(formData.country)}
+											onChange={e =>
+												setFormData(prev => ({
+													...prev,
+													country: e.target.value,
+												}))
+											}
+											className='block w-full px-3 py-2.5 sm:py-3 rounded-xl bg-[#E2EEE2] border border-[#8C8C8C]/30 text-[#8C8C8C] text-lg sm:text-xl font-normal focus:outline-none focus:border-[#48715B] focus:ring-0 shadow-none appearance-none cursor-pointer'
+										>
+											<option value='' disabled>
+												Chọn quốc gia
+											</option>
+											{COUNTRY_NAMES.map(c => (
+												<option key={c} value={c}>
+													{c}
+												</option>
+											))}
+											{formData.country &&
+												!COUNTRY_NAMES.includes(formData.country) && (
+													<option value={formData.country}>
+														{formData.country}
+													</option>
+												)}
+										</select>
+									</div>
 									<InfoField
 										label='Số CMND/CCCD'
 										value={formData.id_card}
@@ -259,50 +309,46 @@ const AccountPage = () => {
 										onChange={handleInputChange}
 									/>
 								</div>
-							</div>
-						</>
-					) : (
-						<div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
-							<div className='space-y-6'>
+							</>
+						) : (
+							<div className='grid grid-cols-1 sm:grid-cols-2 gap-3'>
 								<InfoField label='Họ và Tên' value={fullName} />
 								<InfoField label='Tên fursona' value={account.fursona_name} />
 								<InfoField label='Gmail' value={account.email} />
-							</div>
-							<div className='space-y-6'>
-								<InfoField label='Quốc gia' value={account.country} />
+								<InfoField
+									label='Quốc gia'
+									value={getName(account.country || '')}
+								/>
 								<InfoField label='Số CMND/CCCD' value={account.id_card} />
 							</div>
-						</div>
-					)}
-				</div>
+						)}
+					</div>
 
-				{/* Edit Information Section */}
-				<div className='mt-8 pt-8'>
-					{!isEditing ? (
-						<button
-							type='button'
-							onClick={() => {
-								// Initialize form data with current account values when entering edit mode
-								setFormData({
-									first_name: account.first_name || '',
-									last_name: account.last_name || '',
-									fursona_name: account.fursona_name || '',
-									country: account.country || '',
-									id_card: account.id_card || '',
-								})
-								setIsEditing(true)
-							}}
-							className='shadow-md w-full py-3 px-4 rounded-lg bg-bg  text-text-secondary font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-dark-surface'
-						>
-							Chỉnh sửa thông tin
-						</button>
-					) : (
-						<div className='space-y-4'>
-							<div className='flex gap-4'>
+					{/* Edit / Save actions */}
+					<div className='mt-4 pt-4 border-t border-[#48715B]/20'>
+						{!isEditing ? (
+							<button
+								type='button'
+								onClick={() => {
+									setFormData({
+										first_name: account.first_name || '',
+										last_name: account.last_name || '',
+										fursona_name: account.fursona_name || '',
+										country: account.country || '',
+										id_card: account.id_card || '',
+									})
+									setIsEditing(true)
+								}}
+								className='shadow-md w-full py-2 px-3 text-sm rounded-lg bg-bg text-text-secondary font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-dark-surface'
+							>
+								Chỉnh sửa thông tin
+							</button>
+						) : (
+							<div className='flex gap-3'>
 								<button
 									type='submit'
 									disabled={updateMeMutation.isPending}
-									className='shadow-md flex-1 py-3 px-4 rounded-lg bg-bg text-text-secondary font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-dark-surface disabled:opacity-50 disabled:cursor-not-allowed'
+									className='shadow-md flex-1 py-2 px-3 text-sm rounded-lg bg-bg text-text-secondary font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-dark-surface disabled:opacity-50 disabled:cursor-not-allowed'
 								>
 									{updateMeMutation.isPending ? 'Đang lưu...' : 'Lưu thay đổi'}
 								</button>
@@ -310,15 +356,15 @@ const AccountPage = () => {
 									type='button'
 									onClick={handleCancel}
 									disabled={updateMeMutation.isPending}
-									className='shadow-md flex-1 py-3 px-4 rounded-lg bg-bg text-text-secondary font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 dark:focus:ring-offset-dark-surface disabled:opacity-50 disabled:cursor-not-allowed'
+									className='shadow-md flex-1 py-2 px-3 text-sm rounded-lg bg-bg text-text-secondary font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 dark:focus:ring-offset-dark-surface disabled:opacity-50 disabled:cursor-not-allowed'
 								>
 									Hủy
 								</button>
 							</div>
-						</div>
-					)}
-				</div>
-			</form>
+						)}
+					</div>
+				</form>
+			</div>
 		</div>
 	)
 }
