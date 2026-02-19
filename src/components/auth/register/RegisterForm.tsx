@@ -24,11 +24,25 @@ import {
 } from '@/utils/rateLimit'
 import axios from '@/common/axios'
 import type { RegisterResponse } from '@/types/auth/register'
-import { ERROR_MESSAGES } from '@/utils/validation/registerValidation.constants'
+import { useTranslations } from 'next-intl'
 
 const RegisterForm = (): React.ReactElement => {
 	const [isSuccess, setIsSuccess] = useState(false)
 	const router = useRouter()
+	const t = useTranslations('auth')
+
+	// Backend sends errorMessage as i18n key; we translate it
+	const getAuthErrorMessage = (errorMessage?: string, fallbackKey: string = 'registerFailed'): string => {
+		if (errorMessage?.trim()) {
+			try {
+				const translated = t(errorMessage.trim())
+				return translated !== errorMessage.trim() ? translated : t(fallbackKey)
+			} catch {
+				return t(fallbackKey)
+			}
+		}
+		return t(fallbackKey)
+	}
 
 	const {
 		control,
@@ -95,7 +109,7 @@ const RegisterForm = (): React.ReactElement => {
 			if (!response.data.isSuccess) {
 				setError('root', {
 					type: 'manual',
-					message: response.data.message || ERROR_MESSAGES.REGISTRATION_FAILED,
+					message: getAuthErrorMessage(response.data.errorMessage),
 				})
 				return
 			}
@@ -114,30 +128,22 @@ const RegisterForm = (): React.ReactElement => {
 				router.push('/login')
 			}, 2000) // 2 second delay to show success message
 		} catch (error: unknown) {
-			// Handle axios errors
 			if (error && typeof error === 'object' && 'response' in error) {
 				const axiosError = error as {
-					response?: { data?: { message?: string }; status?: number }
+					response?: { data?: { errorMessage?: string; message?: string }; status?: number }
 					request?: unknown
 					message?: string
-					constructor?: { name?: string }
 				}
-				// Server responded with error status
-				const errorMessage =
-					axiosError.response?.data?.message ||
-					ERROR_MESSAGES.REGISTRATION_FAILED
-				setError('root', {
-					type: 'manual',
-					message: errorMessage,
-				})
+				const errorMessage = getAuthErrorMessage(
+					axiosError.response?.data?.errorMessage
+				)
+				setError('root', { type: 'manual', message: errorMessage })
 			} else if (error && typeof error === 'object' && 'request' in error) {
-				// Request made but no response received
 				setError('root', {
 					type: 'manual',
-					message: ERROR_MESSAGES.NETWORK_ERROR,
+					message: t('networkError'),
 				})
 			} else if (error instanceof Error) {
-				// Something else happened
 				setError('root', {
 					type: 'manual',
 					message: error.message,
@@ -145,7 +151,7 @@ const RegisterForm = (): React.ReactElement => {
 			} else {
 				setError('root', {
 					type: 'manual',
-					message: ERROR_MESSAGES.REGISTRATION_FAILED,
+					message: t('registerFailed'),
 				})
 			}
 		}

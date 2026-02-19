@@ -52,7 +52,9 @@ const LoginForm = (): React.ReactElement => {
 			try {
 				const translated = t(errorMessage.trim())
 				// If key was missing, next-intl may return the key; treat as fallback
-				return translated !== errorMessage.trim() ? translated : t('loginFailed')
+				return translated !== errorMessage.trim()
+					? translated
+					: t('loginFailed')
 			} catch {
 				return t('loginFailed')
 			}
@@ -107,10 +109,14 @@ const LoginForm = (): React.ReactElement => {
 				}
 			},
 			onError: err => {
-				const data = (err as { response?: { data?: { errorMessage?: string } } })?.response?.data
+				const data = (
+					err as { response?: { data?: { errorMessage?: string } } }
+				)?.response?.data
 				setFormError('root', {
 					type: 'manual',
-					message: getLoginErrorMessage(data?.errorMessage ?? (err as Error).message),
+					message: getLoginErrorMessage(
+						data?.errorMessage ?? (err as Error).message
+					),
 				})
 			},
 		})
@@ -120,7 +126,7 @@ const LoginForm = (): React.ReactElement => {
 		<div
 			id='login-form-container'
 			className='login-form-container relative pt-8 sm:pt-16 md:pt-32 w-full max-w-5xl min-h-[450px] md:min-h-screen h-auto'
-			style={{ 'paddingTop': '20%' }}
+			style={{ paddingTop: '20%' }}
 		>
 			{/* Main Content Panel */}
 			<div
@@ -134,7 +140,7 @@ const LoginForm = (): React.ReactElement => {
 				>
 					<Image
 						src='/images/landing/tranh full oc.webp'
-						alt='Fantasy Character' 
+						alt='Fantasy Character'
 						fill
 						className='login-illustration object-cover object-[50%_0%] scale-y-130 scale-x-130  translate-x-[-380px] translate-y-[-17px]'
 						priority
@@ -176,20 +182,22 @@ const LoginForm = (): React.ReactElement => {
 							>
 								<input
 									id='email-input'
-									type='email'
+									type='text'
 									{...register('email')}
 									aria-invalid={!!errors.email}
 									aria-describedby={errors.email ? 'email-error' : undefined}
-									className={`email-input block w-full px-3 py-2.5 sm:py-3 rounded-xl bg-[#E2EEE2] border text-[#8C8C8C] text-lg sm:text-xl font-normal placeholder-transparent focus:outline-none focus:border-[#48715B] focus:ring-0 shadow-none peer ${errors.email ? 'border-red-500' : 'border-[#8C8C8C]/30'
-										}`}
+									className={`email-input block w-full px-3 py-2.5 sm:py-3 rounded-xl bg-[#E2EEE2] border text-[#8C8C8C] text-lg sm:text-xl font-normal placeholder-transparent focus:outline-none focus:border-[#48715B] focus:ring-0 shadow-none peer ${
+										errors.email ? 'border-red-500' : 'border-[#8C8C8C]/30'
+									}`}
 									placeholder={t('email')}
 								/>
 								<label
 									htmlFor='email-input'
-									className={`email-label absolute left-3 top-2.5 sm:top-3 text-lg sm:text-xl font-normal text-[#8C8C8C]/70 bg-[#E2EEE2] px-1 transition-all duration-200 pointer-events-none ${emailValue
+									className={`email-label absolute left-3 top-2.5 sm:top-3 text-lg sm:text-xl font-normal text-[#8C8C8C]/70 bg-[#E2EEE2] px-1 transition-all duration-200 pointer-events-none ${
+										emailValue
 											? 'scale-70 -translate-y-8 sm:-translate-y-9'
 											: 'peer-focus:scale-70 peer-focus:-translate-y-8 sm:peer-focus:-translate-y-9'
-										}`}
+									}`}
 									style={{ transformOrigin: 'left' }}
 								>
 									{t('email')}:
@@ -214,16 +222,18 @@ const LoginForm = (): React.ReactElement => {
 									id='password-input'
 									type={showPassword ? 'text' : 'password'}
 									{...register('password')}
-									className={`password-input block w-full px-3 py-2.5 sm:py-3 pr-12 rounded-xl bg-[#E2EEE2] border text-[#8C8C8C] text-lg sm:text-xl font-normal placeholder-transparent focus:outline-none focus:border-[#48715B] focus:ring-0 shadow-none peer ${errors.password ? 'border-red-500' : 'border-[#8C8C8C]/30'
-										}`}
+									className={`password-input block w-full px-3 py-2.5 sm:py-3 pr-12 rounded-xl bg-[#E2EEE2] border text-[#8C8C8C] text-lg sm:text-xl font-normal placeholder-transparent focus:outline-none focus:border-[#48715B] focus:ring-0 shadow-none peer ${
+										errors.password ? 'border-red-500' : 'border-[#8C8C8C]/30'
+									}`}
 									placeholder={t('password')}
 								/>
 								<label
 									htmlFor='password-input'
-									className={`password-label absolute left-3 top-2.5 sm:top-3 text-lg sm:text-xl font-normal text-[#8C8C8C]/70 bg-[#E2EEE2] px-1 transition-all duration-200 pointer-events-none ${passwordValue
+									className={`password-label absolute left-3 top-2.5 sm:top-3 text-lg sm:text-xl font-normal text-[#8C8C8C]/70 bg-[#E2EEE2] px-1 transition-all duration-200 pointer-events-none ${
+										passwordValue
 											? 'scale-70 -translate-y-8 sm:-translate-y-9'
 											: 'peer-focus:scale-70 peer-focus:-translate-y-8 sm:peer-focus:-translate-y-9'
-										}`}
+									}`}
 									style={{ transformOrigin: 'left' }}
 								>
 									{t('password')}:

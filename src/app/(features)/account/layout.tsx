@@ -10,6 +10,7 @@ import { useRouter } from 'next/navigation'
 import { useTranslations } from 'next-intl'
 import { logger } from '@/utils/logger'
 import Loading from '@/components/common/Loading'
+import Image from 'next/image'
 
 type AccountLayoutProps = {
 	children: ReactNode
@@ -122,10 +123,18 @@ const AccountLayout = ({ children }: AccountLayoutProps) => {
 				id='account-content'
 				className='relative z-10 gap-6 p-8 mr-6 w-full '
 			>
-				<div className=' dark:bg-dark-surface/95 backdrop-blur-md rounded-2xl shadow-2xl max-w-3xl mx-auto'>
-					<section id='account-main-section' className=''>
+				<div className='bg-main backdrop-blur-md rounded-2xl shadow-2xl max-w-3xl mx-auto overflow-hidden '>
+					<section id='account-main-section' className='relative z-10'>
 						{children}
 					</section>
+					<Image
+						src='/assets/common/drum_pattern.webp'
+						alt='Drum Pattern'
+						width={2000}
+						height={2000}
+						className='absolute top-0 z-0 opacity-[3%] size-500 object-cover'
+						draggable={false}
+					/>
 				</div>
 			</div>
 		</div>

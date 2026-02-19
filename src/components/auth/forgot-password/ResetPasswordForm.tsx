@@ -7,6 +7,7 @@ import { z } from 'zod'
 import { lockScroll } from '@/utils/scrollLock'
 import axios from '@/common/axios'
 import { FORM_CONSTANTS, VALIDATION_PATTERNS, ERROR_MESSAGES } from '@/utils/validation/registerValidation.constants'
+import { useTranslations } from 'next-intl'
 import { useRouter } from 'next/navigation'
 import AuthIllustration from '@/components/art/AuthIllustration'
 import Link from 'next/link'
@@ -28,9 +29,22 @@ const ResetPasswordSchema = z
 type ResetPasswordFormData = z.infer<typeof ResetPasswordSchema>
 
 const ResetPasswordForm = (): React.ReactElement => {
+	const t = useTranslations('auth')
 	const router = useRouter()
 	const [isSuccess, setIsSuccess] = useState(false)
 	const [initialToken, setInitialToken] = useState<string | null>(null)
+
+	const getAuthErrorMessage = (errorMessage?: string, fallbackKey: string = 'resetPasswordConfirmFailed'): string => {
+		if (errorMessage?.trim()) {
+			try {
+				const translated = t(errorMessage.trim())
+				return translated !== errorMessage.trim() ? translated : t(fallbackKey)
+			} catch {
+				return t(fallbackKey)
+			}
+		}
+		return t(fallbackKey)
+	}
 
 	const {
 		register,
@@ -119,7 +133,7 @@ const ResetPasswordForm = (): React.ReactElement => {
 			if (response?.data && !response.data.isSuccess) {
 				setFormError('root', {
 					type: 'manual',
-					message: response.data.message || 'Unable to reset password',
+					message: getAuthErrorMessage(response.data.errorMessage),
 				})
 				return
 			}
@@ -128,15 +142,13 @@ const ResetPasswordForm = (): React.ReactElement => {
 			reset()
 			setTimeout(() => router.push('/login'), 2000)
 		} catch (err: unknown) {
-			let message = 'Network error'
+			let message = t('networkError')
 			if (err && typeof err === 'object' && 'response' in err) {
-				const e = err as { response?: { status?: number; data?: { message?: string } }; message?: string }
+				const e = err as { response?: { status?: number; data?: { errorMessage?: string; message?: string } }; message?: string }
 				console.debug('ResetPassword - error', e.response || e)
-				if (e.response?.status === 401) {
-					message = e.response?.data?.message || 'Yêu cầu hết hạn hoặc không hợp lệ. Vui lòng gửi lại yêu cầu đặt lại mật khẩu mới!'
-				} else {
-					message = e.response?.data?.message || e.message || message
-				}
+				message = e.response?.data?.errorMessage
+					? getAuthErrorMessage(e.response.data.errorMessage)
+					: (e.response?.data?.message || e.message || message)
 			} else if (err instanceof Error) {
 				message = err.message
 			}

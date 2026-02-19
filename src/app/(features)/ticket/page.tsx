@@ -66,6 +66,7 @@ const TicketPage = (): React.ReactElement => {
 	}
 
 	const isDisabled = !account || isBlacklisted || hasActiveTicket
+	const isTierClosed = (tier: TicketTier) => tier.is_active === false
 
 	// Purchase notices
 	const purchaseNotices = [
@@ -98,64 +99,80 @@ const TicketPage = (): React.ReactElement => {
 				<div className='max-w-7xl mx-auto'>
 					{/* 3 Scrolls Side by Side */}
 					<div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
-						{tiers.map(tier => (
-							<CollapsibleScroll key={tier.id} initialOpen>
-								{/* Tier Header */}
-								<div className='bg-[#548780] px-4 py-4 text-center'>
-									<h3 className='text-2xl font-bold text-[#e2eee2] josefin italic'>
-										{tier.ticket_name}
-									</h3>
-									<div className='text-lg text-[#e2eee2] mt-1'>
-										{formatPrice(tier.price)} VND
+						{tiers.map(tier => {
+							const closed = isTierClosed(tier)
+							return (
+								<CollapsibleScroll key={tier.id} initialOpen>
+									{/* Tier Header */}
+									<div
+										className={`px-4 py-4 text-center ${closed ? 'bg-[#548780]/70' : 'bg-[#548780]'}`}
+									>
+										<div className='flex items-center justify-center gap-2 flex-wrap'>
+											<h3
+												className={`text-2xl font-bold josefin italic ${closed ? 'text-[#e2eee2]/80' : 'text-[#e2eee2]'}`}
+											>
+												{tier.ticket_name}
+											</h3>
+											{closed && (
+												<span className='px-2 py-0.5 rounded text-xs font-semibold uppercase bg-[#e2eee2]/20 text-[#e2eee2]'>
+													{t('closed')}
+												</span>
+											)}
+										</div>
+										<div className={`text-lg mt-1 ${closed ? 'text-[#e2eee2]/80' : 'text-[#e2eee2]'}`}>
+											{formatPrice(tier.price)} VND
+										</div>
 									</div>
-								</div>
 
-								{/* Benefits List */}
-								<div className='px-4 py-4'>
-									{tier.benefits && tier.benefits.length > 0 && (
-										<>
-											<p className='text-sm text-[#48715b] font-medium mb-3'>
-												{t('ticketIncludes')}:
-											</p>
-											<ul className='space-y-2'>
-												{tier.benefits.map((benefit, index) => (
-													<li key={index} className='flex items-start gap-2'>
-														<Check className='w-4 h-4 text-[#7cbc97] flex-shrink-0 mt-0.5' />
-														<span className='text-sm text-[#154c5b] break-all'>
-															{benefit}
-														</span>
-													</li>
-												))}
-											</ul>
-										</>
-									)}
+									{/* Benefits List */}
+									<div className={`px-4 py-4 ${closed ? 'opacity-75' : ''}`}>
+										{tier.benefits && tier.benefits.length > 0 && (
+											<>
+												<p className='text-sm text-[#48715b] font-medium mb-3'>
+													{t('ticketIncludes')}:
+												</p>
+												<ul className='space-y-2'>
+													{tier.benefits.map((benefit, index) => (
+														<li key={index} className='flex items-start gap-2'>
+															<Check className='w-4 h-4 text-[#7cbc97] flex-shrink-0 mt-0.5' />
+															<span className='text-sm text-[#154c5b] break-all'>
+																{benefit}
+															</span>
+														</li>
+													))}
+												</ul>
+											</>
+										)}
 
-									{/* Buy Button for this tier */}
-									<div className='mt-6'>
-										<button
-											onClick={() => handlePurchase(tier.id)}
-											disabled={isDisabled || purchaseMutation.isPending}
-											className={`
-												w-full py-3 px-6 rounded-lg font-semibold text-lg uppercase tracking-wide
-												transition-all duration-200
-												shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)]
-												${
-													isDisabled || purchaseMutation.isPending
-														? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-														: 'bg-[#e8f0e8] text-[#48715b] hover:bg-[#d8e8d8] active:translate-y-0.5'
-												}
-											`}
-										>
-											{purchaseMutation.isPending
-												? tCommon('processing')
-												: `${t('buyNow')} !!`}
-										</button>
+										{/* Buy Button for this tier */}
+										<div className='mt-6'>
+											<button
+												onClick={() => !closed && handlePurchase(tier.id)}
+												disabled={isDisabled || closed || purchaseMutation.isPending}
+												className={`
+													w-full py-3 px-6 rounded-lg font-semibold text-lg uppercase tracking-wide
+													transition-all duration-200
+													shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)]
+													${
+														isDisabled || closed || purchaseMutation.isPending
+															? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+															: 'bg-[#e8f0e8] text-[#48715b] hover:bg-[#d8e8d8] active:translate-y-0.5'
+													}
+												`}
+											>
+												{purchaseMutation.isPending
+													? tCommon('processing')
+													: closed
+														? t('closed')
+														: `${t('buyNow')} !!`}
+											</button>
+										</div>
 									</div>
-								</div>
 
-								<div className='pb-3' />
-							</CollapsibleScroll>
-						))}
+									<div className='pb-3' />
+								</CollapsibleScroll>
+							)
+						})}
 					</div>
 
 					{tiers.length === 0 && (

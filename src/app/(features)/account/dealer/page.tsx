@@ -21,7 +21,7 @@ const DealerPage = () => {
 	// If user is not a dealer, show message immediately
 	if (!isDealer) {
 		return (
-			<div className='rounded-[30px] bg-[#E9F5E7] p-8 shadow-sm text-text-secondary'>
+			<div className='rounded-[30px] p-8 shadow-sm text-text-secondary'>
 				<div className='flex items-center gap-3 mb-8'>
 					<Store className='w-8 h-8 text-[#48715B]' />
 					<h1 className='text-3xl font-bold text-center'>{t('title')}</h1>

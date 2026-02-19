@@ -51,8 +51,8 @@ const InfoField = ({
 	}
 	return (
 		<div className='space-y-1'>
-			<label className='text-xs font-medium text-[#48715B]'>{label}</label>
-			<div className='text-sm text-text-secondary'>{value || emptyLabel}</div>
+			<label className='text-lg font-medium text-[#48715B]'>{label}</label>
+			<div className='text-xl text-text-secondary'>{value || emptyLabel}</div>
 		</div>
 	)
 }
@@ -184,13 +184,13 @@ const AccountPage = () => {
 	}
 
 	return (
-		<div className='rounded-[30px] bg-[#E9F5E7] p-5 shadow-sm text-text-secondary'>
+		<div className='rounded-[30px] p-5 shadow-sm text-text-secondary'>
 			<h1 className='text-3xl font-bold mb-4 text-center'>{t('title')}</h1>
 
 			<div className='flex flex-col gap-5'>
 				{/* Avatar Section */}
 				<div className='flex-shrink-0'>
-					<label className='block text-xs font-medium text-[#48715B] mb-2'>
+					<label className='block text-xl font-medium text-[#48715B] mb-2'>
 						{t('avatarLabel')}
 					</label>
 					<div className='flex items-center gap-3'>
@@ -198,7 +198,11 @@ const AccountPage = () => {
 							{account.avatar ? (
 								<S3Image
 									src={account.avatar}
-									alt={account.fursona_name || account.first_name || t('avatarFallback')}
+									alt={
+										account.fursona_name ||
+										account.first_name ||
+										t('avatarFallback')
+									}
 									fill
 									className='object-cover'
 								/>
@@ -267,7 +271,11 @@ const AccountPage = () => {
 										onChange={handleInputChange}
 										emptyLabel={t('na')}
 									/>
-									<InfoField label={t('email')} value={account.email} emptyLabel={t('na')} />
+									<InfoField
+										label={t('email')}
+										value={account.email}
+										emptyLabel={t('na')}
+									/>
 								</div>
 								<div className='grid grid-cols-1 sm:grid-cols-2 gap-3'>
 									<div className='relative w-full'>
@@ -317,15 +325,31 @@ const AccountPage = () => {
 							</>
 						) : (
 							<div className='grid grid-cols-1 sm:grid-cols-2 gap-3'>
-								<InfoField label={t('fullName')} value={fullName} emptyLabel={t('na')} />
-								<InfoField label={t('fursonaName')} value={account.fursona_name} emptyLabel={t('na')} />
-								<InfoField label={t('email')} value={account.email} emptyLabel={t('na')} />
+								<InfoField
+									label={t('fullName')}
+									value={fullName}
+									emptyLabel={t('na')}
+								/>
+								<InfoField
+									label={t('fursonaName')}
+									value={account.fursona_name}
+									emptyLabel={t('na')}
+								/>
+								<InfoField
+									label={t('email')}
+									value={account.email}
+									emptyLabel={t('na')}
+								/>
 								<InfoField
 									label={t('country')}
 									value={getName(account.country || '')}
 									emptyLabel={t('na')}
 								/>
-								<InfoField label={t('idCard')} value={account.id_card} emptyLabel={t('na')} />
+								<InfoField
+									label={t('idCard')}
+									value={account.id_card}
+									emptyLabel={t('na')}
+								/>
 							</div>
 						)}
 					</div>
@@ -356,7 +380,9 @@ const AccountPage = () => {
 									disabled={updateMeMutation.isPending}
 									className='shadow-md flex-1 py-2 px-3 text-xl rounded-lg bg-bg text-text-secondary font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-dark-surface disabled:opacity-50 disabled:cursor-not-allowed'
 								>
-									{updateMeMutation.isPending ? tCommon('saving') : t('saveChanges')}
+									{updateMeMutation.isPending
+										? tCommon('saving')
+										: t('saveChanges')}
 								</button>
 								<button
 									type='button'

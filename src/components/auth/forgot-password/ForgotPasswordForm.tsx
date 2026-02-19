@@ -23,6 +23,18 @@ const ForgotPasswordForm = (): React.ReactElement => {
 	const router = useRouter()
 	const [isSuccess, setIsSuccess] = useState(false)
 
+	const getAuthErrorMessage = (errorMessage?: string, fallbackKey: string = 'forgotPasswordFailed'): string => {
+		if (errorMessage?.trim()) {
+			try {
+				const translated = t(errorMessage.trim())
+				return translated !== errorMessage.trim() ? translated : t(fallbackKey)
+			} catch {
+				return t(fallbackKey)
+			}
+		}
+		return t(fallbackKey)
+	}
+
 	const {
 		register,
 		handleSubmit,
@@ -49,7 +61,7 @@ const ForgotPasswordForm = (): React.ReactElement => {
 			if (response?.data && !response.data.isSuccess) {
 				setFormError('root', {
 					type: 'manual',
-					message: response.data.message || 'Unable to send reset link',
+					message: getAuthErrorMessage(response.data.errorMessage),
 				})
 				return
 			}
@@ -58,10 +70,12 @@ const ForgotPasswordForm = (): React.ReactElement => {
 			reset()
 			setTimeout(() => router.push('/login'), 5000)
 		} catch (err: unknown) {
-			let message = 'Network error'
+			let message = t('networkError')
 			if (err && typeof err === 'object' && 'response' in err) {
-				const e = err as { response?: { data?: { message?: string } }; message?: string }
-				message = e.response?.data?.message || e.message || message
+				const e = err as { response?: { data?: { errorMessage?: string } }; message?: string }
+				message = e.response?.data?.errorMessage
+					? getAuthErrorMessage(e.response.data.errorMessage)
+					: (e.response?.data as { message?: string } | undefined)?.message || e.message || message
 			} else if (err instanceof Error) {
 				message = err.message
 			}

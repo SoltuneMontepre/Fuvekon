@@ -35,7 +35,10 @@ const ChangePasswordPage = () => {
 					currentPassword: z.string().min(1, t('validation.required')),
 					newPassword: z
 						.string()
-						.min(FORM_CONSTANTS.MIN_PASSWORD_LENGTH, t('validation.weakPassword'))
+						.min(
+							FORM_CONSTANTS.MIN_PASSWORD_LENGTH,
+							t('validation.weakPassword')
+						)
 						.max(
 							FORM_CONSTANTS.MAX_PASSWORD_LENGTH,
 							t('validation.passwordTooLong')
@@ -82,18 +85,18 @@ const ChangePasswordPage = () => {
 						toast.success(t('success'))
 						reset()
 					} else {
-						toast.error(response.message || t('failed'))
+						const msg = response.errorMessage
+							? tAuth(response.errorMessage)
+							: (response.message || t('failed'))
+						toast.error(msg)
 					}
 				},
 				onError: (error: unknown) => {
-					const err = error as { response?: { data?: { message?: string } } }
-					const message =
-						err?.response?.data?.message || t('failedRetry')
+					const err = error as { response?: { data?: { errorMessage?: string; message?: string } } }
+					const errorMessage = err?.response?.data?.errorMessage
+					const message = errorMessage ? tAuth(errorMessage) : (err?.response?.data?.message || t('failedRetry'))
 					toast.error(message)
-					if (
-						message.toLowerCase().includes('current') ||
-						message.toLowerCase().includes('hiện tại')
-					) {
+					if (errorMessage === 'currentPasswordIncorrect') {
 						setError('currentPassword', { type: 'manual', message })
 					}
 				},
@@ -106,7 +109,7 @@ const ChangePasswordPage = () => {
 	const inputError = 'border-red-500'
 
 	return (
-		<div className='rounded-[30px] bg-[#E9F5E7] p-8 shadow-sm text-text-secondary'>
+		<div className='rounded-[30px] p-8 shadow-sm text-text-secondary'>
 			<h1 className='text-3xl font-bold mb-8 text-center'>{t('title')}</h1>
 
 			<form
@@ -133,7 +136,9 @@ const ChangePasswordPage = () => {
 							type='button'
 							onClick={() => setShowCurrent(!showCurrent)}
 							className='absolute right-3 top-1/2 -translate-y-1/2 text-[#8C8C8C] hover:text-[#48715B]'
-							title={showCurrent ? tAuth('hidePassword') : tAuth('showPassword')}
+							title={
+								showCurrent ? tAuth('hidePassword') : tAuth('showPassword')
+							}
 							tabIndex={-1}
 						>
 							{showCurrent ? (
@@ -207,7 +212,9 @@ const ChangePasswordPage = () => {
 							type='button'
 							onClick={() => setShowConfirm(!showConfirm)}
 							className='absolute right-3 top-1/2 -translate-y-1/2 text-[#8C8C8C] hover:text-[#48715B]'
-							title={showConfirm ? tAuth('hidePassword') : tAuth('showPassword')}
+							title={
+								showConfirm ? tAuth('hidePassword') : tAuth('showPassword')
+							}
 							tabIndex={-1}
 						>
 							{showConfirm ? (
