@@ -71,7 +71,35 @@
 		"verifyOtpFailed": "Verification failed. Please try again.",
 		"forgotPasswordFailed": "Failed to process request. Please try again.",
 		"resetPasswordConfirmFailed": "Failed to reset password. Please try again.",
-		"networkError": "Connection error. Please check your network and try again."
+		"networkError": "Connection error. Please check your network and try again.",
+		"send": "Send",
+		"sending": "Sending...",
+		"backToLogin": "Back to login",
+		"forgotPasswordEmailSent": "If you have an account with that email, you will receive instructions shortly to reset your password.",
+		"resetPasswordTitle": "Reset Password",
+		"resetPasswordSuccess": "Your password has been reset successfully! Redirecting to login...",
+		"resetting": "Resetting...",
+		"pasteTokenHere": "Paste token here",
+		"confirm": "Confirm",
+		"emailRequired": "Email is required",
+		"invalidEmail": "Invalid email address",
+		"passwordRequired": "Password is required",
+		"changePassword": {
+			"title": "Change Password",
+			"newPassword": "New Password",
+			"newPasswordPlaceholder": "Enter new password",
+			"confirmPassword": "Confirm Password",
+			"confirmPasswordPlaceholder": "Re-enter new password",
+			"tokenPlaceholder": "Token (optional)",
+			"placeholder": "Password",
+			"validation": {
+				"required": "This field is required",
+				"mismatch": "Passwords do not match",
+				"weakPassword": "Password must be at least 8 characters and include uppercase, lowercase, and a number.",
+				"passwordTooLong": "Password cannot exceed 128 characters."
+			},
+			"success": "Your password has been updated."
+		}
 	},
 	"ticket": {
 		"title": "TICKET REGISTRATION",
