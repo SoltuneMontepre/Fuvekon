@@ -71,7 +71,35 @@
 		"verifyOtpFailed": "验证失败，请重试。",
 		"forgotPasswordFailed": "请求处理失败，请重试。",
 		"resetPasswordConfirmFailed": "重置密码失败，请重试。",
-		"networkError": "网络错误，请检查网络后重试。"
+		"networkError": "网络错误，请检查网络后重试。",
+		"send": "发送",
+		"sending": "正在发送...",
+		"backToLogin": "返回登录页",
+		"forgotPasswordEmailSent": "如果您的邮箱有账户，很快您会收到重置密码的指示。",
+		"resetPasswordTitle": "重置密码",
+		"resetPasswordSuccess": "您的密码已成功重置！正在跳转到登录页面...",
+		"resetting": "正在重置...",
+		"pasteTokenHere": "在此处粘贴令牌",
+		"confirm": "确认",
+		"emailRequired": "需要填写电子邮件",
+		"invalidEmail": "电子邮件地址无效",
+		"passwordRequired": "需要密码",
+		"changePassword": {
+			"title": "更改密码",
+			"newPassword": "新密码",
+			"newPasswordPlaceholder": "输入新密码",
+			"confirmPassword": "确认密码",
+			"confirmPasswordPlaceholder": "再次输入新密码",
+			"tokenPlaceholder": "令牌（可选）",
+			"placeholder": "密码",
+			"validation": {
+				"required": "此字段为必填项",
+				"mismatch": "密码不匹配",
+				"weakPassword": "密码必须至少 8 个字符，并包括大写、小写和数字。",
+				"passwordTooLong": "密码不能超过 128 个字符。"
+			},
+			"success": "您的密码已更新。"
+		}
 	},
 	"ticket": {
 		"title": "门票注册",
@@ -321,7 +349,7 @@
 		"currentPasswordLabel": "当前密码",
 		"currentPasswordPlaceholder": "输入当前密码",
 		"newPasswordLabel": "新密码",
-		"newPasswordPlaceholder": "至少8个字符，含大小写字母和数字",
+		"newPasswordPlaceholder": "输入新密码",
 		"confirmPasswordLabel": "确认新密码",
 		"confirmPasswordPlaceholder": "再次输入新密码",
 		"submitButton": "修改密码",

@@ -71,7 +71,35 @@
 		"verifyOtpFailed": "Xác minh thất bại. Vui lòng thử lại.",
 		"forgotPasswordFailed": "Xử lý yêu cầu thất bại. Vui lòng thử lại.",
 		"resetPasswordConfirmFailed": "Đặt lại mật khẩu thất bại. Vui lòng thử lại.",
-		"networkError": "Lỗi kết nối. Vui lòng kiểm tra mạng và thử lại."
+		"networkError": "Lỗi kết nối. Vui lòng kiểm tra mạng và thử lại.",
+		"send": "Gửi",
+		"sending": "Đang gửi...",
+		"backToLogin": "Trở về trang Login",
+		"forgotPasswordEmailSent": "Nếu bạn có tài khoản với email đó, bạn sẽ sớm nhận được hướng dẫn để đặt lại mật khẩu trong giây lát.",
+		"resetPasswordTitle": "Đặt lại mật khẩu",
+		"resetPasswordSuccess": "Mật khẩu của bạn đã được đặt lại thành công! Chuyển hướng đến trang đăng nhập...",
+		"resetting": "Đang đổi...",
+		"pasteTokenHere": "Dán token tại đây",
+		"confirm": "Xác nhận",
+		"emailRequired": "Email là bắt buộc",
+		"invalidEmail": "Địa chỉ email không hợp lệ",
+		"passwordRequired": "Mật khẩu là bắt buộc",
+		"changePassword": {
+			"title": "Đổi mật khẩu",
+			"newPassword": "Mật khẩu mới",
+			"newPasswordPlaceholder": "Nhập mật khẩu mới",
+			"confirmPassword": "Xác nhận mật khẩu",
+			"confirmPasswordPlaceholder": "Nhập lại mật khẩu mới",
+			"tokenPlaceholder": "Token (tùy chọn)",
+			"placeholder": "Mật khẩu",
+			"validation": {
+				"required": "Trường này là bắt buộc",
+				"mismatch": "Mật khẩu không khớp",
+				"weakPassword": "Mật khẩu phải có ít nhất 8 ký tự và bao gồm chữ hoa, chữ thường và số.",
+				"passwordTooLong": "Mật khẩu không được quá 128 ký tự."
+			},
+			"success": "Mật khẩu của bạn đã được cập nhật."
+		}
 	},
 	"ticket": {
 		"title": "ĐĂNG KÝ VÉ",

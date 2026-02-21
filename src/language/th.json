@@ -71,7 +71,35 @@
 		"verifyOtpFailed": "ยืนยันล้มเหลว กรุณาลองอีกครั้ง",
 		"forgotPasswordFailed": "ดำเนินการล้มเหลว กรุณาลองอีกครั้ง",
 		"resetPasswordConfirmFailed": "รีเซ็ตรหัสผ่านล้มเหลว กรุณาลองอีกครั้ง",
-		"networkError": "เกิดข้อผิดพลาดในการเชื่อมต่อ กรุณาตรวจสอบเครือข่ายและลองอีกครั้ง"
+		"networkError": "เกิดข้อผิดพลาดในการเชื่อมต่อ กรุณาตรวจสอบเครือข่ายและลองอีกครั้ง",
+		"send": "ส่ง",
+		"sending": "กำลังส่ง...",
+		"backToLogin": "กลับไปหน้าล็อกอิน",
+		"forgotPasswordEmailSent": "หากคุณมีบัญชีนั้น เราจะส่งคำแนะนำเพื่อรีเซ็ตรหัสผ่านให้เร็วๆ นี้",
+		"resetPasswordTitle": "รีเซ็ตรหัสผ่าน",
+		"resetPasswordSuccess": "รหัสผ่านของคุณถูกรีเซ็ตเรียบร้อยแล้ว! กำลังเปลี่ยนเส้นทางไปยังหน้าล็อกอิน...",
+		"resetting": "กำลังรีเซ็ต...",
+		"pasteTokenHere": "วางโทเค็นที่นี่",
+		"confirm": "ยืนยัน",
+		"emailRequired": "กรุณากรอกอีเมล",
+		"invalidEmail": "ที่อยู่อีเมลไม่ถูกต้อง",
+		"passwordRequired": "กรุณากรอกรหัสผ่าน",
+		"changePassword": {
+			"title": "เปลี่ยนรหัสผ่าน",
+			"newPassword": "รหัสผ่านใหม่",
+			"newPasswordPlaceholder": "กรอกรหัสผ่านใหม่",
+			"confirmPassword": "ยืนยันรหัสผ่าน",
+			"confirmPasswordPlaceholder": "กรอกรหัสผ่านใหม่อีกครั้ง",
+			"tokenPlaceholder": "โทเค็น (ไม่บังคับ)",
+			"placeholder": "รหัสผ่าน",
+			"validation": {
+				"required": "จำเป็นต้องกรอก",
+				"mismatch": "รหัสผ่านไม่ตรงกัน",
+				"weakPassword": "รหัสผ่านต้องมีอย่างน้อย 8 ตัวอักษร รวมตัวพิมพ์ใหญ่ พิมพ์เล็ก และตัวเลข",
+				"passwordTooLong": "รหัสผ่านต้องไม่เกิน 128 ตัวอักษร"
+			},
+			"success": "รหัสผ่านของคุณได้รับการอัปเดตแล้ว."
+		}
 	},
 	"ticket": {
 		"title": "ลงทะเบียนตั๋ว",
@@ -321,7 +349,7 @@
 		"currentPasswordLabel": "รหัสผ่านปัจจุบัน",
 		"currentPasswordPlaceholder": "กรอกรหัสผ่านปัจจุบัน",
 		"newPasswordLabel": "รหัสผ่านใหม่",
-		"newPasswordPlaceholder": "อย่างน้อย 8 ตัวอักษร มีตัวพิมพ์ใหญ่ ตัวพิมพ์เล็ก และตัวเลข",
+		"newPasswordPlaceholder": "กรอกรหัสผ่านใหม่",
 		"confirmPasswordLabel": "ยืนยันรหัสผ่านใหม่",
 		"confirmPasswordPlaceholder": "กรอกรหัสผ่านใหม่อีกครั้ง",
 		"submitButton": "เปลี่ยนรหัสผ่าน",
