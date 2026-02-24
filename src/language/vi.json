@@ -71,7 +71,10 @@
 		"verifyOtpFailed": "Xác minh thất bại. Vui lòng thử lại.",
 		"forgotPasswordFailed": "Xử lý yêu cầu thất bại. Vui lòng thử lại.",
 		"resetPasswordConfirmFailed": "Đặt lại mật khẩu thất bại. Vui lòng thử lại.",
-		"networkError": "Lỗi kết nối. Vui lòng kiểm tra mạng và thử lại."
+		"networkError": "Lỗi kết nối. Vui lòng kiểm tra mạng và thử lại.",
+		"signInWithGoogle": "Đăng nhập bằng Google",
+		"orContinueWith": "hoặc tiếp tục với",
+		"googleLoginFailed": "Đăng nhập Google thất bại. Vui lòng thử lại."
 	},
 	"ticket": {
 		"title": "ĐĂNG KÝ VÉ",

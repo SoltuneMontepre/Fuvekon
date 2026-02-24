@@ -2,6 +2,9 @@
 
 import Background from '@/components/ui/Background'
 import React, { useEffect, useState } from 'react'
+import { GoogleOAuthProvider } from '@react-oauth/google'
+
+const googleClientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID ?? ''
 
 const AuthPageLayout = ({ children }: { children: React.ReactNode }) => {
 	const [isLoaded, setIsLoaded] = useState(false)
@@ -10,7 +13,7 @@ const AuthPageLayout = ({ children }: { children: React.ReactNode }) => {
 		setIsLoaded(true)
 	}, [])
 
-	return (
+	const content = (
 		<div
 			className='absolute inset-0 transition-opacity duration-500 ease-out'
 			style={{ opacity: isLoaded ? 1 : 0 }}
@@ -22,6 +25,16 @@ const AuthPageLayout = ({ children }: { children: React.ReactNode }) => {
 			<div className='absolute inset-0 h-screen w-screen backdrop-blur-sm' />
 		</div>
 	)
+
+	if (googleClientId) {
+		return (
+			<GoogleOAuthProvider clientId={googleClientId}>
+				{content}
+			</GoogleOAuthProvider>
+		)
+	}
+
+	return content
 }
 
 export default AuthPageLayout

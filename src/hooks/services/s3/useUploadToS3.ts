@@ -58,6 +58,7 @@ export function useUploadToS3(options?: UploadToS3Options): UploadToS3Result {
 				fileType: file.type,
 				expiresIn: 3600, // 1 hour default
 				...presignOptions,
+				contentLength: file.size, // always use actual size so server can validate; presigned URL is bound to this
 			})
 
 			if (!presignResponse.isSuccess || !presignResponse.data) {

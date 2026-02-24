@@ -71,7 +71,10 @@
 		"verifyOtpFailed": "验证失败，请重试。",
 		"forgotPasswordFailed": "请求处理失败，请重试。",
 		"resetPasswordConfirmFailed": "重置密码失败，请重试。",
-		"networkError": "网络错误，请检查网络后重试。"
+		"networkError": "网络错误，请检查网络后重试。",
+		"signInWithGoogle": "使用 Google 登录",
+		"orContinueWith": "或使用以下方式继续",
+		"googleLoginFailed": "Google 登录失败，请重试。"
 	},
 	"ticket": {
 		"title": "门票注册",

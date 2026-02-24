@@ -71,7 +71,10 @@
 		"verifyOtpFailed": "Verification failed. Please try again.",
 		"forgotPasswordFailed": "Failed to process request. Please try again.",
 		"resetPasswordConfirmFailed": "Failed to reset password. Please try again.",
-		"networkError": "Connection error. Please check your network and try again."
+		"networkError": "Connection error. Please check your network and try again.",
+		"signInWithGoogle": "Sign in with Google",
+		"orContinueWith": "or continue with",
+		"googleLoginFailed": "Google sign-in failed. Please try again."
 	},
 	"ticket": {
 		"title": "TICKET REGISTRATION",

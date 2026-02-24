@@ -6,6 +6,8 @@ import type { ApiResponse } from '@/types/api/response'
 export interface PresignRequest {
 	fileName: string
 	fileType: string
+	/** File size in bytes (required for server-side size check and presigned URL binding) */
+	contentLength: number
 	/** Optional folder/path prefix in S3 bucket */
 	folder?: string
 	/** Optional expiration time in seconds (default: 3600) */
