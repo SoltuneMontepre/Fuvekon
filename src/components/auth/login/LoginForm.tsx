@@ -11,6 +11,7 @@ import { useGoogleLogin } from '@/hooks/services/auth/useGoogleLogin'
 import { useGetMe } from '@/hooks/services/auth/useAccount'
 import { useAuthStore } from '@/stores/authStore'
 import GoogleLoginButton from './GoogleLoginButton'
+import { storeGoogleCredential } from '@/hooks/services/auth/useGoogleRegister'
 import { useTranslations } from 'next-intl'
 import { useRouter } from 'next/navigation'
 import { z } from 'zod'
@@ -33,12 +34,15 @@ const LoginForm = (): React.ReactElement => {
 		password: z.string().min(1, t('passwordRequired')),
 	})
 	type LoginFormData = z.infer<typeof LoginSchema>
-	const hasGoogleClientId = typeof process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID === 'string' && process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID.length > 0
+	const hasGoogleClientId =
+		typeof process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID === 'string' &&
+		process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID.length > 0
 
 	const {
 		register,
 		handleSubmit,
 		watch,
+		clearErrors,
 		formState: { errors, isSubmitting },
 		setError: setFormError,
 	} = useForm<LoginFormData>({
@@ -144,7 +148,7 @@ const LoginForm = (): React.ReactElement => {
 			{/* Main Content Panel */}
 			<div
 				id='login-panel'
-				className='login-panel relative bg-[#E2EEE2] -translate-y-8 sm:-translate-y-16 md:-translate-y-25 rounded-2xl md:rounded-[32px] overflow-hidden shadow-2xl flex flex-col md:flex-row min-h-[450px] items-center justify-center md:justify-start'
+				className='login-panel relative bg-[#E2EEE2] -translate-y-8 sm:-translate-y-16 md:-translate-y-25 rounded-2xl md:rounded-[32px] overflow-hidden shadow-2xl flex flex-col md:flex-row min-h-[540px] items-center justify-center md:justify-start'
 			>
 				{/* Left Side - Character Illustration (background tràn panel) */}
 				<div
@@ -251,7 +255,10 @@ const LoginForm = (): React.ReactElement => {
 								>
 									{t('password')}:
 								</label>
-								<PasswordToggleButton show={showPassword} onToggle={() => setShowPassword(!showPassword)} />
+								<PasswordToggleButton
+									show={showPassword}
+									onToggle={() => setShowPassword(!showPassword)}
+								/>
 								{errors.password && (
 									<p
 										id='password-error'
@@ -268,7 +275,11 @@ const LoginForm = (): React.ReactElement => {
 								id='login-submit-button'
 								type='submit'
 								className='login-submit-button block mx-auto w-full max-w-[200px] sm:w-[200px] py-3 sm:py-3.5 rounded-xl text-[#48715B] font-semibold text-base sm:text-lg hover:bg-[#48715B]/90 hover:text-[#E2EEE2] active:bg-[#48715B]/80 focus:outline-none focus:ring-4 focus:ring-[#48715B]/30 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed'
-								disabled={isSubmitting || loginMutation.isPending || googleLoginMutation.isPending}
+								disabled={
+									isSubmitting ||
+									loginMutation.isPending ||
+									googleLoginMutation.isPending
+								}
 							>
 								{isSubmitting || loginMutation.isPending
 									? t('loggingIn')
@@ -280,26 +291,50 @@ const LoginForm = (): React.ReactElement => {
 								<>
 									<div className='login-divider flex items-center gap-3 w-full max-w-[360px] sm:w-96 mx-auto'>
 										<span className='flex-1 h-px bg-[#8C8C8C]/30' aria-hidden />
-										<span className='text-[#8C8C8C] text-sm'>{t('orContinueWith')}</span>
+										<span className='text-[#8C8C8C] text-sm'>
+											{t('orContinueWith')}
+										</span>
 										<span className='flex-1 h-px bg-[#8C8C8C]/30' aria-hidden />
 									</div>
 									<div className='flex justify-center w-full max-w-[360px] sm:w-96 mx-auto'>
 										<GoogleLoginButton
 											onSuccess={credential => {
+												clearErrors('root')
 												googleLoginMutation.mutate(credential, {
 													onError: err => {
-														const data = (err as { response?: { data?: { errorMessage?: string } } })?.response?.data
+														const data = (
+															err as {
+																response?: { data?: { errorMessage?: string } }
+															}
+														)?.response?.data
+														if (
+															data?.errorMessage ===
+															'googleRegistrationDetailsRequired'
+														) {
+															storeGoogleCredential(credential)
+															router.push('/register/google')
+															return
+														}
 														setFormError('root', {
 															type: 'manual',
-															message: data?.errorMessage ? getLoginErrorMessage(data.errorMessage) : t('googleLoginFailed'),
+															message: data?.errorMessage
+																? getLoginErrorMessage(data.errorMessage)
+																: t('googleLoginFailed'),
 														})
 													},
 												})
 											}}
 											onError={() => {
-												setFormError('root', { type: 'manual', message: t('googleLoginFailed') })
+												setFormError('root', {
+													type: 'manual',
+													message: t('googleLoginFailed'),
+												})
 											}}
-											disabled={googleLoginMutation.isPending || isSubmitting || loginMutation.isPending}
+											disabled={
+												googleLoginMutation.isPending ||
+												isSubmitting ||
+												loginMutation.isPending
+											}
 										/>
 									</div>
 								</>
@@ -335,4 +370,3 @@ const LoginForm = (): React.ReactElement => {
 }
 
 export default LoginForm
-

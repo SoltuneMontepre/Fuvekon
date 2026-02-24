@@ -25,11 +25,18 @@ import {
 import axios from '@/common/axios'
 import type { RegisterResponse } from '@/types/auth/register'
 import { useTranslations } from 'next-intl'
+import { useGoogleLogin } from '@/hooks/services/auth/useGoogleLogin'
+import GoogleLoginButton from '@/components/auth/login/GoogleLoginButton'
+import { storeGoogleCredential } from '@/hooks/services/auth/useGoogleRegister'
 
 const RegisterForm = (): React.ReactElement => {
 	const [isSuccess, setIsSuccess] = useState(false)
 	const router = useRouter()
 	const t = useTranslations('auth')
+	const googleLoginMutation = useGoogleLogin()
+	const hasGoogleClientId =
+		typeof process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID === 'string' &&
+		process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID.length > 0
 
 	// Backend sends errorMessage as i18n key; we translate it
 	const getAuthErrorMessage = (errorMessage?: string, fallbackKey: string = 'registerFailed'): string => {
@@ -47,6 +54,7 @@ const RegisterForm = (): React.ReactElement => {
 	const {
 		control,
 		handleSubmit,
+		clearErrors,
 		formState: { errors, isSubmitting },
 		setError,
 		reset,
@@ -297,13 +305,70 @@ const RegisterForm = (): React.ReactElement => {
 							{/* Submit Button */}
 							<button
 								type='submit'
-								disabled={isSubmitting}
+								disabled={isSubmitting || googleLoginMutation.isPending}
 								className={`${FORM_STYLES.button.primary} ${
-									isSubmitting ? FORM_STYLES.button.disabled : ''
+									isSubmitting || googleLoginMutation.isPending
+										? FORM_STYLES.button.disabled
+										: ''
 								}`}
 							>
 								{isSubmitting ? 'Đang đăng ký...' : 'Đăng ký'}
 							</button>
+
+							{/* Google Sign-up */}
+							{hasGoogleClientId && (
+								<>
+									<div className='flex items-center gap-3 w-full mt-3'>
+										<span className='flex-1 h-px bg-[#8C8C8C]/30' aria-hidden />
+										<span className='text-[#8C8C8C] text-sm'>
+											{t('orContinueWith')}
+										</span>
+										<span className='flex-1 h-px bg-[#8C8C8C]/30' aria-hidden />
+									</div>
+									<div className='flex justify-center w-full mt-3'>
+										<GoogleLoginButton
+											onSuccess={credential => {
+												clearErrors('root')
+												googleLoginMutation.mutate(credential, {
+													onError: err => {
+														const data = (
+															err as {
+																response?: { data?: { errorMessage?: string } }
+															}
+														)?.response?.data
+														if (
+															data?.errorMessage ===
+															'googleRegistrationDetailsRequired'
+														) {
+															storeGoogleCredential(credential)
+															router.push('/register/google')
+															return
+														}
+														setError('root', {
+															type: 'manual',
+															message: data?.errorMessage
+																? getAuthErrorMessage(
+																		data.errorMessage,
+																		'googleLoginFailed'
+																	)
+																: t('googleLoginFailed'),
+														})
+													},
+												})
+											}}
+											onError={() => {
+												setError('root', {
+													type: 'manual',
+													message: t('googleLoginFailed'),
+												})
+											}}
+											disabled={
+												googleLoginMutation.isPending || isSubmitting
+											}
+										/>
+									</div>
+								</>
+							)}
 
 							{/* Links */}
 							<div className={FORM_STYLES.link.container}>

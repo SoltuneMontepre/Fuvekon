@@ -17,8 +17,6 @@ const GoogleLoginButton = ({
 	disabled = false,
 	className = '',
 }: GoogleLoginButtonProps): React.ReactElement => {
-	const t = useTranslations('auth')
-
 	const handleSuccess = (response: CredentialResponse) => {
 		if (response.credential) {
 			onSuccess(response.credential)
@@ -36,9 +34,9 @@ const GoogleLoginButton = ({
 				onSuccess={handleSuccess}
 				onError={onError}
 				useOneTap={false}
-				text='continue_with'
-				shape='rectangular'
-				theme='outline'
+				text='signin'
+				shape='pill'
+				theme='filled_black'
 				size='large'
 			/>
 		</div>
