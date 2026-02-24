@@ -11,17 +11,24 @@ import { useRouter } from 'next/navigation'
 import AuthIllustration from '@/components/art/AuthIllustration'
 import Link from 'next/link'
 
-// Minimal schema for email
-const ForgotPasswordSchema = z.object({
-	email: z.string().min(1, 'Email is required').email('Invalid email address'),
-})
+// Minimal schema for email; rebuilt inside component to access translations
 
-type ForgotPasswordFormData = z.infer<typeof ForgotPasswordSchema>
+
 
 const ForgotPasswordForm = (): React.ReactElement => {
 	const t = useTranslations('auth')
 	const router = useRouter()
 	const [isSuccess, setIsSuccess] = useState(false)
+
+	// validation schema needs translator, so build after t is available
+	const ForgotPasswordSchema = z.object({
+		email: z.string()
+			.min(1, t('emailRequired'))
+			.email(t('invalidEmail')),
+	})
+
+	// form data type derived from localized schema
+	type ForgotPasswordFormData = z.infer<typeof ForgotPasswordSchema>
 
 	const getAuthErrorMessage = (errorMessage?: string, fallbackKey: string = 'forgotPasswordFailed'): string => {
 		if (errorMessage?.trim()) {
@@ -119,9 +126,10 @@ const ForgotPasswordForm = (): React.ReactElement => {
 
 						{isSuccess && (
 							<div className='text-green-600 text-xs sm:text-sm text-center bg-green-50 border border-green-200 rounded-lg p-2.5 sm:p-3'>
-								Nếu bạn có tài khoản với email đó, bạn sẽ sớm nhận được hướng dẫn để đặt lại mật khẩu trong giây lát.
-							</div>
-						)}
+							{t('forgotPasswordEmailSent')}
+						</div>
+					)}
+
 
 						<form id='login-form' className='login-form space-y-5 sm:space-y-6' onSubmit={handleSubmit(onSubmit)}>
 							<div id='email-input-container' className='email-input-container relative w-full max-w-[360px] sm:w-96 mx-auto'>
@@ -132,7 +140,7 @@ const ForgotPasswordForm = (): React.ReactElement => {
 									aria-invalid={!!errors.email}
 									aria-describedby={errors.email ? 'email-error' : undefined}
 									className={`email-input block w-full px-3 py-2.5 sm:py-3 rounded-xl bg-[#E2EEE2] border text-[#8C8C8C] text-lg sm:text-xl font-normal placeholder-transparent focus:outline-none focus:border-[#48715B] focus:ring-0 shadow-none peer ${errors.email ? 'border-red-500' : 'border-[#8C8C8C]/30'}`}
-									placeholder='Email'
+									placeholder={t('email')}
 								/>
 								<label
 									htmlFor='email-input'
@@ -154,12 +162,11 @@ const ForgotPasswordForm = (): React.ReactElement => {
 								className='login-submit-button block mx-auto w-full max-w-[200px] sm:w-[200px] py-3 sm:py-3.5 rounded-xl text-[#48715B] font-semibold text-base sm:text-lg hover:bg-[#48715B]/90 hover:text-[#E2EEE2] active:bg-[#48715B]/80 focus:outline-none focus:ring-4 focus:ring-[#48715B]/30 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed'
 								disabled={isSubmitting}
 							>
-								{isSubmitting ? 'Đang gửi...' : 'Xác Nhận'}
+				{isSubmitting ? t('sending') : t('send')}
 							</button>
-
 							<div id='login-links-container' className='login-links-container flex items-center justify-center gap-2 text-xs sm:text-sm pt-2'>
 								<Link id='login-link' href='/login' className='register-link text-[#8C8C8C] hover:text-[#48715B]/80 font-medium transition-colors duration-200 hover:underline'>
-									Trở về trang Login
+									{t('backToLogin')}
 								</Link>
 							</div>
 						</form>

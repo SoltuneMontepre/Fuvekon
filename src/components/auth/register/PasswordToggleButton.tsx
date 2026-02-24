@@ -1,4 +1,5 @@
 import React from 'react'
+import { useTranslations } from 'next-intl'
 import { FORM_STYLES } from './RegisterForm.styles'
 
 interface PasswordToggleButtonProps {
@@ -13,13 +14,15 @@ export const PasswordToggleButton: React.FC<PasswordToggleButtonProps> = ({
 	show,
 	onToggle,
 }) => {
+	const t = useTranslations('auth')
+
 	return (
 		<button
 			type='button'
 			onClick={onToggle}
 			className={FORM_STYLES.button.icon}
-			title={show ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'}
-			aria-label={show ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'}
+			title={show ? t('hidePassword') : t('showPassword')}
+			aria-label={show ? t('hidePassword') : t('showPassword')}
 		>
 			{show ? <EyeOffIcon /> : <EyeIcon />}
 		</button>
