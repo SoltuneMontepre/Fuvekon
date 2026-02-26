@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { GoogleLogin, type CredentialResponse } from '@react-oauth/google'
-import { useTranslations } from 'next-intl'
+// import { useTranslations } from 'next-intl'
 
 export type GoogleLoginButtonProps = {
 	onSuccess: (credential: string) => void
