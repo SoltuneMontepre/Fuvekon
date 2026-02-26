@@ -73,7 +73,8 @@ const UserManagementPage = (): React.ReactElement => {
 	})
 
 	// Client-side search filtering
-	const allUsers = usersData?.data || []
+	const allUsers = useMemo(() => usersData?.data || [], [usersData])
+
 	const filteredUsers = useMemo(() => {
 		if (!allUsers.length) return []
 
@@ -99,7 +100,6 @@ const UserManagementPage = (): React.ReactElement => {
 				country.includes(searchLower)
 			)
 		})
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [allUsers, searchInput])
 
 	// Client-side pagination

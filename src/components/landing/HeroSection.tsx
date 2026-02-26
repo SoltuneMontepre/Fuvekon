@@ -6,7 +6,7 @@ import React, { Suspense } from 'react'
 
 const Background = React.lazy(() => import('@/components/ui/Background'))
 
-const HeroSection = () => {
+const HeroSection = ({ reducedMotion }: { reducedMotion: boolean }) => {
 	const t = useTranslations('landing')
 
 	return (
@@ -17,7 +17,7 @@ const HeroSection = () => {
 						<div className='absolute inset-0 bg-black' aria-hidden='true' />
 					}
 				>
-					<Background mascot animated />
+					<Background mascot animated={!reducedMotion} />
 				</Suspense>
 			</div>
 			<ThemeTitle className='absolute left-1/2 bottom-[14%] -translate-x-1/2 z-50 md:w-2xl max-w-[90vw] min-w-[220px] h-auto pointer-events-auto' />

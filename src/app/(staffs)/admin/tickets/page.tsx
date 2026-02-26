@@ -141,16 +141,21 @@ const TicketManagementPage = (): React.ReactElement => {
 	const [tierStock, setTierStock] = useState('')
 	const [tierIsActive, setTierIsActive] = useState(true)
 	// Edit ticket modal state (admin back-door)
-	const [editTicketModal, setEditTicketModal] = useState<UserTicket | null>(null)
+	const [editTicketModal, setEditTicketModal] = useState<UserTicket | null>(
+		null
+	)
 	const [editTicketStatus, setEditTicketStatus] = useState('')
 	const [editTicketTierId, setEditTicketTierId] = useState('')
 	const [editTicketBadgeName, setEditTicketBadgeName] = useState('')
 	const [editTicketBadgeImage, setEditTicketBadgeImage] = useState('')
 	const [editTicketIsFursuiter, setEditTicketIsFursuiter] = useState(false)
-	const [editTicketIsFursuitStaff, setEditTicketIsFursuitStaff] = useState(false)
+	const [editTicketIsFursuitStaff, setEditTicketIsFursuitStaff] =
+		useState(false)
 	const [editTicketIsCheckedIn, setEditTicketIsCheckedIn] = useState(false)
 	const [editTicketDenialReason, setEditTicketDenialReason] = useState('')
-	const [showDeleteConfirm, setShowDeleteConfirm] = useState<UserTicket | null>(null)
+	const [showDeleteConfirm, setShowDeleteConfirm] = useState<UserTicket | null>(
+		null
+	)
 
 	const [editTierModal, setEditTierModal] = useState<TicketTier | null>(null)
 	const [editTierName, setEditTierName] = useState('')
@@ -199,24 +204,29 @@ const TicketManagementPage = (): React.ReactElement => {
 
 	// Fetch users for user search dropdown (large page to have a good pool)
 	const { data: usersData } = useAdminGetUsers({ page: 1, pageSize: 100 })
-	const allUsers: Account[] = usersData?.data || []
+	const allUsers: Account[] = useMemo(() => usersData?.data || [], [usersData])
 
 	const filteredUsers = useMemo(() => {
 		if (!userSearchText.trim()) return []
 		const q = userSearchText.toLowerCase()
-		return allUsers.filter(
-			u =>
-				u.email?.toLowerCase().includes(q) ||
-				u.fursona_name?.toLowerCase().includes(q) ||
-				u.first_name?.toLowerCase().includes(q) ||
-				u.last_name?.toLowerCase().includes(q)
-		).slice(0, 8) // cap at 8 suggestions
+		return allUsers
+			.filter(
+				u =>
+					u.email?.toLowerCase().includes(q) ||
+					u.fursona_name?.toLowerCase().includes(q) ||
+					u.first_name?.toLowerCase().includes(q) ||
+					u.last_name?.toLowerCase().includes(q)
+			)
+			.slice(0, 8) // cap at 8 suggestions
 	}, [userSearchText, allUsers])
 
 	// Close user dropdown on outside click
 	useEffect(() => {
 		const handleClickOutside = (e: MouseEvent) => {
-			if (userSearchRef.current && !userSearchRef.current.contains(e.target as Node)) {
+			if (
+				userSearchRef.current &&
+				!userSearchRef.current.contains(e.target as Node)
+			) {
 				setShowUserDropdown(false)
 			}
 		}
@@ -353,7 +363,9 @@ const TicketManagementPage = (): React.ReactElement => {
 			payload.badge_image = editTicketBadgeImage
 		if (editTicketIsFursuiter !== (editTicketModal.is_fursuiter || false))
 			payload.is_fursuiter = editTicketIsFursuiter
-		if (editTicketIsFursuitStaff !== (editTicketModal.is_fursuit_staff || false))
+		if (
+			editTicketIsFursuitStaff !== (editTicketModal.is_fursuit_staff || false)
+		)
 			payload.is_fursuit_staff = editTicketIsFursuitStaff
 		if (editTicketIsCheckedIn !== (editTicketModal.is_checked_in || false))
 			payload.is_checked_in = editTicketIsCheckedIn
@@ -635,7 +647,9 @@ const TicketManagementPage = (): React.ReactElement => {
 									setShowUserDropdown(true)
 									if (createUserId) setCreateUserId('')
 								}}
-								onFocus={() => userSearchText.trim() && setShowUserDropdown(true)}
+								onFocus={() =>
+									userSearchText.trim() && setShowUserDropdown(true)
+								}
 								placeholder={t('searchPlaceholder')}
 								className='w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#7cbc97] dark:bg-dark-surface dark:border-dark-border dark:text-dark-text'
 							/>
@@ -1041,10 +1055,7 @@ const TicketManagementPage = (): React.ReactElement => {
 								className='w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#7cbc97] dark:bg-dark-surface dark:border-dark-border dark:text-dark-text'
 							/>
 						</div>
-						<button
-							onClick={handleSearch}
-							className='btn-primary'
-						>
+						<button onClick={handleSearch} className='btn-primary'>
 							{t('search')}
 						</button>
 					</div>
@@ -1397,7 +1408,8 @@ const TicketManagementPage = (): React.ReactElement => {
 							{t('editTicket') || 'Edit Ticket'}
 						</h3>
 						<p className='text-sm text-gray-500 dark:text-dark-text-secondary mb-4'>
-							{editTicketModal.reference_code} – {editTicketModal.user?.first_name}{' '}
+							{editTicketModal.reference_code} –{' '}
+							{editTicketModal.user?.first_name}{' '}
 							{editTicketModal.user?.last_name}
 						</p>
 
@@ -1413,7 +1425,9 @@ const TicketManagementPage = (): React.ReactElement => {
 									className='w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#7cbc97] dark:bg-dark-surface dark:border-dark-border dark:text-dark-text'
 								>
 									<option value='pending'>{tTicket('status.pending')}</option>
-									<option value='self_confirmed'>{tTicket('status.selfConfirmed')}</option>
+									<option value='self_confirmed'>
+										{tTicket('status.selfConfirmed')}
+									</option>
 									<option value='approved'>{tTicket('status.approved')}</option>
 									<option value='denied'>{tTicket('status.denied')}</option>
 								</select>
@@ -1432,7 +1446,8 @@ const TicketManagementPage = (): React.ReactElement => {
 									<option value=''>–</option>
 									{adminTiers.map(tier => (
 										<option key={tier.id} value={tier.id}>
-											{tier.tier_code} – {tier.ticket_name} ({formatPrice(tier.price)} VND)
+											{tier.tier_code} – {tier.ticket_name} (
+											{formatPrice(tier.price)} VND)
 										</option>
 									))}
 								</select>
@@ -1479,7 +1494,9 @@ const TicketManagementPage = (): React.ReactElement => {
 									<input
 										type='checkbox'
 										checked={editTicketIsFursuitStaff}
-										onChange={e => setEditTicketIsFursuitStaff(e.target.checked)}
+										onChange={e =>
+											setEditTicketIsFursuitStaff(e.target.checked)
+										}
 										className='rounded border-gray-300 text-[#7cbc97] focus:ring-[#7cbc97] dark:border-dark-border'
 									/>
 									{tTicket('isFursuitStaff') || 'Fursuit Staff'}
@@ -1540,12 +1557,14 @@ const TicketManagementPage = (): React.ReactElement => {
 							{t('deleteTicketTitle') || 'Delete Ticket'}
 						</h3>
 						<p className='text-[#48715b] dark:text-dark-text-secondary mb-2'>
-							{t('deleteTicketConfirm', { code: showDeleteConfirm.reference_code }) ||
-								`Delete ticket ${showDeleteConfirm.reference_code}?`}
+							{t('deleteTicketConfirm', {
+								code: showDeleteConfirm.reference_code,
+							}) || `Delete ticket ${showDeleteConfirm.reference_code}?`}
 						</p>
 						<p className='text-sm text-gray-500 dark:text-dark-text-secondary mb-2'>
 							{t('user')}: {showDeleteConfirm.user?.first_name}{' '}
-							{showDeleteConfirm.user?.last_name} ({showDeleteConfirm.user?.email})
+							{showDeleteConfirm.user?.last_name} (
+							{showDeleteConfirm.user?.email})
 						</p>
 						{(showDeleteConfirm.status === 'pending' ||
 							showDeleteConfirm.status === 'self_confirmed' ||

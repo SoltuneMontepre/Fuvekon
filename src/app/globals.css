@@ -11,6 +11,7 @@
 	--color-paper: #e2eee2;
 	--color-bg-secondary: #d2ddd2;
 	--color-primary: #7cbc97;
+	--color-text: #e2eee2;
 	--color-text-primary: #154c5b;
 	--color-text-secondary: #48715b;
 	--color-bg: #e2eee2;
@@ -97,7 +98,8 @@
 		position: absolute;
 		inset: -16px;
 		border-radius: 76px;
-		background: radial-gradient(
+		background:
+			radial-gradient(
 				ellipse at center,
 				transparent 0%,
 				transparent calc(100% - 32px),

@@ -412,10 +412,29 @@
 	},
 	"landing": {
 		"suggestion": "Scroll down for more!",
+		"artbook": {
+			"title": "CONBOOK",
+			"description": "Conbook is a compilation of guides for attendees and features artwork created by our community’s artists, brimming with personal style and event spirit. If you love art and want to contribute your creative energy to the event, send your work to FUVE and join the conbook!",
+			"buttonLabel": "Participation Info",
+			"buttonHref": "/contributes/artbook"
+		},
+		"dealer": {
+			"title": "DEALER’S DEN",
+			"description": "Dealer’s Den is the marketplace area for furry artists and creators, where you can explore and purchase unique items. If you’re an artist or creator with products to showcase and want to connect directly with attendees, don’t hesitate to register your Dealer Den booth and be part of the event!",
+			"buttonLabel": "Register Booth",
+			"buttonHref": "/contributes/dealer"
+		},
+		"talent": {
+			"title": "TALENT SHOW",
+			"description": "Talent Show is the stage program where you can freely display your talents and personality—from singing, dancing, instrument performances, to acting and other creative acts. FUVE supports everyone shining, sharing passion, and spreading positive energy to the community.",
+			"buttonLabel": "Sign Up to Perform",
+			"buttonHref": "/contributes/talent"
+		},
 		"theme": {
 			"theme": "Theme",
-			"title": "Event Theme",
-			"description": "Discover the enchanting theme of this year's Fuvekon, where fantasy meets reality in a celebration of creativity and imagination."
+			"title": "Field Wind",
+			"description_1": "Inspired by the winds carrying the familiar scent of the Vietnamese countryside.",
+			"description_2": "In 2026, follow Lang to visit Gió Đồng - the most vibrant furry village festival on earth! FUVE will bring a space infused with the soul of Vietnam, inviting you to immerse yourself where reality and dreams intertwine. A joyful festival that makes you forget the way home awaits beneath this communal house roof!"
 		}
 	}
 }

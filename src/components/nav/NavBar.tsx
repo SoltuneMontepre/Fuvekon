@@ -9,6 +9,7 @@ import Loading from '../common/Loading'
 import { useLinkStatus } from 'next/link'
 import ProfileButton from './ProfileButton'
 import LanguageSelector from '@/components/config/LanguageSelector'
+import ReducedMotionToggle from '@/components/config/ReducedMotionToggle'
 
 const NavBar = (): React.ReactElement => {
 	const isLoggedIn = useAuthStore(state => state.isAuthenticated)
@@ -46,6 +47,7 @@ const NavBar = (): React.ReactElement => {
 				<div className='grow pointer-events-none' />
 
 				<div className='flex items-center gap-2 justify-end pointer-events-auto'>
+					<ReducedMotionToggle />
 					<LanguageSelector />
 					{isLoggedIn ? <ProfileButton /> : <LoginButton />}
 				</div>
