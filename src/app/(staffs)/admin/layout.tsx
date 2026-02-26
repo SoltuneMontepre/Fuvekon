@@ -165,10 +165,10 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
 			{/* Dark overlay for better contrast */}
 			<div className='fixed inset-0 z-[1] bg-black/40' />
 
-			{/* Sidebar - Compact with card style */}
+			{/* Sidebar - Hidden on mobile, visible on md+ */}
 			<div
 				id='admin-sidebar-container'
-				className='admin-sidebar-container relative z-10 w-[200px] ml-20 my-6'
+				className='admin-sidebar-container relative z-10 w-[200px] ml-20 my-6 hidden md:block'
 			>
 				<SideBar sections={sections} />
 			</div>

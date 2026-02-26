@@ -110,19 +110,16 @@ const AccountLayout = ({ children }: AccountLayoutProps) => {
 			{/* Dark overlay for better contrast */}
 			<div className='fixed inset-0 z-[1] bg-black/40' />
 
-			{/* Sidebar - Compact with card style */}
+			{/* Sidebar - Hidden on mobile, visible on md+ */}
 			<div
 				id='account-sidebar-container'
-				className='account-sidebar-container relative z-10 w-[250px] ml-20'
+				className='account-sidebar-container relative z-10 w-[250px] ml-20 hidden md:block'
 			>
 				<SideBar sections={sections} />
 			</div>
 
 			{/* Main Content - Card-based layout with dark background visible */}
-			<div
-				id='account-content'
-				className='relative z-10 gap-6 p-8 mr-6 w-full '
-			>
+			<div id='account-content' className='relative z-10 gap-6 p-8 w-full '>
 				<div className='bg-main backdrop-blur-md rounded-2xl shadow-2xl max-w-3xl mx-auto overflow-hidden '>
 					<section id='account-main-section' className='relative z-10'>
 						{children}
