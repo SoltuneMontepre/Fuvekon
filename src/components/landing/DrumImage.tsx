@@ -8,7 +8,7 @@ const DrumImage = ({
 	reversed,
 	isEnter,
 	className,
-	reducedMotion = true,
+	reducedMotion = false,
 }: {
 	id: string
 	reversed?: boolean
@@ -20,7 +20,6 @@ const DrumImage = ({
 		if (!isEnter || reducedMotion) return
 		const tl = gsap.timeline()
 
-		// Smooth roll-in then conscdistent spin
 		tl.fromTo(
 			`#${id}`,
 			{ rotate: 0 },

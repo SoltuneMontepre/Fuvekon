@@ -150,46 +150,48 @@ const LandingPage = (): React.JSX.Element => {
 			<ThemeSection prefersReducedMotion={prefersReducedMotion} />
 
 			{/* GOH */}
-			<GOHSection reducedMotion={prefersReducedMotion} />
+			<GOHSection />
 
 			{/* ArtBook */}
-			<FeatSection
-				title={t('artbook.title')}
-				description={t('artbook.description')}
-				buttonLabel={t('artbook.buttonLabel')}
-				buttonHref={t('artbook.buttonHref')}
-				images={[
-					'/images/artbook/badges.png',
-					'/images/artbook/badges.png',
-					'/images/artbook/badges.png',
-				]}
-			/>
+			<div>
+				<FeatSection
+					title={t('artbook.title')}
+					description={t('artbook.description')}
+					buttonLabel={t('artbook.buttonLabel')}
+					buttonHref={t('artbook.buttonHref')}
+					images={[
+						'/images/artbook/badges.png',
+						'/images/artbook/badges.png',
+						'/images/artbook/badges.png',
+					]}
+				/>
 
-			{/* Dealer */}
-			<FeatSection
-				title={t('dealer.title')}
-				description={t('dealer.description')}
-				buttonLabel={t('dealer.buttonLabel')}
-				buttonHref={t('dealer.buttonHref')}
-				images={[
-					'/images/artbook/badges.png',
-					'/images/artbook/badges.png',
-					'/images/artbook/badges.png',
-				]}
-			/>
+				{/* Dealer */}
+				<FeatSection
+					title={t('dealer.title')}
+					description={t('dealer.description')}
+					buttonLabel={t('dealer.buttonLabel')}
+					buttonHref={t('dealer.buttonHref')}
+					images={[
+						'/images/artbook/badges.png',
+						'/images/artbook/badges.png',
+						'/images/artbook/badges.png',
+					]}
+				/>
 
-			{/* Talent */}
-			<FeatSection
-				title={t('talent.title')}
-				description={t('talent.description')}
-				buttonLabel={t('talent.buttonLabel')}
-				buttonHref={t('talent.buttonHref')}
-				images={[
-					'/images/artbook/badges.png',
-					'/images/artbook/badges.png',
-					'/images/artbook/badges.png',
-				]}
-			/>
+				{/* Talent */}
+				<FeatSection
+					title={t('talent.title')}
+					description={t('talent.description')}
+					buttonLabel={t('talent.buttonLabel')}
+					buttonHref={t('talent.buttonHref')}
+					images={[
+						'/images/artbook/badges.png',
+						'/images/artbook/badges.png',
+						'/images/artbook/badges.png',
+					]}
+				/>
+			</div>
 		</div>
 	)
 }
