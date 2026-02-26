@@ -31,6 +31,25 @@ export const RegisterFormSchema = z
 			.trim()
 			.email(ERROR_MESSAGES.INVALID_EMAIL)
 			.regex(VALIDATION_PATTERNS.EMAIL, ERROR_MESSAGES.INVALID_EMAIL),
+		phone: z
+			.string()
+			.min(1, ERROR_MESSAGES.REQUIRED_FIELD)
+			.trim()
+			.regex(/^[0-9+\s\-()]+$/, 'Số điện thoại không hợp lệ')
+			.min(10, 'Số điện thoại phải có ít nhất 10 ký tự'),
+		dateOfBirth: z
+			.string()
+			.min(1, ERROR_MESSAGES.REQUIRED_FIELD)
+			.refine(date => {
+				const birthDate = new Date(date)
+				const today = new Date()
+				const age = today.getFullYear() - birthDate.getFullYear()
+				const monthDiff = today.getMonth() - birthDate.getMonth()
+				if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+					return age - 1 >= 16 // Must be at least 16 years old
+				}
+				return age >= 16
+			}, 'Bạn phải ít nhất 16 tuổi'),
 		country: z
 			.string()
 			.min(1, ERROR_MESSAGES.REQUIRED_FIELD)
@@ -51,6 +70,9 @@ export const RegisterFormSchema = z
 			.max(FORM_CONSTANTS.MAX_PASSWORD_LENGTH, ERROR_MESSAGES.PASSWORD_TOO_LONG)
 			.regex(VALIDATION_PATTERNS.PASSWORD, ERROR_MESSAGES.WEAK_PASSWORD),
 		confirmPassword: z.string().min(1, ERROR_MESSAGES.REQUIRED_FIELD),
+		termsAccepted: z.boolean().refine(val => val === true, {
+			message: 'Bạn phải chấp nhận điều khoản và dịch vụ',
+		}),
 	})
 	.refine(data => data.password === data.confirmPassword, {
 		message: ERROR_MESSAGES.PASSWORD_MISMATCH,
@@ -59,8 +81,8 @@ export const RegisterFormSchema = z
 
 export type RegisterFormData = z.infer<typeof RegisterFormSchema>
 
-// Client-side form input type (without confirmPassword)
-export type RegisterFormInput = Omit<RegisterFormData, 'confirmPassword'>
+// Client-side form input type (without confirmPassword and termsAccepted)
+export type RegisterFormInput = Omit<RegisterFormData, 'confirmPassword' | 'termsAccepted'>
 
 /**
  * Map form data to API request format
@@ -74,6 +96,8 @@ export const mapRegisterFormToApiRequest = (
 		fullName: formInput.fullName,
 		nickname: formInput.nickname,
 		email: formInput.email,
+		phone: formInput.phone,
+		dateOfBirth: formInput.dateOfBirth,
 		country: formInput.country,
 		idCard: formInput.idCard,
 		password: formInput.password,

@@ -15,6 +15,7 @@ import {
 } from '@/types/api/auth/register'
 import { FORM_STYLES } from './RegisterForm.styles'
 import { FloatingLabelInput } from './FloatingLabelInput'
+import { CountrySelect } from './CountrySelect'
 import { ValidationSpeechBubble } from './ValidationSpeechBubble'
 import { sanitizeInput } from '@/utils/sanitization'
 import {
@@ -58,18 +59,25 @@ const RegisterForm = (): React.ReactElement => {
 		formState: { errors, isSubmitting },
 		setError,
 		reset,
+		watch,
 	} = useForm<RegisterFormData>({
 		resolver: zodResolver(RegisterFormSchema),
 		defaultValues: {
 			fullName: '',
 			nickname: '',
 			email: '',
+			phone: '',
+			dateOfBirth: '',
 			country: '',
 			idCard: '',
 			password: '',
 			confirmPassword: '',
+			termsAccepted: false,
 		},
 	})
+
+	// Watch the termsAccepted field to control button state
+	const termsAccepted = watch('termsAccepted')
 
 	useEffect(() => {
 		const unlock = lockScroll()
@@ -100,6 +108,8 @@ const RegisterForm = (): React.ReactElement => {
 				fullName: sanitizeInput(data.fullName),
 				nickname: sanitizeInput(data.nickname),
 				email: data.email.trim().toLowerCase(), // Email-specific handling
+				phone: data.phone.trim(),
+				dateOfBirth: data.dateOfBirth,
 				country: sanitizeInput(data.country),
 				idCard: sanitizeInput(data.idCard),
 				password: data.password, // NEVER sanitize password - preserve as-is
@@ -170,10 +180,13 @@ const RegisterForm = (): React.ReactElement => {
 		fullName: errors.fullName?.message,
 		nickname: errors.nickname?.message,
 		email: errors.email?.message,
+		phone: errors.phone?.message,
+		dateOfBirth: errors.dateOfBirth?.message,
 		country: errors.country?.message,
 		idCard: errors.idCard?.message,
 		password: errors.password?.message,
 		confirmPassword: errors.confirmPassword?.message,
+		termsAccepted: errors.termsAccepted?.message,
 	}
 
 	return (
@@ -195,7 +208,7 @@ const RegisterForm = (): React.ReactElement => {
 				<div className={FORM_STYLES.container.formPanel}>
 					<div className={FORM_STYLES.container.formContent}>
 						{/* Title */}
-						<h3 className={FORM_STYLES.form.title}>Đăng ký</h3>
+						<h3 className={FORM_STYLES.form.title}>ĐĂNG KỲ TÀI KHOẢN</h3>
 
 						{/* Success Message */}
 						{isSuccess && (
@@ -222,8 +235,8 @@ const RegisterForm = (): React.ReactElement => {
 								name='fullName'
 								control={control}
 								type='text'
-								label='Họ và tên:'
-								placeholder='Họ và tên'
+								label='Họ và Tên'
+								placeholder='Họ và Tên'
 								required
 								showError={false}
 							/>
@@ -234,8 +247,20 @@ const RegisterForm = (): React.ReactElement => {
 								name='nickname'
 								control={control}
 								type='text'
-								label='Biệt danh:'
+								label='Biệt danh'
 								placeholder='Biệt danh'
+								required
+								showError={false}
+							/>
+
+							{/* Phone Input */}
+							<FloatingLabelInput
+								id='phone'
+								name='phone'
+								control={control}
+								type='tel'
+								label='Số điện thoại'
+								placeholder='Số điện thoại'
 								required
 								showError={false}
 							/>
@@ -246,20 +271,8 @@ const RegisterForm = (): React.ReactElement => {
 								name='email'
 								control={control}
 								type='email'
-								label='Gmail:'
+								label='Gmail'
 								placeholder='Gmail'
-								required
-								showError={false}
-							/>
-
-							{/* Country Input */}
-							<FloatingLabelInput
-								id='country'
-								name='country'
-								control={control}
-								type='text'
-								label='Quốc gia:'
-								placeholder='Quốc gia'
 								required
 								showError={false}
 							/>
@@ -270,11 +283,24 @@ const RegisterForm = (): React.ReactElement => {
 								name='idCard'
 								control={control}
 								type='text'
-								label='Passport ID/ CCCD:'
-								placeholder='Passport ID/ CCCD'
+								label='CCCD/Passport'
+								placeholder='CCCD/Passport'
 								required
 								showError={false}
 							/>
+
+							{/* Nationality input — single column matching other inputs */}
+							<div className={FORM_STYLES.container.inputWrapper}>
+								<CountrySelect
+									id='country'
+									name='country'
+									control={control}
+									label='Quốc tịch'
+									placeholder='Chọn quốc gia'
+									required
+									showError={false}
+								/>
+							</div>
 
 							{/* Password Input */}
 							<FloatingLabelInput
@@ -282,7 +308,7 @@ const RegisterForm = (): React.ReactElement => {
 								name='password'
 								control={control}
 								type='password'
-								label='Mật khẩu:'
+								label='Mật khẩu'
 								placeholder='Mật khẩu'
 								required
 								showPasswordToggle
@@ -295,24 +321,44 @@ const RegisterForm = (): React.ReactElement => {
 								name='confirmPassword'
 								control={control}
 								type='password'
-								label='Nhập lại mật khẩu:'
+								label='Nhập lại mật khẩu'
 								placeholder='Nhập lại mật khẩu'
 								required
 								showPasswordToggle
 								showError={false}
 							/>
 
+							{/* Terms Checkbox */}
+							<div className='flex items-start gap-3 py-2'>
+								<input
+									type='checkbox'
+									id='termsAccepted'
+									{...control.register('termsAccepted')}
+									className='w-5 h-5 mt-0.5 rounded border-[#8C8C8C]/30 bg-[#E2EEE2] text-[#48715B] focus:ring-[#48715B]/30 focus:ring-2 cursor-pointer'
+									aria-invalid={!!errors.termsAccepted}
+									aria-describedby={errors.termsAccepted ? 'terms-error' : undefined}
+								/>
+								<label htmlFor='termsAccepted' className='text-xs sm:text-sm text-[#8C8C8C] flex-1 cursor-pointer'>
+									Tôi đã đọc và chấp nhận mọi điều khoản và quy định của FUVE
+								</label>
+							</div>
+							{errors.termsAccepted && (
+								<p id='terms-error' className={FORM_STYLES.error.fieldError} role='alert'>
+									{errors.termsAccepted.message}
+								</p>
+							)}
+
 							{/* Submit Button */}
 							<button
 								type='submit'
-								disabled={isSubmitting || googleLoginMutation.isPending}
+								disabled={isSubmitting || googleLoginMutation.isPending || !termsAccepted}
 								className={`${FORM_STYLES.button.primary} ${
-									isSubmitting || googleLoginMutation.isPending
+									isSubmitting || googleLoginMutation.isPending || !termsAccepted
 										? FORM_STYLES.button.disabled
 										: ''
 								}`}
 							>
-								{isSubmitting ? 'Đang đăng ký...' : 'Đăng ký'}
+								{isSubmitting ? 'Đang đăng ký...' : 'Đăng kỳ tài khoản'}
 							</button>
 
 							{/* Google Sign-up */}
@@ -392,3 +438,4 @@ const RegisterForm = (): React.ReactElement => {
 }
 
 export default RegisterForm
+
