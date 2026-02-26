@@ -26,7 +26,7 @@ const FeatSection = ({
 	return (
 		<div
 			id={id}
-			className='relative h-dvh w-full grid grid-cols-[30%_70%] z-10 section'
+			className='relative section h-dvh w-full grid grid-cols-[30%_70%] z-10'
 		>
 			<div className='h-full w-full flex items-center justify-end overflow-visible'>
 				{/* drum here */}
