@@ -35,7 +35,7 @@ export interface RegisterRequest {
 	nickname: string
 	email: string
 	phone: string
-	dateOfBirth: string
+	// dateOfBirth: string
 	country: string
 	idCard: string
 	password: string

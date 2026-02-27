@@ -1,5 +1,7 @@
 'use client'
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import React, { useMemo } from 'react'
 import {
 	useController,
@@ -7,7 +9,7 @@ import {
 	type FieldPath,
 	type FieldValues,
 } from 'react-hook-form'
-import { getNames } from 'country-list'
+import { getNames, getCode, getName } from 'country-list'
 import { FORM_STYLES } from './RegisterForm.styles'
 
 interface CountrySelectProps<
@@ -41,12 +43,20 @@ export const CountrySelect = <
 	} = useController({
 		name,
 		control,
+		defaultValue: '' as any,
 		rules: { required },
 	})
 
-	const countries = useMemo(() => {
+	// build a list of country objects with name/code so we can
+	// render the name but keep the value as ISO code. sorting by name
+	const countryList = useMemo(() => {
 		try {
-			return getNames().sort()
+			return getNames()
+				.sort()
+				.map(name => ({
+					name,
+					code: getCode(name) || '',
+				}))
 		} catch {
 			return []
 		}
@@ -64,20 +74,33 @@ export const CountrySelect = <
 			<div className='relative w-full'>
 				<select
 					id={id}
-					{...field}
+					name={field.name}
+					value={(field.value as unknown as string) || ''}
+					onChange={e =>
+					field.onChange(
+						e.target.value as any
+					)
+				}
+					onBlur={field.onBlur}
+					ref={field.ref}
 					className={`${selectClasses} w-full`}
-					required={required}
 					aria-invalid={!!error}
 					aria-describedby={error ? `${id}-error` : undefined}
 				>
 					<option value='' disabled hidden>
 						{placeholder}
 					</option>
-					{countries.map(country => (
-						<option key={country} value={country}>
-							{country}
+					{countryList.map(({name, code}) => (
+						<option key={code || name} value={code}>
+							{name}
 						</option>
 					))}
+					{field.value &&
+						!countryList.some(c => c.code === field.value) && (
+							<option value={field.value}>
+								{getName(field.value) || field.value}
+							</option>
+						)}
 				</select>
 			</div>
 			<label

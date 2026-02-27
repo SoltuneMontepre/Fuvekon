@@ -67,7 +67,7 @@ const RegisterForm = (): React.ReactElement => {
 			nickname: '',
 			email: '',
 			phone: '',
-			dateOfBirth: '',
+			// dateOfBirth: '',
 			country: '',
 			idCard: '',
 			password: '',
@@ -109,7 +109,7 @@ const RegisterForm = (): React.ReactElement => {
 				nickname: sanitizeInput(data.nickname),
 				email: data.email.trim().toLowerCase(), // Email-specific handling
 				phone: data.phone.trim(),
-				dateOfBirth: data.dateOfBirth,
+				// dateOfBirth: data.dateOfBirth,
 				country: sanitizeInput(data.country),
 				idCard: sanitizeInput(data.idCard),
 				password: data.password, // NEVER sanitize password - preserve as-is
@@ -181,7 +181,7 @@ const RegisterForm = (): React.ReactElement => {
 		nickname: errors.nickname?.message,
 		email: errors.email?.message,
 		phone: errors.phone?.message,
-		dateOfBirth: errors.dateOfBirth?.message,
+		// dateOfBirth: errors.dateOfBirth?.message,
 		country: errors.country?.message,
 		idCard: errors.idCard?.message,
 		password: errors.password?.message,
