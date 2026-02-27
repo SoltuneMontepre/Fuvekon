@@ -22,7 +22,30 @@
 		"results": "ผลลัพธ์",
 		"page": "หน้า",
 		"edit": "แก้ไข",
-		"delete": "ลบ"
+		"delete": "ลบ",
+		"imageUploader": {
+			"label": "รูปภาพ",
+			"button": {
+				"chooseFile": "เลือกไฟล์"
+			},
+			"validation": {
+				"fileTooLarge": "ขนาดไฟล์เกินขีดจำกัด {maxSizeMB}MB",
+				"invalidType": "กรุณาเลือกไฟล์รูปภาพ"
+			},
+			"actions": {
+				"replace": "แทนที่",
+				"remove": "ลบ"
+			},
+			"status": {
+				"error": "ข้อผิดพลาด",
+				"uploading": "กำลังอัปโหลด... {progress}%",
+				"uploadFailed": "อัปโหลดไม่สำเร็จ",
+				"uploadSuccessful": "อัปโหลดสำเร็จ!"
+			},
+			"hint": {
+				"maxSize": "ขนาดสูงสุด: {maxSizeMB}MB"
+			}
+		}
 	},
 	"nav": {
 		"ticket": "บัตร",

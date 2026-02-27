@@ -22,7 +22,30 @@
 		"results": "results",
 		"page": "Page",
 		"edit": "Edit",
-		"delete": "Delete"
+		"delete": "Delete",
+		"imageUploader": {
+			"label": "Image",
+			"button": {
+				"chooseFile": "Choose file"
+			},
+			"validation": {
+				"fileTooLarge": "File size exceeds {maxSizeMB}MB limit",
+				"invalidType": "Please select an image file"
+			},
+			"actions": {
+				"replace": "Replace",
+				"remove": "Remove"
+			},
+			"status": {
+				"error": "Error",
+				"uploading": "Uploading... {progress}%",
+				"uploadFailed": "Upload failed",
+				"uploadSuccessful": "Upload successful!"
+			},
+			"hint": {
+				"maxSize": "Max size: {maxSizeMB}MB"
+			}
+		}
 	},
 	"nav": {
 		"ticket": "Ticket",

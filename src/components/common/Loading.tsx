@@ -23,12 +23,9 @@ const Loading = (): React.ReactElement => {
 		>
 			<div className='flex items-center gap-3 px-6 py-3 bg-white/80 dark:bg-black/70 rounded-lg shadow'>
 				<Loader2
-					className='animate-spin h-6 w-6 text-sky-600'
+					className='animate-spin h-6 w-6 text-text-primary'
 					aria-hidden='true'
 				/>
-				<span className='text-sm font-medium text-gray-700 dark:text-gray-200'>
-					Loading...
-				</span>
 			</div>
 		</div>
 	)

@@ -4,8 +4,6 @@ import React, { useEffect, useState } from 'react'
 import FuveIcon from '../common/FuveIcon'
 import NavButtons from './NavButtons'
 import Loading from '../common/Loading'
-import LoginButton from '../auth/login/LoginButton'
-import LanguageSelector from '@/components/config/LanguageSelector'
 import MobileMenu from './MobileMenu'
 import { useLinkStatus } from 'next/link'
 import { usePathname } from 'next/navigation'
@@ -18,6 +16,8 @@ const NavBar = (): React.ReactElement => {
 	const pathname = usePathname()
 	const [isNavigating, setIsNavigating] = useState(false)
 	const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+
+	const isLanding = pathname === '/'
 
 	const hideLogo = HIDE_LOGO_PREFIXES.some(p => pathname?.startsWith(p))
 
@@ -59,7 +59,7 @@ const NavBar = (): React.ReactElement => {
 				<div className='grow pointer-events-none' />
 
 				<div className='flex items-center gap-2 justify-end pointer-events-auto'>
-					{hideLogo ? (
+					{hideLogo || !isLanding ? (
 						<button
 							onClick={() => setMobileMenuOpen(true)}
 							className='p-2 rounded-lg hover:bg-white/10 transition-colors'
@@ -69,19 +69,22 @@ const NavBar = (): React.ReactElement => {
 						</button>
 					) : (
 						<>
-							<LanguageSelector />
-							<LoginButton />
+							<button
+								onClick={() => setMobileMenuOpen(true)}
+								className='p-2 rounded-lg hover:bg-white/10 transition-colors'
+								aria-label='Open menu'
+							>
+								<Menu className='size-6' />
+							</button>
 						</>
 					)}
 				</div>
 			</nav>
 
-			{hideLogo && (
-				<MobileMenu
-					isOpen={mobileMenuOpen}
-					onClose={() => setMobileMenuOpen(false)}
-				/>
-			)}
+			<MobileMenu
+				isOpen={mobileMenuOpen}
+				onClose={() => setMobileMenuOpen(false)}
+			/>
 		</>
 	)
 }

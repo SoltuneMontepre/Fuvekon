@@ -22,7 +22,30 @@
 		"results": "kết quả",
 		"page": "Trang",
 		"edit": "Sửa",
-		"delete": "Xóa"
+		"delete": "Xóa",
+		"imageUploader": {
+			"label": "Hình ảnh",
+			"button": {
+				"chooseFile": "Chọn tệp"
+			},
+			"validation": {
+				"fileTooLarge": "Kích thước tệp vượt quá giới hạn {maxSizeMB}MB",
+				"invalidType": "Vui lòng chọn tệp hình ảnh"
+			},
+			"actions": {
+				"replace": "Thay thế",
+				"remove": "Xóa"
+			},
+			"status": {
+				"error": "Lỗi",
+				"uploading": "Đang tải lên... {progress}%",
+				"uploadFailed": "Tải lên thất bại",
+				"uploadSuccessful": "Tải lên thành công!"
+			},
+			"hint": {
+				"maxSize": "Kích thước tối đa: {maxSizeMB}MB"
+			}
+		}
 	},
 	"nav": {
 		"ticket": "Vé",

@@ -3,7 +3,17 @@
 import React, { useRef, useEffect, useCallback } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { X, UserCircle, Ticket, Lock, Store, LogIn, LogOut, UserPlus } from 'lucide-react'
+import {
+	X,
+	UserCircle,
+	Ticket,
+	Lock,
+	Store,
+	LogIn,
+	LogOut,
+	UserPlus,
+	Shield,
+} from 'lucide-react'
 import { useGSAP } from '@gsap/react'
 import gsap from '@/common/gsap'
 import { NavData, useNavDatas } from '@/config/nav'
@@ -136,6 +146,8 @@ const MobileMenu = ({
 		router.replace('/login')
 	}
 
+	const isAdminOrStaff = account?.role === 'admin' || account?.role === 'staff'
+
 	const accountItems = [
 		{ label: tNav('account'), href: '/account', icon: UserCircle },
 		{ label: tNav('myTicket'), href: '/account/ticket', icon: Ticket },
@@ -155,6 +167,15 @@ const MobileMenu = ({
 						},
 					]
 				: []),
+		...(isAdminOrStaff
+			? [
+					{
+						label: tNav('admin'),
+						href: '/admin',
+						icon: Shield,
+					},
+				]
+			: []),
 	]
 
 	if (!isOpen) return null
