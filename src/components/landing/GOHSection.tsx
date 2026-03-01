@@ -79,16 +79,18 @@ const GOHSection = ({ activeCharacter = 0 }: GOHSectionProps) => {
 			{/* Info Box */}
 			<div
 				id='goh-info-box'
-				className={`absolute flex h-screen w-screen items-center z-40 pointer-events-none text-white ${
-					activeCharacter === 1 ? 'pl-[50%]' : ''
-				} ${activeCharacter === 2 ? 'pl-[20%]' : ''}`}
+				className={`absolute flex h-screen w-screen items-start mt-32 md:my-auto md:items-center md:justify-normal justify-center z-40 pointer-events-none text-white ${
+					activeCharacter === 1 ? 'md:pl-[50%]' : ''
+				} ${activeCharacter === 2 ? 'md:pl-[20%]' : ''}`}
 			>
-				<h3>
-					<span className='text-5xl font-thin text-primary'>
+				<h3 className='text-center md:text-left'>
+					<span className='text-2xl md:text-5xl font-thin text-primary'>
 						{selectedGOH?.name}
 					</span>
 					<br />
-					<span className='text-7xl font-bold'>{selectedGOH?.description}</span>
+					<span className='text-4xl md:text-7xl font-bold'>
+						{selectedGOH?.description}
+					</span>
 				</h3>
 			</div>
 

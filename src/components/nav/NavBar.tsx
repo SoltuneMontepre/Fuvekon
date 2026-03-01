@@ -54,7 +54,7 @@ const NavBar = (): React.ReactElement => {
 
 				<div className='grow pointer-events-none' />
 
-				<div className='flex items-center gap-2 justify-end pointer-events-auto'>
+				<div className='flex z- items-center gap-2 justify-end pointer-events-auto'>
 					<ReducedMotionToggle />
 					<LanguageSelector />
 					{isLoggedIn ? <ProfileButton /> : <LoginButton />}

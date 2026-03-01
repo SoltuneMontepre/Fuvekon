@@ -67,8 +67,9 @@ const LandingPage = (): React.JSX.Element => {
 		const sections = gsap.utils.toArray<HTMLElement>('.section')
 
 		let isSnapping = false
-		let lastWheelTime = 0
-		const WHEEL_COOLDOWN = 700 // ms — matches the snap timeout
+		let lastEventTime = 0
+		let touchStartY = 0
+		const COOLDOWN = 700 // ms — matches the snap timeout
 
 		const getCurrentIndex = () => {
 			const scrollY = window.scrollY
@@ -92,8 +93,6 @@ const LandingPage = (): React.JSX.Element => {
 			isSnapping = true
 			window.scrollTo({ top: target.offsetTop, behavior: 'smooth' })
 			if (target.id === 'goh-section') {
-				// Arriving from below (scrolling up) → start at char 2
-				// Arriving from above (scrolling down) → start at char 1
 				const step = direction < 0 ? 2 : 1
 				gohStepRef.current = step as 1 | 2
 				setGohActiveCharacter(step as 1 | 2)
@@ -106,36 +105,24 @@ const LandingPage = (): React.JSX.Element => {
 			}, 700)
 		}
 
-		const handleWheel = (event: WheelEvent) => {
-			if (!sections.length || event.deltaY === 0) return
-			event.preventDefault()
-
-			const now = Date.now()
-			if (isSnapping || now - lastWheelTime < WHEEL_COOLDOWN) return
-			lastWheelTime = now
-
-			const direction = event.deltaY > 0 ? 1 : -1
+		const snapByDirection = (direction: number, now: number) => {
 			const currentIndex = getCurrentIndex()
 			const currentSection = sections[currentIndex]
 
 			// Intercept scrolls on the GOH section to step through characters
 			if (currentSection?.id === 'goh-section') {
 				if (direction > 0 && gohStepRef.current === 1) {
-					// Scroll down on char 1 → switch to char 2, stay on section
 					gohStepRef.current = 2
 					setGohActiveCharacter(2)
-					lastWheelTime = now
+					lastEventTime = now
 					return
 				}
 				if (direction < 0 && gohStepRef.current === 2) {
-					// Scroll up on char 2 → switch back to char 1, stay on section
 					gohStepRef.current = 1
 					setGohActiveCharacter(1)
-					lastWheelTime = now
+					lastEventTime = now
 					return
 				}
-				// char 2 + scroll down → advance to next section
-				// char 1 + scroll up  → go back to previous section
 			}
 
 			const nextIndex = Math.min(
@@ -148,10 +135,53 @@ const LandingPage = (): React.JSX.Element => {
 			}
 		}
 
+		const handleWheel = (event: WheelEvent) => {
+			if (!sections.length || event.deltaY === 0) return
+			event.preventDefault()
+
+			const now = Date.now()
+			if (isSnapping || now - lastEventTime < COOLDOWN) return
+			lastEventTime = now
+
+			const direction = event.deltaY > 0 ? 1 : -1
+			snapByDirection(direction, now)
+		}
+
+		const handleTouchStart = (event: TouchEvent) => {
+			touchStartY = event.touches[0].clientY
+		}
+
+		// Prevent native scroll so we own the vertical movement
+		const handleTouchMove = (event: TouchEvent) => {
+			event.preventDefault()
+		}
+
+		const handleTouchEnd = (event: TouchEvent) => {
+			if (!sections.length) return
+			const touchEndY = event.changedTouches[0].clientY
+			const deltaY = touchStartY - touchEndY // positive → swipe up → scroll down
+
+			// Ignore taps or very short drags
+			if (Math.abs(deltaY) < 30) return
+
+			const now = Date.now()
+			if (isSnapping || now - lastEventTime < COOLDOWN) return
+			lastEventTime = now
+
+			const direction = deltaY > 0 ? 1 : -1
+			snapByDirection(direction, now)
+		}
+
 		window.addEventListener('wheel', handleWheel, { passive: false })
+		window.addEventListener('touchstart', handleTouchStart, { passive: true })
+		window.addEventListener('touchmove', handleTouchMove, { passive: false })
+		window.addEventListener('touchend', handleTouchEnd, { passive: true })
 
 		return () => {
 			window.removeEventListener('wheel', handleWheel)
+			window.removeEventListener('touchstart', handleTouchStart)
+			window.removeEventListener('touchmove', handleTouchMove)
+			window.removeEventListener('touchend', handleTouchEnd)
 		}
 	})
 

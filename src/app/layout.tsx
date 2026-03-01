@@ -42,7 +42,7 @@ export default async function RootLayout({
 				<ThemePreload />
 			</head>
 			<body
-				className={`${inter.variable} ${montserrat.variable} ${geistMono.variable} antialiased bg-main dark:bg-dark-bg text-[#48715B] dark:text-dark-text`}
+				className={`${inter.variable} ${montserrat.variable} ${geistMono.variable} antialiased md:overflow-x-auto overflow-x-hidden bg-main dark:bg-dark-bg text-[#48715B] dark:text-dark-text`}
 			>
 				<ThemeProvider>
 					<TanstackProvider>

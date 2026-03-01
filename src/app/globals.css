@@ -124,8 +124,13 @@
 	--color-main: #d399f0;
 }
 
+html {
+	overflow-x: clip;
+}
+
 body {
-	@apply overflow-x-hidden bg-black;
+	overflow-x: hidden;
+	@apply bg-black;
 }
 
 /* Modern Scrollbar Styles */

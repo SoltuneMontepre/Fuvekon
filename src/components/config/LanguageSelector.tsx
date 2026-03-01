@@ -12,14 +12,17 @@ interface LanguageSelectorProps {
 const LanguageSelector = ({ className }: LanguageSelectorProps) => {
 	const { locale, changeLanguage } = useLanguage()
 	const [isOpen, setIsOpen] = useState(false)
-	const dropdownRef = useRef<HTMLDivElement>(null)
+	const [dropdownPos, setDropdownPos] = useState({ top: 0, right: 0 })
+	const wrapperRef = useRef<HTMLDivElement>(null)
+	const dropdownListRef = useRef<HTMLUListElement>(null)
+	const buttonRef = useRef<HTMLButtonElement>(null)
 
 	useEffect(() => {
 		const handleClickOutside = (event: MouseEvent) => {
-			if (
-				dropdownRef.current &&
-				!dropdownRef.current.contains(event.target as Node)
-			) {
+			const target = event.target as Node
+			const insideWrapper = wrapperRef.current?.contains(target)
+			const insideList = dropdownListRef.current?.contains(target)
+			if (!insideWrapper && !insideList) {
 				setIsOpen(false)
 			}
 		}
@@ -27,6 +30,17 @@ const LanguageSelector = ({ className }: LanguageSelectorProps) => {
 		document.addEventListener('mousedown', handleClickOutside)
 		return () => document.removeEventListener('mousedown', handleClickOutside)
 	}, [])
+
+	const handleToggle = () => {
+		if (!isOpen && buttonRef.current) {
+			const rect = buttonRef.current.getBoundingClientRect()
+			setDropdownPos({
+				top: rect.bottom + 8,
+				right: window.innerWidth - rect.right,
+			})
+		}
+		setIsOpen(v => !v)
+	}
 
 	const handleSelect = (lang: Language) => {
 		changeLanguage(lang)
@@ -43,16 +57,17 @@ const LanguageSelector = ({ className }: LanguageSelectorProps) => {
 
 	return (
 		<div
-			className={`relative inline-block ${className ?? ''}`}
-			ref={dropdownRef}
+			className={`relative inline-block z-50 ${className ?? ''}`}
+			ref={wrapperRef}
 		>
 			<button
+				ref={buttonRef}
 				type='button'
 				id='language-selector'
 				aria-label='Select language'
 				aria-haspopup='listbox'
 				aria-expanded={isOpen}
-				onClick={() => setIsOpen(v => !v)}
+				onClick={handleToggle}
 				className='text-white  appearance-none cursor-pointer bg-transparent px-1.5 sm:px-2 py-1 sm:py-1.5 pr-5 sm:pr-6 text-xs sm:text-sm font-medium rounded-md hover:bg-white/10 transition-colors focus:outline-none focus:ring-2 focus:ring-main'
 			>
 				<span>{languageLabels[locale]}</span>
@@ -66,9 +81,11 @@ const LanguageSelector = ({ className }: LanguageSelectorProps) => {
 
 			{isOpen && (
 				<ul
+					ref={dropdownListRef}
 					role='listbox'
 					aria-label='Select language'
-					className='absolute right-0 top-full mt-2 min-w-[10rem] rounded-lg shadow-lg z-50 border border-white/10 backdrop-blur text-slate-100 overflow-hidden bg-gray-500/20'
+					style={{ top: dropdownPos.top, right: dropdownPos.right }}
+					className='fixed min-w-[10rem] rounded-lg shadow-lg z-[9999] border border-white/10 backdrop-blur text-slate-100 overflow-hidden bg-gray-500/20'
 				>
 					{SUPPORTED_LANGS.map(lang => (
 						<li key={lang} role='option' aria-selected={locale === lang}>

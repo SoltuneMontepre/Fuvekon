@@ -11,7 +11,7 @@ const HeroSection = ({ reducedMotion }: { reducedMotion: boolean }) => {
 
 	return (
 		<div className='h-screen w-dvw relative pointer-events-none z-0 section'>
-			<div className='absolute inset-0 pointer-events-none'>
+			<div className='sticky inset-0 pointer-events-none'>
 				<Suspense
 					fallback={
 						<div className='absolute inset-0 bg-black' aria-hidden='true' />
