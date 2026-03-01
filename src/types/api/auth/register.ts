@@ -35,8 +35,8 @@ export const RegisterFormSchema = z
 			.string()
 			.min(1, ERROR_MESSAGES.REQUIRED_FIELD)
 			.trim()
-			.regex(/^[0-9+\s\-()]+$/, 'Số điện thoại không hợp lệ')
-			.min(10, 'Số điện thoại phải có ít nhất 10 ký tự'),
+			.regex(/^[0-9+\s\-()]+$/, 'validation.invalidPhone')
+			.min(10, 'validation.phoneTooShort'),
 		// dateOfBirth: z
 		// 	.string()
 		// 	.min(1, ERROR_MESSAGES.REQUIRED_FIELD)
