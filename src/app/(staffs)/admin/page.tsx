@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect, useMemo } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import {
 	UserCircle,
 	RefreshCw,
@@ -19,6 +19,8 @@ import {
 } from '@/hooks/services/user/useAdminUser'
 import type { Account } from '@/types/models/auth/account'
 import Loading from '@/components/common/Loading'
+
+const SEARCH_DEBOUNCE_MS = 400
 
 // Format datetime
 const formatDateTime = (dateString?: string): string => {
@@ -55,66 +57,48 @@ const UserManagementPage = (): React.ReactElement => {
 	const tCommon = useTranslations('common')
 	const router = useRouter()
 
-	// Filter state
+	// Filter state (server-side pagination)
 	const [filter, setFilter] = useState<AdminUserFilter>({
 		page: 1,
 		pageSize: 20,
 	})
 	const [searchInput, setSearchInput] = useState('')
+	const [appliedSearch, setAppliedSearch] = useState('')
+	const searchDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-	// Query - fetch all users (we'll do client-side filtering)
+	// Debounce search; when it updates, reset to page 1
+	useEffect(() => {
+		if (searchDebounceRef.current) clearTimeout(searchDebounceRef.current)
+		searchDebounceRef.current = setTimeout(() => {
+			setAppliedSearch(searchInput.trim())
+			setFilter(prev => ({ ...prev, page: 1 }))
+		}, SEARCH_DEBOUNCE_MS)
+		return () => {
+			if (searchDebounceRef.current) clearTimeout(searchDebounceRef.current)
+		}
+	}, [searchInput])
+
+	// API filter: pagination + debounced search
+	const apiFilter: AdminUserFilter = {
+		page: filter.page,
+		pageSize: filter.pageSize,
+		...(appliedSearch ? { search: appliedSearch } : {}),
+	}
 	const {
 		data: usersData,
 		isLoading: usersLoading,
+		isFetching: usersFetching,
 		refetch: refetchUsers,
-	} = useAdminGetUsers({
-		page: 1,
-		pageSize: 1000, // Fetch more to enable client-side search
-	})
+	} = useAdminGetUsers(apiFilter)
 
-	// Client-side search filtering
-	const allUsers = usersData?.data || []
-	const filteredUsers = useMemo(() => {
-		if (!allUsers.length) return []
-
-		if (!searchInput.trim()) {
-			return allUsers
-		}
-
-		const searchLower = searchInput.toLowerCase().trim()
-		return allUsers.filter((user: Account) => {
-			const email = user.email?.toLowerCase() || ''
-			const firstName = user.first_name?.toLowerCase() || ''
-			const lastName = user.last_name?.toLowerCase() || ''
-			const fursonaName = user.fursona_name?.toLowerCase() || ''
-			const country = user.country?.toLowerCase() || ''
-			const fullName = `${firstName} ${lastName}`.trim()
-
-			return (
-				email.includes(searchLower) ||
-				firstName.includes(searchLower) ||
-				lastName.includes(searchLower) ||
-				fullName.includes(searchLower) ||
-				fursonaName.includes(searchLower) ||
-				country.includes(searchLower)
-			)
-		})
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [allUsers, searchInput])
-
-	// Client-side pagination
-	const currentPage: number = filter.page ?? 1
-	const pageSize: number = filter.pageSize ?? 20
-	const totalFiltered = filteredUsers.length
-	const totalPages = Math.ceil(totalFiltered / pageSize)
-	const startIndex = (currentPage - 1) * pageSize
-	const endIndex = startIndex + pageSize
-	const users = filteredUsers.slice(startIndex, endIndex)
-
-	// Reset to page 1 when search changes
-	useEffect(() => {
-		setFilter(prev => ({ ...prev, page: 1 }))
-	}, [searchInput])
+	const users: Account[] = usersData?.data ?? []
+	const meta = usersData?.meta
+	const currentPage = meta?.currentPage ?? filter.page ?? 1
+	const pageSize = meta?.pageSize ?? filter.pageSize ?? 20
+	const totalPages = meta?.totalPages ?? 1
+	const totalItems = meta?.totalItems ?? 0
+	const startIndex = totalItems === 0 ? 0 : (currentPage - 1) * pageSize + 1
+	const endIndex = Math.min(currentPage * pageSize, Number(totalItems))
 
 	// Pagination handlers
 	const handlePageChange = (page: number) => {
@@ -192,13 +176,11 @@ const UserManagementPage = (): React.ReactElement => {
 
 			{/* Users Table */}
 			<div className=' rounded-lg   overflow-hidden'>
-				{allUsers.length === 0 ? (
+				{users.length === 0 ? (
 					<div className='p-8 text-center text-gray-500 dark:text-dark-text-secondary'>
-						{t('noUsers') || 'No users found'}
-					</div>
-				) : filteredUsers.length === 0 ? (
-					<div className='p-8 text-center text-gray-500 dark:text-dark-text-secondary'>
-						{t('noSearchResults') || 'No users found matching your search'}
+						{appliedSearch
+							? (t('noSearchResults') || 'No users found matching your search')
+							: (t('noUsers') || 'No users found')}
 					</div>
 				) : (
 					<>
@@ -320,15 +302,15 @@ const UserManagementPage = (): React.ReactElement => {
 						</div>
 
 						{/* Pagination */}
-						{totalPages > 1 && (
+						{totalItems > 0 && (
 							<div className='px-4 py-3 border-t border-slate-300/20 dark:border-dark-border/20 bg-gray-50 dark:bg-dark-surface/50'>
 								<div className='flex items-center justify-between'>
 									<div className='text-sm text-gray-600 dark:text-dark-text-secondary'>
-										{tCommon('showing') || 'Showing'} {startIndex + 1}{' '}
-										{tCommon('to') || 'to'} {Math.min(endIndex, totalFiltered)}{' '}
-										{tCommon('of') || 'of'} {totalFiltered}{' '}
+										{tCommon('showing') || 'Showing'} {startIndex}{' '}
+										{tCommon('to') || 'to'} {endIndex}{' '}
+										{tCommon('of') || 'of'} {totalItems}{' '}
 										{tCommon('results') || 'results'}
-										{searchInput && (
+										{appliedSearch && (
 											<span className='ml-2 text-xs text-gray-500'>
 												({tCommon('filtered') || 'filtered'})
 											</span>
@@ -337,19 +319,24 @@ const UserManagementPage = (): React.ReactElement => {
 									<div className='flex items-center gap-2'>
 										<button
 											onClick={() => handlePageChange(currentPage - 1)}
-											disabled={currentPage === 1}
+											disabled={currentPage <= 1 || usersFetching}
 											className='p-2 border rounded-lg hover:bg-gray-100 dark:hover:bg-dark-surface disabled:opacity-50 disabled:cursor-not-allowed transition-colors'
+											aria-label={tCommon('previousPage') || 'Previous page'}
 										>
 											<ChevronLeft className='w-4 h-4' />
 										</button>
-										<span className='text-sm text-gray-600 dark:text-dark-text-secondary px-2'>
+										<span className='text-sm text-gray-600 dark:text-dark-text-secondary px-2 flex items-center gap-1'>
 											{tCommon('page') || 'Page'} {currentPage}{' '}
-											{tCommon('of') || 'of'} {totalPages}
+											{tCommon('of') || 'of'} {totalPages || 1}
+											{usersFetching && (
+												<span className='inline-block w-4 h-4 border-2 border-gray-300 border-t-[#7cbc97] rounded-full animate-spin' aria-hidden />
+											)}
 										</span>
 										<button
 											onClick={() => handlePageChange(currentPage + 1)}
-											disabled={currentPage >= totalPages}
+											disabled={currentPage >= totalPages || usersFetching}
 											className='p-2 border rounded-lg hover:bg-gray-100 dark:hover:bg-dark-surface disabled:opacity-50 disabled:cursor-not-allowed transition-colors'
+											aria-label={tCommon('nextPage') || 'Next page'}
 										>
 											<ChevronRight className='w-4 h-4' />
 										</button>
