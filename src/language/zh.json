@@ -23,6 +23,7 @@
 		"page": "页",
 		"edit": "编辑",
 		"delete": "删除",
+		"continue": "继续",
 		"imageUploader": {
 			"label": "图片",
 			"button": {
@@ -186,7 +187,18 @@
 		"iAmFursuiter": "我是 fursuiter",
 		"fursuitStaff": "Fursuit 工作人员",
 		"fursuiter": "Fursuiter",
-		"upgradeTicket": "升级门票（即将推出）",
+		"upgradeTicket": "升级门票",
+		"upgradeTitle": "升级您的门票",
+		"upgradeConfirm": "确认升级",
+		"upgradePriceDifference": "差价",
+		"upgradeFrom": "从...升级",
+		"upgradeCurrentTier": "当前等级",
+		"upgradeNewTier": "选择新等级",
+		"upgradePayDifference": "您只需支付差价。",
+		"upgradeResetWarning": "您的门票状态将重置为待处理，您需要重新确认差价付款。",
+		"upgradeSuccess": "门票升级成功！请完成差价付款。",
+		"upgradeError": "门票升级失败，请重试。",
+		"noUpgradesAvailable": "没有更高等级可供升级。",
 		"bankDetails": "银行转账详情",
 		"bankName": "银行",
 		"accountNumber": "账号",
@@ -353,7 +365,8 @@
 		"editUser": "编辑用户",
 		"firstName": "名",
 		"lastName": "姓",
-		"fursonaName": "Fursona 名称"
+		"fursonaName": "Fursona 名称",
+		"upgradedFrom": "从 {code} 升级"
 	},
 	"account": {
 		"noAccountInfo": "暂无账户信息",
