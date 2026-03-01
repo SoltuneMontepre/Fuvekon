@@ -22,7 +22,8 @@
 		"results": "kết quả",
 		"page": "Trang",
 		"edit": "Sửa",
-		"delete": "Xóa"
+		"delete": "Xóa",
+		"continue": "Tiếp tục"
 	},
 	"nav": {
 		"ticket": "Vé",
@@ -106,7 +107,18 @@
 		"iAmFursuiter": "Tôi là fursuiter",
 		"fursuitStaff": "Fursuit staff",
 		"fursuiter": "Fursuiter",
-		"upgradeTicket": "Nâng cấp vé (Sắp ra mắt)",
+		"upgradeTicket": "Nâng cấp vé",
+		"upgradeTitle": "Nâng cấp vé của bạn",
+		"upgradeConfirm": "Xác nhận nâng cấp",
+		"upgradePriceDifference": "Chênh lệch giá",
+		"upgradeFrom": "Nâng cấp từ",
+		"upgradeCurrentTier": "Hạng hiện tại",
+		"upgradeNewTier": "Chọn hạng mới",
+		"upgradePayDifference": "Bạn chỉ cần thanh toán phần chênh lệch.",
+		"upgradeResetWarning": "Trạng thái vé sẽ được đặt lại thành chờ xử lý và bạn cần xác nhận thanh toán lại cho phần chênh lệch.",
+		"upgradeSuccess": "Nâng cấp vé thành công! Vui lòng thanh toán phần chênh lệch.",
+		"upgradeError": "Không thể nâng cấp vé. Vui lòng thử lại.",
+		"noUpgradesAvailable": "Không có hạng cao hơn để nâng cấp.",
 		"bankDetails": "Thông tin chuyển khoản",
 		"bankName": "Ngân hàng",
 		"accountNumber": "Số tài khoản",
@@ -272,7 +284,8 @@
 		"editUser": "Sửa người dùng",
 		"firstName": "Tên",
 		"lastName": "Họ",
-		"fursonaName": "Tên Fursona"
+		"fursonaName": "Tên Fursona",
+		"upgradedFrom": "Nâng cấp từ {code}"
 	},
 	"artbook": {
 		"artbook": {

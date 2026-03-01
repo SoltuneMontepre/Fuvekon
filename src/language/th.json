@@ -22,7 +22,8 @@
 		"results": "ผลลัพธ์",
 		"page": "หน้า",
 		"edit": "แก้ไข",
-		"delete": "ลบ"
+		"delete": "ลบ",
+		"continue": "ดำเนินการต่อ"
 	},
 	"nav": {
 		"ticket": "บัตร",
@@ -106,7 +107,18 @@
 		"iAmFursuiter": "ฉันเป็น fursuiter",
 		"fursuitStaff": "Fursuit staff",
 		"fursuiter": "Fursuiter",
-		"upgradeTicket": "อัปเกรดตั๋ว (เร็วๆ นี้)",
+		"upgradeTicket": "อัปเกรดตั๋ว",
+		"upgradeTitle": "อัปเกรดตั๋วของคุณ",
+		"upgradeConfirm": "ยืนยันการอัปเกรด",
+		"upgradePriceDifference": "ส่วนต่างราคา",
+		"upgradeFrom": "อัปเกรดจาก",
+		"upgradeCurrentTier": "ระดับปัจจุบัน",
+		"upgradeNewTier": "เลือกระดับใหม่",
+		"upgradePayDifference": "คุณต้องจ่ายเฉพาะส่วนต่างเท่านั้น",
+		"upgradeResetWarning": "สถานะตั๋วจะถูกรีเซ็ตเป็นรอดำเนินการ และคุณต้องยืนยันการชำระเงินสำหรับส่วนต่าง",
+		"upgradeSuccess": "อัปเกรดตั๋วสำเร็จ! กรุณาชำระส่วนต่าง",
+		"upgradeError": "ไม่สามารถอัปเกรดตั๋วได้ กรุณาลองอีกครั้ง",
+		"noUpgradesAvailable": "ไม่มีระดับที่สูงกว่าสำหรับอัปเกรด",
 		"bankDetails": "รายละเอียดการโอนเงิน",
 		"bankName": "ธนาคาร",
 		"accountNumber": "เลขที่บัญชี",
@@ -272,7 +284,8 @@
 		"editUser": "แก้ไขผู้ใช้",
 		"firstName": "ชื่อ",
 		"lastName": "นามสกุล",
-		"fursonaName": "ชื่อ Fursona"
+		"fursonaName": "ชื่อ Fursona",
+		"upgradedFrom": "อัปเกรดจาก {code}"
 	},
 	"artbook": {
 		"artbook": {

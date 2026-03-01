@@ -1,8 +1,8 @@
 'use client'
 
 import React, { useState, use, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
-import { Copy, Check, AlertCircle } from 'lucide-react'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { Copy, Check, AlertCircle, ArrowUpCircle } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 import Image from 'next/image'
@@ -35,10 +35,15 @@ const BANK_DETAILS = {
 const TicketPurchasePage = ({ params }: TicketPurchasePageProps): React.ReactElement => {
 	use(params)
 	const router = useRouter()
+	const searchParams = useSearchParams()
 	const t = useTranslations('ticket')
 	const tCommon = useTranslations('common')
 	const [copied, setCopied] = useState<string | null>(null)
 	const [showConfirmDialog, setShowConfirmDialog] = useState(false)
+
+	// Upgrade mode: read from URL query params set by UpgradeTicketModal
+	const isUpgrade = searchParams?.get('upgrade') === 'true'
+	const upgradeDiff = searchParams?.get('diff') ?? null
 
 	const { data: ticketData, isLoading, error } = useGetMyTicket()
 	const confirmMutation = useConfirmPayment()
@@ -46,11 +51,14 @@ const TicketPurchasePage = ({ params }: TicketPurchasePageProps): React.ReactEle
 	const ticket = ticketData?.data
 
 	// Redirect if ticket is already confirmed or approved
+	// Skip redirect in upgrade mode — the user just upgraded and needs to see the payment page
+	// (stale cache may still have the old status while refetch is in-flight)
 	useEffect(() => {
+		if (isUpgrade) return
 		if (ticket && (ticket.status === 'self_confirmed' || ticket.status === 'approved')) {
 			router.push('/account/ticket')
 		}
-	}, [ticket, router])
+	}, [ticket, router, isUpgrade])
 
 	// Copy to clipboard helper
 	const copyToClipboard = async (text: string, field: string) => {
@@ -136,7 +144,8 @@ const TicketPurchasePage = ({ params }: TicketPurchasePageProps): React.ReactEle
 	}
 
 	const tier = ticket.tier
-	const price = tier?.price || 0
+	const fullPrice = tier?.price || 0
+	const price = isUpgrade && upgradeDiff ? parseFloat(upgradeDiff) : fullPrice
 
 	return (
 		<>
@@ -150,6 +159,17 @@ const TicketPurchasePage = ({ params }: TicketPurchasePageProps): React.ReactEle
 						<Separator className='w-[95%] mx-auto' />
 
 						<div className='px-6 py-6'>
+							{/* Upgrade Info Banner */}
+							{isUpgrade && ticket.previous_reference_code && (
+								<div className='bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4 flex items-center gap-3'>
+									<ArrowUpCircle className='w-5 h-5 text-blue-600 flex-shrink-0' />
+									<div>
+										<p className='text-blue-800 font-medium'>{t('upgradeFrom')} {ticket.previous_reference_code}</p>
+										<p className='text-blue-600 text-sm'>{t('upgradePayDifference')}</p>
+									</div>
+								</div>
+							)}
+
 							{/* Ticket Info Summary */}
 							<div className='bg-[#d2ddd2] rounded-lg p-4 mb-6'>
 								<div className='grid grid-cols-2 gap-4'>
@@ -158,8 +178,11 @@ const TicketPurchasePage = ({ params }: TicketPurchasePageProps): React.ReactEle
 										<p className='font-semibold text-[#154c5b]'>{tier?.ticket_name || 'N/A'}</p>
 									</div>
 									<div>
-										<p className='text-sm text-[#48715b]'>{t('amount')}</p>
+										<p className='text-sm text-[#48715b]'>
+											{isUpgrade ? t('upgradePriceDifference') : t('amount')}
+										</p>
 										<p className='font-semibold text-[#154c5b] text-xl'>
+											{isUpgrade && '+'}
 											{formatPrice(price)} VND
 										</p>
 									</div>

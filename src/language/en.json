@@ -22,7 +22,8 @@
 		"results": "results",
 		"page": "Page",
 		"edit": "Edit",
-		"delete": "Delete"
+		"delete": "Delete",
+		"continue": "Continue"
 	},
 	"nav": {
 		"ticket": "Ticket",
@@ -106,7 +107,18 @@
 		"iAmFursuiter": "I am a fursuiter",
 		"fursuitStaff": "Fursuit staff",
 		"fursuiter": "Fursuiter",
-		"upgradeTicket": "Upgrade Ticket (Coming Soon)",
+		"upgradeTicket": "Upgrade Ticket",
+		"upgradeTitle": "Upgrade Your Ticket",
+		"upgradeConfirm": "Confirm Upgrade",
+		"upgradePriceDifference": "Price Difference",
+		"upgradeFrom": "Upgraded from",
+		"upgradeCurrentTier": "Current Tier",
+		"upgradeNewTier": "Select New Tier",
+		"upgradePayDifference": "You only need to pay the price difference.",
+		"upgradeResetWarning": "Your ticket status will be reset to pending and you will need to re-confirm payment for the difference.",
+		"upgradeSuccess": "Ticket upgraded successfully! Please complete payment for the difference.",
+		"upgradeError": "Failed to upgrade ticket. Please try again.",
+		"noUpgradesAvailable": "No higher tiers available for upgrade.",
 		"bankDetails": "Bank Transfer Details",
 		"bankName": "Bank",
 		"accountNumber": "Account Number",
@@ -272,7 +284,8 @@
 		"editUser": "Edit User",
 		"firstName": "First Name",
 		"lastName": "Last Name",
-		"fursonaName": "Fursona Name"
+		"fursonaName": "Fursona Name",
+		"upgradedFrom": "Upgraded from {code}"
 	},
 	"artbook": {
 		"artbook": {
