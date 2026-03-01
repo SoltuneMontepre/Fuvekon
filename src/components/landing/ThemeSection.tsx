@@ -12,12 +12,6 @@ const ThemeSection = ({ prefersReducedMotion = false }: ThemeSectionProps) => {
 	const t = useTranslations('landing')
 
 	useGSAP(() => {
-		if (prefersReducedMotion) {
-			gsap.set('.crane', { clearProps: 'all' })
-			gsap.set('.crane-reversed', { clearProps: 'all' })
-			return
-		}
-
 		const tl = gsap.timeline({
 			scrollTrigger: {
 				trigger: '.crane',

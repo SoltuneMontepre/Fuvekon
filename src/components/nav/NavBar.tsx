@@ -8,6 +8,11 @@ import MobileMenu from './MobileMenu'
 import { useLinkStatus } from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Menu } from 'lucide-react'
+import ReducedMotionToggle from '../config/ReducedMotionToggle'
+import { useAuthStore } from '@/stores/authStore'
+import LoginButton from '../auth/login/LoginButton'
+import ProfileButton from './ProfileButton'
+import LanguageSelector from '../config/LanguageSelector'
 
 const HIDE_LOGO_PREFIXES = ['/account', '/admin']
 
@@ -16,7 +21,7 @@ const NavBar = (): React.ReactElement => {
 	const pathname = usePathname()
 	const [isNavigating, setIsNavigating] = useState(false)
 	const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-
+	const isLoggedIn = useAuthStore(state => state.isAuthenticated)
 	const isLanding = pathname === '/'
 
 	const hideLogo = HIDE_LOGO_PREFIXES.some(p => pathname?.startsWith(p))
@@ -66,18 +71,14 @@ const NavBar = (): React.ReactElement => {
 
 				<div className='grow pointer-events-none' />
 
-				<div className='flex z- items-center gap-2 justify-end pointer-events-auto'>
+				<div className='flex z-30 items-center gap-2 justify-end pointer-events-auto'>
 					<ReducedMotionToggle />
-					{hideLogo || !isLanding ? (
-						<button
-							onClick={() => setMobileMenuOpen(true)}
-							className='p-2 rounded-lg hover:bg-white/10 transition-colors'
-							aria-label='Open menu'
-						>
-							<Menu className='size-6' />
-						</button>
-					) : (
-						<>
+					<div className='hidden md:flex'>
+						<LanguageSelector />
+						{isLoggedIn ? <ProfileButton /> : <LoginButton />}
+					</div>
+					<div className='md:hidden flex'>
+						{hideLogo || !isLanding ? (
 							<button
 								onClick={() => setMobileMenuOpen(true)}
 								className='p-2 rounded-lg hover:bg-white/10 transition-colors'
@@ -85,8 +86,18 @@ const NavBar = (): React.ReactElement => {
 							>
 								<Menu className='size-6' />
 							</button>
-						</>
-					)}
+						) : (
+							<>
+								<button
+									onClick={() => setMobileMenuOpen(true)}
+									className='p-2 rounded-lg hover:bg-white/10 transition-colors'
+									aria-label='Open menu'
+								>
+									<Menu className='size-6' />
+								</button>
+							</>
+						)}
+					</div>
 				</div>
 			</nav>
 

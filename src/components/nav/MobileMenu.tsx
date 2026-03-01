@@ -23,18 +23,12 @@ import { useTranslations } from 'next-intl'
 import { useRouter } from 'next/navigation'
 import LanguageSelector from '@/components/config/LanguageSelector'
 import FuveIcon from '../common/FuveIcon'
+import { useThemeStore } from '@/config/Providers/ThemeProvider'
 
 type MobileMenuProps = {
 	isOpen: boolean
 	onClose: () => void
 }
-
-// const NAV_ICONS: Record<string, string> = {
-// 	'/': '🏠',
-// 	'/ticket': '',
-// 	'/schedule': '',
-// 	'/about': 'ℹ️',
-// }
 
 const MobileMenu = ({
 	isOpen,
@@ -52,6 +46,7 @@ const MobileMenu = ({
 	const overlayRef = useRef<HTMLDivElement>(null)
 	const itemsRef = useRef<HTMLDivElement>(null)
 	const tlRef = useRef<gsap.core.Timeline | null>(null)
+	const preferReducedMotion = useThemeStore(state => state.prefersReducedMotion)
 
 	const animateClose = useCallback(() => {
 		if (!tlRef.current) {
@@ -61,12 +56,14 @@ const MobileMenu = ({
 		const tl = gsap.timeline({
 			onComplete: onClose,
 		})
-		tl.to(itemsRef.current?.children ?? [], {
-			x: 60,
-			opacity: 0,
-			duration: 0.05,
-			stagger: 0.02,
-		})
+		if (!preferReducedMotion) {
+			tl.to(itemsRef.current?.children ?? [], {
+				x: 60,
+				opacity: 0,
+				duration: 0.05,
+				stagger: 0.02,
+			})
+		}
 		tl.to(
 			panelRef.current,
 			{
@@ -74,7 +71,7 @@ const MobileMenu = ({
 				duration: 0.2,
 				ease: 'power3.in',
 			},
-			'-=0.1'
+			preferReducedMotion ? '0' : '-=0.1'
 		)
 		tl.to(
 			overlayRef.current,
@@ -84,7 +81,7 @@ const MobileMenu = ({
 			},
 			'-=0.3'
 		)
-	}, [onClose])
+	}, [onClose, preferReducedMotion])
 
 	useGSAP(
 		() => {
@@ -96,12 +93,19 @@ const MobileMenu = ({
 			)
 				return
 
+			if (preferReducedMotion) {
+				gsap.set(panelRef.current, { x: '0%' })
+				gsap.set(overlayRef.current, { opacity: 1 })
+				gsap.set(itemsRef.current.children, { x: 0, opacity: 1 })
+				return
+			}
+
 			const tl = gsap.timeline()
 			tlRef.current = tl
 
 			gsap.set(panelRef.current, { x: '100%' })
 			gsap.set(overlayRef.current, { opacity: 0 })
-			gsap.set(itemsRef.current.children, { x: 60, opacity: 0 })
+			gsap.set(itemsRef.current.children, { x: 0, opacity: 1 })
 
 			tl.to(overlayRef.current, {
 				opacity: 1,
@@ -116,27 +120,34 @@ const MobileMenu = ({
 				},
 				'-=0.2'
 			)
-			tl.to(
-				itemsRef.current.children,
-				{
-					x: 0,
-					opacity: 1,
-					duration: 0.15,
-					stagger: 0.02,
-					ease: 'power2.out',
-				},
-				'-=0.15'
-			)
+			if (!preferReducedMotion) {
+				tl.to(
+					itemsRef.current.children,
+					{
+						x: 0,
+						opacity: 1,
+						duration: 0.15,
+						stagger: 0.02,
+						ease: 'power2.out',
+					},
+					'-=0.15'
+				)
+			}
 		},
-		{ dependencies: [isOpen] }
+		{ dependencies: [isOpen, preferReducedMotion] }
 	)
 
 	useEffect(() => {
-		if (isOpen) {
-			document.body.style.overflow = 'hidden'
-		}
+		if (!isOpen) return
+		const scrollY = window.scrollY
+		document.body.style.position = 'fixed'
+		document.body.style.top = `-${scrollY}px`
+		document.body.style.width = '100%'
 		return () => {
-			document.body.style.overflow = ''
+			document.body.style.position = ''
+			document.body.style.top = ''
+			document.body.style.width = ''
+			window.scrollTo(0, scrollY)
 		}
 	}, [isOpen])
 
@@ -199,11 +210,11 @@ const MobileMenu = ({
 			{/* Panel */}
 			<div
 				ref={panelRef}
-				className='absolute right-0 top-0 h-full w-[280px] max-w-[80vw] sm:w-[300px] lg:w-[320px] lg:max-w-[320px] bg-main/95 backdrop-blur-xl shadow-2xl flex flex-col'
+				className='absolute right-0 top-0 h-full w-[280px] max-w-[80vw] sm:w-[300px] lg:w-[320px] lg:max-w-[320px] bg-text-primary/95 backdrop-blur-xl shadow-2xl flex flex-col border-l border-white/10'
 			>
 				{/* Header */}
-				<div className='flex items-center justify-between px-6 py-4 border-b border-white/10'>
-					<FuveIcon className='size-8' />
+				<div className='flex items-center justify-between px-6 py-4 border-b border-white/15'>
+					<FuveIcon black className='size-8' />
 					<button
 						onClick={animateClose}
 						className='p-1.5 rounded-lg hover:bg-white/10 transition-colors'
@@ -214,7 +225,7 @@ const MobileMenu = ({
 				</div>
 
 				{/* Top controls */}
-				<div className='flex items-center justify-center px-6 py-3 border-b border-white/10'>
+				<div className='flex items-center justify-center px-6 py-3 border-b border-white/15 bg-white/5'>
 					<LanguageSelector />
 				</div>
 
@@ -222,7 +233,7 @@ const MobileMenu = ({
 				<nav className='flex-1 overflow-y-auto py-4'>
 					<div ref={itemsRef} className='flex flex-col gap-1 px-4'>
 						{/* Auth section */}
-						<div className='px-3 pb-1 text-xs font-semibold uppercase tracking-wider opacity-60'>
+						<div className='px-3 pb-1 text-xs font-semibold uppercase tracking-wider text-white/40'>
 							{tNav('account')}
 						</div>
 						{isLoggedIn ? (
@@ -240,11 +251,11 @@ const MobileMenu = ({
 											onClick={animateClose}
 											className={`flex items-center gap-3 px-4 py-3 rounded-xl text-base font-medium transition-colors ${
 												active
-													? 'bg-[#48715B]/20 text-[#E2EEE2]'
-													: 'hover:bg-white/10'
+													? 'bg-button/40 text-white'
+													: 'text-white/75 hover:bg-white/10 hover:text-white'
 											}`}
 										>
-											<Icon className='size-5' />
+											<Icon className='size-5 shrink-0' />
 											<span>{item.label}</span>
 										</Link>
 									)
@@ -253,7 +264,7 @@ const MobileMenu = ({
 								<button
 									onClick={handleLogout}
 									disabled={logoutMutation.isPending}
-									className='flex items-center gap-3 px-4 py-3 rounded-xl text-base font-medium text-red-400 hover:bg-red-500/10 transition-colors w-full disabled:opacity-50'
+									className='flex items-center gap-3 px-4 py-3 rounded-xl text-base font-medium text-red-300 hover:bg-red-500/15 hover:text-red-200 transition-colors w-full disabled:opacity-50'
 								>
 									<LogOut className='size-5' />
 									<span>
@@ -268,17 +279,17 @@ const MobileMenu = ({
 								<Link
 									href='/register'
 									onClick={animateClose}
-									className='flex items-center gap-3 px-4 py-3 rounded-xl text-base font-medium hover:bg-white/10 transition-colors'
+									className='flex items-center gap-3 px-4 py-3 rounded-xl text-base font-medium text-white/75 hover:bg-white/10 hover:text-white transition-colors'
 								>
-									<UserPlus className='size-5' />
+									<UserPlus className='size-5 shrink-0' />
 									<span>{tAuth('register')}</span>
 								</Link>
 								<Link
 									href='/login'
 									onClick={animateClose}
-									className='flex items-center gap-3 px-4 py-3 rounded-xl text-base font-medium hover:bg-white/10 transition-colors'
+									className='flex items-center gap-3 px-4 py-3 rounded-xl text-base font-medium text-white/75 hover:bg-white/10 hover:text-white transition-colors'
 								>
-									<LogIn className='size-5' />
+									<LogIn className='size-5 shrink-0' />
 									<span>{tAuth('login')}</span>
 								</Link>
 							</>
@@ -291,7 +302,7 @@ const MobileMenu = ({
 								return (
 									<div
 										key={`section-${i}`}
-										className='px-3 pt-4 pb-1 text-xs font-semibold uppercase tracking-wider opacity-60'
+										className='px-3 pt-4 pb-1 text-xs font-semibold uppercase tracking-wider text-white/40'
 									>
 										{item.label}
 									</div>
@@ -306,11 +317,11 @@ const MobileMenu = ({
 									href={item.to}
 									onClick={animateClose}
 									className={`flex items-center justify-between gap-3 px-4 py-3 rounded-xl text-base font-medium transition-colors ${
-										item.depth ? 'ml-3 text-sm' : ''
+										item.depth
+											? 'ml-3 text-sm text-white/65 hover:text-white'
+											: 'text-white/75 hover:text-white'
 									} ${
-										active
-											? 'bg-[#48715B]/20 text-[#E2EEE2]'
-											: 'hover:bg-white/10'
+										active ? 'bg-button/40 text-white' : 'hover:bg-white/10'
 									}`}
 								>
 									<span>{item.label}</span>
