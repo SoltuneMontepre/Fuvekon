@@ -26,12 +26,13 @@ const FeatSection = ({
 	return (
 		<div
 			id={id}
-			className='relative section h-dvh w-full grid grid-cols-[30%_70%] z-10'
+			className='relative section h-dvh w-full grid grid-cols-[30%_70%] z-auto pointer-events-none'
 		>
-			<div className='h-full w-full flex items-center justify-end overflow-visible'>
+			{/* <div className='absolute h-screen w-screen inset-0 bg-gradient-to-l from-slate-900 to-transparent opacity-80 z-0 pointer-events-none' /> */}
+			<div className='h-full w-full flex items-center justify-end overflow-visible pointer-events-none'>
 				{/* drum here */}
 			</div>
-			<div className='h-screen w-full pointer-events-auto flex flex-col items-start justify-center'>
+			<div className='h-screen w-full flex flex-col items-start select-text justify-center z-10 pointer-events-none'>
 				<div className='flex flex-col w-full items-end justify-end pr-28 gap-8'>
 					<h2 className='text-6xl font-bold text-white tracking-wider'>
 						{title}
@@ -41,7 +42,7 @@ const FeatSection = ({
 					</p>
 					<Link
 						href={buttonHref}
-						className='px-8 py-3 bg-white text-black font-medium rounded-lg hover:bg-gray-100 transition-colors shadow-lg'
+						className='px-8 py-3 pointer-events-auto bg-text text-black font-medium rounded-lg hover:bg-secondary duration-200 transition-colors shadow-lg'
 					>
 						{buttonLabel}
 					</Link>

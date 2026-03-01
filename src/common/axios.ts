@@ -3,10 +3,13 @@ import { useAuthStore } from '@/stores/authStore'
 import { logger } from '@/utils/logger'
 
 const isDev = process.env.NODE_ENV === 'development'
+const preferProd = process.env.NEXT_PUBLIC_PROD_DEV === 'enabled'
 const devApiBase = process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, '') // no trailing slash
 
 const getBaseUrl = (path: string) =>
-	isDev && devApiBase ? `${devApiBase}/v1` : `https://api.fuve.vn${path}`
+	isDev && devApiBase && !preferProd
+		? `${devApiBase}/v1`
+		: `https://api.fuve.vn${path}`
 
 const axiosLocal = a.create({
 	baseURL: getBaseUrl('/v1'),

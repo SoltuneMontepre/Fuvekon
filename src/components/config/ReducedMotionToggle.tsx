@@ -2,7 +2,7 @@
 
 import { useThemeStore } from '@/config/Providers/ThemeProvider'
 import { useEffect, useState } from 'react'
-import { FiZap, FiZapOff } from 'react-icons/fi'
+import { FiVideo, FiVideoOff } from 'react-icons/fi'
 
 export default function ReducedMotionToggle() {
 	const { prefersReducedMotion, setPrefersReducedMotion } = useThemeStore(
@@ -25,16 +25,16 @@ export default function ReducedMotionToggle() {
 	return (
 		<button
 			onClick={() => setPrefersReducedMotion(!prefersReducedMotion)}
-			className='p-2 rounded-lg bg-transparent hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors'
+			className='p-2 rounded-lg z-20 bg-transparent hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors'
 			aria-label={
 				prefersReducedMotion ? 'Enable animations' : 'Reduce animations'
 			}
 			title={prefersReducedMotion ? 'Enable animations' : 'Reduce animations'}
 		>
 			{prefersReducedMotion ? (
-				<FiZapOff className='w-5 h-5 text-main' />
+				<FiVideoOff className='w-5 h-5 text-main' />
 			) : (
-				<FiZap className='w-5 h-5 text-main' />
+				<FiVideo className='w-5 h-5 text-main' />
 			)}
 		</button>
 	)

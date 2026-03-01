@@ -1,23 +1,27 @@
 'use client'
 
 import gsap from '@/common/gsap'
+import DrumImage from '@/components/landing/DrumImage'
 import FeatSection from '@/components/landing/FeatSection'
 import GOHSection from '@/components/landing/GOHSection'
 import HeroSection from '@/components/landing/HeroSection'
 import InfoSection from '@/components/landing/InfoSection'
 import ThemeSection from '@/components/landing/ThemeSection'
+import { GOH_ENABLED } from '@/config/app'
 import { useThemeStore } from '@/config/Providers/ThemeProvider'
 import { useGSAP } from '@gsap/react'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { useTranslations } from 'next-intl'
 import { useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
-import { BiUpArrow } from 'react-icons/bi'
+import { useEffect, useRef, useState } from 'react'
+import { ArrowUp } from 'lucide-react'
 
 const LandingPage = (): React.JSX.Element => {
 	const router = useRouter()
 	const [isLoaded, setIsLoaded] = useState(false)
 	const [showBackToTop, setShowBackToTop] = useState(false)
+	const [gohActiveCharacter, setGohActiveCharacter] = useState<0 | 1 | 2>(0)
+	const gohStepRef = useRef<0 | 1 | 2>(0)
 	const t = useTranslations('landing')
 
 	const prefersReducedMotion = useThemeStore(
@@ -63,6 +67,8 @@ const LandingPage = (): React.JSX.Element => {
 		const sections = gsap.utils.toArray<HTMLElement>('.section')
 
 		let isSnapping = false
+		let lastWheelTime = 0
+		const WHEEL_COOLDOWN = 700 // ms — matches the snap timeout
 
 		const getCurrentIndex = () => {
 			const scrollY = window.scrollY
@@ -80,11 +86,21 @@ const LandingPage = (): React.JSX.Element => {
 			return closestIndex
 		}
 
-		const scrollToIndex = (index: number) => {
+		const scrollToIndex = (index: number, direction: number) => {
 			const target = sections[index]
 			if (!target) return
 			isSnapping = true
 			window.scrollTo({ top: target.offsetTop, behavior: 'smooth' })
+			if (target.id === 'goh-section') {
+				// Arriving from below (scrolling up) → start at char 2
+				// Arriving from above (scrolling down) → start at char 1
+				const step = direction < 0 ? 2 : 1
+				gohStepRef.current = step as 1 | 2
+				setGohActiveCharacter(step as 1 | 2)
+			} else {
+				gohStepRef.current = 0
+				setGohActiveCharacter(0)
+			}
 			window.setTimeout(() => {
 				isSnapping = false
 			}, 700)
@@ -92,21 +108,43 @@ const LandingPage = (): React.JSX.Element => {
 
 		const handleWheel = (event: WheelEvent) => {
 			if (!sections.length || event.deltaY === 0) return
-			if (isSnapping) {
-				event.preventDefault()
-				return
-			}
-
 			event.preventDefault()
+
+			const now = Date.now()
+			if (isSnapping || now - lastWheelTime < WHEEL_COOLDOWN) return
+			lastWheelTime = now
+
 			const direction = event.deltaY > 0 ? 1 : -1
 			const currentIndex = getCurrentIndex()
+			const currentSection = sections[currentIndex]
+
+			// Intercept scrolls on the GOH section to step through characters
+			if (currentSection?.id === 'goh-section') {
+				if (direction > 0 && gohStepRef.current === 1) {
+					// Scroll down on char 1 → switch to char 2, stay on section
+					gohStepRef.current = 2
+					setGohActiveCharacter(2)
+					lastWheelTime = now
+					return
+				}
+				if (direction < 0 && gohStepRef.current === 2) {
+					// Scroll up on char 2 → switch back to char 1, stay on section
+					gohStepRef.current = 1
+					setGohActiveCharacter(1)
+					lastWheelTime = now
+					return
+				}
+				// char 2 + scroll down → advance to next section
+				// char 1 + scroll up  → go back to previous section
+			}
+
 			const nextIndex = Math.min(
 				Math.max(currentIndex + direction, 0),
 				sections.length - 1
 			)
 
 			if (nextIndex !== currentIndex) {
-				scrollToIndex(nextIndex)
+				scrollToIndex(nextIndex, direction)
 			}
 		}
 
@@ -125,59 +163,73 @@ const LandingPage = (): React.JSX.Element => {
 			return
 		}
 
-		const tl = gsap.timeline({
-			scrollTrigger: {
-				trigger: '.theme-section',
-				start: 'top 80%',
-				endTrigger: '#goh-section',
-				end: 'top 20%',
-				scrub: true,
-				invalidateOnRefresh: true,
-			},
-		})
+		if (GOH_ENABLED) {
+			const tl = gsap.timeline({
+				scrollTrigger: {
+					trigger: '.theme-section',
+					start: 'top 80%',
+					endTrigger: '#goh-section',
+					end: 'top 20%',
+					scrub: true,
+					invalidateOnRefresh: true,
+				},
+			})
 
-		gsap.set('#background-container', {
-			willChange: 'transform',
-			force3D: true,
-		})
+			gsap.set('#background-container', {
+				willChange: 'transform',
+				force3D: true,
+			})
 
-		tl.to('#background-container', {
-			scale: 1.15,
-			x: '5%',
-			y: '2.5%',
-			ease: 'none',
-			force3D: true,
-			overwrite: 'auto',
-		}).to('#background-container', {
-			scale: 1,
-			x: 0,
-			y: 0,
-			ease: 'none',
-			force3D: true,
-			overwrite: 'auto',
-		})
+			tl.to('#background-container', {
+				scale: 1.15,
+				x: '5%',
+				y: '2.5%',
+				ease: 'none',
+				force3D: true,
+				overwrite: 'auto',
+			}).to('#background-container', {
+				scale: 1,
+				x: 0,
+				y: 0,
+				ease: 'none',
+				force3D: true,
+				overwrite: 'auto',
+			})
 
-		ScrollTrigger.create({
-			trigger: '#goh-section',
-			start: 'top 70%',
-			end: 'bottom top',
-			onEnter: () => {
-				gsap.to('#mascot', {
-					autoAlpha: 0,
-					duration: 0.3,
-					ease: 'power2.out',
-					force3D: true,
-				})
-			},
-			onLeaveBack: () => {
-				gsap.to('#mascot', {
-					autoAlpha: 1,
-					duration: 0.3,
-					ease: 'power2.out',
-					force3D: true,
-				})
-			},
-		})
+			ScrollTrigger.create({
+				trigger: '#goh-section',
+				start: 'top 70%',
+				end: 'bottom top',
+				onEnter: () => {
+					gsap.to('#mascot', {
+						autoAlpha: 0,
+						duration: 0.3,
+						ease: 'power2.out',
+						force3D: true,
+					})
+					gsap.to('#moon', {
+						autoAlpha: 0,
+						duration: 0.3,
+						ease: 'power2.out',
+						force3D: true,
+					})
+				},
+				onLeaveBack: () => {
+					gsap.to('#mascot', {
+						autoAlpha: 1,
+						duration: 0.3,
+						ease: 'power2.out',
+						force3D: true,
+					})
+					gsap.to('#moon', {
+						autoAlpha: 1,
+						duration: 0.3,
+						ease: 'power2.out',
+						force3D: true,
+					})
+				},
+			})
+		}
 
 		gsap
 			.timeline({
@@ -195,14 +247,40 @@ const LandingPage = (): React.JSX.Element => {
 				ease: 'linear',
 				force3D: true,
 			})
+	}, [])
 
-		gsap.timeline({
-			scrollTrigger: {
-				trigger: '#drum-feat',
-				markers: true,
-			},
-		})
-	}, [prefersReducedMotion])
+	useGSAP(() => {
+		gsap.set('#feat-drum', { x: '-110vw', scale: 0, autoAlpha: 0 })
+		gsap.set('#feat-drum-spinner', { rotation: -360 })
+		gsap.set('#feat-drum-line', { rotation: 360 })
+
+		gsap
+			.timeline({
+				scrollTrigger: {
+					trigger: '#feat-start',
+					start: 'top bottom',
+					end: 'top top',
+					scrub: 1.5,
+					invalidateOnRefresh: true,
+				},
+			})
+			.to('#feat-drum', { x: 0, scale: 1, autoAlpha: 1 }, 0)
+			.to('#feat-drum-spinner', { rotation: 0, ease: 'none' }, 0)
+			.to('#feat-drum-line', { rotation: 0, ease: 'none' }, 0)
+
+		gsap
+			.timeline({
+				scrollTrigger: {
+					trigger: '#feat-sections',
+					start: 'top top',
+					end: 'bottom bottom',
+					scrub: 1.5,
+					invalidateOnRefresh: true,
+				},
+			})
+			.to('#feat-drum-spinner', { rotation: 720, ease: 'none' }, 0)
+			.to('#feat-drum-line', { rotation: -720, ease: 'none' }, 0)
+	}, [])
 
 	return (
 		<div
@@ -213,11 +291,11 @@ const LandingPage = (): React.JSX.Element => {
 			{showBackToTop && (
 				<button
 					onClick={scrollToTop}
-					className='fixed bottom-6 right-6 z-50 p-3 rounded-lg bg-secondary text-primary shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110'
+					className='fixed bottom-8 right-8 z-50 w-11 h-11 flex items-center justify-center rounded-full bg-bg/80 backdrop-blur-sm border border-text-primary/15 text-text-secondary shadow-lg hover:shadow-xl hover:border-text-primary/30 hover:text-text-primary hover:-translate-y-1 active:scale-95 transition-all duration-300'
 					aria-label='Back to top'
 					title='Back to top'
 				>
-					<BiUpArrow />
+					<ArrowUp className='w-4 h-4' strokeWidth={2.5} />
 				</button>
 			)}
 
@@ -231,45 +309,52 @@ const LandingPage = (): React.JSX.Element => {
 			<ThemeSection prefersReducedMotion={prefersReducedMotion} />
 
 			{/* GOH */}
-			<GOHSection />
+			{GOH_ENABLED && <GOHSection activeCharacter={gohActiveCharacter} />}
 
-			<FeatSection
-				title={t('artbook.title')}
-				description={t('artbook.description')}
-				buttonLabel={t('artbook.buttonLabel')}
-				buttonHref={t('artbook.buttonHref')}
-				images={[
-					'/images/artbook/badges.png',
-					'/images/artbook/badges.png',
-					'/images/artbook/badges.png',
-				]}
-			/>
+			<div id='feat-sections'>
+				<FeatSection
+					id='feat-start'
+					title={t('artbook.title')}
+					description={t('artbook.description')}
+					buttonLabel={t('artbook.buttonLabel')}
+					buttonHref={t('artbook.buttonHref')}
+					images={[
+						'/images/artbook/badges.png',
+						'/images/artbook/badges.png',
+						'/images/artbook/badges.png',
+					]}
+				/>
 
-			{/* Dealer */}
-			<FeatSection
-				title={t('dealer.title')}
-				description={t('dealer.description')}
-				buttonLabel={t('dealer.buttonLabel')}
-				buttonHref={t('dealer.buttonHref')}
-				images={[
-					'/images/artbook/badges.png',
-					'/images/artbook/badges.png',
-					'/images/artbook/badges.png',
-				]}
-			/>
+				{/* Dealer */}
+				<FeatSection
+					title={t('dealer.title')}
+					description={t('dealer.description')}
+					buttonLabel={t('dealer.buttonLabel')}
+					buttonHref={t('dealer.buttonHref')}
+					images={[
+						'/images/artbook/badges.png',
+						'/images/artbook/badges.png',
+						'/images/artbook/badges.png',
+					]}
+				/>
 
-			{/* Talent */}
-			<FeatSection
-				title={t('talent.title')}
-				description={t('talent.description')}
-				buttonLabel={t('talent.buttonLabel')}
-				buttonHref={t('talent.buttonHref')}
-				images={[
-					'/images/artbook/badges.png',
-					'/images/artbook/badges.png',
-					'/images/artbook/badges.png',
-				]}
-			/>
+				{/* Talent */}
+				<FeatSection
+					title={t('talent.title')}
+					description={t('talent.description')}
+					buttonLabel={t('talent.buttonLabel')}
+					buttonHref={t('talent.buttonHref')}
+					images={[
+						'/images/artbook/badges.png',
+						'/images/artbook/badges.png',
+						'/images/artbook/badges.png',
+					]}
+				/>
+			</div>
+
+			<div className='h-full fixed -translate-x-1/2 w-fit inset-0 overflow-hidden pointer-events-none'>
+				<DrumImage id='feat-drum' className='' />
+			</div>
 		</div>
 	)
 }

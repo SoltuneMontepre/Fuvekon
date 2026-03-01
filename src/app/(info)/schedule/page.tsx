@@ -1,7 +1,7 @@
 import React from 'react'
 
 const SchedulePage = () => {
-	return <div>Schedule Page</div>
+	return <div>Coming Soon</div>
 }
 
 export default SchedulePage

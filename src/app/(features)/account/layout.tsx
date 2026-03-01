@@ -11,6 +11,7 @@ import { useTranslations } from 'next-intl'
 import { logger } from '@/utils/logger'
 import Loading from '@/components/common/Loading'
 import Image from 'next/image'
+import Background from '@/components/ui/Background'
 
 type AccountLayoutProps = {
 	children: ReactNode
@@ -41,7 +42,6 @@ const AccountLayout = ({ children }: AccountLayoutProps) => {
 					href: '/account/change-password',
 					icon: Lock,
 				},
-				// Show dealer booth if user is a dealer; show register only when user has a ticket
 				...(account?.is_dealer || data?.data?.is_dealer
 					? [
 							{
@@ -96,17 +96,8 @@ const AccountLayout = ({ children }: AccountLayoutProps) => {
 	return (
 		<div id='account-layout' className='account-layout relative flex w-full'>
 			{/* Background Image - Behind everything */}
-			<div
-				id='account-background'
-				className='account-background fixed inset-0 z-0'
-				style={{
-					backgroundImage: `url('/assets/bg-base.webp')`,
-					backgroundSize: 'cover',
-					backgroundPosition: 'center',
-					backgroundRepeat: 'no-repeat',
-				}}
-			/>
 
+			<Background />
 			{/* Dark overlay for better contrast */}
 			<div className='fixed inset-0 z-[1] bg-black/40' />
 
