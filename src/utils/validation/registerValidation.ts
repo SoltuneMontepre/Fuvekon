@@ -169,15 +169,15 @@ export const getPasswordStrengthLabel = (strength: number): string => {
 	switch (strength) {
 		case 0:
 		case 1:
-			return 'Rất yếu'
+			return 'strength.veryWeak'
 		case 2:
-			return 'Yếu'
+			return 'strength.weak'
 		case 3:
-			return 'Trung bình'
+			return 'strength.fair'
 		case 4:
-			return 'Mạnh'
+			return 'strength.strong'
 		case 5:
-			return 'Rất mạnh'
+			return 'strength.veryStrong'
 		default:
 			return ''
 	}

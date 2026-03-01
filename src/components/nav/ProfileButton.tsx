@@ -2,21 +2,25 @@
 
 import React, { useState, useRef, useEffect } from 'react'
 import { useTranslations } from 'next-intl'
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 import Link from 'next/link'
 import S3Image from '@/components/common/S3Image'
 import { useAuthStore } from '@/stores/authStore'
 import { useLogout } from '@/hooks/services/auth/useLogout'
+import { UserCircle, Ticket, Lock, Store, LogOut } from 'lucide-react'
 
 const ProfileButton = (): React.ReactElement => {
 	const t = useTranslations('auth')
 	const tNav = useTranslations('nav')
 	const router = useRouter()
+	const pathname = usePathname()
 	const account = useAuthStore(state => state.account)
 	const logoutMutation = useLogout()
 	const [isOpen, setIsOpen] = useState(false)
 	const [imageError, setImageError] = useState(false)
 	const dropdownRef = useRef<HTMLDivElement>(null)
+
+	const isAccountRoute = pathname?.startsWith('/account')
 
 	const handleLogout = async () => {
 		setIsOpen(false)
@@ -38,6 +42,17 @@ const ProfileButton = (): React.ReactElement => {
 
 	const displayName = account?.fursona_name || account?.first_name || account?.email?.split('@')[0] || 'User'
 	const showAvatar = account?.avatar && !imageError
+
+	const accountNavItems = [
+		{ label: tNav('account'), href: '/account', icon: UserCircle },
+		{ label: tNav('myTicket'), href: '/account/ticket', icon: Ticket },
+		{ label: tNav('changePassword'), href: '/account/change-password', icon: Lock },
+		...(account?.is_dealer
+			? [{ label: tNav('myDealerBooth'), href: '/account/dealer', icon: Store }]
+			: account?.is_has_ticket
+				? [{ label: tNav('registerDealer'), href: '/account/dealer/register', icon: Store }]
+				: []),
+	]
 
 	return (
 		<div className='relative' ref={dropdownRef}>
@@ -70,27 +85,49 @@ const ProfileButton = (): React.ReactElement => {
 						<p className='text-xs text-gray-500 truncate'>{account?.email}</p>
 					</div>
 
-					<Link
-						href='/account'
-						onClick={() => setIsOpen(false)}
-						className='flex items-center gap-2 px-4 py-2 text-sm text-[#154c5b] hover:bg-gray-50 transition-colors'
-					>
-						<svg className='size-4' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
-							<path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z' />
-						</svg>
-						{tNav('account')}
-					</Link>
+					{isAccountRoute ? (
+						<div className='md:hidden'>
+							{accountNavItems.map(item => {
+								const Icon = item.icon
+								const active = pathname === item.href || pathname?.startsWith(item.href + '/')
+								return (
+									<Link
+										key={item.href}
+										href={item.href}
+										onClick={() => setIsOpen(false)}
+										className={`flex items-center gap-2 px-4 py-2 text-sm transition-colors ${
+											active
+												? 'bg-[#48715B]/10 text-[#48715B] font-semibold'
+												: 'text-[#154c5b] hover:bg-gray-50'
+										}`}
+									>
+										<Icon className='size-4' />
+										{item.label}
+									</Link>
+								)
+							})}
+						</div>
+					) : null}
 
-					<Link
-						href='/account/ticket'
-						onClick={() => setIsOpen(false)}
-						className='flex items-center gap-2 px-4 py-2 text-sm text-[#154c5b] hover:bg-gray-50 transition-colors'
-					>
-						<svg className='size-4' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
-							<path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z' />
-						</svg>
-						{tNav('myTicket')}
-					</Link>
+					<div className={isAccountRoute ? 'hidden md:block' : ''}>
+						<Link
+							href='/account'
+							onClick={() => setIsOpen(false)}
+							className='flex items-center gap-2 px-4 py-2 text-sm text-[#154c5b] hover:bg-gray-50 transition-colors'
+						>
+							<UserCircle className='size-4' />
+							{tNav('account')}
+						</Link>
+
+						<Link
+							href='/account/ticket'
+							onClick={() => setIsOpen(false)}
+							className='flex items-center gap-2 px-4 py-2 text-sm text-[#154c5b] hover:bg-gray-50 transition-colors'
+						>
+							<Ticket className='size-4' />
+							{tNav('myTicket')}
+						</Link>
+					</div>
 
 					<div className='border-t border-gray-100 mt-1 pt-1'>
 						<button
@@ -98,9 +135,7 @@ const ProfileButton = (): React.ReactElement => {
 							disabled={logoutMutation.isPending}
 							className='flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors w-full disabled:opacity-50'
 						>
-							<svg className='size-4' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
-								<path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1' />
-							</svg>
+							<LogOut className='size-4' />
 							{logoutMutation.isPending ? t('loggingOut') : t('logout')}
 						</button>
 					</div>

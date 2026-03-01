@@ -22,7 +22,31 @@
 		"results": "ผลลัพธ์",
 		"page": "หน้า",
 		"edit": "แก้ไข",
-		"delete": "ลบ"
+		"delete": "ลบ",
+		"continue": "ดำเนินการต่อ",
+		"imageUploader": {
+			"label": "รูปภาพ",
+			"button": {
+				"chooseFile": "เลือกไฟล์"
+			},
+			"validation": {
+				"fileTooLarge": "ขนาดไฟล์เกินขีดจำกัด {maxSizeMB}MB",
+				"invalidType": "กรุณาเลือกไฟล์รูปภาพ"
+			},
+			"actions": {
+				"replace": "แทนที่",
+				"remove": "ลบ"
+			},
+			"status": {
+				"error": "ข้อผิดพลาด",
+				"uploading": "กำลังอัปโหลด... {progress}%",
+				"uploadFailed": "อัปโหลดไม่สำเร็จ",
+				"uploadSuccessful": "อัปโหลดสำเร็จ!"
+			},
+			"hint": {
+				"maxSize": "ขนาดสูงสุด: {maxSizeMB}MB"
+			}
+		}
 	},
 	"nav": {
 		"ticket": "บัตร",
@@ -72,6 +96,53 @@
 		"forgotPasswordFailed": "ดำเนินการล้มเหลว กรุณาลองอีกครั้ง",
 		"resetPasswordConfirmFailed": "รีเซ็ตรหัสผ่านล้มเหลว กรุณาลองอีกครั้ง",
 		"networkError": "เกิดข้อผิดพลาดในการเชื่อมต่อ กรุณาตรวจสอบเครือข่ายและลองอีกครั้ง",
+		"validation": {
+			"requiredField": "จำเป็นต้องกรอกฟิลด์นี้",
+			"invalidEmail": "ที่อยู่อีเมลไม่ถูกต้อง",
+			"invalidName": "ชื่อสามารถประกอบด้วยตัวอักษรและช่องว่างเท่านั้น",
+			"nameTooShort": "ชื่อจะต้องมีอย่างน้อย 2 ตัวอักษร",
+			"nameTooLong": "ชื่อไม่ควรเกิน 50 ตัวอักษร",
+			"invalidNickname": "ชื่อเล่นสามารถประกอบด้วยตัวอักษร ตัวเลข ขีดกลาง และขีดล่างเท่านั้น",
+			"nicknameTooShort": "ชื่อเล่นต้องมีอย่างน้อย 3 ตัวอักษร",
+			"nicknameTooLong": "ชื่อเล่นไม่ควรเกิน 20 ตัวอักษร",
+			"weakPassword": "รหัสผ่านต้องมีอย่างน้อย 8 ตัวอักษร รวมตัวพิมพ์ใหญ่ ตัวพิมพ์เล็ก และตัวเลข",
+			"passwordTooLong": "รหัสผ่านไม่ควรเกิน 128 ตัวอักษร",
+			"passwordMismatch": "รหัสผ่านไม่ตรงกัน",
+			"invalidIdCard": "หนังสือเดินทาง/ID ไม่ถูกต้อง (9-12 ตัวอักษร)",
+			"invalidCountry": "กรุณาป้อนชื่อประเทศที่ถูกต้อง",
+			"invalidPhone": "หมายเลขโทรศัพท์ไม่ถูกต้อง",
+			"phoneTooShort": "หมายเลขโทรศัพท์ต้องมีอย่างน้อย 10 ตัวอักษร",
+			"termsAccepted": "คุณต้องยอมรับข้อกำหนดในการให้บริการ",
+			"ageRequirement": "คุณต้องมีอายุอย่างน้อย 16 ปี"
+		},
+		"strength": {
+			"veryWeak": "อ่อนมาก",
+			"weak": "อ่อน",
+			"fair": "ปานกลาง",
+			"strong": "แข็งแรง",
+			"veryStrong": "แข็งแรงมาก"
+		},
+		"signInWithGoogle": "เข้าสู่ระบบด้วย Google",
+		"orContinueWith": "หรือดำเนินการต่อด้วย",
+		"googleLoginFailed": "เข้าสู่ระบบด้วย Google ล้มเหลว กรุณาลองอีกครั้ง",
+		"googleNotConfigured": "การเข้าสู่ระบบด้วย Google ไม่พร้อมใช้งาน กรุณาใช้อีเมลและรหัสผ่าน",
+		"googleRegistrationDetailsRequired": "กรุณากรอกรายละเอียดเพื่อสมัครสมาชิกก่อน",
+		"invalidGoogleToken": "การเข้าสู่ระบบด้วย Google ไม่ถูกต้อง กรุณาลองอีกครั้ง",
+		"completeRegistration": "กรอกข้อมูลเพิ่มเติม",
+		"googleRegisterSubtitle": "กรอกรายละเอียดที่เหลือเพื่อสมัครสมาชิกด้วย Google",
+		"fullName": "ชื่อ-นามสกุล",
+		"nickname": "ชื่อเล่น",
+		"country": "ประเทศ",
+		"phone": "โทรศัพท์",
+			"idCard": "หนังสือเดินทาง/บัตรประจำตัวประชาชน",
+		"selectCountry": "เลือกประเทศ",
+		"confirmPassword": "ยืนยันรหัสผ่าน",
+		"registerTitle": "ลงทะเบียนบัญชี",
+		"registerSuccess": "ลงทะเบียนสำเร็จ! กำลังเปลี่ยนเส้นทางไปยังหน้าเข้าสู่ระบบ...",
+		"registerButton": "ลงทะเบียนบัญชี",
+		"termsAgreement": "ฉันได้อ่านและยอมรับข้อกำหนดและเงื่อนไขของ FUVE",
+		"registering": "กำลังสมัคร...",
+		"backToRegister": "กลับไปหน้าสมัคร",
 		"send": "ส่ง",
 		"sending": "กำลังส่ง...",
 		"backToLogin": "กลับไปหน้าล็อกอิน",
@@ -150,7 +221,18 @@
 		"iAmFursuiter": "ฉันเป็น fursuiter",
 		"fursuitStaff": "Fursuit staff",
 		"fursuiter": "Fursuiter",
-		"upgradeTicket": "อัปเกรดตั๋ว (เร็วๆ นี้)",
+		"upgradeTicket": "อัปเกรดตั๋ว",
+		"upgradeTitle": "อัปเกรดตั๋วของคุณ",
+		"upgradeConfirm": "ยืนยันการอัปเกรด",
+		"upgradePriceDifference": "ส่วนต่างราคา",
+		"upgradeFrom": "อัปเกรดจาก",
+		"upgradeCurrentTier": "ระดับปัจจุบัน",
+		"upgradeNewTier": "เลือกระดับใหม่",
+		"upgradePayDifference": "คุณต้องจ่ายเฉพาะส่วนต่างเท่านั้น",
+		"upgradeResetWarning": "สถานะตั๋วจะถูกรีเซ็ตเป็นรอดำเนินการ และคุณต้องยืนยันการชำระเงินสำหรับส่วนต่าง",
+		"upgradeSuccess": "อัปเกรดตั๋วสำเร็จ! กรุณาชำระส่วนต่าง",
+		"upgradeError": "ไม่สามารถอัปเกรดตั๋วได้ กรุณาลองอีกครั้ง",
+		"noUpgradesAvailable": "ไม่มีระดับที่สูงกว่าสำหรับอัปเกรด",
 		"bankDetails": "รายละเอียดการโอนเงิน",
 		"bankName": "ธนาคาร",
 		"accountNumber": "เลขที่บัญชี",
@@ -317,7 +399,8 @@
 		"editUser": "แก้ไขผู้ใช้",
 		"firstName": "ชื่อ",
 		"lastName": "นามสกุล",
-		"fursonaName": "ชื่อ Fursona"
+		"fursonaName": "ชื่อ Fursona",
+		"upgradedFrom": "อัปเกรดจาก {code}"
 	},
 	"account": {
 		"noAccountInfo": "ไม่มีข้อมูลบัญชี",

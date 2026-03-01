@@ -22,7 +22,31 @@
 		"results": "results",
 		"page": "Page",
 		"edit": "Edit",
-		"delete": "Delete"
+		"delete": "Delete",
+		"continue": "Continue",
+		"imageUploader": {
+			"label": "Image",
+			"button": {
+				"chooseFile": "Choose file"
+			},
+			"validation": {
+				"fileTooLarge": "File size exceeds {maxSizeMB}MB limit",
+				"invalidType": "Please select an image file"
+			},
+			"actions": {
+				"replace": "Replace",
+				"remove": "Remove"
+			},
+			"status": {
+				"error": "Error",
+				"uploading": "Uploading... {progress}%",
+				"uploadFailed": "Upload failed",
+				"uploadSuccessful": "Upload successful!"
+			},
+			"hint": {
+				"maxSize": "Max size: {maxSizeMB}MB"
+			}
+		}
 	},
 	"nav": {
 		"ticket": "Ticket",
@@ -72,6 +96,53 @@
 		"forgotPasswordFailed": "Failed to process request. Please try again.",
 		"resetPasswordConfirmFailed": "Failed to reset password. Please try again.",
 		"networkError": "Connection error. Please check your network and try again.",
+		"validation": {
+			"requiredField": "This field is required",
+			"invalidEmail": "Invalid email address",
+			"invalidName": "Name can only contain letters and spaces",
+			"nameTooShort": "Name must be at least 2 characters",
+			"nameTooLong": "Name must not exceed 50 characters",
+			"invalidNickname": "Nickname can only contain letters, numbers, hyphens, and underscores",
+			"nicknameTooShort": "Nickname must be at least 3 characters",
+			"nicknameTooLong": "Nickname must not exceed 20 characters",
+			"weakPassword": "Password must be at least 8 characters and include uppercase, lowercase and a number",
+			"passwordTooLong": "Password must not exceed 128 characters",
+			"passwordMismatch": "Passwords do not match",
+			"invalidIdCard": "Invalid passport/ID (9-12 alphanumeric characters)",
+			"invalidCountry": "Please enter a valid country name",
+			"invalidPhone": "Invalid phone number",
+			"phoneTooShort": "Phone number must be at least 10 characters",
+			"termsAccepted": "You must accept the terms of service",
+			"ageRequirement": "You must be at least 16 years old"
+		},
+		"strength": {
+			"veryWeak": "Very weak",
+			"weak": "Weak",
+			"fair": "Fair",
+			"strong": "Strong",
+			"veryStrong": "Very strong"
+		},
+		"signInWithGoogle": "Sign in with Google",
+		"orContinueWith": "or continue with",
+		"googleLoginFailed": "Google sign-in failed. Please try again.",
+		"googleNotConfigured": "Google sign-in is not available. Please use email and password.",
+		"googleRegistrationDetailsRequired": "Please complete registration with your details first.",
+		"invalidGoogleToken": "Invalid Google sign-in. Please try again.",
+		"completeRegistration": "Complete Registration",
+		"googleRegisterSubtitle": "Fill in the remaining details to complete your Google registration.",
+		"fullName": "Full name",
+		"nickname": "Nickname",
+		"phone": "Phone",
+			"idCard": "Passport/Identification Card",
+		"country": "Country",
+		"selectCountry": "Select country",
+		"confirmPassword": "Confirm password",
+		"registerTitle": "Register Account",
+		"registerSuccess": "Registration successful! Redirecting to login...",
+		"registerButton": "Register account",
+		"termsAgreement": "I have read and accept all terms and conditions of FUVE",
+		"registering": "Registering...",
+		"backToRegister": "Back to register",
 		"send": "Send",
 		"sending": "Sending...",
 		"backToLogin": "Back to login",
@@ -150,7 +221,18 @@
 		"iAmFursuiter": "I am a fursuiter",
 		"fursuitStaff": "Fursuit staff",
 		"fursuiter": "Fursuiter",
-		"upgradeTicket": "Upgrade Ticket (Coming Soon)",
+		"upgradeTicket": "Upgrade Ticket",
+		"upgradeTitle": "Upgrade Your Ticket",
+		"upgradeConfirm": "Confirm Upgrade",
+		"upgradePriceDifference": "Price Difference",
+		"upgradeFrom": "Upgraded from",
+		"upgradeCurrentTier": "Current Tier",
+		"upgradeNewTier": "Select New Tier",
+		"upgradePayDifference": "You only need to pay the price difference.",
+		"upgradeResetWarning": "Your ticket status will be reset to pending and you will need to re-confirm payment for the difference.",
+		"upgradeSuccess": "Ticket upgraded successfully! Please complete payment for the difference.",
+		"upgradeError": "Failed to upgrade ticket. Please try again.",
+		"noUpgradesAvailable": "No higher tiers available for upgrade.",
 		"bankDetails": "Bank Transfer Details",
 		"bankName": "Bank",
 		"accountNumber": "Account Number",
@@ -317,7 +399,8 @@
 		"editUser": "Edit User",
 		"firstName": "First Name",
 		"lastName": "Last Name",
-		"fursonaName": "Fursona Name"
+		"fursonaName": "Fursona Name",
+		"upgradedFrom": "Upgraded from {code}"
 	},
 	"account": {
 		"noAccountInfo": "No account information available",
@@ -336,7 +419,7 @@
 		"email": "Email",
 		"country": "Country",
 		"selectCountry": "Select country",
-		"idCard": "Passport",
+		"idCard": "Passport/Identification Card",
 		"fullName": "Full name",
 		"editInfo": "Edit profile",
 		"saveChanges": "Save changes",

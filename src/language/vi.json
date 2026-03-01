@@ -22,7 +22,31 @@
 		"results": "kết quả",
 		"page": "Trang",
 		"edit": "Sửa",
-		"delete": "Xóa"
+		"delete": "Xóa",
+		"continue": "Tiếp tục",
+		"imageUploader": {
+			"label": "Hình ảnh",
+			"button": {
+				"chooseFile": "Chọn tệp"
+			},
+			"validation": {
+				"fileTooLarge": "Kích thước tệp vượt quá giới hạn {maxSizeMB}MB",
+				"invalidType": "Vui lòng chọn tệp hình ảnh"
+			},
+			"actions": {
+				"replace": "Thay thế",
+				"remove": "Xóa"
+			},
+			"status": {
+				"error": "Lỗi",
+				"uploading": "Đang tải lên... {progress}%",
+				"uploadFailed": "Tải lên thất bại",
+				"uploadSuccessful": "Tải lên thành công!"
+			},
+			"hint": {
+				"maxSize": "Kích thước tối đa: {maxSizeMB}MB"
+			}
+		}
 	},
 	"nav": {
 		"ticket": "Vé",
@@ -72,6 +96,53 @@
 		"forgotPasswordFailed": "Xử lý yêu cầu thất bại. Vui lòng thử lại.",
 		"resetPasswordConfirmFailed": "Đặt lại mật khẩu thất bại. Vui lòng thử lại.",
 		"networkError": "Lỗi kết nối. Vui lòng kiểm tra mạng và thử lại.",
+		"validation": {
+			"requiredField": "Trường này là bắt buộc",
+			"invalidEmail": "Địa chỉ email không hợp lệ",
+			"invalidName": "Tên chỉ được chứa chữ cái và khoảng trắng",
+			"nameTooShort": "Tên phải có ít nhất 2 ký tự",
+			"nameTooLong": "Tên không được quá 50 ký tự",
+			"invalidNickname": "Biệt danh chỉ được chứa chữ cái, số, gạch ngang và gạch dưới",
+			"nicknameTooShort": "Biệt danh phải có ít nhất 3 ký tự",
+			"nicknameTooLong": "Biệt danh không được quá 20 ký tự",
+			"weakPassword": "Mật khẩu phải có ít nhất 8 ký tự và bao gồm chữ hoa, chữ thường và số",
+			"passwordTooLong": "Mật khẩu không được quá 128 ký tự",
+			"passwordMismatch": "Mật khẩu không khớp",
+			"invalidIdCard": "Hộ chiếu/ID không hợp lệ (9-12 ký tự)",
+			"invalidCountry": "Vui lòng nhập tên quốc gia hợp lệ",
+			"invalidPhone": "Số điện thoại không hợp lệ",
+			"phoneTooShort": "Số điện thoại phải có ít nhất 10 ký tự",
+			"termsAccepted": "Bạn phải chấp nhận điều khoản dịch vụ",
+			"ageRequirement": "Bạn phải ít nhất 16 tuổi"
+		},
+		"strength": {
+			"veryWeak": "Rất yếu",
+			"weak": "Yếu",
+			"fair": "Trung bình",
+			"strong": "Mạnh",
+			"veryStrong": "Rất mạnh"
+		},
+		"signInWithGoogle": "Đăng nhập bằng Google",
+		"orContinueWith": "hoặc tiếp tục với",
+		"googleLoginFailed": "Đăng nhập Google thất bại. Vui lòng thử lại.",
+		"googleNotConfigured": "Đăng nhập Google chưa được cấu hình. Vui lòng dùng email và mật khẩu.",
+		"googleRegistrationDetailsRequired": "Vui lòng hoàn tất đăng ký với thông tin của bạn trước.",
+		"invalidGoogleToken": "Đăng nhập Google không hợp lệ. Vui lòng thử lại.",
+		"completeRegistration": "Hoàn tất đăng ký",
+		"googleRegisterSubtitle": "Điền thông tin còn lại để hoàn tất đăng ký bằng Google.",
+		"fullName": "Họ và tên",
+		"nickname": "Biệt danh",
+		"country": "Quốc gia",
+		"phone": "Số điện thoại",
+			"idCard": "CCCD/Chứng minh thư",
+		"selectCountry": "Chọn quốc gia",
+		"confirmPassword": "Xác nhận mật khẩu",
+		"registerTitle": "Đăng ký tài khoản",
+		"registerSuccess": "Đăng ký thành công! Chuyển hướng đến trang đăng nhập...",
+		"registerButton": "Đăng ký tài khoản",
+		"termsAgreement": "Tôi đã đọc và chấp nhận mọi điều khoản và quy định của FUVE",
+		"registering": "Đang đăng ký...",
+		"backToRegister": "Quay lại đăng ký",
 		"send": "Gửi",
 		"sending": "Đang gửi...",
 		"backToLogin": "Trở về trang Login",
@@ -150,7 +221,18 @@
 		"iAmFursuiter": "Tôi là fursuiter",
 		"fursuitStaff": "Fursuit staff",
 		"fursuiter": "Fursuiter",
-		"upgradeTicket": "Nâng cấp vé (Sắp ra mắt)",
+		"upgradeTicket": "Nâng cấp vé",
+		"upgradeTitle": "Nâng cấp vé của bạn",
+		"upgradeConfirm": "Xác nhận nâng cấp",
+		"upgradePriceDifference": "Chênh lệch giá",
+		"upgradeFrom": "Nâng cấp từ",
+		"upgradeCurrentTier": "Hạng hiện tại",
+		"upgradeNewTier": "Chọn hạng mới",
+		"upgradePayDifference": "Bạn chỉ cần thanh toán phần chênh lệch.",
+		"upgradeResetWarning": "Trạng thái vé sẽ được đặt lại thành chờ xử lý và bạn cần xác nhận thanh toán lại cho phần chênh lệch.",
+		"upgradeSuccess": "Nâng cấp vé thành công! Vui lòng thanh toán phần chênh lệch.",
+		"upgradeError": "Không thể nâng cấp vé. Vui lòng thử lại.",
+		"noUpgradesAvailable": "Không có hạng cao hơn để nâng cấp.",
 		"bankDetails": "Thông tin chuyển khoản",
 		"bankName": "Ngân hàng",
 		"accountNumber": "Số tài khoản",
@@ -317,7 +399,8 @@
 		"editUser": "Sửa người dùng",
 		"firstName": "Tên",
 		"lastName": "Họ",
-		"fursonaName": "Tên Fursona"
+		"fursonaName": "Tên Fursona",
+		"upgradedFrom": "Nâng cấp từ {code}"
 	},
 	"account": {
 		"noAccountInfo": "Không có thông tin tài khoản",

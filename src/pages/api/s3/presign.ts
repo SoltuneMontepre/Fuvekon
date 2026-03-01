@@ -3,6 +3,8 @@ import { PutObjectCommand } from '@aws-sdk/client-s3'
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 import { validateAwsConfig } from '@/utils/validation/awsConfigValidation'
 import { validateFolder } from '@/utils/validation/folderValidation'
+import { isValidImageType } from '@/utils/validation/isValidImageType'
+import { MAX_FILE_SIZE } from '@/config/app'
 import { generateFileKey } from '@/utils/s3/fileKey'
 import { generateS3PublicUrl } from '@/utils/s3/url'
 import { getS3Client, getAwsRegion, getBucketName } from '@/utils/s3'
@@ -25,12 +27,33 @@ function validatePresignRequest(body: PresignRequest): {
 	isValid: boolean
 	error?: string
 } {
-	const { fileName, fileType, folder } = body
+	const { fileName, fileType, contentLength, folder } = body
 
 	if (!fileName || !fileType) {
 		return {
 			isValid: false,
 			error: 'fileName and fileType are required',
+		}
+	}
+
+	if (typeof contentLength !== 'number' || contentLength <= 0) {
+		return {
+			isValid: false,
+			error: 'contentLength is required and must be a positive number',
+		}
+	}
+
+	if (contentLength > MAX_FILE_SIZE) {
+		return {
+			isValid: false,
+			error: `File size exceeds maximum allowed (${MAX_FILE_SIZE / (1024 * 1024)}MB)`,
+		}
+	}
+
+	if (!isValidImageType(fileType)) {
+		return {
+			isValid: false,
+			error: 'File type not allowed. Allowed: JPEG, PNG, GIF, WebP, SVG, AVIF',
 		}
 	}
 
@@ -98,7 +121,7 @@ export default async function handler(
 			})
 		}
 
-		const { fileName, fileType, folder, expiresIn = 3600 } = body
+		const { fileName, fileType, contentLength, folder, expiresIn = 3600 } = body
 
 		// Double-check environment variables (defensive programming)
 		if (!BUCKET_NAME || !region) {
@@ -119,6 +142,7 @@ export default async function handler(
 			Bucket: BUCKET_NAME,
 			Key: fileKey,
 			ContentType: fileType,
+			ContentLength: contentLength,
 		})
 
 		const presignedUrl = await getSignedUrl(s3Client, command, {

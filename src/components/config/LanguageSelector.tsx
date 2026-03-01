@@ -67,8 +67,8 @@ const LanguageSelector = ({ className }: LanguageSelectorProps) => {
 				aria-label='Select language'
 				aria-haspopup='listbox'
 				aria-expanded={isOpen}
-				onClick={handleToggle}
-				className='text-white  appearance-none cursor-pointer bg-transparent px-1.5 sm:px-2 py-1 sm:py-1.5 pr-5 sm:pr-6 text-xs sm:text-sm font-medium rounded-md hover:bg-white/10 transition-colors focus:outline-none focus:ring-2 focus:ring-main'
+				onClick={() => setIsOpen(v => !v)}
+				className='text-white appearance-none cursor- bg-text-secondary  px-1.5 sm:px-2 py-1 sm:py-1.5 pr-5 sm:pr-6 text-xs sm:text-sm font-medium rounded-md hover:bg-text-secondary/80 transition-colors focus:outline-none focus:ring-2 focus:ring-main'
 			>
 				<span>{languageLabels[locale]}</span>
 				<span className='absolute inset-y-0 right-0 flex items-center pr-1.5 sm:pr-2 pointer-events-none'>
@@ -84,8 +84,7 @@ const LanguageSelector = ({ className }: LanguageSelectorProps) => {
 					ref={dropdownListRef}
 					role='listbox'
 					aria-label='Select language'
-					style={{ top: dropdownPos.top, right: dropdownPos.right }}
-					className='fixed min-w-[10rem] rounded-lg shadow-lg z-[9999] border border-white/10 backdrop-blur text-slate-100 overflow-hidden bg-gray-500/20'
+					className='absolute right-0 top-full mt-2 min-w-[10rem] rounded-lg shadow-lg z-50 border border-white/10 backdrop-blur text-white text-sm  bg-text-secondary/50'
 				>
 					{SUPPORTED_LANGS.map(lang => (
 						<li key={lang} role='option' aria-selected={locale === lang}>

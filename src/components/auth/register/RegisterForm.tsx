@@ -15,6 +15,7 @@ import {
 } from '@/types/api/auth/register'
 import { FORM_STYLES } from './RegisterForm.styles'
 import { FloatingLabelInput } from './FloatingLabelInput'
+import { CountrySelect } from './CountrySelect'
 import { ValidationSpeechBubble } from './ValidationSpeechBubble'
 import { sanitizeInput } from '@/utils/sanitization'
 import {
@@ -25,11 +26,18 @@ import {
 import axios from '@/common/axios'
 import type { RegisterResponse } from '@/types/auth/register'
 import { useTranslations } from 'next-intl'
+import { useGoogleLogin } from '@/hooks/services/auth/useGoogleLogin'
+import GoogleLoginButton from '@/components/auth/login/GoogleLoginButton'
+import { storeGoogleCredential } from '@/hooks/services/auth/useGoogleRegister'
 
 const RegisterForm = (): React.ReactElement => {
 	const [isSuccess, setIsSuccess] = useState(false)
 	const router = useRouter()
 	const t = useTranslations('auth')
+	const googleLoginMutation = useGoogleLogin()
+	const hasGoogleClientId =
+		typeof process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID === 'string' &&
+		process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID.length > 0
 
 	// Backend sends errorMessage as i18n key; we translate it
 	const getAuthErrorMessage = (errorMessage?: string, fallbackKey: string = 'registerFailed'): string => {
@@ -47,21 +55,29 @@ const RegisterForm = (): React.ReactElement => {
 	const {
 		control,
 		handleSubmit,
+		clearErrors,
 		formState: { errors, isSubmitting },
 		setError,
 		reset,
+		watch,
 	} = useForm<RegisterFormData>({
 		resolver: zodResolver(RegisterFormSchema),
 		defaultValues: {
 			fullName: '',
 			nickname: '',
 			email: '',
+			phone: '',
+			// dateOfBirth: '',
 			country: '',
 			idCard: '',
 			password: '',
 			confirmPassword: '',
+			termsAccepted: false,
 		},
 	})
+
+	// Watch the termsAccepted field to control button state
+	const termsAccepted = watch('termsAccepted')
 
 	useEffect(() => {
 		const unlock = lockScroll()
@@ -92,6 +108,8 @@ const RegisterForm = (): React.ReactElement => {
 				fullName: sanitizeInput(data.fullName),
 				nickname: sanitizeInput(data.nickname),
 				email: data.email.trim().toLowerCase(), // Email-specific handling
+				phone: data.phone.trim(),
+				// dateOfBirth: data.dateOfBirth,
 				country: sanitizeInput(data.country),
 				idCard: sanitizeInput(data.idCard),
 				password: data.password, // NEVER sanitize password - preserve as-is
@@ -159,14 +177,17 @@ const RegisterForm = (): React.ReactElement => {
 
 	// Collect all field errors for speech bubble
 	const fieldErrors: Record<string, string | undefined> = {
-		fullName: errors.fullName?.message,
-		nickname: errors.nickname?.message,
-		email: errors.email?.message,
-		country: errors.country?.message,
-		idCard: errors.idCard?.message,
-		password: errors.password?.message,
-		confirmPassword: errors.confirmPassword?.message,
-	}
+			fullName: errors.fullName?.message && t(errors.fullName.message as string),
+			nickname: errors.nickname?.message && t(errors.nickname.message as string),
+			email: errors.email?.message && t(errors.email.message as string),
+			phone: errors.phone?.message && t(errors.phone.message as string),
+			// dateOfBirth: errors.dateOfBirth?.message && t(errors.dateOfBirth.message as string),
+			country: errors.country?.message && t(errors.country.message as string),
+			idCard: errors.idCard?.message && t(errors.idCard.message as string),
+			password: errors.password?.message && t(errors.password.message as string),
+			confirmPassword: errors.confirmPassword?.message && t(errors.confirmPassword.message as string),
+			termsAccepted: errors.termsAccepted?.message && t(errors.termsAccepted.message as string),
+		};
 
 	return (
 		<div className={`${FORM_STYLES.container.wrapper} relative`}>
@@ -187,16 +208,14 @@ const RegisterForm = (): React.ReactElement => {
 				<div className={FORM_STYLES.container.formPanel}>
 					<div className={FORM_STYLES.container.formContent}>
 						{/* Title */}
-						<h3 className={FORM_STYLES.form.title}>Đăng ký</h3>
+						<h3 className={FORM_STYLES.form.title}>{t('registerTitle')}</h3>
 
 						{/* Success Message */}
 						{isSuccess && (
 							<div className='text-green-600 text-xs sm:text-sm text-center bg-green-50 border border-green-200 rounded-lg p-2.5 sm:p-3'>
-								Đăng ký thành công! Đang chuyển hướng đến trang đăng nhập...
-							</div>
-						)}
-
-						{/* Form */}
+						{t('registerSuccess')}
+					</div>
+				)}
 						<form
 							onSubmit={handleSubmit(onSubmit)}
 							className={FORM_STYLES.form.wrapper}
@@ -210,100 +229,184 @@ const RegisterForm = (): React.ReactElement => {
 
 							{/* Full Name Input */}
 							<FloatingLabelInput
-								id='fullName'
-								name='fullName'
-								control={control}
-								type='text'
-								label='Họ và tên:'
-								placeholder='Họ và tên'
-								required
-								showError={false}
-							/>
+						id='fullName'
+						name='fullName'
+						control={control}
+						type='text'
+						label={t('fullName')}
+						placeholder={t('fullName')}
+						required
+						showError={false}
+					/>
 
 							{/* Nickname Input */}
 							<FloatingLabelInput
-								id='nickname'
-								name='nickname'
-								control={control}
-								type='text'
-								label='Biệt danh:'
-								placeholder='Biệt danh'
-								required
+					id='nickname'
+					name='nickname'
+					control={control}
+					type='text'
+					label={t('nickname')}
+					placeholder={t('nickname')}
+								showError={false}
+							/>
+
+							{/* Phone Input */}
+							<FloatingLabelInput
+					id='phone'
+					name='phone'
+					control={control}
+					type='tel'
+					label={t('phone')}
+					placeholder={t('phone')}
 								showError={false}
 							/>
 
 							{/* Email Input */}
 							<FloatingLabelInput
-								id='email'
-								name='email'
-								control={control}
-								type='email'
-								label='Gmail:'
-								placeholder='Gmail'
-								required
-								showError={false}
-							/>
-
-							{/* Country Input */}
-							<FloatingLabelInput
-								id='country'
-								name='country'
-								control={control}
-								type='text'
-								label='Quốc gia:'
-								placeholder='Quốc gia'
-								required
+					id='email'
+					name='email'
+					control={control}
+					type='email'
+					label={t('email')}
+					placeholder={t('email')}
 								showError={false}
 							/>
 
 							{/* ID Card Input */}
 							<FloatingLabelInput
-								id='idCard'
-								name='idCard'
-								control={control}
-								type='text'
-								label='Passport ID/ CCCD:'
-								placeholder='Passport ID/ CCCD'
-								required
+					id='idCard'
+					name='idCard'
+					control={control}
+					type='text'
+					label={t('idCard')}
+					placeholder={t('idCard')}
 								showError={false}
 							/>
 
+							{/* Nationality input — single column matching other inputs */}
+							<div className={FORM_STYLES.container.inputWrapper}>
+								<CountrySelect
+									id='country'
+									name='country'
+									control={control}
+									label={t('country')}
+									placeholder={t('selectCountry')}
+									required
+									showError={false}
+								/>
+							</div>
+
 							{/* Password Input */}
 							<FloatingLabelInput
-								id='password'
-								name='password'
-								control={control}
-								type='password'
-								label='Mật khẩu:'
-								placeholder='Mật khẩu'
-								required
+					id='password'
+					name='password'
+					control={control}
+					type='password'
+					label={t('password')}
+					placeholder={t('password')}
 								showPasswordToggle
 								showError={false}
 							/>
 
 							{/* Confirm Password Input */}
 							<FloatingLabelInput
-								id='confirmPassword'
-								name='confirmPassword'
-								control={control}
-								type='password'
-								label='Nhập lại mật khẩu:'
-								placeholder='Nhập lại mật khẩu'
-								required
+					id='confirmPassword'
+					name='confirmPassword'
+					control={control}
+					type='password'
+					label={t('confirmPassword')}
+					placeholder={t('confirmPassword')}
 								showPasswordToggle
 								showError={false}
 							/>
 
+							{/* Terms Checkbox */}
+							<div className='flex items-start gap-3 py-2'>
+								<input
+									type='checkbox'
+									id='termsAccepted'
+									{...control.register('termsAccepted')}
+									className='w-5 h-5 mt-0.5 rounded border-[#8C8C8C]/30 bg-[#E2EEE2] text-[#48715B] focus:ring-[#48715B]/30 focus:ring-2 cursor-pointer'
+									aria-invalid={!!errors.termsAccepted}
+									aria-describedby={errors.termsAccepted ? 'terms-error' : undefined}
+								/>
+								<label htmlFor='termsAccepted' className='text-xs sm:text-sm text-[#8C8C8C] flex-1 cursor-pointer'>
+									{t('termsAgreement')}
+								</label>
+							</div>
+							{errors.termsAccepted && (
+								<p id='terms-error' className={FORM_STYLES.error.fieldError} role='alert'>
+									{errors.termsAccepted.message}
+								</p>
+							)}
+
 							{/* Submit Button */}
 							<button
 								type='submit'
-								disabled={isSubmitting}
+								disabled={isSubmitting || googleLoginMutation.isPending || !termsAccepted}
 								className={`${FORM_STYLES.button.primary} ${
-									isSubmitting ? FORM_STYLES.button.disabled : ''
+									isSubmitting || googleLoginMutation.isPending || !termsAccepted
+										? FORM_STYLES.button.disabled
+										: ''
 								}`}
 							>
-								{isSubmitting ? 'Đang đăng ký...' : 'Đăng ký'}
+								{isSubmitting ? t('registering') : t('registerButton')}
 							</button>
+
+							{/* Google Sign-up */}
+							{hasGoogleClientId && (
+								<>
+									<div className='flex items-center gap-3 w-full mt-3'>
+										<span className='flex-1 h-px bg-[#8C8C8C]/30' aria-hidden />
+										<span className='text-[#8C8C8C] text-sm'>
+											{t('orContinueWith')}
+										</span>
+										<span className='flex-1 h-px bg-[#8C8C8C]/30' aria-hidden />
+									</div>
+									<div className='flex justify-center w-full mt-3'>
+										<GoogleLoginButton
+											onSuccess={credential => {
+												clearErrors('root')
+												googleLoginMutation.mutate(credential, {
+													onError: err => {
+														const data = (
+															err as {
+																response?: { data?: { errorMessage?: string } }
+															}
+														)?.response?.data
+														if (
+															data?.errorMessage ===
+															'googleRegistrationDetailsRequired'
+														) {
+															storeGoogleCredential(credential)
+															router.push('/register/google')
+															return
+														}
+														setError('root', {
+															type: 'manual',
+															message: data?.errorMessage
+																? getAuthErrorMessage(
+																		data.errorMessage,
+																		'googleLoginFailed'
+																	)
+																: t('googleLoginFailed'),
+														})
+													},
+												})
+											}}
+											onError={() => {
+												setError('root', {
+													type: 'manual',
+													message: t('googleLoginFailed'),
+												})
+											}}
+											disabled={
+												googleLoginMutation.isPending || isSubmitting
+											}
+										/>
+									</div>
+								</>
+							)}
 
 							{/* Links */}
 							<div className={FORM_STYLES.link.container}>
@@ -311,11 +414,11 @@ const RegisterForm = (): React.ReactElement => {
 									href='/login'
 									className={`${FORM_STYLES.link.base} ${FORM_STYLES.link.bold}`}
 								>
-									Đăng nhập
+									{t('login')}
 								</Link>
 								<span className={FORM_STYLES.link.separator}>|</span>
 								<Link href='/forgot-password' className={FORM_STYLES.link.base}>
-									Quên mật khẩu
+									{t('forgotPassword')}
 								</Link>
 							</div>
 						</form>
@@ -327,3 +430,4 @@ const RegisterForm = (): React.ReactElement => {
 }
 
 export default RegisterForm
+

@@ -10,6 +10,7 @@ import type {
 	PurchaseTicketResponse,
 	ConfirmPaymentResponse,
 	UpdateBadgeDetailsResponse,
+	UpgradeTicketResponse,
 } from '@/types/api/ticket/ticket'
 import { getQueryClient } from '@/utils/getQueryClient'
 
@@ -55,6 +56,14 @@ const TicketAPI = {
 		is_fursuit_staff: boolean
 	}) => {
 		const { data } = await axios.general.patch<ApiResponse<UpdateBadgeDetailsResponse>>('/tickets/me/badge', payload)
+		return data
+	},
+
+	// Upgrade ticket to a higher tier (protected)
+	upgradeTicket: async (newTierId: string) => {
+		const { data } = await axios.general.patch<ApiResponse<UpgradeTicketResponse>>('/tickets/me/upgrade', {
+			new_tier_id: newTierId,
+		})
 		return data
 	},
 
@@ -139,6 +148,20 @@ export function useUpdateBadgeDetails() {
 		}) => TicketAPI.updateBadgeDetails(payload),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ['my-ticket'] })
+		},
+	})
+}
+
+// Upgrade ticket to a higher tier
+export function useUpgradeTicket() {
+	const queryClient = getQueryClient()
+
+	return useMutation({
+		mutationFn: (newTierId: string) => TicketAPI.upgradeTicket(newTierId),
+		onSuccess: () => {
+			// Invalidate my-ticket (tier changed) and tiers (stock changed for both old and new)
+			queryClient.invalidateQueries({ queryKey: ['my-ticket'] })
+			queryClient.invalidateQueries({ queryKey: ['ticket-tiers'] })
 		},
 	})
 }

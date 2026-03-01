@@ -20,6 +20,7 @@ import {
 	Power,
 	PowerOff,
 	Ticket,
+	ArrowUpCircle,
 } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
@@ -1161,6 +1162,14 @@ const TicketManagementPage = (): React.ReactElement => {
 													<span className='font-mono font-semibold text-[#154c5b] dark:text-dark-text'>
 														{ticket.reference_code}
 													</span>
+													{ticket.previous_reference_code && (
+														<div className='flex items-center gap-1 mt-1'>
+															<ArrowUpCircle className='w-3.5 h-3.5 text-purple-500 dark:text-purple-400' />
+															<span className='text-xs text-purple-600 dark:text-purple-400'>
+																{t('upgradedFrom', { code: ticket.previous_reference_code })}
+															</span>
+														</div>
+													)}
 												</td>
 												<td className='px-4 py-3'>
 													<div>
@@ -1412,6 +1421,15 @@ const TicketManagementPage = (): React.ReactElement => {
 							{editTicketModal.user?.first_name}{' '}
 							{editTicketModal.user?.last_name}
 						</p>
+
+						{editTicketModal.previous_reference_code && (
+							<div className='flex items-center gap-2 bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800/50 rounded-lg p-3 mb-4'>
+								<ArrowUpCircle className='w-4 h-4 text-purple-500 dark:text-purple-400 flex-shrink-0' />
+								<span className='text-sm text-purple-700 dark:text-purple-400'>
+									{t('upgradedFrom', { code: editTicketModal.previous_reference_code })}
+								</span>
+							</div>
+						)}
 
 						<div className='grid grid-cols-1 gap-4'>
 							{/* Status */}
