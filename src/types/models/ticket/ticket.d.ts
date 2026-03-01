@@ -28,6 +28,8 @@ export interface UserTicket {
 	created_at: string
 	approved_at?: string
 	denied_at?: string
+	upgraded_from_tier_id?: string
+	previous_reference_code?: string
 	tier?: TicketTier
 	user?: TicketUser
 }
