@@ -10,6 +10,7 @@ import { useRouter } from 'next/navigation'
 import { useTranslations } from 'next-intl'
 import { logger } from '@/utils/logger'
 import Loading from '@/components/common/Loading'
+import Image from 'next/image'
 
 type AccountLayoutProps = {
 	children: ReactNode
@@ -48,16 +49,16 @@ const AccountLayout = ({ children }: AccountLayoutProps) => {
 								href: '/account/dealer',
 								icon: Store,
 							},
-					  ]
+						]
 					: account?.is_has_ticket || data?.data?.is_has_ticket
-					? [
-							{
-								label: t('registerDealer'),
-								href: '/account/dealer/register',
-								icon: Store,
-							},
-					  ]
-					: []),
+						? [
+								{
+									label: t('registerDealer'),
+									href: '/account/dealer/register',
+									icon: Store,
+								},
+							]
+						: []),
 			],
 		},
 	]
@@ -93,10 +94,7 @@ const AccountLayout = ({ children }: AccountLayoutProps) => {
 	}
 
 	return (
-		<div
-			id='account-layout'
-			className='account-layout relative flex min-h-screen w-full '
-		>
+		<div id='account-layout' className='account-layout relative flex w-full'>
 			{/* Background Image - Behind everything */}
 			<div
 				id='account-background'
@@ -112,23 +110,28 @@ const AccountLayout = ({ children }: AccountLayoutProps) => {
 			{/* Dark overlay for better contrast */}
 			<div className='fixed inset-0 z-[1] bg-black/40' />
 
-			{/* Sidebar - Compact with card style */}
+			{/* Sidebar - Hidden on mobile, visible on md+ */}
 			<div
 				id='account-sidebar-container'
-				className='account-sidebar-container relative z-10 w-[200px] ml-20 mx-6'
+				className='account-sidebar-container relative z-10 w-[250px] ml-20 hidden md:block'
 			>
 				<SideBar sections={sections} />
 			</div>
 
 			{/* Main Content - Card-based layout with dark background visible */}
-			<div
-				id='account-content'
-				className='account-content relative z-10 flex-1 flex flex-col gap-6 p-8 mr-6'
-			>
-				<div className=' dark:bg-dark-surface/95 backdrop-blur-md rounded-2xl shadow-2xl'>
-					<section id='account-main-section' className='account-main-section'>
+			<div id='account-content' className='relative z-10 gap-6 p-8 w-full '>
+				<div className='bg-main backdrop-blur-md rounded-2xl shadow-2xl max-w-3xl mx-auto overflow-hidden '>
+					<section id='account-main-section' className='relative z-10'>
 						{children}
 					</section>
+					<Image
+						src='/assets/common/drum_pattern.webp'
+						alt='Drum Pattern'
+						width={2000}
+						height={2000}
+						className='absolute top-0 z-0 opacity-[3%] size-500 object-cover'
+						draggable={false}
+					/>
 				</div>
 			</div>
 		</div>

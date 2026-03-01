@@ -32,20 +32,30 @@ const TierCard = ({
 	const t = useTranslations('ticket')
 	const tCommon = useTranslations('common')
 	const isSoldOut = tier.stock <= 0
+	const isClosed = tier.is_active === false
 
 	const handleClick = () => {
-		if (!isDisabled && !isSoldOut && !isPurchasing) {
+		if (!isDisabled && !isSoldOut && !isClosed && !isPurchasing) {
 			onPurchase(tier.id)
 		}
 	}
 
 	return (
-		<div className='flex flex-col rounded-[20px] border-4 border-[#548780] bg-[#e2eee2] shadow-[6px_6px_15px_0px_rgba(0,0,0,0.63)] overflow-hidden'>
+		<div
+			className={`flex flex-col rounded-[20px] border-4 border-[#548780] bg-[#e2eee2] shadow-[6px_6px_15px_0px_rgba(0,0,0,0.63)] overflow-hidden ${isClosed ? 'opacity-80' : ''}`}
+		>
 			{/* Tier Header */}
-			<div className='bg-[#7cbc97] px-6 py-4 text-center'>
-				<h3 className='text-2xl font-bold text-[#154c5b] uppercase tracking-wide josefin'>
-					{tier.ticket_name}
-				</h3>
+			<div className={`px-6 py-4 text-center ${isClosed ? 'bg-[#7cbc97]/80' : 'bg-[#7cbc97]'}`}>
+				<div className='flex items-center justify-center gap-2 flex-wrap'>
+					<h3 className='text-2xl font-bold text-[#154c5b] uppercase tracking-wide josefin'>
+						{tier.ticket_name}
+					</h3>
+					{isClosed && (
+						<span className='px-2 py-0.5 rounded text-xs font-semibold uppercase bg-[#154c5b]/20 text-[#154c5b]'>
+							{t('closed')}
+						</span>
+					)}
+				</div>
 			</div>
 
 			{/* Price Section */}
@@ -74,7 +84,9 @@ const TierCard = ({
 			{/* Stock Indicator */}
 			<div className='px-6 pb-2'>
 				<div className='text-center text-sm'>
-					{isSoldOut ? (
+					{isClosed ? (
+						<span className='text-[#48715b] font-medium'>{t('closed')}</span>
+					) : isSoldOut ? (
 						<span className='text-red-600 font-semibold'>{t('soldOut')}</span>
 					) : (
 						<span className='text-[#48715b]'>{t('remaining', { count: tier.stock })}</span>
@@ -86,13 +98,13 @@ const TierCard = ({
 			<div className='px-6 pb-6'>
 				<button
 					onClick={handleClick}
-					disabled={isDisabled || isSoldOut || isPurchasing}
+					disabled={isDisabled || isSoldOut || isClosed || isPurchasing}
 					className={`
 						w-full py-3 px-6 rounded-[12px] font-semibold text-lg uppercase tracking-wide
 						transition-all duration-200
 						shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)]
 						${
-							isDisabled || isSoldOut || isPurchasing
+							isDisabled || isSoldOut || isClosed || isPurchasing
 								? 'bg-gray-300 text-gray-500 cursor-not-allowed'
 								: 'bg-[#e2eee2] text-[#48715b] hover:bg-[#d2ddd2] active:translate-y-0.5'
 						}
@@ -100,11 +112,13 @@ const TierCard = ({
 				>
 					{isPurchasing
 						? tCommon('processing')
-						: isSoldOut
-							? t('soldOut')
-							: isDisabled
-								? disabledReason || t('soldOut')
-								: t('buyNow')}
+						: isClosed
+							? t('closed')
+							: isSoldOut
+								? t('soldOut')
+								: isDisabled
+									? disabledReason || t('soldOut')
+									: t('buyNow')}
 				</button>
 			</div>
 		</div>

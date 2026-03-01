@@ -6,7 +6,7 @@ const isDev = process.env.NODE_ENV === 'development'
 const devApiBase = process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, '') // no trailing slash
 
 const getBaseUrl = (path: string) =>
-	isDev && devApiBase ? `${devApiBase}/v1` : path
+	isDev && devApiBase ? `${devApiBase}/v1` : `https://api.fuve.vn${path}`
 
 const axiosLocal = a.create({
 	baseURL: getBaseUrl('/v1'),
@@ -16,6 +16,8 @@ const axiosLocal = a.create({
 	timeout: 10000,
 	withCredentials: true,
 })
+
+//thing
 
 const axiosGeneral = a.create({
 	baseURL: getBaseUrl('/api/general/v1'),
@@ -63,9 +65,8 @@ axiosGeneral.interceptors.response.use(
 				}
 			}
 		} else if (error.response?.status === 403) {
-			logger.warn('403 Forbidden - Clearing account')
-			const { clearAccount } = useAuthStore.getState()
-			clearAccount()
+			// 403 = Forbidden (insufficient permission), not invalid session – do not clear account
+			logger.warn('403 Forbidden - Request not allowed for this role')
 		}
 		return Promise.reject(error)
 	}
@@ -108,9 +109,8 @@ axiosLocal.interceptors.response.use(
 				}
 			}
 		} else if (error.response?.status === 403) {
-			logger.warn('403 Forbidden - Clearing account')
-			const { clearAccount } = useAuthStore.getState()
-			clearAccount()
+			// 403 = Forbidden (insufficient permission), not invalid session – do not clear account
+			logger.warn('403 Forbidden - Request not allowed for this role')
 		}
 		return Promise.reject(error)
 	}

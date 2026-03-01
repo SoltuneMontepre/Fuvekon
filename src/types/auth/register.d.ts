@@ -46,6 +46,8 @@ export interface RegisterRequest {
 export interface RegisterResponse {
 	isSuccess: boolean
 	message: string
+	/** i18n key for error message (e.g. "userExists"); only set on error responses */
+	errorMessage?: string
 	data?: {
 		userId: string
 		email: string

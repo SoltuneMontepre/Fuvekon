@@ -64,7 +64,7 @@ export default function ScanTicketPage() {
 			await html5Qr.start(
 				{ facingMode: 'environment' },
 				{
-					fps: 10,
+					fps: 25,
 					qrbox: { width: 260, height: 260 },
 				},
 				decodedText => {
@@ -148,14 +148,14 @@ export default function ScanTicketPage() {
 			</div>
 
 			{/* Scanner area */}
-			<div className='rounded-xl overflow-hidden border border-slate-300/20 dark:border-dark-border bg-black/20 mb-6'>
+			<div className='rounded-xl overflow-hidden border border-slate-300/20  mb-6'>
 				<div
 					id={SCANNER_CONTAINER_ID}
 					ref={scannerContainerRef}
-					className='min-h-[280px] w-full bg-slate-900 flex items-center justify-center'
+					className='min-h-[280px] w-full  flex items-center justify-center'
 				/>
 				{!scanning && (
-					<div className='p-4 flex justify-center bg-slate-800/80'>
+					<div className='p-4 flex justify-center '>
 						<button
 							type='button'
 							onClick={startScanner}
@@ -181,7 +181,7 @@ export default function ScanTicketPage() {
 
 			{/* Manual entry */}
 			<form onSubmit={handleManualSubmit} className='mb-6'>
-				<label className='block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2'>
+				<label className='block text-sm font-medium mb-2'>
 					{t('manualEntry')}
 				</label>
 				<div className='flex gap-2'>
@@ -190,7 +190,7 @@ export default function ScanTicketPage() {
 						value={manualCode}
 						onChange={e => setManualCode(e.target.value)}
 						placeholder={t('manualEntryPlaceholder')}
-						className='flex-1 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#7cbc97] dark:bg-gray-800 dark:border-gray-600 dark:text-dark-text'
+						className='flex-1 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#7cbc97]  dark:text-dark-text'
 					/>
 					<button
 						type='submit'
@@ -243,8 +243,8 @@ export default function ScanTicketPage() {
 											ticket.status === 'approved'
 												? 'bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300'
 												: ticket.status === 'denied'
-												? 'bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-300'
-												: 'bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-200'
+													? 'bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-300'
+													: 'bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-200'
 										}`}
 									>
 										{ticket.status === 'approved' ? (

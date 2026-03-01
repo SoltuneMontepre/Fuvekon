@@ -2,18 +2,24 @@
 
 import React, { useEffect, useState } from 'react'
 import FuveIcon from '../common/FuveIcon'
-import LoginButton from '../auth/login/LoginButton'
 import NavButtons from './NavButtons'
-import { useAuthStore } from '@/stores/authStore'
 import Loading from '../common/Loading'
+import MobileMenu from './MobileMenu'
 import { useLinkStatus } from 'next/link'
-import ProfileButton from './ProfileButton'
-import LanguageSelector from '@/components/config/LanguageSelector'
+import { usePathname } from 'next/navigation'
+import { Menu } from 'lucide-react'
+
+const HIDE_LOGO_PREFIXES = ['/account', '/admin']
 
 const NavBar = (): React.ReactElement => {
-	const isLoggedIn = useAuthStore(state => state.isAuthenticated)
 	const { pending } = useLinkStatus()
+	const pathname = usePathname()
 	const [isNavigating, setIsNavigating] = useState(false)
+	const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+
+	const isLanding = pathname === '/'
+
+	const hideLogo = HIDE_LOGO_PREFIXES.some(p => pathname?.startsWith(p))
 
 	useEffect(() => {
 		let timer: ReturnType<typeof setTimeout> | undefined
@@ -27,6 +33,10 @@ const NavBar = (): React.ReactElement => {
 		return () => timer && clearTimeout(timer)
 	}, [pending])
 
+	useEffect(() => {
+		setMobileMenuOpen(false)
+	}, [pathname])
+
 	return (
 		<>
 			{isNavigating && <Loading />}
@@ -35,21 +45,46 @@ const NavBar = (): React.ReactElement => {
 				aria-label='Main Navigation'
 				className='relative z-50 flex w-screen justify-around px-5 sm:px-10 md:px-20 py-2 cap-width mx-auto pointer-events-none'
 			>
-				<div className='flex-none'>
-					<FuveIcon className='size-10 pointer-events-auto' />
-				</div>
+				{!hideLogo && (
+					<>
+						<div className='flex-none'>
+							<FuveIcon className='size-10 pointer-events-auto' />
+						</div>
+						<div className='grow pointer-events-none' />
 
-				<div className='grow pointer-events-none' />
-
-				<NavButtons className='josefin font-medium uppercase pointer-events-auto' />
+						<NavButtons className='josefin font-medium uppercase pointer-events-auto' />
+					</>
+				)}
 
 				<div className='grow pointer-events-none' />
 
 				<div className='flex items-center gap-2 justify-end pointer-events-auto'>
-					<LanguageSelector />
-					{isLoggedIn ? <ProfileButton /> : <LoginButton />}
+					{hideLogo || !isLanding ? (
+						<button
+							onClick={() => setMobileMenuOpen(true)}
+							className='p-2 rounded-lg hover:bg-white/10 transition-colors'
+							aria-label='Open menu'
+						>
+							<Menu className='size-6' />
+						</button>
+					) : (
+						<>
+							<button
+								onClick={() => setMobileMenuOpen(true)}
+								className='p-2 rounded-lg hover:bg-white/10 transition-colors'
+								aria-label='Open menu'
+							>
+								<Menu className='size-6' />
+							</button>
+						</>
+					)}
 				</div>
 			</nav>
+
+			<MobileMenu
+				isOpen={mobileMenuOpen}
+				onClose={() => setMobileMenuOpen(false)}
+			/>
 		</>
 	)
 }
