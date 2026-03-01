@@ -15,7 +15,7 @@ interface FloatingLabelInputProps<
 	id: string
 	name: TName
 	control: Control<TFieldValues>
-	type: 'text' | 'email' | 'password'
+	type: 'text' | 'email' | 'password' | 'date' | 'tel'
 	label: string
 	placeholder: string
 	required?: boolean
@@ -63,8 +63,10 @@ export const FloatingLabelInput = <
 		error ? FORM_STYLES.input.error : FORM_STYLES.input.default
 	} ${showPasswordToggle ? FORM_STYLES.input.withIcon : ''}`
 
+	// For date inputs, always show floating label since they don't work well with placeholder
+	const shouldFloat = field.value || type === 'date'
 	const labelClasses = `${FORM_STYLES.label.base} ${
-		field.value ? FORM_STYLES.label.floating : FORM_STYLES.label.focused
+		shouldFloat ? FORM_STYLES.label.floating : FORM_STYLES.label.focused
 	}`
 
 	return (
@@ -74,7 +76,7 @@ export const FloatingLabelInput = <
 				type={inputType}
 				{...field}
 				className={inputClasses}
-				placeholder={placeholder}
+				placeholder={type !== 'date' ? placeholder : undefined}
 				required={required}
 				aria-invalid={!!error}
 				aria-describedby={error ? `${id}-error` : undefined}
