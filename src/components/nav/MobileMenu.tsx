@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useRef, useEffect, useCallback } from 'react'
+import React, { useRef, useEffect, useCallback, useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import {
@@ -24,6 +24,7 @@ import { useRouter } from 'next/navigation'
 import LanguageSelector from '@/components/config/LanguageSelector'
 import FuveIcon from '../common/FuveIcon'
 import { useThemeStore } from '@/config/Providers/ThemeProvider'
+import { FiChevronDown } from 'react-icons/fi'
 
 type MobileMenuProps = {
 	isOpen: boolean
@@ -191,13 +192,6 @@ const MobileMenu = ({
 
 	if (!isOpen) return null
 
-	const flatItems = navItems.flatMap(
-		(item): (NavData & { depth?: number })[] =>
-			item.children
-				? [item, ...item.children.map(c => ({ ...c, depth: 1 }))]
-				: [item]
-	)
-
 	return (
 		<div className='fixed inset-0 z-[100]'>
 			{/* Overlay */}
@@ -297,30 +291,25 @@ const MobileMenu = ({
 
 						<div className='my-2 border-t border-white/10' />
 
-						{flatItems.map((item, i) => {
-							if (!item.to) {
+						{navItems.map((item, i) => {
+							if (item.children) {
 								return (
-									<div
-										key={`section-${i}`}
-										className='px-3 pt-4 pb-1 text-xs font-semibold uppercase tracking-wider text-white/40'
-									>
-										{item.label}
-									</div>
+									<MobileAccordion
+										key={item.label}
+										item={item}
+										pathname={pathname}
+										onNavigate={animateClose}
+									/>
 								)
 							}
 
 							const active = pathname === item.to
-
 							return (
 								<Link
-									key={item.to}
-									href={item.to}
+									key={item.to ?? `item-${i}`}
+									href={item.to ?? '/'}
 									onClick={animateClose}
-									className={`flex items-center justify-between gap-3 px-4 py-3 rounded-xl text-base font-medium transition-colors ${
-										item.depth
-											? 'ml-3 text-sm text-white/65 hover:text-white'
-											: 'text-white/75 hover:text-white'
-									} ${
+									className={`flex items-center justify-between gap-3 px-4 py-3 rounded-xl text-base font-medium transition-colors text-white/75 hover:text-white ${
 										active ? 'bg-button/40 text-white' : 'hover:bg-white/10'
 									}`}
 								>
@@ -336,3 +325,59 @@ const MobileMenu = ({
 }
 
 export default MobileMenu
+
+const MobileAccordion = ({
+	item,
+	pathname,
+	onNavigate,
+}: {
+	item: NavData
+	pathname: string | null
+	onNavigate: () => void
+}) => {
+	const anyChildActive = item.children?.some(c => pathname === c.to)
+	const [isOpen, setIsOpen] = useState(anyChildActive ?? false)
+
+	return (
+		<div>
+			<button
+				onClick={() => setIsOpen(v => !v)}
+				aria-expanded={isOpen}
+				className={`w-full flex items-center justify-between px-4 py-3 rounded-xl text-base font-medium transition-colors ${
+					anyChildActive
+						? 'text-white'
+						: 'text-white/75 hover:text-white hover:bg-white/10'
+				}`}
+			>
+				<span>{item.label}</span>
+				<FiChevronDown
+					className={`size-4 shrink-0 transition-transform duration-200 ${
+						isOpen ? 'rotate-180' : ''
+					}`}
+				/>
+			</button>
+
+			{isOpen && (
+				<div className='flex flex-col gap-0.5 mt-0.5'>
+					{item.children?.map(child => {
+						const active = pathname === child.to
+						return (
+							<Link
+								key={child.to}
+								href={child.to ?? '/'}
+								onClick={onNavigate}
+								className={`flex items-center gap-3 ml-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-colors ${
+									active
+										? 'bg-button/40 text-white'
+										: 'text-white/65 hover:bg-white/10 hover:text-white'
+								}`}
+							>
+								{child.label}
+							</Link>
+						)
+					})}
+				</div>
+			)}
+		</div>
+	)
+}

@@ -2,8 +2,7 @@
 
 import { NavData, useNavDatas } from '@/config/nav'
 import Link from 'next/link'
-import React, { useEffect, useRef, useState } from 'react'
-import { FiChevronDown } from 'react-icons/fi'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 
 const NavButtons = ({
 	className,
@@ -46,13 +45,24 @@ const NavButton = ({ button }: { button: NavData }) => {
 
 const CollapsedNavButton = ({ button }: { button: NavData }) => {
 	const [isOpen, setIsOpen] = useState(false)
-	const wrapperRef = useRef<HTMLDivElement>(null)
+	const [dropdownPos, setDropdownPos] = useState({ top: 0, left: 0 })
+	const buttonRef = useRef<HTMLButtonElement>(null)
+	const dropdownRef = useRef<HTMLDivElement>(null)
+
+	const handleToggle = useCallback(() => {
+		if (!isOpen && buttonRef.current) {
+			const rect = buttonRef.current.getBoundingClientRect()
+			setDropdownPos({ top: rect.bottom + 4, left: rect.left })
+		}
+		setIsOpen(v => !v)
+	}, [isOpen])
 
 	useEffect(() => {
 		const handleClickOutside = (e: MouseEvent) => {
+			const target = e.target as Node
 			if (
-				wrapperRef.current &&
-				!wrapperRef.current.contains(e.target as Node)
+				!buttonRef.current?.contains(target) &&
+				!dropdownRef.current?.contains(target)
 			) {
 				setIsOpen(false)
 			}
@@ -62,31 +72,23 @@ const CollapsedNavButton = ({ button }: { button: NavData }) => {
 	}, [])
 
 	return (
-		<div ref={wrapperRef} className='relative flex-1'>
+		<div className='relative flex-1'>
 			<button
-				className='nav-bg w-full text-center text-bg-secondary underline hover:bg-secondary/20 transition-colors duration-200 underline-offset-5 uppercase inline-flex items-center justify-center gap-1'
-				onClick={() => setIsOpen(v => !v)}
-				aria-haspopup='true'
-				aria-expanded={isOpen}
+				ref={buttonRef}
+				className='nav-bg w-full text-center text-bg-secondary underline hover:bg-secondary/20 transition-colors duration-200 underline-offset-5 uppercase'
+				onClick={handleToggle}
 			>
-				{'\u00a0\u00a0\u00a0' + button.label + '\u00a0'}
-				<FiChevronDown
-					className={`w-3 h-3 shrink-0 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
-				/>
-				{'\u00a0\u00a0'}
+				{'\u00a0\u00a0\u00a0\u00a0' + button.label + '\u00a0\u00a0\u00a0\u00a0'}
 			</button>
 
 			{isOpen && (
-				<div className='absolute left-1/2 -translate-x-1/2 top-full mt-2 min-w-[11rem] rounded-xl shadow-lg border border-white/10 backdrop-blur-md bg-text-primary/90 flex flex-col overflow-hidden z-50'>
+				<div
+					ref={dropdownRef}
+					style={{ top: dropdownPos.top, left: dropdownPos.left }}
+					className='fixed bg-secondary/20 backdrop-blur rounded-2xl flex flex-col gap-1 z-[9999] min-w-[10rem]'
+				>
 					{button.children?.map(child => (
-						<Link
-							key={child.label}
-							href={child.to ?? '/'}
-							onClick={() => setIsOpen(false)}
-							className='px-4 py-2.5 text-sm text-white/80 hover:bg-white/10 hover:text-white transition-colors duration-150 whitespace-nowrap'
-						>
-							{child.label}
-						</Link>
+						<NavButton key={child.label} button={child} />
 					))}
 				</div>
 			)}
