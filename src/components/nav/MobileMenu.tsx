@@ -3,7 +3,17 @@
 import React, { useRef, useEffect, useCallback } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { X, UserCircle, Ticket, Lock, Store, LogIn, LogOut } from 'lucide-react'
+import {
+	X,
+	UserCircle,
+	Ticket,
+	Lock,
+	Store,
+	LogIn,
+	LogOut,
+	UserPlus,
+	Shield,
+} from 'lucide-react'
 import { useGSAP } from '@gsap/react'
 import gsap from '@/common/gsap'
 import { NavData, useNavDatas } from '@/config/nav'
@@ -136,6 +146,8 @@ const MobileMenu = ({
 		router.replace('/login')
 	}
 
+	const isAdminOrStaff = account?.role === 'admin' || account?.role === 'staff'
+
 	const accountItems = [
 		{ label: tNav('account'), href: '/account', icon: UserCircle },
 		{ label: tNav('myTicket'), href: '/account/ticket', icon: Ticket },
@@ -155,6 +167,15 @@ const MobileMenu = ({
 						},
 					]
 				: []),
+		...(isAdminOrStaff
+			? [
+					{
+						label: tNav('admin'),
+						href: '/admin',
+						icon: Shield,
+					},
+				]
+			: []),
 	]
 
 	if (!isOpen) return null
@@ -167,7 +188,7 @@ const MobileMenu = ({
 	)
 
 	return (
-		<div className='fixed inset-0 z-[100] lg:hidden'>
+		<div className='fixed inset-0 z-[100]'>
 			{/* Overlay */}
 			<div
 				ref={overlayRef}
@@ -178,7 +199,7 @@ const MobileMenu = ({
 			{/* Panel */}
 			<div
 				ref={panelRef}
-				className='absolute right-0 top-0 h-full w-[280px] max-w-[80vw] bg-main/95 backdrop-blur-xl shadow-2xl flex flex-col'
+				className='absolute right-0 top-0 h-full w-[280px] max-w-[80vw] sm:w-[300px] lg:w-[320px] lg:max-w-[320px] bg-main/95 backdrop-blur-xl shadow-2xl flex flex-col'
 			>
 				{/* Header */}
 				<div className='flex items-center justify-between px-6 py-4 border-b border-white/10'>
@@ -200,6 +221,10 @@ const MobileMenu = ({
 				{/* Nav items */}
 				<nav className='flex-1 overflow-y-auto py-4'>
 					<div ref={itemsRef} className='flex flex-col gap-1 px-4'>
+						{/* Auth section */}
+						<div className='px-3 pb-1 text-xs font-semibold uppercase tracking-wider opacity-60'>
+							{tNav('account')}
+						</div>
 						{isLoggedIn ? (
 							<>
 								{accountItems.map(item => {
@@ -239,14 +264,24 @@ const MobileMenu = ({
 								</button>
 							</>
 						) : (
-							<Link
-								href='/login'
-								onClick={animateClose}
-								className='flex items-center gap-3 px-4 py-3 rounded-xl text-base font-medium hover:bg-white/10 transition-colors'
-							>
-								<LogIn className='size-5' />
-								<span>{tAuth('login')}</span>
-							</Link>
+							<>
+								<Link
+									href='/register'
+									onClick={animateClose}
+									className='flex items-center gap-3 px-4 py-3 rounded-xl text-base font-medium hover:bg-white/10 transition-colors'
+								>
+									<UserPlus className='size-5' />
+									<span>{tAuth('register')}</span>
+								</Link>
+								<Link
+									href='/login'
+									onClick={animateClose}
+									className='flex items-center gap-3 px-4 py-3 rounded-xl text-base font-medium hover:bg-white/10 transition-colors'
+								>
+									<LogIn className='size-5' />
+									<span>{tAuth('login')}</span>
+								</Link>
+							</>
 						)}
 
 						<div className='my-2 border-t border-white/10' />

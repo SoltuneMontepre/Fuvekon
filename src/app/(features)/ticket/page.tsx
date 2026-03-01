@@ -26,7 +26,6 @@ const formatPrice = (price: number): string => {
 	}).format(price)
 }
 
-
 const TicketPage = (): React.ReactElement => {
 	const router = useRouter()
 	const t = useTranslations('ticket')
@@ -119,7 +118,9 @@ const TicketPage = (): React.ReactElement => {
 												</span>
 											)}
 										</div>
-										<div className={`text-lg mt-1 ${closed ? 'text-[#e2eee2]/80' : 'text-[#e2eee2]'}`}>
+										<div
+											className={`text-lg mt-1 ${closed ? 'text-[#e2eee2]/80' : 'text-[#e2eee2]'}`}
+										>
 											{formatPrice(tier.price)} VND
 										</div>
 									</div>
@@ -148,7 +149,9 @@ const TicketPage = (): React.ReactElement => {
 										<div className='mt-6'>
 											<button
 												onClick={() => !closed && handlePurchase(tier.id)}
-												disabled={isDisabled || closed || purchaseMutation.isPending}
+												disabled={
+													isDisabled || closed || purchaseMutation.isPending
+												}
 												className={`
 													w-full py-3 px-6 rounded-lg font-semibold text-lg uppercase tracking-wide
 													transition-all duration-200

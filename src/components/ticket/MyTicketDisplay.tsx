@@ -7,6 +7,7 @@ import { Clock, CheckCircle, XCircle, AlertCircle, RefreshCw, ArrowUpCircle } fr
 import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 import { useGetMyTicket, useUpdateBadgeDetails, useCancelTicket } from '@/hooks/services/ticket/useTicket'
+import UpgradeTicketModal from '@/components/ticket/UpgradeTicketModal'
 import type { TicketStatus } from '@/types/models/ticket/ticket'
 
 // Format price in VND
@@ -48,6 +49,7 @@ const MyTicketDisplay = (): React.ReactElement => {
 	const tCommon = useTranslations('common')
 	const [showBadgeForm, setShowBadgeForm] = useState(false)
 	const [showCancelDialog, setShowCancelDialog] = useState(false)
+	const [showUpgradeModal, setShowUpgradeModal] = useState(false)
 	const [badgeName, setBadgeName] = useState('')
 	const [isFursuiter, setIsFursuiter] = useState(false)
 	const [isFursuitStaff, setIsFursuitStaff] = useState(false)
@@ -346,19 +348,30 @@ const MyTicketDisplay = (): React.ReactElement => {
 							)}
 						</div>
 
-						{/* Upgrade Button (future feature) */}
-						<div className='border-t border-[#548780] pt-4 mt-4'>
-							<button
-								disabled
-								className='w-full py-3 px-4 rounded-lg border-2 border-dashed border-[#48715b] text-[#48715b] hover:bg-[#d2ddd2] flex items-center justify-center gap-2 opacity-50 cursor-not-allowed'
-							>
-								<ArrowUpCircle className='w-5 h-5' />
-								<span>{t('upgradeTicket')}</span>
-							</button>
-						</div>
 					</>
 				)}
+
+				{/* Upgrade Button — shown for all non-denied statuses */}
+				{ticket.status !== 'denied' && tier && (
+					<div className='border-t border-[#548780] pt-4 mt-4'>
+						<button
+							onClick={() => setShowUpgradeModal(true)}
+							className='w-full py-3 px-4 rounded-lg border-2 border-dashed border-[#48715b] text-[#48715b] hover:bg-[#d2ddd2] flex items-center justify-center gap-2 transition-colors'
+						>
+							<ArrowUpCircle className='w-5 h-5' />
+							<span>{t('upgradeTicket')}</span>
+						</button>
+					</div>
+				)}
 			</div>
+
+			{/* Upgrade Modal */}
+			{showUpgradeModal && tier && (
+				<UpgradeTicketModal
+					currentTier={tier}
+					onClose={() => setShowUpgradeModal(false)}
+				/>
+			)}
 
 			{/* Cancel Confirmation Dialog */}
 			{showCancelDialog && (
