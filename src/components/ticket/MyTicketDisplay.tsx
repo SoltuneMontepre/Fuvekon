@@ -352,7 +352,7 @@ const MyTicketDisplay = (): React.ReactElement => {
 				)}
 
 				{/* Upgrade Button — shown for all non-denied statuses */}
-				{ticket.status !== 'denied' && tier && (
+				{ticket.status !== 'denied' && ticket.status !== 'pending' &&  tier && (
 					<div className='border-t border-[#548780] pt-4 mt-4'>
 						<button
 							onClick={() => setShowUpgradeModal(true)}

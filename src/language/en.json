@@ -285,7 +285,8 @@
 		"firstName": "First Name",
 		"lastName": "Last Name",
 		"fursonaName": "Fursona Name",
-		"upgradedFrom": "Upgraded from {code}"
+		"upgradedFrom": "Upgraded from {code}",
+		"upgradeDiff": "Upgrade Diff"
 	},
 	"artbook": {
 		"artbook": {

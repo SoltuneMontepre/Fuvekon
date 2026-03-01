@@ -1128,6 +1128,9 @@ const TicketManagementPage = (): React.ReactElement => {
 											{t('type')}
 										</th>
 										<th className='px-4 py-3 text-left text-sm font-semibold text-gray-600 dark:text-dark-text'>
+											{t('upgradeDiff')}
+										</th>
+										<th className='px-4 py-3 text-left text-sm font-semibold text-gray-600 dark:text-dark-text'>
 											{t('status')}
 										</th>
 										<th className='px-4 py-3 text-left text-sm font-semibold text-gray-600 dark:text-dark-text'>
@@ -1187,6 +1190,21 @@ const TicketManagementPage = (): React.ReactElement => {
 															VND
 														</p>
 													</div>
+												</td>
+												<td className='px-4 py-3'>
+													{ticket.upgraded_from_tier_id ? (() => {
+														const oldTier = adminTiers.find(t => t.id === ticket.upgraded_from_tier_id)
+														const diff = oldTier && ticket.tier ? ticket.tier.price - oldTier.price : null
+														return diff !== null ? (
+															<span className='inline-flex items-center gap-1 text-sm font-semibold text-purple-600 dark:text-purple-400'>
+																+{formatPrice(diff)} VND
+															</span>
+														) : (
+															<span className='text-gray-400 dark:text-dark-text-secondary text-sm'>—</span>
+														)
+													})() : (
+														<span className='text-gray-400 dark:text-dark-text-secondary text-sm'>—</span>
+													)}
 												</td>
 												<td className='px-4 py-3'>
 													<span

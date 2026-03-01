@@ -285,7 +285,8 @@
 		"firstName": "Tên",
 		"lastName": "Họ",
 		"fursonaName": "Tên Fursona",
-		"upgradedFrom": "Nâng cấp từ {code}"
+		"upgradedFrom": "Nâng cấp từ {code}",
+		"upgradeDiff": "Chênh lệch"
 	},
 	"artbook": {
 		"artbook": {
