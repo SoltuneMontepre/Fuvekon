@@ -3,9 +3,14 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
-import { Pencil, ChevronDown } from 'lucide-react'
+import { Pencil, ChevronDown, AlertCircle } from 'lucide-react'
 import { useAuthStore } from '@/stores/authStore'
-import { useUpdateMe, useUpdateAvatar } from '@/hooks/services/auth/useAccount'
+import {
+	useUpdateMe,
+	useUpdateAvatar,
+	useVerifyOtp,
+	useResendOtp,
+} from '@/hooks/services/auth/useAccount'
 import { getNames, getCode, getName } from 'country-list'
 import UserAvatar from '@/components/common/UserAvatar'
 
@@ -60,6 +65,7 @@ const InfoField = ({
 
 const AccountPage = () => {
 	const t = useTranslations('account')
+	const tAuth = useTranslations('auth')
 	const tCommon = useTranslations('common')
 	const account = useAuthStore(state => state.account)
 	const [isEditing, setIsEditing] = useState(false)
@@ -72,6 +78,9 @@ const AccountPage = () => {
 	})
 	const updateMeMutation = useUpdateMe()
 	const updateAvatarMutation = useUpdateAvatar()
+	const verifyOtpMutation = useVerifyOtp()
+	const resendOtpMutation = useResendOtp()
+	const [otp, setOtp] = useState('')
 
 	const handleAvatarUploadSuccess = useCallback(
 		(fileUrl: string) => {
@@ -157,6 +166,54 @@ const AccountPage = () => {
 			id_card: account.id_card || '',
 		})
 		setIsEditing(false)
+	}
+
+	const handleVerifyOtp = (e: React.FormEvent) => {
+		e.preventDefault()
+		if (!account?.email || otp.trim().length !== 6) return
+		verifyOtpMutation.mutate(
+			{ email: account.email, otp: otp.trim() },
+			{
+				onSuccess: data => {
+					if (data.isSuccess) {
+						toast.success(t('emailVerifiedSuccess'))
+						setOtp('')
+					}
+				},
+				onError: (err: Error) => {
+					const key = (
+						err as { response?: { data?: { errorMessage?: string } } }
+					)?.response?.data?.errorMessage
+					toast.error(
+						key
+							? tAuth(key as 'invalidOrExpiredOtp' | 'verifyOtpFailed' | 'userNotFound')
+							: tAuth('verifyOtpFailed')
+					)
+				},
+			}
+		)
+	}
+
+	const handleResendOtp = () => {
+		if (!account?.email) return
+		resendOtpMutation.mutate(
+			{ email: account.email },
+			{
+				onSuccess: data => {
+					if (data.isSuccess) toast.success(t('verificationCodeSent'))
+				},
+				onError: (err: Error) => {
+					const key = (
+						err as { response?: { data?: { errorMessage?: string } } }
+					)?.response?.data?.errorMessage
+					toast.error(
+						key
+							? tAuth(key as 'alreadyVerified' | 'resendOtpFailed')
+							: tAuth('resendOtpFailed')
+					)
+				},
+			}
+		)
 	}
 
 	const handleSubmit = async (e: React.FormEvent) => {
@@ -304,11 +361,20 @@ const AccountPage = () => {
 								value={account.fursona_name}
 								emptyLabel={t('na')}
 							/>
-							<InfoField
-								label={t('email')}
-								value={account.email}
-								emptyLabel={t('na')}
-							/>
+							<div className='space-y-0.5 px-3 py-2.5 rounded-xl bg-[#E2EEE2]/60 border border-[#8C8C8C]/15'>
+								<label className='text-sm font-medium text-[#48715B]'>
+									{t('email')}
+								</label>
+								<div className='flex flex-wrap items-center gap-2 text-lg text-text-secondary'>
+									<span>{account.email || t('na')}</span>
+									{!account.is_verified && (
+										<span className='inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-200 text-sm font-medium'>
+											<AlertCircle className='w-3.5 h-3.5 shrink-0' />
+											{tAuth('userNotVerified')}
+										</span>
+									)}
+								</div>
+							</div>
 							<InfoField
 								label={t('country')}
 								value={getName(account.country || '')}
@@ -322,6 +388,62 @@ const AccountPage = () => {
 						</div>
 					)}
 				</div>
+
+				{/* Verify email (only when not verified) */}
+				{!account.is_verified && (
+					<div className='mt-6 rounded-xl border border-amber-200 dark:border-amber-800/50 bg-amber-50/50 dark:bg-amber-900/10 px-4 py-4'>
+						<h3 className='text-sm font-semibold text-[#48715B] mb-2'>
+							{t('verifyEmail')}
+						</h3>
+						<p className='text-sm text-text-secondary dark:text-dark-text-secondary mb-3'>
+							{t('enterOtp')}
+						</p>
+						<form
+							onSubmit={handleVerifyOtp}
+							className='flex flex-wrap items-end gap-3'
+						>
+							<div className='flex-1 min-w-[120px]'>
+								<label htmlFor='profile-otp' className='sr-only'>
+									{t('enterOtp')}
+								</label>
+								<input
+									id='profile-otp'
+									type='text'
+									inputMode='numeric'
+									autoComplete='one-time-code'
+									maxLength={6}
+									placeholder='000000'
+									value={otp}
+									onChange={e =>
+										setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))
+									}
+									className='w-full px-3 py-2.5 rounded-lg border border-[#8C8C8C]/30 dark:border-dark-border bg-white dark:bg-dark-surface text-lg tracking-widest font-mono focus:outline-none focus:ring-2 focus:ring-[#48715B] dark:focus:ring-amber-500'
+								/>
+							</div>
+							<div className='flex gap-2'>
+								<button
+									type='submit'
+									disabled={verifyOtpMutation.isPending || otp.length !== 6}
+									className='px-4 py-2.5 rounded-lg bg-[#48715B] dark:bg-amber-600 text-white font-medium hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed'
+								>
+									{verifyOtpMutation.isPending
+										? tCommon('processing')
+										: t('verify')}
+								</button>
+								<button
+									type='button'
+									onClick={handleResendOtp}
+									disabled={resendOtpMutation.isPending}
+									className='px-4 py-2.5 rounded-lg border border-[#8C8C8C]/40 dark:border-dark-border font-medium hover:bg-amber-100/50 dark:hover:bg-amber-900/20 disabled:opacity-50 disabled:cursor-not-allowed'
+								>
+									{resendOtpMutation.isPending
+										? tCommon('processing')
+										: t('resendVerificationCode')}
+								</button>
+							</div>
+						</form>
+					</div>
+				)}
 
 				{/* Edit / Save actions */}
 				<div className='mt-6 pt-5 border-t border-[#48715B]/15'>
