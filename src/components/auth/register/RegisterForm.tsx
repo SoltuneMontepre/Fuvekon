@@ -367,14 +367,14 @@ const RegisterForm = (): React.ReactElement => {
 							{/* Google Sign-up */}
 							{hasGoogleClientId && (
 								<>
-									<div className='flex items-center gap-3 w-full mt-3'>
+									<div className='flex items-center gap-2 w-full mt-0.5'>
 										<span className='flex-1 h-px bg-[#8C8C8C]/30' aria-hidden />
 										<span className='text-[#8C8C8C] text-sm'>
 											{t('orContinueWith')}
 										</span>
 										<span className='flex-1 h-px bg-[#8C8C8C]/30' aria-hidden />
 									</div>
-									<div className='flex justify-center w-full mt-3'>
+									<div className='flex justify-center w-full mt-1 -mb-0'>
 										<GoogleLoginButton
 											onSuccess={credential => {
 												clearErrors('root')
