@@ -95,6 +95,8 @@
 		"changePasswordFailed": "修改密码失败，请重试。",
 		"invalidOrExpiredOtp": "验证码无效或已过期。",
 		"verifyOtpFailed": "验证失败，请重试。",
+		"resendOtpFailed": "发送验证码失败，请重试。",
+		"alreadyVerified": "您的账户已验证。",
 		"forgotPasswordFailed": "请求处理失败，请重试。",
 		"resetPasswordConfirmFailed": "重置密码失败，请重试。",
 		"networkError": "网络错误，请检查网络后重试。",
@@ -454,7 +456,13 @@
 		"saveChanges": "保存修改",
 		"updateSuccess": "资料更新成功！",
 		"updateError": "更新失败，请重试。",
-		"na": "无"
+		"na": "无",
+		"resendVerificationCode": "重新发送验证码",
+		"verifyEmail": "验证邮箱",
+		"enterOtp": "输入发送到您邮箱的 6 位验证码",
+		"verify": "验证",
+		"verificationCodeSent": "验证码已发送到您的邮箱。",
+		"emailVerifiedSuccess": "邮箱验证成功。"
 	},
 	"changePassword": {
 		"title": "修改密码",

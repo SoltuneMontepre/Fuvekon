@@ -15,8 +15,12 @@ import type {
 	ChangePasswordRequest,
 	ChangePasswordResponse,
 } from '@/types/api/auth/changePassword'
+import type { ApiResponse } from '@/types/api/response'
 import { useAuthStore } from '@/stores/authStore'
 import { getQueryClient } from '@/utils/getQueryClient'
+
+export type VerifyOtpRequest = { email: string; otp: string }
+export type ResendOtpRequest = { email: string }
 
 const Account = {
 	getMe: async () => {
@@ -40,6 +44,20 @@ const Account = {
 	changePassword: async (payload: ChangePasswordRequest) => {
 		const { data } = await axios.general.post<ChangePasswordResponse>(
 			'/auth/reset-password',
+			payload
+		)
+		return data
+	},
+	verifyOtp: async (payload: VerifyOtpRequest) => {
+		const { data } = await axios.general.post<ApiResponse<null>>(
+			'/auth/verify-otp',
+			payload
+		)
+		return data
+	},
+	resendOtp: async (payload: ResendOtpRequest) => {
+		const { data } = await axios.general.post<ApiResponse<null>>(
+			'/auth/resend-otp',
 			payload
 		)
 		return data
@@ -100,5 +118,27 @@ export function useChangePassword() {
 	return useMutation({
 		mutationFn: (payload: ChangePasswordRequest) =>
 			Account.changePassword(payload),
+	})
+}
+
+export function useVerifyOtp() {
+	const queryClient = getQueryClient()
+	const setAccount = useAuthStore(state => state.setAccount)
+
+	return useMutation({
+		mutationFn: (payload: VerifyOtpRequest) => Account.verifyOtp(payload),
+		onSuccess: async () => {
+			const me = await Account.getMe()
+			if (me?.isSuccess && me.data) {
+				setAccount(me.data)
+				queryClient.setQueryData(['account'], me)
+			}
+		},
+	})
+}
+
+export function useResendOtp() {
+	return useMutation({
+		mutationFn: (payload: ResendOtpRequest) => Account.resendOtp(payload),
 	})
 }

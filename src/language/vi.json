@@ -95,6 +95,8 @@
 		"changePasswordFailed": "Đổi mật khẩu thất bại. Vui lòng thử lại.",
 		"invalidOrExpiredOtp": "Mã xác minh không hợp lệ hoặc đã hết hạn.",
 		"verifyOtpFailed": "Xác minh thất bại. Vui lòng thử lại.",
+		"resendOtpFailed": "Gửi mã xác minh thất bại. Vui lòng thử lại.",
+		"alreadyVerified": "Tài khoản của bạn đã được xác minh.",
 		"forgotPasswordFailed": "Xử lý yêu cầu thất bại. Vui lòng thử lại.",
 		"resetPasswordConfirmFailed": "Đặt lại mật khẩu thất bại. Vui lòng thử lại.",
 		"networkError": "Lỗi kết nối. Vui lòng kiểm tra mạng và thử lại.",
@@ -454,7 +456,13 @@
 		"saveChanges": "Lưu thay đổi",
 		"updateSuccess": "Cập nhật thông tin thành công!",
 		"updateError": "Cập nhật thất bại. Vui lòng thử lại.",
-		"na": "N/A"
+		"na": "N/A",
+		"resendVerificationCode": "Gửi lại mã xác minh",
+		"verifyEmail": "Xác minh email",
+		"enterOtp": "Nhập mã 6 số được gửi đến email của bạn",
+		"verify": "Xác minh",
+		"verificationCodeSent": "Mã xác minh đã được gửi đến email của bạn.",
+		"emailVerifiedSuccess": "Xác minh email thành công."
 	},
 	"changePassword": {
 		"title": "ĐỔI MẬT KHẨU",

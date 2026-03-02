@@ -95,6 +95,8 @@
 		"changePasswordFailed": "Failed to change password. Please try again.",
 		"invalidOrExpiredOtp": "Invalid or expired verification code.",
 		"verifyOtpFailed": "Verification failed. Please try again.",
+		"resendOtpFailed": "Failed to send verification code. Please try again.",
+		"alreadyVerified": "Your account is already verified.",
 		"forgotPasswordFailed": "Failed to process request. Please try again.",
 		"resetPasswordConfirmFailed": "Failed to reset password. Please try again.",
 		"networkError": "Connection error. Please check your network and try again.",
@@ -454,7 +456,13 @@
 		"saveChanges": "Save changes",
 		"updateSuccess": "Profile updated successfully!",
 		"updateError": "Update failed. Please try again.",
-		"na": "N/A"
+		"na": "N/A",
+		"resendVerificationCode": "Resend verification code",
+		"verifyEmail": "Verify email",
+		"enterOtp": "Enter the 6-digit code sent to your email",
+		"verify": "Verify",
+		"verificationCodeSent": "Verification code sent to your email.",
+		"emailVerifiedSuccess": "Email verified successfully."
 	},
 	"changePassword": {
 		"title": "CHANGE PASSWORD",
