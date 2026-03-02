@@ -61,6 +61,8 @@ const VerifyOtpForm = (): React.ReactElement => {
 			email: '',
 			otp: '',
 		},
+	})
+
 	useEffect(() => {
 		const unlock = lockScroll()
 		return () => unlock()
