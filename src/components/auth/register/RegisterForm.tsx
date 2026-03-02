@@ -321,7 +321,7 @@ const RegisterForm = (): React.ReactElement => {
 							/>
 
 							{/* Terms Checkbox */}
-							<div className='flex items-start gap-3 py-2'>
+							<div className='flex items-center gap-1 py-2 justify-center w-full'>
 								<input
 									type='checkbox'
 									id='termsAccepted'
@@ -330,7 +330,7 @@ const RegisterForm = (): React.ReactElement => {
 									aria-invalid={!!errors.termsAccepted}
 									aria-describedby={errors.termsAccepted ? 'terms-error' : undefined}
 								/>
-								<label htmlFor='termsAccepted' className='text-xs sm:text-sm text-[#8C8C8C] flex-1 cursor-pointer'>
+								<label htmlFor='termsAccepted' className='text-xs sm:text-sm text-[#8C8C8C] cursor-pointer'>
 									{t('termsAgreement')}
 								</label>
 							</div>
