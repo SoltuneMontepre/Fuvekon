@@ -330,7 +330,7 @@ const RegisterForm = (): React.ReactElement => {
 									aria-invalid={!!errors.termsAccepted}
 									aria-describedby={errors.termsAccepted ? 'terms-error' : undefined}
 								/>
-								<label htmlFor='termsAccepted' className='text-xs sm:text-sm text-[#8C8C8C] cursor-pointer'>
+								<label htmlFor='termsAccepted' className='underline text-xs sm:text-sm text-[#8C8C8C] cursor-pointer'>
 									{t('termsAgreement')}
 								</label>
 							</div>
