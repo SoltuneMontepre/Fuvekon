@@ -320,24 +320,6 @@ const LandingPage = (): React.JSX.Element => {
 					end: 'top top',
 					scrub: 1.5,
 					invalidateOnRefresh: true,
-					onLeaveBack: () => {
-						gsap.killTweensOf(['#feat-drum-spinner', '#feat-drum-line'])
-					},
-					onEnter: () => {},
-					onScrubComplete: () => {
-						gsap.to('#feat-drum-spinner', {
-							rotation: '+=360',
-							duration: 8,
-							ease: 'linear',
-							repeat: -1,
-						})
-						gsap.to('#feat-drum-line', {
-							rotation: '-=360',
-							duration: 8,
-							ease: 'linear',
-							repeat: -1,
-						})
-					},
 				},
 			})
 			.to('#feat-drum', { x: '0vw', ease: 'none' }, 0)
