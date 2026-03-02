@@ -51,6 +51,7 @@ const VerifyOtpForm = (): React.ReactElement => {
 	const {
 		control,
 		handleSubmit,
+		setValue,
 		formState: { errors, isSubmitting },
 		setError,
 		reset,
@@ -76,13 +77,13 @@ const VerifyOtpForm = (): React.ReactElement => {
 		const storedEmail = window.sessionStorage.getItem(EMAIL_STORAGE_KEY)
 
 		if (paramEmail) {
-			control.setValue('email', paramEmail)
+			setValue('email', paramEmail)
 			// also cache it so we can navigate without leaking later
 			window.sessionStorage.setItem(EMAIL_STORAGE_KEY, paramEmail)
 			// remove the parameter from the address bar to avoid leaking in history
 			router.replace('/register/verify-otp')
 		} else if (storedEmail) {
-			control.setValue('email', storedEmail)
+			setValue('email', storedEmail)
 		} else {
 			// nothing to verify, send user back to registration
 			router.replace('/register')
