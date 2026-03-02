@@ -30,9 +30,9 @@ export const FORM_STYLES = {
 	// Container styles
 	container: {
 		wrapper:
-			'relative pt-8 sm:pt-16 md:pt-32 w-full max-w-5xl min-h-[850px] h-auto',
+			'relative pt-12 sm:pt-20 md:pt-36 w-full max-w-5xl min-h-[850px] h-auto',
 		panel:
-			'relative bg-[#E2EEE2] -translate-y-4 sm:-translate-y-6 md:-translate-y-10 rounded-2xl md:rounded-[32px] overflow-hidden shadow-2xl flex flex-col md:flex-row min-h-[850px] h-auto items-center justify-center md:justify-start',
+			'relative bg-[#E2EEE2] translate-y-0 rounded-2xl md:rounded-[32px] overflow-hidden shadow-2xl flex flex-col md:flex-row min-h-[850px] h-auto items-center justify-center md:justify-start',
 		background:
 			'absolute inset-0 w-full h-full z-10 pointer-events-none select-none hidden md:block overflow-hidden',
 		formPanel:
