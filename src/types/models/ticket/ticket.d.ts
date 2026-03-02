@@ -11,6 +11,7 @@ export interface TicketTier {
 	price: number
 	stock: number
 	is_active: boolean
+	is_visible?: boolean
 }
 
 // User's ticket

@@ -27,7 +27,7 @@ const GoogleLoginButton = ({
 
 	return (
 		<div
-			className={className}
+			className={`overflow-hidden rounded-full bg-transparent w-fit [color-scheme:light] ${className}`}
 			style={disabled ? { opacity: 0.6, pointerEvents: 'none' } : undefined}
 		>
 			<GoogleLogin

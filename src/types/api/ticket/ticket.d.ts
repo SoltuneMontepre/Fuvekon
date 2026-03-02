@@ -35,6 +35,26 @@ export type DenyTicketResponse = UserTicket
 
 export type GetTicketStatisticsResponse = TicketStatistics
 
+/** One day in ticket sales timeline */
+export interface SalesByDayItem {
+	date: string
+	count: number
+}
+
+export type GetTicketSalesTimelineResponse = SalesByDayItem[]
+
+/** One day in revenue timeline */
+export interface RevenueByDayItem {
+	date: string
+	revenue: number
+}
+
+/** Admin revenue API response */
+export interface GetTicketRevenueResponse {
+	total_revenue: number
+	by_day?: RevenueByDayItem[]
+}
+
 export type GetBlacklistedUsersResponse = BlacklistedUser[]
 
 // Pagination meta (for admin endpoints)

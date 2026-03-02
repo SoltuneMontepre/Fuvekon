@@ -12,7 +12,8 @@ import {
 	LogIn,
 	LogOut,
 	UserPlus,
-	Shield,
+	LayoutDashboard,
+	ScanLine,
 } from 'lucide-react'
 import { useGSAP } from '@gsap/react'
 import gsap from '@/common/gsap'
@@ -158,7 +159,9 @@ const MobileMenu = ({
 		router.replace('/login')
 	}
 
-	const isAdminOrStaff = account?.role === 'admin' || account?.role === 'staff'
+	const role = account?.role?.toLowerCase()
+	const isAdmin = role === 'admin'
+	const isStaff = role === 'staff'
 
 	const accountItems = [
 		{ label: tNav('account'), href: '/account', icon: UserCircle },
@@ -179,12 +182,15 @@ const MobileMenu = ({
 						},
 					]
 				: []),
-		...(isAdminOrStaff
+		...(isAdmin
+			? [{ label: tNav('admin') || 'Admin', href: '/admin', icon: LayoutDashboard }]
+			: []),
+		...(isStaff
 			? [
 					{
-						label: tNav('admin'),
-						href: '/admin',
-						icon: Shield,
+						label: tNav('scanTicket') || 'Quét vé',
+						href: '/admin/scan-ticket',
+						icon: ScanLine,
 					},
 				]
 			: []),
