@@ -17,10 +17,10 @@ import {
 	ChevronUp,
 	Pencil,
 	Trash2,
-	Power,
-	PowerOff,
 	Ticket,
 	ArrowUpCircle,
+	Eye,
+	EyeOff,
 } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
@@ -36,6 +36,7 @@ import {
 	useDeleteTier,
 	useActivateTier,
 	useDeactivateTier,
+	useSetTierVisibility,
 	useUpdateTicketForAdmin,
 	useDeleteTicketForAdmin,
 	type AdminTicketFilter,
@@ -200,6 +201,7 @@ const TicketManagementPage = (): React.ReactElement => {
 	const deleteTierMutation = useDeleteTier()
 	const activateTierMutation = useActivateTier()
 	const deactivateTierMutation = useDeactivateTier()
+	const setTierVisibilityMutation = useSetTierVisibility()
 	const updateTicketMutation = useUpdateTicketForAdmin()
 	const deleteTicketMutation = useDeleteTicketForAdmin()
 
@@ -575,6 +577,24 @@ const TicketManagementPage = (): React.ReactElement => {
 		}
 	}
 
+	const handleSetTierVisibility = async (tier: TicketTier) => {
+		const visible = tier.is_visible !== false
+		try {
+			await setTierVisibilityMutation.mutateAsync({
+				tierId: tier.id,
+				visible: !visible,
+			})
+			toast.success(
+				visible
+					? (t('tierVisibilityHidden') || 'Tier hidden from listing')
+					: (t('tierVisibilityShown') || 'Tier visible in listing')
+			)
+		} catch (error) {
+			logger.error('Failed to update tier visibility', error)
+			toast.error(t('createTierError') || 'Failed to update visibility.')
+		}
+	}
+
 	// Admin only: show loading or empty while redirecting staff
 	if (meLoading) return <Loading />
 	if (meData?.isSuccess && meData.data && !isAdmin)
@@ -860,6 +880,9 @@ const TicketManagementPage = (): React.ReactElement => {
 									<th className='px-4 py-3 text-left text-sm font-semibold text-gray-600 dark:text-dark-text'>
 										{t('tierIsActive')}
 									</th>
+									<th className='px-4 py-3 text-left text-sm font-semibold text-gray-600 dark:text-dark-text'>
+										{t('tierVisibility')}
+									</th>
 									<th className='px-4 py-3 text-right text-sm font-semibold text-gray-600 dark:text-dark-text'>
 										{t('actions')}
 									</th>
@@ -870,6 +893,7 @@ const TicketManagementPage = (): React.ReactElement => {
 									const tierStat = stats?.tier_stats?.find(
 										(s: TierStatistics) => s.tier_id === tier.id
 									)
+									const isVisible = tier.is_visible !== false
 									return (
 										<tr
 											key={tier.id}
@@ -917,15 +941,56 @@ const TicketManagementPage = (): React.ReactElement => {
 												)}
 											</td>
 											<td className='px-4 py-3'>
-												<span
-													className={`inline-flex px-2 py-0.5 rounded text-xs font-medium ${
+												<button
+													type='button'
+													role='switch'
+													aria-checked={tier.is_active}
+													aria-label={tier.is_active ? t('hideTier') : t('showTier')}
+													disabled={
+														(activateTierMutation.isPending &&
+															activateTierMutation.variables === tier.id) ||
+														(deactivateTierMutation.isPending &&
+															deactivateTierMutation.variables === tier.id)
+													}
+													onClick={() =>
 														tier.is_active
-															? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
-															: 'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400'
+															? handleDeactivateTier(tier)
+															: handleActivateTier(tier)
+													}
+													className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors focus:outline-none focus:ring-2 focus:ring-[#7cbc97] focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ${
+														tier.is_active
+															? 'bg-[#7cbc97] dark:bg-[#7cbc97]'
+															: 'bg-gray-200 dark:bg-gray-600'
 													}`}
 												>
-													{tier.is_active ? t('active') : t('inactive')}
-												</span>
+													<span
+														className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition ${
+															tier.is_active ? 'translate-x-5' : 'translate-x-0.5'
+														}`}
+													/>
+												</button>
+											</td>
+											<td className='px-4 py-3'>
+												<button
+													type='button'
+													onClick={() => handleSetTierVisibility(tier)}
+													disabled={
+														setTierVisibilityMutation.isPending &&
+														setTierVisibilityMutation.variables?.tierId === tier.id
+													}
+													className='p-2 rounded-lg border border-slate-300/20 dark:border-dark-border hover:bg-gray-100 dark:hover:bg-dark-surface/50 transition-colors disabled:opacity-50'
+													title={
+														isVisible
+															? t('hideFromListing')
+															: t('showInListing')
+													}
+												>
+													{isVisible ? (
+														<Eye className='w-4 h-4 text-gray-600 dark:text-dark-text' />
+													) : (
+														<EyeOff className='w-4 h-4 text-gray-400 dark:text-dark-text-secondary' />
+													)}
+												</button>
 											</td>
 											<td className='px-4 py-3'>
 												<div className='flex justify-end gap-1'>
@@ -937,27 +1002,6 @@ const TicketManagementPage = (): React.ReactElement => {
 													>
 														<Pencil className='w-4 h-4 text-gray-600 dark:text-dark-text' />
 													</button>
-													{tier.is_active ? (
-														<button
-															type='button'
-															onClick={() => handleDeactivateTier(tier)}
-															disabled={deactivateTierMutation.isPending}
-															className='p-2 rounded-lg border border-amber-300 dark:border-amber-600 hover:bg-amber-50 dark:hover:bg-amber-900/20'
-															title={t('deactivate')}
-														>
-															<PowerOff className='w-4 h-4 text-amber-600 dark:text-amber-400' />
-														</button>
-													) : (
-														<button
-															type='button'
-															onClick={() => handleActivateTier(tier)}
-															disabled={activateTierMutation.isPending}
-															className='p-2 rounded-lg border border-green-300 dark:border-green-600 hover:bg-green-50 dark:hover:bg-green-900/20'
-															title={t('activate')}
-														>
-															<Power className='w-4 h-4 text-green-600 dark:text-green-400' />
-														</button>
-													)}
 													<button
 														type='button'
 														onClick={() => handleDeleteTier(tier)}

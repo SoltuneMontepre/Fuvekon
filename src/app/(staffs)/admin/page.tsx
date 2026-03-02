@@ -10,13 +10,17 @@ import {
 	XCircle,
 	Shield,
 	Search,
+	Ban,
+	CircleCheck,
 } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { useRouter } from 'next/navigation'
+import { toast } from 'sonner'
 import {
 	useAdminGetUsers,
 	type AdminUserFilter,
 } from '@/hooks/services/user/useAdminUser'
+import { useBlacklistUser, useUnblacklistUser } from '@/hooks/services/ticket/useAdminTicket'
 import type { Account } from '@/types/models/auth/account'
 import Loading from '@/components/common/Loading'
 
@@ -90,8 +94,38 @@ const UserManagementPage = (): React.ReactElement => {
 		isFetching: usersFetching,
 		refetch: refetchUsers,
 	} = useAdminGetUsers(apiFilter)
+	const blacklistMutation = useBlacklistUser()
+	const unblacklistMutation = useUnblacklistUser()
 
 	const users: Account[] = usersData?.data ?? []
+
+	const handleBan = async (e: React.MouseEvent, user: Account) => {
+		e.stopPropagation()
+		const role = user.role?.toLowerCase()
+		if (role === 'admin' || role === 'staff') {
+			toast.error(t('cannotBanStaffOrAdmin') || 'Cannot ban admin or staff.')
+			return
+		}
+		const reason = window.prompt(t('banReasonPrompt') || 'Reason for banning this user (optional):')
+		if (reason === null) return // cancelled
+		try {
+			await blacklistMutation.mutateAsync({ userId: user.id, reason: reason || '' })
+			toast.success(t('userBanned') || 'User banned.')
+		} catch {
+			toast.error(t('banFailed') || 'Failed to ban user.')
+		}
+	}
+
+	const handleUnban = async (e: React.MouseEvent, user: Account) => {
+		e.stopPropagation()
+		if (!window.confirm(t('unbanConfirm') || `Unban ${user.email || user.id}?`)) return
+		try {
+			await unblacklistMutation.mutateAsync(user.id)
+			toast.success(t('userUnbanned') || 'User unbanned.')
+		} catch {
+			toast.error(t('unbanFailed') || 'Failed to unban user.')
+		}
+	}
 	const meta = usersData?.meta
 	const currentPage = meta?.currentPage ?? filter.page ?? 1
 	const pageSize = meta?.pageSize ?? filter.pageSize ?? 20
@@ -203,6 +237,9 @@ const UserManagementPage = (): React.ReactElement => {
 										<th className='px-4 py-3 text-left text-sm font-semibold text-gray-600 dark:text-dark-text'>
 											{t('createdAt') || 'Created At'}
 										</th>
+										<th className='px-4 py-3 text-right text-sm font-semibold text-gray-600 dark:text-dark-text'>
+											{t('actions') || 'Actions'}
+										</th>
 									</tr>
 								</thead>
 								<tbody className='divide-y divide-slate-300/20 dark:divide-dark-border/20'>
@@ -293,6 +330,39 @@ const UserManagementPage = (): React.ReactElement => {
 												</td>
 												<td className='px-4 py-3 text-sm text-gray-600 dark:text-dark-text-secondary'>
 													{formatDateTime(user.created_at)}
+												</td>
+												<td className='px-4 py-3 text-right' onClick={e => e.stopPropagation()}>
+													{user.is_blacklisted ? (
+														<button
+															type='button'
+															onClick={e => handleUnban(e, user)}
+															disabled={unblacklistMutation.isPending}
+															className='inline-flex items-center gap-1.5 rounded-lg border border-emerald-600/50 bg-emerald-50 px-2.5 py-1.5 text-xs font-medium text-emerald-700 hover:bg-emerald-100 dark:bg-emerald-900/20 dark:text-emerald-300 dark:hover:bg-emerald-900/30 disabled:opacity-50'
+															title={t('unban') || 'Unban'}
+														>
+															<CircleCheck className='h-3.5 w-3.5' />
+															{t('unban') || 'Unban'}
+														</button>
+													) : (
+														<button
+															type='button'
+															onClick={e => handleBan(e, user)}
+															disabled={
+																blacklistMutation.isPending ||
+																user.role?.toLowerCase() === 'admin' ||
+																user.role?.toLowerCase() === 'staff'
+															}
+															className='inline-flex items-center gap-1.5 rounded-lg border border-red-600/50 bg-red-50 px-2.5 py-1.5 text-xs font-medium text-red-700 hover:bg-red-100 dark:bg-red-900/20 dark:text-red-300 dark:hover:bg-red-900/30 disabled:opacity-50 disabled:cursor-not-allowed'
+															title={
+																user.role?.toLowerCase() === 'admin' || user.role?.toLowerCase() === 'staff'
+																	? t('cannotBanStaffOrAdmin') || 'Cannot ban admin or staff'
+																	: t('ban') || 'Ban'
+															}
+														>
+															<Ban className='h-3.5 w-3.5' />
+															{t('ban') || 'Ban'}
+														</button>
+													)}
 												</td>
 											</tr>
 										)

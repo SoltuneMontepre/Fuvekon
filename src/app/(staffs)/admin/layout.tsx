@@ -3,7 +3,7 @@
 import React, { useEffect } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
 import SideBar from '@/components/nav/SideBar'
-import { UserCircle, Ticket, Store } from 'lucide-react'
+import { UserCircle, Ticket, Store, LayoutDashboard } from 'lucide-react'
 import { useGetMe } from '@/hooks/services/auth/useAccount'
 import { useAuthStore } from '@/stores/authStore'
 import { logger } from '@/utils/logger'
@@ -56,7 +56,7 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
 						{
 							label: 'Dashboard',
 							href: '/admin/dashboard',
-							icon: UserCircle,
+							icon: LayoutDashboard,
 						},
 						...(isAdmin
 							? [

@@ -7,7 +7,7 @@ import Link from 'next/link'
 import S3Image from '@/components/common/S3Image'
 import { useAuthStore } from '@/stores/authStore'
 import { useLogout } from '@/hooks/services/auth/useLogout'
-import { UserCircle, Ticket, Lock, Store, LogOut } from 'lucide-react'
+import { UserCircle, Ticket, Lock, Store, LogOut, LayoutDashboard, ScanLine } from 'lucide-react'
 
 const ProfileButton = (): React.ReactElement => {
 	const t = useTranslations('auth')
@@ -64,6 +64,9 @@ const ProfileButton = (): React.ReactElement => {
 		account?.email?.split('@')[0] ||
 		'User'
 	const showAvatar = account?.avatar && !imageError
+	const role = account?.role?.toLowerCase()
+	const isAdmin = role === 'admin'
+	const isStaff = role === 'staff'
 
 	const accountNavItems = [
 		{ label: tNav('account'), href: '/account', icon: UserCircle },
@@ -81,6 +84,17 @@ const ProfileButton = (): React.ReactElement => {
 							label: tNav('registerDealer'),
 							href: '/account/dealer/register',
 							icon: Store,
+						},
+					]
+				: []),
+		...(isAdmin
+			? [{ label: tNav('admin') || 'Admin', href: '/admin', icon: LayoutDashboard }]
+			: isStaff
+				? [
+						{
+							label: tNav('scanTicket') || 'Quét vé',
+							href: '/admin/scan-ticket',
+							icon: ScanLine,
 						},
 					]
 				: []),
@@ -168,6 +182,27 @@ const ProfileButton = (): React.ReactElement => {
 							<Ticket className='size-4' />
 							{tNav('myTicket')}
 						</Link>
+
+						{isAdmin && (
+							<Link
+								href='/admin'
+								onClick={() => setIsOpen(false)}
+								className='flex items-center gap-2 px-4 py-2 text-sm text-[#154c5b] hover:bg-gray-50 transition-colors'
+							>
+								<LayoutDashboard className='size-4' />
+								{tNav('admin') || 'Admin'}
+							</Link>
+						)}
+						{isStaff && (
+							<Link
+								href='/admin/scan-ticket'
+								onClick={() => setIsOpen(false)}
+								className='flex items-center gap-2 px-4 py-2 text-sm text-[#154c5b] hover:bg-gray-50 transition-colors'
+							>
+								<ScanLine className='size-4' />
+								{tNav('scanTicket') || 'Quét vé'}
+							</Link>
+						)}
 					</div>
 
 					<div className='border-t border-gray-100 mt-1 pt-1'>
