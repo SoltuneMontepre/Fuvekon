@@ -274,7 +274,7 @@ const LoginForm = (): React.ReactElement => {
 							<button
 								id='login-submit-button'
 								type='submit'
-								className='login-submit-button block mx-auto w-full max-w-[200px] sm:w-[200px] py-3 sm:py-3.5 rounded-xl text-[#48715B] font-semibold text-base sm:text-lg hover:bg-[#48715B]/90 hover:text-[#E2EEE2] active:bg-[#48715B]/80 focus:outline-none focus:ring-4 focus:ring-[#48715B]/30 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed'
+								className='login-submit-button block mx-auto w-full md:w-[75%] py-3 sm:py-3.5 rounded-xl font-semibold text-base btn-primary'
 								disabled={
 									isSubmitting ||
 									loginMutation.isPending ||

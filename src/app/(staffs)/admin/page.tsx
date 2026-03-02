@@ -179,8 +179,8 @@ const UserManagementPage = (): React.ReactElement => {
 				{users.length === 0 ? (
 					<div className='p-8 text-center text-gray-500 dark:text-dark-text-secondary'>
 						{appliedSearch
-							? (t('noSearchResults') || 'No users found matching your search')
-							: (t('noUsers') || 'No users found')}
+							? t('noSearchResults') || 'No users found matching your search'
+							: t('noUsers') || 'No users found'}
 					</div>
 				) : (
 					<>
@@ -307,9 +307,8 @@ const UserManagementPage = (): React.ReactElement => {
 								<div className='flex items-center justify-between'>
 									<div className='text-sm text-gray-600 dark:text-dark-text-secondary'>
 										{tCommon('showing') || 'Showing'} {startIndex}{' '}
-										{tCommon('to') || 'to'} {endIndex}{' '}
-										{tCommon('of') || 'of'} {totalItems}{' '}
-										{tCommon('results') || 'results'}
+										{tCommon('to') || 'to'} {endIndex} {tCommon('of') || 'of'}{' '}
+										{totalItems} {tCommon('results') || 'results'}
 										{appliedSearch && (
 											<span className='ml-2 text-xs text-gray-500'>
 												({tCommon('filtered') || 'filtered'})
@@ -329,7 +328,10 @@ const UserManagementPage = (): React.ReactElement => {
 											{tCommon('page') || 'Page'} {currentPage}{' '}
 											{tCommon('of') || 'of'} {totalPages || 1}
 											{usersFetching && (
-												<span className='inline-block w-4 h-4 border-2 border-gray-300 border-t-[#7cbc97] rounded-full animate-spin' aria-hidden />
+												<span
+													className='inline-block w-4 h-4 border-2 border-gray-300 border-t-[#7cbc97] rounded-full animate-spin'
+													aria-hidden
+												/>
 											)}
 										</span>
 										<button

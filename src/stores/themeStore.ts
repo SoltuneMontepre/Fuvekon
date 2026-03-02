@@ -34,20 +34,39 @@ export const getResolvedTheme = (theme: Theme): 'light' | 'dark' => {
 }
 
 export const initThemeStore = (): ThemeState => {
-	// Check localStorage for saved theme
 	if (typeof window !== 'undefined') {
 		const stored = localStorage.getItem('theme-storage')
+
+		// If localStorage has data, always use it (don't fallback to browser detection)
 		if (stored) {
 			try {
-				const { theme } = JSON.parse(stored)
-				// Validate the theme value
-				if (theme === 'light' || theme === 'dark' || theme === 'system') {
-					return { theme, prefersReducedMotion: false }
+				const parsedData = JSON.parse(stored)
+				// Get theme (validate it)
+				let theme: Theme = defaultInitState.theme
+				if (
+					parsedData.theme === 'light' ||
+					parsedData.theme === 'dark' ||
+					parsedData.theme === 'system'
+				) {
+					theme = parsedData.theme
 				}
+				// Always use the stored value, fallback to default if not present
+				const prefersReducedMotion =
+					parsedData.prefersReducedMotion !== undefined
+						? parsedData.prefersReducedMotion
+						: defaultInitState.prefersReducedMotion
+				return { theme, prefersReducedMotion }
 			} catch {
+				// If parsing fails, return defaults (don't use browser detection as fallback)
 				return defaultInitState
 			}
 		}
+
+		// Only use browser detection if localStorage is completely empty
+		const prefersReducedMotion = window.matchMedia(
+			'(prefers-reduced-motion: reduce)'
+		).matches
+		return { ...defaultInitState, prefersReducedMotion }
 	}
 	return defaultInitState
 }
@@ -59,7 +78,13 @@ export const createThemeStore = (initState: ThemeState = defaultInitState) => {
 			set({ theme })
 			// Persist to localStorage
 			if (typeof window !== 'undefined') {
-				localStorage.setItem('theme-storage', JSON.stringify({ theme }))
+				const currentState = JSON.parse(
+					localStorage.getItem('theme-storage') || '{}'
+				)
+				localStorage.setItem(
+					'theme-storage',
+					JSON.stringify({ ...currentState, theme })
+				)
 			}
 		},
 		toggleTheme: () => {
@@ -67,9 +92,12 @@ export const createThemeStore = (initState: ThemeState = defaultInitState) => {
 				const newTheme = state.theme === 'dark' ? 'light' : 'dark'
 				// Persist to localStorage
 				if (typeof window !== 'undefined') {
+					const currentState = JSON.parse(
+						localStorage.getItem('theme-storage') || '{}'
+					)
 					localStorage.setItem(
 						'theme-storage',
-						JSON.stringify({ theme: newTheme })
+						JSON.stringify({ ...currentState, theme: newTheme })
 					)
 				}
 				return { theme: newTheme }
@@ -77,6 +105,15 @@ export const createThemeStore = (initState: ThemeState = defaultInitState) => {
 		},
 		setPrefersReducedMotion: value => {
 			set({ prefersReducedMotion: value })
+			if (typeof window !== 'undefined') {
+				const currentState = JSON.parse(
+					localStorage.getItem('theme-storage') || '{}'
+				)
+				localStorage.setItem(
+					'theme-storage',
+					JSON.stringify({ ...currentState, prefersReducedMotion: value })
+				)
+			}
 		},
 	}))
 }

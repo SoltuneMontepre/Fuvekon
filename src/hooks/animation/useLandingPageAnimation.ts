@@ -24,10 +24,36 @@ export const useLandingPageAnimation = (
 	const middleLayerRef = useRef<HTMLDivElement>(null)
 	const foregroundFlowerRef = useRef<HTMLDivElement>(null)
 	const foregroundFoliageRef = useRef<HTMLDivElement>(null)
+	const animatedRef = useRef(animated)
 
 	useGSAP(
 		() => {
-			if (!animated) return
+			animatedRef.current = animated
+
+			gsap.set('#mascot', {
+				scale: 0.7,
+				force3D: true,
+			})
+
+			if (!animated) {
+				gsap.set(containerRef.current, {
+					clearProps: 'perspective,transformStyle',
+				})
+
+				gsap.set(
+					[
+						backgroundLayerRef.current,
+						furtherMountainRef.current,
+						leftRockRef.current,
+						rightRockRef.current,
+						middleLayerRef.current,
+						foregroundFlowerRef.current,
+						foregroundFoliageRef.current,
+					],
+					{ clearProps: 'all' }
+				)
+				return
+			}
 
 			gsap.set(containerRef.current, {
 				perspective: 1500,
@@ -68,12 +94,6 @@ export const useLandingPageAnimation = (
 			gsap.set(foregroundFoliageRef.current, {
 				transformStyle: 'preserve-3d',
 				z: 150,
-				force3D: true,
-			})
-
-			// Set initial scale for mascot
-			gsap.set('#mascot', {
-				scale: 0.7,
 				force3D: true,
 			})
 
@@ -250,6 +270,7 @@ export const useLandingPageAnimation = (
 			)
 
 			const handleMouseMove = (e: MouseEvent) => {
+				if (!animatedRef.current) return
 				if (!containerRef.current) return
 
 				const rect = containerRef.current.getBoundingClientRect()
@@ -293,6 +314,7 @@ export const useLandingPageAnimation = (
 			}
 
 			const handleMouseLeave = () => {
+				if (!animatedRef.current) return
 				bgTranslateY(0)
 				furtherMtnRotateX(0)
 				furtherMtnRotateY(0)

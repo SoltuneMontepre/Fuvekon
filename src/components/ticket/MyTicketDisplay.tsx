@@ -3,10 +3,21 @@
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
-import { Clock, CheckCircle, XCircle, AlertCircle, RefreshCw, ArrowUpCircle } from 'lucide-react'
+import {
+	Clock,
+	CheckCircle,
+	XCircle,
+	AlertCircle,
+	RefreshCw,
+	ArrowUpCircle,
+} from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
-import { useGetMyTicket, useUpdateBadgeDetails, useCancelTicket } from '@/hooks/services/ticket/useTicket'
+import {
+	useGetMyTicket,
+	useUpdateBadgeDetails,
+	useCancelTicket,
+} from '@/hooks/services/ticket/useTicket'
 import UpgradeTicketModal from '@/components/ticket/UpgradeTicketModal'
 import type { TicketStatus } from '@/types/models/ticket/ticket'
 
@@ -20,7 +31,10 @@ const formatPrice = (price: number): string => {
 }
 
 // Status display configuration (icons only, labels come from translations)
-const STATUS_ICONS: Record<TicketStatus, { icon: React.ReactNode; bgColor: string; textColor: string }> = {
+const STATUS_ICONS: Record<
+	TicketStatus,
+	{ icon: React.ReactNode; bgColor: string; textColor: string }
+> = {
 	pending: {
 		icon: <Clock className='w-5 h-5' />,
 		bgColor: 'bg-yellow-50',
@@ -81,9 +95,14 @@ const MyTicketDisplay = (): React.ReactElement => {
 				is_fursuit_staff: isFursuitStaff,
 			})
 			setShowBadgeForm(false)
-			toast.success(t('badgeUpdatedSuccess') || 'Badge details updated successfully!')
+			toast.success(
+				t('badgeUpdatedSuccess') || 'Badge details updated successfully!'
+			)
 		} catch {
-			toast.error(t('badgeUpdateError') || 'Failed to update badge details. Please try again.')
+			toast.error(
+				t('badgeUpdateError') ||
+					'Failed to update badge details. Please try again.'
+			)
 		}
 	}
 
@@ -91,17 +110,23 @@ const MyTicketDisplay = (): React.ReactElement => {
 		setShowCancelDialog(false)
 		try {
 			await cancelTicketMutation.mutateAsync()
-			toast.success(t('ticketCancelledSuccess') || 'Ticket cancelled successfully!')
+			toast.success(
+				t('ticketCancelledSuccess') || 'Ticket cancelled successfully!'
+			)
 			router.push('/ticket')
 		} catch {
-			toast.error(t('ticketCancelError') || 'Failed to cancel ticket. Please try again.')
+			toast.error(
+				t('ticketCancelError') || 'Failed to cancel ticket. Please try again.'
+			)
 		}
 	}
 
 	// Show error toast when error occurs
 	useEffect(() => {
 		if (error) {
-			toast.error(t('couldNotLoadTicket') || 'Could not load ticket information')
+			toast.error(
+				t('couldNotLoadTicket') || 'Could not load ticket information'
+			)
 		}
 	}, [error, t])
 
@@ -136,7 +161,9 @@ const MyTicketDisplay = (): React.ReactElement => {
 			<div className='p-6 bg-[#e2eee2] rounded-xl border-2 border-[#548780]'>
 				<div className='text-center'>
 					<AlertCircle className='w-12 h-12 text-[#48715b] mx-auto mb-4' />
-					<h3 className='text-lg font-semibold text-[#154c5b] mb-2'>{t('noTicket')}</h3>
+					<h3 className='text-lg font-semibold text-[#154c5b] mb-2'>
+						{t('noTicket')}
+					</h3>
 					<p className='text-[#48715b] mb-4'>{t('noTicketDesc')}</p>
 					<button
 						onClick={() => router.push('/ticket')}
@@ -156,13 +183,19 @@ const MyTicketDisplay = (): React.ReactElement => {
 		<div className='bg-[#e2eee2] rounded-xl border-2 border-[#548780] overflow-hidden'>
 			{/* Header */}
 			<div className='bg-[#548780] px-6 py-4'>
-				<h3 className='text-xl font-bold text-white josefin'>{t('ticketInfo')}</h3>
+				<h3 className='text-xl font-bold text-white josefin'>
+					{t('ticketInfo')}
+				</h3>
 			</div>
 
 			{/* Status Banner */}
-			<div className={`px-6 py-3 ${statusConfig.bgColor} flex items-center gap-2`}>
+			<div
+				className={`px-6 py-3 ${statusConfig.bgColor} flex items-center gap-2`}
+			>
 				<span className={statusConfig.textColor}>{statusConfig.icon}</span>
-				<span className={`font-semibold ${statusConfig.textColor}`}>{getStatusLabel(ticket.status)}</span>
+				<span className={`font-semibold ${statusConfig.textColor}`}>
+					{getStatusLabel(ticket.status)}
+				</span>
 			</div>
 
 			<div className='p-6'>
@@ -170,16 +203,22 @@ const MyTicketDisplay = (): React.ReactElement => {
 				<div className='grid grid-cols-2 gap-4 mb-6'>
 					<div>
 						<p className='text-sm text-[#48715b]'>{t('referenceCode')}</p>
-						<p className='font-mono font-bold text-[#154c5b] text-lg'>{ticket.reference_code}</p>
+						<p className='font-mono font-bold text-[#154c5b] text-lg'>
+							{ticket.reference_code}
+						</p>
 					</div>
 					<div>
 						<p className='text-sm text-[#48715b]'>{t('ticketType')}</p>
-						<p className='font-semibold text-[#154c5b]'>{tier?.ticket_name || 'N/A'}</p>
+						<p className='font-semibold text-[#154c5b]'>
+							{tier?.ticket_name || 'N/A'}
+						</p>
 					</div>
 					{tier && (
 						<div>
 							<p className='text-sm text-[#48715b]'>{t('ticketPrice')}</p>
-							<p className='font-semibold text-[#154c5b]'>{formatPrice(tier.price)} VND</p>
+							<p className='font-semibold text-[#154c5b]'>
+								{formatPrice(tier.price)} VND
+							</p>
 						</div>
 					)}
 					<div>
@@ -206,7 +245,9 @@ const MyTicketDisplay = (): React.ReactElement => {
 								disabled={cancelTicketMutation.isPending}
 								className='px-4 py-2 border-2 border-red-500 text-red-600 rounded-lg hover:bg-red-50 font-semibold disabled:opacity-50'
 							>
-								{cancelTicketMutation.isPending ? tCommon('processing') : tCommon('cancel')}
+								{cancelTicketMutation.isPending
+									? tCommon('processing')
+									: tCommon('cancel')}
 							</button>
 						</div>
 					</div>
@@ -215,13 +256,17 @@ const MyTicketDisplay = (): React.ReactElement => {
 				{ticket.status === 'self_confirmed' && (
 					<div className='bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4'>
 						<p className='text-blue-800 text-sm'>{t('paymentReceived')}</p>
-						<p className='text-blue-600 text-xs mt-2'>{t('verificationTime')}</p>
+						<p className='text-blue-600 text-xs mt-2'>
+							{t('verificationTime')}
+						</p>
 						<button
 							onClick={() => setShowCancelDialog(true)}
 							disabled={cancelTicketMutation.isPending}
 							className='mt-3 w-full px-4 py-2 border-2 border-red-500 text-red-600 rounded-lg hover:bg-red-50 font-semibold disabled:opacity-50'
 						>
-							{cancelTicketMutation.isPending ? tCommon('processing') : tCommon('cancel')}
+							{cancelTicketMutation.isPending
+								? tCommon('processing')
+								: tCommon('cancel')}
 						</button>
 					</div>
 				)}
@@ -247,31 +292,46 @@ const MyTicketDisplay = (): React.ReactElement => {
 				{ticket.status === 'approved' && (
 					<>
 						<div className='border-t border-[#548780] pt-4 mt-4'>
-							<h4 className='font-semibold text-[#154c5b] mb-4'>{t('badgeInfo')}</h4>
+							<h4 className='font-semibold text-[#154c5b] mb-4'>
+								{t('badgeInfo')}
+							</h4>
 
 							{ticket.con_badge_name ? (
 								<div className='flex gap-4'>
 									{ticket.badge_image && (
 										<div className='w-24 h-24 relative rounded-lg overflow-hidden border-2 border-[#548780]'>
-											<Image src={ticket.badge_image} alt='Badge' fill className='object-cover' />
+											<Image
+												src={ticket.badge_image}
+												alt='Badge'
+												fill
+												className='object-cover'
+											/>
 										</div>
 									)}
 									<div className='flex-1'>
 										<div className='mb-2'>
 											<p className='text-sm text-[#48715b]'>{t('badgeName')}</p>
-											<p className='font-semibold text-[#154c5b]'>{ticket.con_badge_name}</p>
+											<p className='font-semibold text-[#154c5b]'>
+												{ticket.con_badge_name}
+											</p>
 										</div>
 										<div className='flex gap-4'>
 											<div>
-												<p className='text-sm text-[#48715b]'>{t('fursuiter')}</p>
+												<p className='text-sm text-[#48715b]'>
+													{t('fursuiter')}
+												</p>
 												<p className='font-medium text-[#154c5b]'>
 													{ticket.is_fursuiter ? tCommon('yes') : tCommon('no')}
 												</p>
 											</div>
 											<div>
-												<p className='text-sm text-[#48715b]'>{t('fursuitStaff')}</p>
+												<p className='text-sm text-[#48715b]'>
+													{t('fursuitStaff')}
+												</p>
 												<p className='font-medium text-[#154c5b]'>
-													{ticket.is_fursuit_staff ? tCommon('yes') : tCommon('no')}
+													{ticket.is_fursuit_staff
+														? tCommon('yes')
+														: tCommon('no')}
 												</p>
 											</div>
 										</div>
@@ -281,7 +341,9 @@ const MyTicketDisplay = (): React.ReactElement => {
 								<>
 									{!showBadgeForm ? (
 										<div className='bg-[#d2ddd2] rounded-lg p-4'>
-											<p className='text-[#48715b] text-sm mb-3'>{t('noBadgeYet')}</p>
+											<p className='text-[#48715b] text-sm mb-3'>
+												{t('noBadgeYet')}
+											</p>
 											<button
 												onClick={() => setShowBadgeForm(true)}
 												className='px-4 py-2 bg-[#7cbc97] text-white rounded-lg hover:bg-[#6aab85] font-semibold'
@@ -294,7 +356,8 @@ const MyTicketDisplay = (): React.ReactElement => {
 											<div className='space-y-4'>
 												<div>
 													<label className='block text-sm text-[#48715b] mb-1'>
-														{t('badgeName')} <span className='text-red-500'>*</span>
+														{t('badgeName')}{' '}
+														<span className='text-red-500'>*</span>
 													</label>
 													<input
 														type='text'
@@ -312,16 +375,22 @@ const MyTicketDisplay = (): React.ReactElement => {
 															onChange={e => setIsFursuiter(e.target.checked)}
 															className='w-4 h-4 accent-[#7cbc97]'
 														/>
-														<span className='text-[#154c5b]'>{t('iAmFursuiter')}</span>
+														<span className='text-[#154c5b]'>
+															{t('iAmFursuiter')}
+														</span>
 													</label>
 													<label className='flex items-center gap-2 cursor-pointer'>
 														<input
 															type='checkbox'
 															checked={isFursuitStaff}
-															onChange={e => setIsFursuitStaff(e.target.checked)}
+															onChange={e =>
+																setIsFursuitStaff(e.target.checked)
+															}
 															className='w-4 h-4 accent-[#7cbc97]'
 														/>
-														<span className='text-[#154c5b]'>{t('fursuitStaff')}</span>
+														<span className='text-[#154c5b]'>
+															{t('fursuitStaff')}
+														</span>
 													</label>
 												</div>
 												<div className='flex gap-3'>
@@ -333,7 +402,9 @@ const MyTicketDisplay = (): React.ReactElement => {
 													</button>
 													<button
 														onClick={handleUpdateBadge}
-														disabled={!badgeName.trim() || updateBadgeMutation.isPending}
+														disabled={
+															!badgeName.trim() || updateBadgeMutation.isPending
+														}
 														className='px-4 py-2 bg-[#7cbc97] text-white rounded-lg hover:bg-[#6aab85] disabled:bg-gray-300 disabled:cursor-not-allowed'
 													>
 														{updateBadgeMutation.isPending
@@ -347,7 +418,6 @@ const MyTicketDisplay = (): React.ReactElement => {
 								</>
 							)}
 						</div>
-
 					</>
 				)}
 
@@ -377,9 +447,12 @@ const MyTicketDisplay = (): React.ReactElement => {
 			{showCancelDialog && (
 				<div className='fixed inset-0 z-50 flex items-center justify-center bg-black/50'>
 					<div className='bg-white rounded-xl p-6 max-w-md mx-4 shadow-2xl'>
-						<h3 className='text-xl font-semibold text-[#154c5b] mb-4'>{t('confirmCancelTicket')}</h3>
+						<h3 className='text-xl font-semibold text-[#154c5b] mb-4'>
+							{t('confirmCancelTicket')}
+						</h3>
 						<p className='text-[#48715b] mb-6'>
-							{t('confirmCancelTicketDesc') || 'Bạn có chắc chắn muốn hủy vé này không? Số lượng vé sẽ được hoàn lại và bạn có thể mua vé mới.'}
+							{t('confirmCancelTicketDesc') ||
+								'Bạn có chắc chắn muốn hủy vé này không? Số lượng vé sẽ được hoàn lại và bạn có thể mua vé mới.'}
 						</p>
 						<div className='flex gap-3'>
 							<button
@@ -394,7 +467,9 @@ const MyTicketDisplay = (): React.ReactElement => {
 								disabled={cancelTicketMutation.isPending}
 								className='flex-1 py-2 px-4 rounded-lg bg-red-500 text-white hover:bg-red-600 disabled:opacity-50'
 							>
-								{cancelTicketMutation.isPending ? tCommon('processing') : t('confirmCancel') || 'Xác nhận hủy'}
+								{cancelTicketMutation.isPending
+									? tCommon('processing')
+									: t('confirmCancel') || 'Xác nhận hủy'}
 							</button>
 						</div>
 					</div>

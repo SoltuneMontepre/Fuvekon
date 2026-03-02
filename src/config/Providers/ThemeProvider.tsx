@@ -36,48 +36,12 @@ export default function ThemeProvider({ children }: ThemeProviderProps) {
 
 	// Get the theme preference from store
 	const theme = useStore(storeRef.current, state => state.theme)
-	const setPrefersReducedMotion = useStore(
-		storeRef.current,
-		state => state.setPrefersReducedMotion
-	)
+
 	const [resolvedTheme, setResolvedTheme] = useState<'light' | 'dark'>('light')
 
 	// Resolve theme (handle 'system' preference)
 	useEffect(() => {
 		setResolvedTheme(getResolvedTheme(theme))
-	}, [theme])
-
-	// Detect prefers-reduced-motion and sync with store
-	useEffect(() => {
-		const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
-		setPrefersReducedMotion(mediaQuery.matches)
-
-		const handleChange = (e: MediaQueryListEvent) => {
-			setPrefersReducedMotion(e.matches)
-		}
-
-		mediaQuery.addEventListener('change', handleChange)
-
-		return () => {
-			mediaQuery.removeEventListener('change', handleChange)
-		}
-	}, [setPrefersReducedMotion])
-
-	// Listen for system theme changes when theme is 'system'
-	useEffect(() => {
-		if (theme !== 'system') return
-
-		const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
-
-		const handleChange = (e: MediaQueryListEvent) => {
-			setResolvedTheme(e.matches ? 'dark' : 'light')
-		}
-
-		mediaQuery.addEventListener('change', handleChange)
-
-		return () => {
-			mediaQuery.removeEventListener('change', handleChange)
-		}
 	}, [theme])
 
 	// Apply resolved theme to document

@@ -134,7 +134,7 @@
 		"nickname": "昵称",
 		"country": "国家",
 		"phone": "电话",
-			"idCard": "护照/身份证",
+		"idCard": "护照/身份证",
 		"selectCountry": "选择国家",
 		"confirmPassword": "确认密码",
 		"registerTitle": "注册账户",
@@ -529,10 +529,38 @@
 	},
 	"landing": {
 		"suggestion": "向下滚动查看更多！",
+		"info": {
+			"year": "2026",
+			"day": "25",
+			"month": "四月",
+			"time": "上午10:00 – 下午8:00",
+			"timeDetail": "上午10:00开放入场，下午8:00活动结束。",
+			"venue": "场地名称",
+			"address": "活动街道123号，城市，国家"
+		},
+		"artbook": {
+			"title": "CONBOOK",
+			"description": "Conbook 是为参会者准备的指南汇编，同时收录社区创作者的艺术作品，充满个人风格和活动精神。如果您热爱艺术并想为活动贡献创意，就把您的作品发送到 FUVE，加入 conbook 吧！",
+			"buttonLabel": "参与指南",
+			"buttonHref": "/contributes/artbook"
+		},
+		"dealer": {
+			"title": "DEALER’S DEN",
+			"description": "Dealer’s Den 是为 furry 社区艺术家和创作者准备的市集区域，您可以在这里探索并购买独特的商品。如果您是艺术家或创作者，有产品想要介绍给社区并与参会者直接交流，不妨注册一个 Dealer’s Den 展位，成为活动的一部分！",
+			"buttonLabel": "注册展位",
+			"buttonHref": "/contributes/dealer"
+		},
+		"talent": {
+			"title": "TALENT SHOW",
+			"description": "Talent Show 是一个舞台节目，您可以自由展示才华和个性——从演唱、舞蹈、乐器表演、戏剧到其他创意节目。FUVE 支持每个人闪耀，分享热情，并向社区传播正能量。",
+			"buttonLabel": "报名表演",
+			"buttonHref": "/contributes/talent"
+		},
 		"theme": {
 			"theme": "主题",
-			"title": "活动主题",
-			"description": "探索今年 Fuvekon 迷人的主题，幻想与现实在创意和想象的庆典中交汇。"
+			"title": "田野之风",
+			"description_1": "灵感源自带来熟悉越南乡村气息的阵阵微风。",
+			"description_2": "在2026年，跟随Lang一起造访Gió Đồng——人间最热闹的兽人乡会！FUVE将为你呈现充满越南灵魂的空间，让你沉浸于现实与梦境交织之地。一场欢乐到忘返的盛会正在这座村亭之下等待你的到来！"
 		}
 	}
 }

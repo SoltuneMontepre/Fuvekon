@@ -3,11 +3,11 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
+import { Pencil, ChevronDown } from 'lucide-react'
 import { useAuthStore } from '@/stores/authStore'
 import { useUpdateMe, useUpdateAvatar } from '@/hooks/services/auth/useAccount'
-import ImageUploader from '@/components/common/ImageUploader'
-import S3Image from '@/components/common/S3Image'
 import { getNames, getCode, getName } from 'country-list'
+import UserAvatar from '@/components/common/UserAvatar'
 
 const COUNTRY_NAMES = () => getNames()
 
@@ -26,33 +26,34 @@ const InfoField = ({
 	onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
 	emptyLabel?: string
 }) => {
-	const hasValue = (value || '').trim().length > 0
 	if (editable && name) {
 		return (
-			<div className='relative w-full'>
-				<input
-					type='text'
-					id={`${name}-input`}
-					name={name}
-					value={value || ''}
-					onChange={onChange}
-					className='block w-full px-3 py-2 rounded-xl bg-[#E2EEE2] border border-[#8C8C8C]/30 text-[#8C8C8C] text-lg sm:text-xl font-normal placeholder-transparent focus:outline-none focus:border-[#48715B] focus:ring-0 shadow-none peer'
-					placeholder={label}
-				/>
+			<div className='space-y-0.5 px-3 py-2 rounded-xl bg-[#E2EEE2] border border-[#8C8C8C]/30 focus-within:border-[#48715B] transition-colors duration-200 cursor-text'>
 				<label
 					htmlFor={`${name}-input`}
-					className={`absolute left-3 top-2.5 sm:top-3 text-lg sm:text-xl font-normal text-[#8C8C8C]/70  px-1 transition-all duration-200 pointer-events-none ${hasValue ? 'scale-70 -translate-y-8 sm:-translate-y-9' : 'peer-focus:scale-70 peer-focus:-translate-y-8 sm:peer-focus:-translate-y-9'}`}
-					style={{ transformOrigin: 'left' }}
+					className='text-sm font-medium text-[#48715B] pointer-events-none'
 				>
-					{label}:
+					{label}
 				</label>
+				<div className='flex items-center gap-2'>
+					<input
+						type='text'
+						id={`${name}-input`}
+						name={name}
+						value={value || ''}
+						onChange={onChange}
+						className='block w-full bg-transparent text-lg text-text-secondary font-normal placeholder-[#8C8C8C]/40 focus:outline-none'
+						placeholder={label}
+					/>
+					<Pencil className='w-3.5 h-3.5 text-[#8C8C8C]/50 flex-shrink-0' />
+				</div>
 			</div>
 		)
 	}
 	return (
-		<div className='space-y-1'>
-			<label className='text-lg font-medium text-[#48715B]'>{label}</label>
-			<div className='text-xl text-text-secondary'>{value || emptyLabel}</div>
+		<div className='space-y-0.5 px-3 py-2.5 rounded-xl bg-[#E2EEE2]/60 border border-[#8C8C8C]/15'>
+			<label className='text-sm font-medium text-[#48715B]'>{label}</label>
+			<div className='text-lg text-text-secondary'>{value || emptyLabel}</div>
 		</div>
 	)
 }
@@ -184,108 +185,74 @@ const AccountPage = () => {
 	}
 
 	return (
-		<div className='rounded-[30px] p-5 shadow-sm text-text-secondary'>
-			<h1 className='text-3xl font-bold mb-4 text-center'>{t('title')}</h1>
-
-			<div className='flex flex-col gap-5'>
-				{/* Avatar Section */}
-				<div className='flex-shrink-0'>
-					<label className='block text-xl font-medium text-[#48715B] mb-2'>
-						{t('avatarLabel')}
-					</label>
-					<div className='flex items-center gap-3'>
-						<div className='relative w-34 h-34 rounded-full overflow-hidden border-2 border-[#48715B]/30 bg-[#E2EEE2] flex-shrink-0'>
-							{account.avatar ? (
-								<S3Image
-									src={account.avatar}
-									alt={
-										account.fursona_name ||
-										account.first_name ||
-										t('avatarFallback')
-									}
-									fill
-									className='object-cover'
-								/>
-							) : (
-								<div className='w-full h-full flex items-center justify-center text-[#48715B] text-xl font-bold'>
-									{(
-										account.fursona_name ||
-										account.first_name ||
-										account.email?.charAt(0) ||
-										'U'
-									)
-										.charAt(0)
-										.toUpperCase()}
-								</div>
-							)}
-						</div>
-						<div className='flex-shrink-0'>
-							<ImageUploader
-								buttonText={t('chooseImage')}
-								initialImageUrl={account.avatar}
-								onUploadSuccess={handleAvatarUploadSuccess}
-								onRemove={handleAvatarRemove}
-								onUploadError={error => {
-									toast.error(t('uploadError', { message: error.message }))
-								}}
-								folder='user-uploads'
-								maxSizeMB={10}
-								showPreview={false}
-								disabled={updateAvatarMutation.isPending}
-								compressImage
-								accept='image/png,image/jpeg,image/jpg'
-								className='min-w-30'
-							/>
-						</div>
-					</div>
+		<div className='rounded-[30px] p-6 sm:p-10 shadow-sm text-text-secondary'>
+			{/* Profile header – avatar + display name */}
+			<div className='flex flex-col items-center gap-3 pb-6 border-b border-[#48715B]/15'>
+				<UserAvatar
+					account={account}
+					uploadable
+					onUploadSuccess={handleAvatarUploadSuccess}
+					onUploadError={error =>
+						toast.error(t('uploadError', { message: error.message }))
+					}
+					onRemove={handleAvatarRemove}
+				/>
+				<div className='text-center'>
+					<p className='text-xl font-semibold text-text-primary leading-tight'>
+						{account.fursona_name || fullName || account.email}
+					</p>
+					{(account.fursona_name || fullName) && (
+						<p className='text-sm text-[#8C8C8C] mt-1'>{account.email}</p>
+					)}
 				</div>
+			</div>
 
-				<form onSubmit={handleSubmit} className='flex-1 min-w-0'>
-					<div className='space-y-5'>
-						{isEditing ? (
-							<>
-								<div className='grid grid-cols-1 sm:grid-cols-2 gap-3'>
-									<InfoField
-										label={t('firstName')}
-										value={formData.first_name}
-										name='first_name'
-										editable={isEditing}
-										onChange={handleInputChange}
-										emptyLabel={t('na')}
-									/>
-									<InfoField
-										label={t('lastName')}
-										value={formData.last_name}
-										name='last_name'
-										editable={isEditing}
-										onChange={handleInputChange}
-										emptyLabel={t('na')}
-									/>
-								</div>
-								<div className='grid grid-cols-1 sm:grid-cols-2 gap-3'>
-									<InfoField
-										label={t('fursonaName')}
-										value={formData.fursona_name}
-										name='fursona_name'
-										editable={isEditing}
-										onChange={handleInputChange}
-										emptyLabel={t('na')}
-									/>
-									<InfoField
-										label={t('email')}
-										value={account.email}
-										emptyLabel={t('na')}
-									/>
-								</div>
-								<div className='grid grid-cols-1 sm:grid-cols-2 gap-3'>
-									<div className='relative w-full'>
-										<label
-											htmlFor='country-select'
-											className='absolute left-3 top-2.5 sm:top-3 text-lg sm:text-xl font-normal text-[#8C8C8C]/70 bg-[#E2EEE2] px-1 transition-all duration-200 pointer-events-none scale-70 -translate-y-8 sm:-translate-y-9'
-											style={{ transformOrigin: 'left' }}
-										>
-											{t('country')}:
-										</label>
+			<form onSubmit={handleSubmit} className='mt-6'>
+				<div className='space-y-4'>
+					{isEditing ? (
+						<>
+							<div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
+								<InfoField
+									label={t('firstName')}
+									value={formData.first_name}
+									name='first_name'
+									editable={isEditing}
+									onChange={handleInputChange}
+									emptyLabel={t('na')}
+								/>
+								<InfoField
+									label={t('lastName')}
+									value={formData.last_name}
+									name='last_name'
+									editable={isEditing}
+									onChange={handleInputChange}
+									emptyLabel={t('na')}
+								/>
+							</div>
+							<div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
+								<InfoField
+									label={t('fursonaName')}
+									value={formData.fursona_name}
+									name='fursona_name'
+									editable={isEditing}
+									onChange={handleInputChange}
+									emptyLabel={t('na')}
+								/>
+								<InfoField
+									label={t('email')}
+									value={account.email}
+									emptyLabel={t('na')}
+								/>
+							</div>
+							<div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
+								<div className='space-y-0.5 px-3 py-2 rounded-xl bg-[#E2EEE2] border border-[#8C8C8C]/30 focus-within:border-[#48715B] transition-colors duration-200'>
+									<label
+										htmlFor='country-select'
+										className='text-sm font-medium text-[#48715B] pointer-events-none'
+									>
+										{t('country')}
+									</label>
+									<div className='flex items-center gap-2'>
 										<select
 											id='country-select'
 											value={getName(formData.country)}
@@ -295,7 +262,7 @@ const AccountPage = () => {
 													country: e.target.value,
 												}))
 											}
-											className='block w-full px-3 py-2.5 sm:py-3 rounded-xl bg-[#E2EEE2] border border-[#8C8C8C]/30 text-[#8C8C8C] text-lg sm:text-xl font-normal focus:outline-none focus:border-[#48715B] focus:ring-0 shadow-none appearance-none cursor-pointer'
+											className='block w-full bg-transparent text-lg text-text-secondary font-normal focus:outline-none appearance-none cursor-pointer'
 										>
 											<option value='' disabled>
 												{t('selectCountry')}
@@ -312,91 +279,92 @@ const AccountPage = () => {
 													</option>
 												)}
 										</select>
+										<ChevronDown className='w-3.5 h-3.5 text-[#8C8C8C]/50 flex-shrink-0 pointer-events-none' />
 									</div>
-									<InfoField
-										label={t('idCard')}
-										value={formData.id_card}
-										name='id_card'
-										editable={isEditing}
-										onChange={handleInputChange}
-										emptyLabel={t('na')}
-									/>
 								</div>
-							</>
-						) : (
-							<div className='grid grid-cols-1 sm:grid-cols-2 gap-3'>
-								<InfoField
-									label={t('fullName')}
-									value={fullName}
-									emptyLabel={t('na')}
-								/>
-								<InfoField
-									label={t('fursonaName')}
-									value={account.fursona_name}
-									emptyLabel={t('na')}
-								/>
-								<InfoField
-									label={t('email')}
-									value={account.email}
-									emptyLabel={t('na')}
-								/>
-								<InfoField
-									label={t('country')}
-									value={getName(account.country || '')}
-									emptyLabel={t('na')}
-								/>
 								<InfoField
 									label={t('idCard')}
-									value={account.id_card}
+									value={formData.id_card}
+									name='id_card'
+									editable={isEditing}
+									onChange={handleInputChange}
 									emptyLabel={t('na')}
 								/>
 							</div>
-						)}
-					</div>
+						</>
+					) : (
+						<div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
+							<InfoField
+								label={t('fullName')}
+								value={fullName}
+								emptyLabel={t('na')}
+							/>
+							<InfoField
+								label={t('fursonaName')}
+								value={account.fursona_name}
+								emptyLabel={t('na')}
+							/>
+							<InfoField
+								label={t('email')}
+								value={account.email}
+								emptyLabel={t('na')}
+							/>
+							<InfoField
+								label={t('country')}
+								value={getName(account.country || '')}
+								emptyLabel={t('na')}
+							/>
+							<InfoField
+								label={t('idCard')}
+								value={account.id_card}
+								emptyLabel={t('na')}
+							/>
+						</div>
+					)}
+				</div>
 
-					{/* Edit / Save actions */}
-					<div className='mt-4 pt-4 border-t border-[#48715B]/20'>
-						{!isEditing ? (
+				{/* Edit / Save actions */}
+				<div className='mt-6 pt-5 border-t border-[#48715B]/15'>
+					{!isEditing ? (
+						<button
+							type='button'
+							onClick={() => {
+								setFormData({
+									first_name: account.first_name || '',
+									last_name: account.last_name || '',
+									fursona_name: account.fursona_name || '',
+									country: account.country || '',
+									id_card: account.id_card || '',
+								})
+								setIsEditing(true)
+							}}
+							className='shadow-md w-full py-2.5 px-4 text-xl rounded-xl btn-primary font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-dark-surface'
+						>
+							{t('editInfo')}
+						</button>
+					) : (
+						<div className='flex gap-3'>
+							<button
+								type='submit'
+								disabled={updateMeMutation.isPending}
+								className='shadow-md flex-1 py-2.5 px-4 text-xl rounded-xl btn-primary font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-dark-surface disabled:opacity-50 disabled:cursor-not-allowed'
+							>
+								{updateMeMutation.isPending
+									? tCommon('saving')
+									: t('saveChanges')}
+							</button>
 							<button
 								type='button'
-								onClick={() => {
-									setFormData({
-										first_name: account.first_name || '',
-										last_name: account.last_name || '',
-										fursona_name: account.fursona_name || '',
-										country: account.country || '',
-										id_card: account.id_card || '',
-									})
-									setIsEditing(true)
-								}}
-								className='shadow-md w-full py-2 px-3 text-xl rounded-lg bg-bg text-text-secondary font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-dark-surface'
+								onClick={handleCancel}
+								disabled={updateMeMutation.isPending}
+								className='shadow-md flex-1 py-2.5 px-4 text-xl rounded-xl btn-primary font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 dark:focus:ring-offset-dark-surface disabled:opacity-50 disabled:cursor-not-allowed'
 							>
-								{t('editInfo')}
+								{tCommon('cancel')}
 							</button>
-						) : (
-							<div className='flex gap-3'>
-								<button
-									type='submit'
-									disabled={updateMeMutation.isPending}
-									className='shadow-md flex-1 py-2 px-3 text-xl rounded-lg bg-bg text-text-secondary font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-dark-surface disabled:opacity-50 disabled:cursor-not-allowed'
-								>
-									{updateMeMutation.isPending
-										? tCommon('saving')
-										: t('saveChanges')}
-								</button>
-								<button
-									type='button'
-									onClick={handleCancel}
-									disabled={updateMeMutation.isPending}
-									className='shadow-md flex-1 py-2 px-3 text-xl rounded-lg bg-bg text-text-secondary font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 dark:focus:ring-offset-dark-surface disabled:opacity-50 disabled:cursor-not-allowed'
-								>
-									{tCommon('cancel')}
-								</button>
-							</div>
-						)}
-					</div>
-				</form>
-			</div>
+						</div>
+					)}
+				</div>
+			</form>
 		</div>
 	)
 }

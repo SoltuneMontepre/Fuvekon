@@ -87,14 +87,18 @@ const ChangePasswordPage = () => {
 					} else {
 						const msg = response.errorMessage
 							? tAuth(response.errorMessage)
-							: (response.message || t('failed'))
+							: response.message || t('failed')
 						toast.error(msg)
 					}
 				},
 				onError: (error: unknown) => {
-					const err = error as { response?: { data?: { errorMessage?: string; message?: string } } }
+					const err = error as {
+						response?: { data?: { errorMessage?: string; message?: string } }
+					}
 					const errorMessage = err?.response?.data?.errorMessage
-					const message = errorMessage ? tAuth(errorMessage) : (err?.response?.data?.message || t('failedRetry'))
+					const message = errorMessage
+						? tAuth(errorMessage)
+						: err?.response?.data?.message || t('failedRetry')
 					toast.error(message)
 					if (errorMessage === 'currentPasswordIncorrect') {
 						setError('currentPassword', { type: 'manual', message })
@@ -109,7 +113,7 @@ const ChangePasswordPage = () => {
 	const inputError = 'border-red-500'
 
 	return (
-		<div className='rounded-[30px] p-8 shadow-sm text-text-secondary'>
+		<div className='rounded-[30px] px-10 py-12 shadow-sm text-text-secondary'>
 			<h1 className='text-3xl font-bold mb-8 text-center'>{t('title')}</h1>
 
 			<form
@@ -235,7 +239,7 @@ const ChangePasswordPage = () => {
 					<button
 						type='submit'
 						disabled={changePasswordMutation.isPending}
-						className='shadow-md w-full py-3 px-4 rounded-lg bg-bg text-text-secondary font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed'
+						className='shadow-md w-full py-3 px-4 btn-primary'
 					>
 						{changePasswordMutation.isPending
 							? t('submitting')
