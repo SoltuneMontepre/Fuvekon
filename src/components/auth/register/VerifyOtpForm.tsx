@@ -26,6 +26,9 @@ const VerifyOtpForm = (): React.ReactElement => {
 	const t = useTranslations('auth')
 	const [isSuccess, setIsSuccess] = useState(false)
 
+	// key used for temporarily holding the email between pages
+	const EMAIL_STORAGE_KEY = 'registrationEmail'
+
 	const getAuthErrorMessage = (
 		errorMessage?: string,
 		fallbackKey: string = 'verifyOtpFailed'
@@ -53,23 +56,36 @@ const VerifyOtpForm = (): React.ReactElement => {
 		reset,
 	} = useForm<VerifyOtpFormData>({
 		resolver: zodResolver(VerifyOtpSchema),
+		// initial values will be patched in effect because sessionStorage isn't available
 		defaultValues: {
-			email: safeSearchParams.get('email') ?? '',
+			email: '',
 			otp: '',
 		},
-	})
-
-	// collect field errors for speech bubble
-	const fieldErrors: Record<string, string | undefined> = {
-		email: errors.email?.message && t(errors.email.message as string),
-		otp: errors.otp?.message && t(errors.otp.message as string),
-	}
-
-
 	useEffect(() => {
 		const unlock = lockScroll()
 		return () => unlock()
 	}, [])
+
+	// populate email field from sessionStorage or URL, then clean up storage/URL
+	useEffect(() => {
+		if (typeof window === 'undefined') return
+
+		const paramEmail = safeSearchParams.get('email')
+		const storedEmail = window.sessionStorage.getItem(EMAIL_STORAGE_KEY)
+
+		if (paramEmail) {
+			control.setValue('email', paramEmail)
+			// also cache it so we can navigate without leaking later
+			window.sessionStorage.setItem(EMAIL_STORAGE_KEY, paramEmail)
+			// remove the parameter from the address bar to avoid leaking in history
+			router.replace('/register/verify-otp')
+		} else if (storedEmail) {
+			control.setValue('email', storedEmail)
+		} else {
+			// nothing to verify, send user back to registration
+			router.replace('/register')
+		}
+	}, [safeSearchParams, control, router])
 
 	// countdown timer for OTP expiry
 	useEffect(() => {
@@ -94,6 +110,10 @@ const VerifyOtpForm = (): React.ReactElement => {
 
 			setIsSuccess(true)
 			reset()
+			// clear the stored email once verification succeeds so it doesn't linger
+			if (typeof window !== 'undefined') {
+				window.sessionStorage.removeItem(EMAIL_STORAGE_KEY)
+			}
 			setTimeout(() => router.push('/login'), 2000)
 		} catch (err: unknown) {
 			if (err && typeof err === 'object' && 'response' in err) {

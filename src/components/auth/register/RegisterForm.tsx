@@ -143,8 +143,19 @@ const RegisterForm = (): React.ReactElement => {
 
 				// Redirect to OTP verification page after showing success message
 				setTimeout(() => {
-					router.push(`/register/verify-otp?email=${encodeURIComponent(formInput.email)}`)
-			}, 2000) // 2 second delay to show success message
+					// store the email temporarily in sessionStorage instead of exposing it in the URL.
+					try {
+						if (typeof window !== 'undefined') {
+							window.sessionStorage.setItem(
+								'registrationEmail',
+								formInput.email
+							)
+						}
+					} catch {
+						// storage may fail in very restricted environments; ignore silently
+					}
+					router.push('/register/verify-otp')
+				}, 2000) // 2 second delay to show success message
 		} catch (error: unknown) {
 			if (error && typeof error === 'object' && 'response' in error) {
 				const axiosError = error as {
