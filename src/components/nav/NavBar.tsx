@@ -3,7 +3,6 @@
 import React, { useEffect, useState } from 'react'
 import FuveIcon from '../common/FuveIcon'
 import NavButtons from './NavButtons'
-import Loading from '../common/Loading'
 import MobileMenu from './MobileMenu'
 import { useLinkStatus } from 'next/link'
 import { usePathname } from 'next/navigation'
@@ -19,25 +18,12 @@ const HIDE_LOGO_PREFIXES = ['/account', '/admin']
 const NavBar = (): React.ReactElement => {
 	const { pending } = useLinkStatus()
 	const pathname = usePathname()
-	const [isNavigating, setIsNavigating] = useState(false)
 	const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 	const isLoggedIn = useAuthStore(state => state.isAuthenticated)
 	const isLanding = pathname === '/'
 
 	const hideLogo = HIDE_LOGO_PREFIXES.some(p => pathname?.startsWith(p))
 	const path = usePathname()
-
-	useEffect(() => {
-		let timer: ReturnType<typeof setTimeout> | undefined
-		if (pending) {
-			timer = setTimeout(() => setIsNavigating(true), 120)
-		} else {
-			if (timer) clearTimeout(timer)
-			const closeTimer = setTimeout(() => setIsNavigating(false), 80)
-			return () => clearTimeout(closeTimer)
-		}
-		return () => timer && clearTimeout(timer)
-	}, [pending])
 
 	const visiblePaths = ['/ticket', '/']
 
@@ -47,7 +33,14 @@ const NavBar = (): React.ReactElement => {
 
 	return (
 		<>
-			{isNavigating && <Loading />}
+			{/* Instant top progress bar — shows on first paint of pending */}
+			<div
+				aria-hidden='true'
+				className={`fixed top-0 left-0 h-[3px] z-[9999] bg-[#48715B] transition-all duration-300 ease-out ${
+					pending ? 'w-3/4 opacity-100' : 'w-full opacity-0'
+				}`}
+				style={{ transitionProperty: 'width, opacity' }}
+			/>
 			<nav
 				role='navigation'
 				aria-label='Main Navigation'
@@ -62,7 +55,7 @@ const NavBar = (): React.ReactElement => {
 							) : null}
 						</div>
 
-						<div className='absolute h-full w-full bg-gradient-to-b from-black/90 to-transparent' />
+						<div className='absolute h-full w-full bg-gradient-to-b from-black/90 to-transparent pointer-events-none' />
 						<div className='grow pointer-events-none' />
 
 						<NavButtons className='josefin py-2 font-medium z-20 uppercase pointer-events-auto' />
@@ -71,10 +64,12 @@ const NavBar = (): React.ReactElement => {
 
 				<div className='grow pointer-events-none' />
 
-				<div className='flex z-30 items-center gap-2 justify-end pointer-events-auto'>
+				<div className='flex py-2 z-30 items-center gap-2 justify-end pointer-events-auto'>
 					<ReducedMotionToggle />
 					<div className='hidden md:flex'>
 						<LanguageSelector />
+					</div>
+					<div className='hidden md:flex'>
 						{isLoggedIn ? <ProfileButton /> : <LoginButton />}
 					</div>
 					<div className='md:hidden flex'>

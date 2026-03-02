@@ -1,7 +1,7 @@
 'use client'
 
 import { NavData, useNavDatas } from '@/config/nav'
-import Link from 'next/link'
+import Link, { useLinkStatus } from 'next/link'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 
 const NavButtons = ({
@@ -38,8 +38,19 @@ const NavButton = ({ button }: { button: NavData }) => {
 			prefetch={shouldPrefetch ? true : false}
 			onMouseEnter={() => setShouldPrefetch(true)}
 		>
-			{'\u00a0\u00a0\u00a0\u00a0' + button.label + '\u00a0\u00a0\u00a0\u00a0'}
+			<NavButtonInner label={button.label} />
 		</Link>
+	)
+}
+
+const NavButtonInner = ({ label }: { label: string }) => {
+	const { pending } = useLinkStatus()
+	return (
+		<span
+			className={`transition-opacity duration-150 ${pending ? 'opacity-50' : 'opacity-100'}`}
+		>
+			{'\u00a0\u00a0\u00a0\u00a0' + label + '\u00a0\u00a0\u00a0\u00a0'}
+		</span>
 	)
 }
 

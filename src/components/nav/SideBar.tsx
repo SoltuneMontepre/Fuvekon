@@ -79,7 +79,7 @@ const SideBar = ({
 		<aside
 			id='sidebar'
 			ref={sidebarRef}
-			className={`flex flex-col bg-main border-r-10 border-r-[154C5B] border-l-10 border-l-[154C5B] py-10  ${className}`}
+			className={`flex flex-col bg-bg border-r-10 border-r-[#154c5b] border-l-10 border-l-[#154c5b] py-10  ${className}`}
 			style={{
 				backgroundImage: 'url(/images/sidebar/sidebarBG.png)',
 				backgroundSize: 'cover',
@@ -104,12 +104,12 @@ const SideBar = ({
 				id='sidebar-nav'
 				className='sidebar-nav flex flex-col items-center justify-center w-full h-full py-6 space-y-3'
 			>
-				<div>
+				<Link href='/' className='mb-6'>
 					<FuveIconSVG />
-				</div>
+				</Link>
 
 				{sections.map((section, sectionIndex) => (
-					<div key={sectionIndex} className='sidebar-section space-y-1 '>
+					<div key={sectionIndex} className='sidebar-section space-y-4 '>
 						{section.items.map((item, itemIndex) => (
 							<SidebarItemComponent
 								key={itemIndex}

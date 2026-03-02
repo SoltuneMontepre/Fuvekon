@@ -6,8 +6,8 @@ import { validateAndDecodeKey } from '@/utils/validation/validateAndDecodeKey'
 import { getS3Client, getBucketName } from '@/utils/s3'
 import { ErrorCodes } from '@/common/errors'
 
-/** Signed GET URL expiry in seconds (short-lived; browser loads image immediately). */
-const SIGNED_GET_EXPIRES_IN = 60
+/** Signed GET URL expiry in seconds. Set to 5 minutes to allow time for redirect and requests. */
+const SIGNED_GET_EXPIRES_IN = 300
 
 export default async function handler(
 	req: NextApiRequest,
