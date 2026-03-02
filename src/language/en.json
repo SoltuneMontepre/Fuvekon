@@ -133,7 +133,7 @@
 		"fullName": "Full name",
 		"nickname": "Nickname",
 		"phone": "Phone",
-			"idCard": "Passport/Identification Card",
+		"idCard": "Passport/Identification Card",
 		"country": "Country",
 		"selectCountry": "Select country",
 		"confirmPassword": "Confirm password",
@@ -523,6 +523,15 @@
 	},
 	"landing": {
 		"suggestion": "Scroll down for more!",
+		"info": {
+			"year": "2026",
+			"day": "25",
+			"month": "April",
+			"time": "10:00 AM – 8:00 PM",
+			"timeDetail": "Doors open at 10:00 AM. Event ends at 8:00 PM.",
+			"venue": "Venue Name Placeholder",
+			"address": "123 Event Street, City, Country"
+		},
 		"artbook": {
 			"title": "CONBOOK",
 			"description": "Conbook is a compilation of guides for attendees and features artwork created by our community’s artists, brimming with personal style and event spirit. If you love art and want to contribute your creative energy to the event, send your work to FUVE and join the conbook!",

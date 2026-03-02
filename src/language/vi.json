@@ -134,7 +134,7 @@
 		"nickname": "Biệt danh",
 		"country": "Quốc gia",
 		"phone": "Số điện thoại",
-			"idCard": "CCCD/Chứng minh thư",
+		"idCard": "CCCD/Chứng minh thư",
 		"selectCountry": "Chọn quốc gia",
 		"confirmPassword": "Xác nhận mật khẩu",
 		"registerTitle": "Đăng ký tài khoản",
@@ -523,6 +523,15 @@
 	},
 	"landing": {
 		"suggestion": "Cuộn xuống để xem thêm!",
+		"info": {
+			"year": "2026",
+			"day": "25",
+			"month": "Tháng Tư",
+			"time": "10:00 – 20:00",
+			"timeDetail": "Mở cửa lúc 10:00. Kết thúc lúc 20:00.",
+			"venue": "Tên Địa Điểm",
+			"address": "123 Đường Sự Kiện, Thành Phố, Quốc Gia"
+		},
 		"artbook": {
 			"title": "CONBOOK",
 			"description": "Ccnbook là ấn phẩm tổng hợp các hướng dẫn cho người tham sự sự kiện và bao gồm cả các tác phẩm nghệ thuật do chính những nhà sáng tạo trong cộng đồng sáng tác, mang đậm màu sắc cá nhân và tinh thần của sự kiện. Nếu bạn yêu nghệ thuật và muốn đóng góp một phần tinh thần cho sự kiện thì hãy gửi ngay tác phẩm của bạn đến FUVE để tham gia nhé conbook nhé",

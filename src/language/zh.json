@@ -134,7 +134,7 @@
 		"nickname": "昵称",
 		"country": "国家",
 		"phone": "电话",
-			"idCard": "护照/身份证",
+		"idCard": "护照/身份证",
 		"selectCountry": "选择国家",
 		"confirmPassword": "确认密码",
 		"registerTitle": "注册账户",
@@ -523,6 +523,15 @@
 	},
 	"landing": {
 		"suggestion": "向下滚动查看更多！",
+		"info": {
+			"year": "2026",
+			"day": "25",
+			"month": "四月",
+			"time": "上午10:00 – 下午8:00",
+			"timeDetail": "上午10:00开放入场，下午8:00活动结束。",
+			"venue": "场地名称",
+			"address": "活动街道123号，城市，国家"
+		},
 		"artbook": {
 			"title": "CONBOOK",
 			"description": "Conbook 是为参会者准备的指南汇编，同时收录社区创作者的艺术作品，充满个人风格和活动精神。如果您热爱艺术并想为活动贡献创意，就把您的作品发送到 FUVE，加入 conbook 吧！",

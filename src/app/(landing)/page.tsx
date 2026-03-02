@@ -352,7 +352,7 @@ const LandingPage = (): React.JSX.Element => {
 			<HeroSection reducedMotion={prefersReducedMotion} />
 
 			{/* Infomation Section */}
-			<InfoSection />
+			<InfoSection prefersReducedMotion={prefersReducedMotion} />
 
 			{/* Introduction + Theme */}
 			<ThemeSection prefersReducedMotion={prefersReducedMotion} />
