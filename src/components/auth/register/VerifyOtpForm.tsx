@@ -99,6 +99,12 @@ const VerifyOtpForm = (): React.ReactElement => {
 		return () => clearInterval(timer)
 	}, [secondsLeft])
 
+	// collect field errors for speech bubble
+	const fieldErrors: Record<string, string | undefined> = {
+		email: errors.email?.message && t(errors.email.message as string),
+		otp: errors.otp?.message && t(errors.otp.message as string),
+	}
+
 	const onSubmit = async (data: VerifyOtpFormData) => {
 		try {
 			const requestData = mapVerifyOtpToApiRequest(data)
