@@ -141,9 +141,9 @@ const RegisterForm = (): React.ReactElement => {
 			// Clear sensitive data from memory
 			reset()
 
-			// Redirect to login after showing success message
-			setTimeout(() => {
-				router.push('/login')
+				// Redirect to OTP verification page after showing success message
+				setTimeout(() => {
+					router.push(`/register/verify-otp?email=${encodeURIComponent(formInput.email)}`)
 			}, 2000) // 2 second delay to show success message
 		} catch (error: unknown) {
 			if (error && typeof error === 'object' && 'response' in error) {
