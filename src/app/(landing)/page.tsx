@@ -15,6 +15,7 @@ import { useTranslations } from 'next-intl'
 import { useRouter } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
 import { ArrowUp } from 'lucide-react'
+import TicketSection from '@/components/landing/TicketSection'
 
 const LandingPage = (): React.JSX.Element => {
 	const router = useRouter()
@@ -294,7 +295,7 @@ const LandingPage = (): React.JSX.Element => {
 					invalidateOnRefresh: true,
 				},
 			})
-			.to('#feat-drum', { x: 0, scale: 1, autoAlpha: 1 }, 0)
+			.to('#feat-drum', { x: '-50vw', scale: 1, autoAlpha: 1 }, 0)
 			.to('#feat-drum-spinner', { rotation: 0, ease: 'none' }, 0)
 			.to('#feat-drum-line', { rotation: 0, ease: 'none' }, 0)
 
@@ -310,6 +311,42 @@ const LandingPage = (): React.JSX.Element => {
 			})
 			.to('#feat-drum-spinner', { rotation: 720, ease: 'none' }, 0)
 			.to('#feat-drum-line', { rotation: -720, ease: 'none' }, 0)
+
+		gsap
+			.timeline({
+				scrollTrigger: {
+					trigger: '#ticket-section',
+					start: 'top bottom',
+					end: 'top top',
+					scrub: 1.5,
+					invalidateOnRefresh: true,
+					onLeaveBack: () => {
+						gsap.killTweensOf(['#feat-drum-spinner', '#feat-drum-line'])
+					},
+					onEnter: () => {},
+					onScrubComplete: () => {
+						gsap.to('#feat-drum-spinner', {
+							rotation: '+=360',
+							duration: 8,
+							ease: 'linear',
+							repeat: -1,
+						})
+						gsap.to('#feat-drum-line', {
+							rotation: '-=360',
+							duration: 8,
+							ease: 'linear',
+							repeat: -1,
+						})
+					},
+				},
+			})
+			.to('#feat-drum', { x: '0vw', ease: 'none' }, 0)
+			.to(
+				'#feat-drum-spinner',
+				{ rotation: '+=720', scale: 1.5, autoAlpha: 0.7, ease: 'none' },
+				0
+			)
+			.to('#feat-drum-line', { rotation: '-=720', ease: 'none' }, 0)
 	}, [])
 
 	return (
@@ -382,7 +419,9 @@ const LandingPage = (): React.JSX.Element => {
 				/>
 			</div>
 
-			<div className='h-full fixed -translate-x-1/2 w-fit inset-0 overflow-hidden pointer-events-none'>
+			<TicketSection id='ticket-section' />
+
+			<div className='fixed inset-0 flex items-center justify-center pointer-events-none overflow-visible'>
 				<DrumImage id='feat-drum' className='' />
 			</div>
 		</div>
