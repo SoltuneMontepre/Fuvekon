@@ -54,7 +54,7 @@
 		"contributes": "Đóng góp",
 		"talent": "Tài năng",
 		"panel": "Hội thảo",
-		"volunteer": "Tình nguyện viên",
+		"volunteer": "Tình nguyện",
 		"artbook": "Artbook",
 		"dealer": "Gian hàng",
 		"registerDealer": "Đăng ký Dealer",
@@ -523,10 +523,29 @@
 	},
 	"landing": {
 		"suggestion": "Cuộn xuống để xem thêm!",
+		"artbook": {
+			"title": "CONBOOK",
+			"description": "Ccnbook là ấn phẩm tổng hợp các hướng dẫn cho người tham sự sự kiện và bao gồm cả các tác phẩm nghệ thuật do chính những nhà sáng tạo trong cộng đồng sáng tác, mang đậm màu sắc cá nhân và tinh thần của sự kiện. Nếu bạn yêu nghệ thuật và muốn đóng góp một phần tinh thần cho sự kiện thì hãy gửi ngay tác phẩm của bạn đến FUVE để tham gia nhé conbook nhé",
+			"buttonLabel": "Hướng dẫn tham gia",
+			"buttonHref": "/contributes/artbook"
+		},
+		"dealer": {
+			"title": "DEALER’S DEN",
+			"description": "Dealer Den là khu vực gian hàng dành cho các họa sĩ, nhà sáng tạo trong cộng đồng furry, nơi bạn có thể khám phá và mua sắm những sản phẩm độc đáo. Nếu bạn là họa sĩ hoặc nhà sáng tạo và có những sản phẩm muốn giới thiệu đến cộng đồng và kết nối trực tiếp với người tham gia, đừng ngần ngại đăng ký Dealer Den để trở thành một phần của sự kiện nhé!",
+			"buttonLabel": "Đăng ký gian hàng",
+			"buttonHref": "/contributes/dealer"
+		},
+		"talent": {
+			"title": "TALENT SHOW",
+			"description": "Talent Show là chương trình sân khấu nơi bạn có thể tự do thể hiện tài năng và cá tính của mình từ ca hát, nhảy múa, biểu diễn nhạc cụ, diễn xuất cho đến những tiết mục sáng tạo độc đáo khác. FUVE luôn ủng hộ cho tất cả mọi người tỏa sáng, chia sẻ đam mê và lan tỏa năng lượng tích cực đến cộng đồng.",
+			"buttonLabel": "Đăng ký biểu diễn",
+			"buttonHref": "/contributes/talent"
+		},
 		"theme": {
 			"theme": "Chủ đề",
-			"title": "Chủ đề sự kiện",
-			"description": "Khám phá chủ đề mê hoặc của Fuvekon năm nay, nơi thế giới tưởng tượng hòa quyện với hiện thực trong một lễ hội sáng tạo và trí tưởng tượng."
+			"title": "Gió Đồng",
+			"description_1": "Mang cảm hứng từ những cơn gió mang mùi hương thân quen của đồng quê Việt Nam.",
+			"description_2": "Năm 2026 này, hãy theo chân Lang ghé thăm Gió Đồng - hội làng thú nhân náo nức nhất trần gian! FUVE sẽ mang đến không gian thấm đẫm linh hồn hồn Việt, cho bạn cùng hòa mình vào chốn thực tại và mộng ảo đan cài. Một ngày hội vui quên lối về đang đợi bạn ngay dưới mái đình này!"
 		}
 	}
 }

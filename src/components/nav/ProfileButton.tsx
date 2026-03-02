@@ -18,9 +18,22 @@ const ProfileButton = (): React.ReactElement => {
 	const logoutMutation = useLogout()
 	const [isOpen, setIsOpen] = useState(false)
 	const [imageError, setImageError] = useState(false)
+	const [dropdownPos, setDropdownPos] = useState({ top: 0, right: 0 })
 	const dropdownRef = useRef<HTMLDivElement>(null)
+	const buttonRef = useRef<HTMLButtonElement>(null)
 
 	const isAccountRoute = pathname?.startsWith('/account')
+
+	const handleToggle = () => {
+		if (!isOpen && buttonRef.current) {
+			const rect = buttonRef.current.getBoundingClientRect()
+			setDropdownPos({
+				top: rect.bottom + 8,
+				right: window.innerWidth - rect.right,
+			})
+		}
+		setIsOpen(prev => !prev)
+	}
 
 	const handleLogout = async () => {
 		setIsOpen(false)
@@ -31,7 +44,12 @@ const ProfileButton = (): React.ReactElement => {
 	// Close dropdown when clicking outside
 	useEffect(() => {
 		const handleClickOutside = (event: MouseEvent) => {
-			if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+			if (
+				dropdownRef.current &&
+				!dropdownRef.current.contains(event.target as Node) &&
+				buttonRef.current &&
+				!buttonRef.current.contains(event.target as Node)
+			) {
 				setIsOpen(false)
 			}
 		}
@@ -40,24 +58,39 @@ const ProfileButton = (): React.ReactElement => {
 		return () => document.removeEventListener('mousedown', handleClickOutside)
 	}, [])
 
-	const displayName = account?.fursona_name || account?.first_name || account?.email?.split('@')[0] || 'User'
+	const displayName =
+		account?.fursona_name ||
+		account?.first_name ||
+		account?.email?.split('@')[0] ||
+		'User'
 	const showAvatar = account?.avatar && !imageError
 
 	const accountNavItems = [
 		{ label: tNav('account'), href: '/account', icon: UserCircle },
 		{ label: tNav('myTicket'), href: '/account/ticket', icon: Ticket },
-		{ label: tNav('changePassword'), href: '/account/change-password', icon: Lock },
+		{
+			label: tNav('changePassword'),
+			href: '/account/change-password',
+			icon: Lock,
+		},
 		...(account?.is_dealer
 			? [{ label: tNav('myDealerBooth'), href: '/account/dealer', icon: Store }]
 			: account?.is_has_ticket
-				? [{ label: tNav('registerDealer'), href: '/account/dealer/register', icon: Store }]
+				? [
+						{
+							label: tNav('registerDealer'),
+							href: '/account/dealer/register',
+							icon: Store,
+						},
+					]
 				: []),
 	]
 
 	return (
-		<div className='relative' ref={dropdownRef}>
+		<div>
 			<button
-				onClick={() => setIsOpen(!isOpen)}
+				ref={buttonRef}
+				onClick={handleToggle}
 				className='flex items-center gap-2 px-2 py-1 rounded-lg hover:bg-white/10 transition-colors duration-150'
 				aria-label='Profile menu'
 			>
@@ -79,9 +112,15 @@ const ProfileButton = (): React.ReactElement => {
 			</button>
 
 			{isOpen && (
-				<div className='absolute right-0 top-full mt-2 w-48 bg-white rounded-lg shadow-lg py-2 z-50'>
+				<div
+					ref={dropdownRef}
+					className='fixed w-48 bg-white rounded-lg shadow-lg py-2 z-[9999]'
+					style={{ top: dropdownPos.top, right: dropdownPos.right }}
+				>
 					<div className='px-4 py-2 border-b border-gray-100'>
-						<p className='text-sm font-medium text-[#154c5b] truncate'>{displayName}</p>
+						<p className='text-sm font-medium text-[#154c5b] truncate'>
+							{displayName}
+						</p>
 						<p className='text-xs text-gray-500 truncate'>{account?.email}</p>
 					</div>
 
@@ -89,7 +128,9 @@ const ProfileButton = (): React.ReactElement => {
 						<div className='md:hidden'>
 							{accountNavItems.map(item => {
 								const Icon = item.icon
-								const active = pathname === item.href || pathname?.startsWith(item.href + '/')
+								const active =
+									pathname === item.href ||
+									pathname?.startsWith(item.href + '/')
 								return (
 									<Link
 										key={item.href}

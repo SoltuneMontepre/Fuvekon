@@ -16,6 +16,7 @@ export const ALLOWED_MIME_TYPES = new Set([
 export const MAX_FILE_SIZE = 50 * 1024 * 1024
 export const CACHE_MAX_AGE = 31536000
 
+export const GOH_ENABLED = true
 export const GOH_DETAILS = {
 	first: {
 		name: 'name_is_here_1',

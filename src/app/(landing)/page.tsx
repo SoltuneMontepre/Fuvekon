@@ -2,27 +2,54 @@
 
 import gsap from '@/common/gsap'
 import DrumImage from '@/components/landing/DrumImage'
+import FeatSection from '@/components/landing/FeatSection'
 import GOHSection from '@/components/landing/GOHSection'
 import HeroSection from '@/components/landing/HeroSection'
 import InfoSection from '@/components/landing/InfoSection'
 import ThemeSection from '@/components/landing/ThemeSection'
+import { GOH_ENABLED } from '@/config/app'
 import { useThemeStore } from '@/config/Providers/ThemeProvider'
 import { useGSAP } from '@gsap/react'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { useTranslations } from 'next-intl'
 import { useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { ArrowUp } from 'lucide-react'
+import TicketSection from '@/components/landing/TicketSection'
 
 const LandingPage = (): React.JSX.Element => {
+	const router = useRouter()
 	const [isLoaded, setIsLoaded] = useState(false)
+	const [showBackToTop, setShowBackToTop] = useState(false)
+	const [gohActiveCharacter, setGohActiveCharacter] = useState<0 | 1 | 2>(0)
+	const gohStepRef = useRef<0 | 1 | 2>(0)
+	const t = useTranslations('landing')
+
 	const prefersReducedMotion = useThemeStore(
 		state => state.prefersReducedMotion
 	)
 
-	const router = useRouter()
-
 	useEffect(() => {
 		setIsLoaded(true)
 	}, [])
+
+	useEffect(() => {
+		const handleScroll = () => {
+			const firstSection = document.querySelector('.section')
+			if (firstSection) {
+				const firstSectionHeight = firstSection.getBoundingClientRect().bottom
+				setShowBackToTop(window.scrollY > firstSectionHeight)
+			}
+		}
+
+		window.addEventListener('scroll', handleScroll)
+		return () => window.removeEventListener('scroll', handleScroll)
+	}, [])
+
+	const scrollToTop = () => {
+		window.scrollTo({ top: 0, behavior: 'smooth' })
+	}
+
 	useEffect(() => {
 		if (typeof window === 'undefined') return
 		const hash = window.location.hash
@@ -38,82 +65,202 @@ const LandingPage = (): React.JSX.Element => {
 	}, [router])
 
 	useGSAP(() => {
+		const sections = gsap.utils.toArray<HTMLElement>('.section')
+
+		let isSnapping = false
+		let lastEventTime = 0
+		let touchStartY = 0
+		const COOLDOWN = 700 // ms — matches the snap timeout
+
+		const getCurrentIndex = () => {
+			const scrollY = window.scrollY
+			let closestIndex = 0
+			let closestDistance = Number.POSITIVE_INFINITY
+
+			sections.forEach((section, index) => {
+				const distance = Math.abs(scrollY - section.offsetTop)
+				if (distance < closestDistance) {
+					closestDistance = distance
+					closestIndex = index
+				}
+			})
+
+			return closestIndex
+		}
+
+		const scrollToIndex = (index: number, direction: number) => {
+			const target = sections[index]
+			if (!target) return
+			isSnapping = true
+			window.scrollTo({ top: target.offsetTop, behavior: 'smooth' })
+			if (target.id === 'goh-section') {
+				const step = direction < 0 ? 2 : 1
+				gohStepRef.current = step as 1 | 2
+				setGohActiveCharacter(step as 1 | 2)
+			} else {
+				gohStepRef.current = 0
+				setGohActiveCharacter(0)
+			}
+			window.setTimeout(() => {
+				isSnapping = false
+			}, 700)
+		}
+
+		const snapByDirection = (direction: number, now: number) => {
+			const currentIndex = getCurrentIndex()
+			const currentSection = sections[currentIndex]
+
+			// Intercept scrolls on the GOH section to step through characters
+			if (currentSection?.id === 'goh-section') {
+				if (direction > 0 && gohStepRef.current === 1) {
+					gohStepRef.current = 2
+					setGohActiveCharacter(2)
+					lastEventTime = now
+					return
+				}
+				if (direction < 0 && gohStepRef.current === 2) {
+					gohStepRef.current = 1
+					setGohActiveCharacter(1)
+					lastEventTime = now
+					return
+				}
+			}
+
+			const nextIndex = Math.min(
+				Math.max(currentIndex + direction, 0),
+				sections.length - 1
+			)
+
+			if (nextIndex !== currentIndex) {
+				scrollToIndex(nextIndex, direction)
+			}
+		}
+
+		const handleWheel = (event: WheelEvent) => {
+			if (!sections.length || event.deltaY === 0) return
+			event.preventDefault()
+
+			const now = Date.now()
+			if (isSnapping || now - lastEventTime < COOLDOWN) return
+			lastEventTime = now
+
+			const direction = event.deltaY > 0 ? 1 : -1
+			snapByDirection(direction, now)
+		}
+
+		const handleTouchStart = (event: TouchEvent) => {
+			touchStartY = event.touches[0].clientY
+		}
+
+		// Prevent native scroll so we own the vertical movement
+		const handleTouchMove = (event: TouchEvent) => {
+			event.preventDefault()
+		}
+
+		const handleTouchEnd = (event: TouchEvent) => {
+			if (!sections.length) return
+			const touchEndY = event.changedTouches[0].clientY
+			const deltaY = touchStartY - touchEndY // positive → swipe up → scroll down
+
+			// Ignore taps or very short drags
+			if (Math.abs(deltaY) < 30) return
+
+			const now = Date.now()
+			if (isSnapping || now - lastEventTime < COOLDOWN) return
+			lastEventTime = now
+
+			const direction = deltaY > 0 ? 1 : -1
+			snapByDirection(direction, now)
+		}
+
+		window.addEventListener('wheel', handleWheel, { passive: false })
+		window.addEventListener('touchstart', handleTouchStart, { passive: true })
+		window.addEventListener('touchmove', handleTouchMove, { passive: false })
+		window.addEventListener('touchend', handleTouchEnd, { passive: true })
+
+		return () => {
+			window.removeEventListener('wheel', handleWheel)
+			window.removeEventListener('touchstart', handleTouchStart)
+			window.removeEventListener('touchmove', handleTouchMove)
+			window.removeEventListener('touchend', handleTouchEnd)
+		}
+	})
+
+	useGSAP(() => {
 		if (prefersReducedMotion) {
-			// Disable animations for reduced motion
 			gsap.set('#background-container', { clearProps: 'all' })
-			gsap.set('#mascot', { clearProps: 'all' })
+			gsap.set('#mascot', { clearProps: 'autoAlpha' })
 			gsap.set('#theme-title', { clearProps: 'all' })
 			return
 		}
 
-		const sections = gsap.utils.toArray<HTMLElement>('.section')
-
-		sections.forEach(section => {
-			ScrollTrigger.create({
-				trigger: section,
-				start: 'top top',
-				end: 'bottom top',
-				snap: {
-					snapTo: 1,
-					duration: { min: 0.4, max: 1 },
-					ease: 'power2.inOut',
+		if (GOH_ENABLED) {
+			const tl = gsap.timeline({
+				scrollTrigger: {
+					trigger: '.theme-section',
+					start: 'top 80%',
+					endTrigger: '#goh-section',
+					end: 'top 20%',
+					scrub: true,
+					invalidateOnRefresh: true,
 				},
 			})
-		})
 
-		const tl = gsap.timeline({
-			scrollTrigger: {
-				trigger: '.theme-section',
-				start: 'top 80%',
-				endTrigger: '#goh-section',
-				end: 'top 20%',
-				scrub: true,
-				invalidateOnRefresh: true,
-			},
-		})
+			gsap.set('#background-container', {
+				willChange: 'transform',
+				force3D: true,
+			})
 
-		gsap.set('#background-container', {
-			willChange: 'transform',
-			force3D: true,
-		})
+			tl.to('#background-container', {
+				scale: 1.15,
+				x: '5%',
+				y: '2.5%',
+				ease: 'none',
+				force3D: true,
+				overwrite: 'auto',
+			}).to('#background-container', {
+				scale: 1,
+				x: 0,
+				y: 0,
+				ease: 'none',
+				force3D: true,
+				overwrite: 'auto',
+			})
 
-		tl.to('#background-container', {
-			scale: 1.15,
-			x: '5%',
-			y: '2.5%',
-			ease: 'none',
-			force3D: true,
-			overwrite: 'auto',
-		}).to('#background-container', {
-			scale: 1,
-			x: 0,
-			y: 0,
-			ease: 'none',
-			force3D: true,
-			overwrite: 'auto',
-		})
-
-		ScrollTrigger.create({
-			trigger: '#goh-section',
-			start: 'top 70%',
-			end: 'bottom top',
-			onEnter: () => {
-				gsap.to('#mascot', {
-					autoAlpha: 0,
-					duration: 0.3,
-					ease: 'power2.out',
-					force3D: true,
-				})
-			},
-			onLeaveBack: () => {
-				gsap.to('#mascot', {
-					autoAlpha: 1,
-					duration: 0.3,
-					ease: 'power2.out',
-					force3D: true,
-				})
-			},
-		})
+			ScrollTrigger.create({
+				trigger: '#goh-section',
+				start: 'top 70%',
+				end: 'bottom top',
+				onEnter: () => {
+					gsap.to('#mascot', {
+						autoAlpha: 0,
+						duration: 0.3,
+						ease: 'power2.out',
+						force3D: true,
+					})
+					gsap.to('#moon', {
+						autoAlpha: 0,
+						duration: 0.3,
+						ease: 'power2.out',
+						force3D: true,
+					})
+				},
+				onLeaveBack: () => {
+					gsap.to('#mascot', {
+						autoAlpha: 1,
+						duration: 0.3,
+						ease: 'power2.out',
+						force3D: true,
+					})
+					gsap.to('#moon', {
+						autoAlpha: 1,
+						duration: 0.3,
+						ease: 'power2.out',
+						force3D: true,
+					})
+				},
+			})
+		}
 
 		gsap
 			.timeline({
@@ -131,15 +278,78 @@ const LandingPage = (): React.JSX.Element => {
 				ease: 'linear',
 				force3D: true,
 			})
-	}, [prefersReducedMotion])
+	}, [])
+
+	useGSAP(() => {
+		gsap.set('#feat-drum', { x: '-110vw', scale: 0, autoAlpha: 0 })
+		gsap.set('#feat-drum-spinner', { rotation: -360 })
+		gsap.set('#feat-drum-line', { rotation: 360 })
+
+		gsap
+			.timeline({
+				scrollTrigger: {
+					trigger: '#feat-start',
+					start: 'top bottom',
+					end: 'top top',
+					scrub: 1.5,
+					invalidateOnRefresh: true,
+				},
+			})
+			.to('#feat-drum', { x: '-50vw', scale: 1, autoAlpha: 1 }, 0)
+			.to('#feat-drum-spinner', { rotation: 0, ease: 'none' }, 0)
+			.to('#feat-drum-line', { rotation: 0, ease: 'none' }, 0)
+
+		gsap
+			.timeline({
+				scrollTrigger: {
+					trigger: '#feat-sections',
+					start: 'top top',
+					end: 'bottom bottom',
+					scrub: 1.5,
+					invalidateOnRefresh: true,
+				},
+			})
+			.to('#feat-drum-spinner', { rotation: 720, ease: 'none' }, 0)
+			.to('#feat-drum-line', { rotation: -720, ease: 'none' }, 0)
+
+		gsap
+			.timeline({
+				scrollTrigger: {
+					trigger: '#ticket-section',
+					start: 'top bottom',
+					end: 'top top',
+					scrub: 1.5,
+					invalidateOnRefresh: true,
+				},
+			})
+			.to('#feat-drum', { x: '0vw', ease: 'none' }, 0)
+			.to(
+				'#feat-drum-spinner',
+				{ rotation: '+=720', scale: 1.5, autoAlpha: 0.7, ease: 'none' },
+				0
+			)
+			.to('#feat-drum-line', { rotation: '-=720', ease: 'none' }, 0)
+	}, [])
 
 	return (
 		<div
 			className='absolute inset-0 landing-container transition-opacity duration-500 ease-out'
 			style={{ opacity: isLoaded ? 1 : 0 }}
 		>
+			{/* Back to Top Button */}
+			{showBackToTop && (
+				<button
+					onClick={scrollToTop}
+					className='fixed bottom-8 right-8 z-50 w-11 h-11 flex items-center justify-center rounded-full bg-bg/80 backdrop-blur-sm border border-text-primary/15 text-text-secondary shadow-lg hover:shadow-xl hover:border-text-primary/30 hover:text-text-primary hover:-translate-y-1 active:scale-95 transition-all duration-300'
+					aria-label='Back to top'
+					title='Back to top'
+				>
+					<ArrowUp className='w-4 h-4' strokeWidth={2.5} />
+				</button>
+			)}
+
 			{/* Landing Section */}
-			<HeroSection />
+			<HeroSection reducedMotion={prefersReducedMotion} />
 
 			{/* Infomation Section */}
 			<InfoSection />
@@ -148,46 +358,53 @@ const LandingPage = (): React.JSX.Element => {
 			<ThemeSection prefersReducedMotion={prefersReducedMotion} />
 
 			{/* GOH */}
-			<GOHSection disable={prefersReducedMotion} />
+			{GOH_ENABLED && <GOHSection activeCharacter={gohActiveCharacter} />}
 
-			{/* ArtBook */}
-			<div
-				id='contribute-start'
-				className='h-dvh w-dvw pointer-events-none relative z-10 section'
-			>
-				<div className='h-full center text-black'> Info </div>
+			<div id='feat-sections'>
+				<FeatSection
+					id='feat-start'
+					title={t('artbook.title')}
+					description={t('artbook.description')}
+					buttonLabel={t('artbook.buttonLabel')}
+					buttonHref={t('artbook.buttonHref')}
+					images={[
+						'/images/artbook/badges.png',
+						'/images/artbook/badges.png',
+						'/images/artbook/badges.png',
+					]}
+				/>
+
+				{/* Dealer */}
+				<FeatSection
+					title={t('dealer.title')}
+					description={t('dealer.description')}
+					buttonLabel={t('dealer.buttonLabel')}
+					buttonHref={t('dealer.buttonHref')}
+					images={[
+						'/images/artbook/badges.png',
+						'/images/artbook/badges.png',
+						'/images/artbook/badges.png',
+					]}
+				/>
+
+				{/* Talent */}
+				<FeatSection
+					title={t('talent.title')}
+					description={t('talent.description')}
+					buttonLabel={t('talent.buttonLabel')}
+					buttonHref={t('talent.buttonHref')}
+					images={[
+						'/images/artbook/badges.png',
+						'/images/artbook/badges.png',
+						'/images/artbook/badges.png',
+					]}
+				/>
 			</div>
 
-			{/* Dealer */}
-			<div className='relative h-dvh w-full grid grid-cols-[30%_70%] z-10 section'>
-				<div className='h-full w-full flex items-center justify-end overflow-visible'>
-					<div>
-						<DrumImage id='drum' disable={prefersReducedMotion} isEnter />
-					</div>
-				</div>
-				<div className='h-full w-full pointer-events-auto flex flex-col items-start justify-center'>
-					<div className='flex flex-col w-full items-end justify-end pr-28 gap-8'>
-						<h2 className='text-6xl font-bold text-white tracking-wider'>
-							FUVE&apos;S ARTBOOK
-						</h2>
-						<p className='text-white/90 text-lg max-w-3xl text-right text-wrap'>
-							AKHJGKL HGDSFFHJGHGDSFFHJG JKDELJGDKFJGKHKJJSDFBJSD AB
-							BFJKSAHKJFCABSDFJ URBSDIUFHJSDIUFHJK SDAFHKJS ADHFJSDFKHJSDF
-							KBJSAK HJGKLHGDSFFHJGDJSF FHJGJKDFHJGDKF GKHK JSDFBJSDABFKJSAH
-							KJCAFJHSDIUFHJSDIUFH JSDIUFHJKSDAFH KJSADHFJSDFKHJ
-							SDFKDFJSDFKUFJSAKHJGKL HGDSFFHJG HGDSFFH JGJKDELJ GDKFJGKHKJJSD
-							FBJSDABBF JKSAHKJFCABSDFJURBSD IUFHJSDIUFHJKSDAFHKJSAD HFJSDFKHJS
-						</p>
-						<button className='px-8 py-3 bg-white text-black font-medium rounded-lg hover:bg-gray-100 transition-colors shadow-lg'>
-							Hướng dẫn tham gia
-						</button>
-					</div>
-				</div>
-			</div>
+			<TicketSection id='ticket-section' />
 
-			{/* Talent */}
-			<div className='h-dvh w-dvw pointer-events-none relative z-10 section'>
-				<div className='h-full center text-black'> Info </div>
+			<div className='fixed inset-0 flex items-center justify-center pointer-events-none overflow-visible'>
+				<DrumImage id='feat-drum' className='' />
 			</div>
 		</div>
 	)
