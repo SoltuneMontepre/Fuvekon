@@ -552,7 +552,15 @@
 		"artbook": {
 			"card": {
 				"imageAlt": "Artbook badges",
-				"title": "Artbook",
+				"labelTitle": "Title",
+				"placeholderTitle": "Enter your artwork title",
+				"placeholderDescription": "Enter your artwork description (max 500 characters)",
+				"placeholderHandle": "Your Social Handle (example: <Handle> - Twitter)",
+				"labelHandle": "Social Handle",
+				"labelDescription": "Description",
+				"righttitle": "Artbook",
+				"rightdescription": "Artbook is a compilation of guides for attendees and features artwork created by our community’s artists, brimming with personal style and event spirit. If you love art and want to contribute your creative energy to the event, send your work to FUVE and join the conbook!",
+				"title": "Joining Artbook",
 				"description": "Submit your artwork and be part of the Fuvekon Artbook!",
 				"button": "Submit Now",
 				"login": "Login",
