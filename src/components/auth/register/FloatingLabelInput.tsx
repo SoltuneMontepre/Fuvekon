@@ -21,6 +21,7 @@ interface FloatingLabelInputProps<
 	required?: boolean
 	showPasswordToggle?: boolean
 	showError?: boolean
+	disabled?: boolean
 }
 
 /**
@@ -40,6 +41,7 @@ export const FloatingLabelInput = <
 	required = false,
 	showPasswordToggle = false,
 	showError = true,
+	disabled = false,
 }: FloatingLabelInputProps<TFieldValues, TName>) => {
 	const [showPassword, setShowPassword] = useState(false)
 
@@ -78,6 +80,7 @@ export const FloatingLabelInput = <
 				className={inputClasses}
 				placeholder={type !== 'date' ? placeholder : undefined}
 				required={required}
+				disabled={disabled}
 				aria-invalid={!!error}
 				aria-describedby={error ? `${id}-error` : undefined}
 			/>

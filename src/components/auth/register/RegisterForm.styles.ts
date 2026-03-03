@@ -5,7 +5,7 @@
 export const FORM_STYLES = {
 	// Input field styles
 	input: {
-		base: 'block w-full  px-2.5 py-2 sm:py-2 rounded-xl bg-[#E2EEE2] border text-[#8C8C8C] text-sm sm:text-base font-normal placeholder-transparent focus:outline-none focus:border-[#48715B] focus:ring-0 shadow-none peer transition-colors duration-200',
+		base: 'block w-full px-2.5 py-1.5 sm:py-1.5 rounded-xl bg-[#E2EEE2] border text-[#8C8C8C] text-sm sm:text-base font-normal placeholder-transparent focus:outline-none focus:border-[#48715B] focus:ring-0 shadow-none peer transition-colors duration-200',
 		default: 'border-[#8C8C8C]/30',
 		error: 'border-red-500',
 		withIcon: 'pr-10',
@@ -22,7 +22,7 @@ export const FORM_STYLES = {
 	// Button styles
 	button: {
 		primary:
-			'block mx-auto w-full max-w-[180px] sm:w-[180px] py-2 sm:py-2.5 rounded-xl text-[#48715B] font-semibold text-sm sm:text-base hover:bg-[#48715B]/90 hover:text-[#E2EEE2] active:bg-[#48715B]/80 focus:outline-none focus:ring-4 focus:ring-[#48715B]/30 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5',
+			'cursor-pointer block mx-auto w-full -mt-4 max-w-[360px] sm:w-[360px] py-2 sm:py-3 rounded-xl text-[#48715B] font-semibold text-sm sm:text-base hover:bg-[#48715B]/90 hover:text-[#E2EEE2] active:bg-[#48715B]/80 focus:outline-none focus:ring-4 focus:ring-[#48715B]/30 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5',
 		disabled: 'opacity-50 cursor-not-allowed',
 		icon: 'absolute right-3 top-1/2 -translate-y-1/2 text-[#8C8C8C] hover:text-[#48715B] transition-colors duration-200 focus:outline-none',
 	},
@@ -30,9 +30,9 @@ export const FORM_STYLES = {
 	// Container styles
 	container: {
 		wrapper:
-			'relative pt-12 sm:pt-20 md:pt-36 w-full max-w-5xl min-h-[850px] h-auto',
+			'relative mt-24 sm:pt-20 md:pt-36 w-full max-w-5xl min-h-[790px] h-auto',
 		panel:
-			'relative bg-[#E2EEE2] translate-y-0 rounded-2xl md:rounded-[32px] overflow-hidden shadow-2xl flex flex-col md:flex-row min-h-[850px] h-auto items-center justify-center md:justify-start',
+			'relative bg-[#E2EEE2] translate-y-0 rounded-2xl md:rounded-[32px] overflow-hidden shadow-2xl flex flex-col md:flex-row min-h-[850px] h-auto items-center justify-center md:justify-starttar',
 		background:
 			'absolute inset-0 w-full h-full z-10 pointer-events-none select-none hidden md:block overflow-hidden',
 		formPanel:
@@ -45,7 +45,7 @@ export const FORM_STYLES = {
 	form: {
 		wrapper: 'space-y-6 sm:space-y-7',
 		title:
-			'text-2xl sm:text-3xl md:text-3xl font-bold text-[#48715B] text-center tracking-wide mb-3',
+			'text-2xl sm:text-3xl md:text-3xl font-bold text-[#48715B] text-center tracking-wide mb-6',
 	},
 
 	// Error message styles
@@ -59,7 +59,7 @@ export const FORM_STYLES = {
 	link: {
 		base: 'text-[#8C8C8C] hover:text-[#48715B]/80 font-medium transition-colors duration-200 hover:underline',
 		bold: 'font-bold',
-		container: 'flex items-center justify-center gap-2 text-xs sm:text-sm pt-1',
+		container: 'flex items-center justify-center gap-2 text-xs sm:text-sm mt-1',
 		separator: 'text-[#8C8C8C]/60',
 	},
 

@@ -141,10 +141,21 @@ const RegisterForm = (): React.ReactElement => {
 			// Clear sensitive data from memory
 			reset()
 
-			// Redirect to login after showing success message
-			setTimeout(() => {
-				router.push('/login')
-			}, 2000) // 2 second delay to show success message
+				// Redirect to OTP verification page after showing success message
+				setTimeout(() => {
+					// store the email temporarily in sessionStorage instead of exposing it in the URL.
+					try {
+						if (typeof window !== 'undefined') {
+							window.sessionStorage.setItem(
+								'registrationEmail',
+								formInput.email
+							)
+						}
+					} catch {
+						// storage may fail in very restricted environments; ignore silently
+					}
+					router.push('/register/verify-otp')
+				}, 2000) // 2 second delay to show success message
 		} catch (error: unknown) {
 			if (error && typeof error === 'object' && 'response' in error) {
 				const axiosError = error as {
@@ -330,7 +341,7 @@ const RegisterForm = (): React.ReactElement => {
 									aria-invalid={!!errors.termsAccepted}
 									aria-describedby={errors.termsAccepted ? 'terms-error' : undefined}
 								/>
-								<label htmlFor='termsAccepted' className='text-xs sm:text-sm text-[#8C8C8C] cursor-pointer'>
+								<label htmlFor='termsAccepted' className='underline text-xs sm:text-sm text-[#8C8C8C] cursor-pointer'>
 									{t('termsAgreement')}
 								</label>
 							</div>
@@ -356,14 +367,14 @@ const RegisterForm = (): React.ReactElement => {
 							{/* Google Sign-up */}
 							{hasGoogleClientId && (
 								<>
-									<div className='flex items-center gap-3 w-full mt-3'>
+									<div className='flex items-center gap-2 w-full mt-0.5'>
 										<span className='flex-1 h-px bg-[#8C8C8C]/30' aria-hidden />
 										<span className='text-[#8C8C8C] text-sm'>
 											{t('orContinueWith')}
 										</span>
 										<span className='flex-1 h-px bg-[#8C8C8C]/30' aria-hidden />
 									</div>
-									<div className='flex justify-center w-full mt-3'>
+									<div className='flex justify-center w-full mt-1 -mb-0'>
 										<GoogleLoginButton
 											onSuccess={credential => {
 												clearErrors('root')

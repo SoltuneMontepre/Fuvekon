@@ -128,10 +128,14 @@ export function useVerifyOtp() {
 	return useMutation({
 		mutationFn: (payload: VerifyOtpRequest) => Account.verifyOtp(payload),
 		onSuccess: async () => {
-			const me = await Account.getMe()
-			if (me?.isSuccess && me.data) {
-				setAccount(me.data)
-				queryClient.setQueryData(['account'], me)
+			try {
+ 				const me = await Account.getMe()
+ 				if (me?.isSuccess && me.data) {
+ 					setAccount(me.data)
+ 					queryClient.setQueryData(['account'], me)
+ 				}
+			} catch {
+				queryClient.invalidateQueries({ queryKey: ['account'] })
 			}
 		},
 	})

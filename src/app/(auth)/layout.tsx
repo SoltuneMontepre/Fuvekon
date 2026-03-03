@@ -18,7 +18,7 @@ const AuthPageLayout = ({ children }: { children: React.ReactNode }) => {
 			className='absolute inset-0 transition-opacity duration-500 ease-out'
 			style={{ opacity: isLoaded ? 1 : 0 }}
 		>
-			<section className='absolute center inset-0 h-dvh w-dvw px-4 sm:px-6 lg:px-8 z-10'>
+			<section className='fixed center inset-0 h-dvh w-dvw px-4 pb-6 sm:px-6 lg:px-8 z-10 overflow-y-auto'>
 				{children}
 			</section>
 			<Background />
