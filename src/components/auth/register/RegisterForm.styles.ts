@@ -5,7 +5,7 @@
 export const FORM_STYLES = {
 	// Input field styles
 	input: {
-		base: 'block w-full px-2.5 py-1.5 sm:py-1.25 rounded-xl bg-[#E2EEE2] border text-[#8C8C8C] text-sm sm:text-base font-normal placeholder-transparent focus:outline-none focus:border-[#48715B] focus:ring-0 shadow-none peer transition-colors duration-200',
+		base: 'block w-full px-2.5 py-1.5 sm:py-1.5 rounded-xl bg-[#E2EEE2] border text-[#8C8C8C] text-sm sm:text-base font-normal placeholder-transparent focus:outline-none focus:border-[#48715B] focus:ring-0 shadow-none peer transition-colors duration-200',
 		default: 'border-[#8C8C8C]/30',
 		error: 'border-red-500',
 		withIcon: 'pr-10',
@@ -30,7 +30,7 @@ export const FORM_STYLES = {
 	// Container styles
 	container: {
 		wrapper:
-			'relative mt-20 sm:pt-20 md:pt-36 w-full max-w-5xl min-h-[790px] h-auto',
+			'relative mt-24 sm:pt-20 md:pt-36 w-full max-w-5xl min-h-[790px] h-auto',
 		panel:
 			'relative bg-[#E2EEE2] translate-y-0 rounded-2xl md:rounded-[32px] overflow-hidden shadow-2xl flex flex-col md:flex-row min-h-[850px] h-auto items-center justify-center md:justify-starttar',
 		background:
@@ -45,7 +45,7 @@ export const FORM_STYLES = {
 	form: {
 		wrapper: 'space-y-6 sm:space-y-7',
 		title:
-			'text-2xl sm:text-3xl md:text-3xl font-bold text-[#48715B] text-center tracking-wide mb-3 mb-6',
+			'text-2xl sm:text-3xl md:text-3xl font-bold text-[#48715B] text-center tracking-wide mb-6',
 	},
 
 	// Error message styles
