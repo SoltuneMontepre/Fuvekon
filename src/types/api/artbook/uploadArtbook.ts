@@ -8,7 +8,7 @@ export const ArtbookFormSchema = z.object({
 		.min(1, ERROR_MESSAGES.REQUIRED_FIELD),
 	description: z.string().min(1, ERROR_MESSAGES.REQUIRED_FIELD),
 	handle: z.string().min(1, ERROR_MESSAGES.REQUIRED_FIELD),
-	imageUrl: z.string().nullable(),
+	image_url: z.string().nullable(),
 	// fileKey: z.string().nullable(),
 })
 
@@ -20,6 +20,6 @@ export const mapArtbookToApiRequest = (
 	title: data.title,
 	description: data.description,
 	handle: data.handle,
-	imageUrl: data.imageUrl,
+	image_url: data.image_url,
 	// fileKey: data.fileKey,
 })

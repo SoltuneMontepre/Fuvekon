@@ -2,7 +2,6 @@
 
 import GrainyBox from '@/components/boxes/GrainyBox'
 // import SideImage from '@/components/boxes/SideImage'
-import Image from 'next/image'
 import Button from '@/components/ui/Button'
 import { useTranslations } from 'next-intl'
 import React, { useState } from 'react'
@@ -17,11 +16,17 @@ import { FloatingLabelInput } from '@/components/auth/register/FloatingLabelInpu
 import ImageUploader from '@/components/common/ImageUploader'
 import { useAuthStore } from '@/stores/authStore'
 import Link from 'next/link'
+import S3Image from '@/components/common/S3Image'
+import { useUploadArtbook } from '@/hooks/services/artbook/useUploadFile'
 
 const ArtBookCardSection = () => {
   const t = useTranslations('artbook')
   const isLoggedIn = useAuthStore(state => state.isAuthenticated)
   const [isSuccess, setIsSuccess] = useState(false)
+  const {
+  mutateAsync: uploadArtbook,
+  isPending: isUploadingArtbook,
+} = useUploadArtbook()
 
   const {
     control,
@@ -38,19 +43,19 @@ const ArtBookCardSection = () => {
       title: '',
       description: '',
       handle: '',
-      imageUrl: null,
+      image_url: null,
     //   fileKey: null,
     },
   })
 
-  const uploadedFileUrl = watch('imageUrl')
+  const uploadedFileUrl = watch('image_url')
 
   const onSubmit = async (data: UploadArtbookFormData) => {
     try {
       clearErrors()
 
-      if (!data.imageUrl) {
-        setError('imageUrl', {
+      if (!data.image_url) {
+        setError('image_url', {
           type: 'manual',
           message: 'Please upload a file before submitting.',
         })
@@ -58,7 +63,7 @@ const ArtBookCardSection = () => {
       }
 
       console.log('Final Submit Payload:', data)
-      // await uploadArtbook(data)
+      await uploadArtbook(data)
 
       setIsSuccess(true)
       reset()
@@ -68,7 +73,6 @@ const ArtBookCardSection = () => {
       }
     }
   }
-
   return (
     <div className="max-w-6xl mx-auto px-6 py-16">
 		<div className="relative flex flex-col md:flex-row shadow-xl">
@@ -158,16 +162,16 @@ const ArtBookCardSection = () => {
 				accept="image/*,application/pdf"
 				maxSizeMB={15}
 				onUploadSuccess={(fileUrl) => {
-					setValue('imageUrl', fileUrl, { shouldValidate: true })
+					setValue('image_url', fileUrl, { shouldValidate: true })
 				}}
 				onRemove={() => {
-					setValue('imageUrl', null)
+					setValue('image_url', null)
 				}}
 				/>
 
 				{uploadedFileUrl && (
 				<div className="relative mt-4 h-48 w-full">
-					<Image
+					<S3Image
 					src={uploadedFileUrl}
 					alt="Preview"
 					fill
@@ -176,15 +180,15 @@ const ArtBookCardSection = () => {
 				</div>
 				)}
 
-				{errors.imageUrl && (
+				{errors.image_url && (
 				<p className="text-sm text-red-500">
-					{errors.imageUrl.message}
+					{errors.image_url.message}
 				</p>
 				)}
 
 				<Button
 				className="mt-10 cursor-pointer"
-				props={{ disabled: isSubmitting }}
+				props={{ disabled: isUploadingArtbook }}
 				>
 				{isSubmitting
 					? 'Submitting...'
