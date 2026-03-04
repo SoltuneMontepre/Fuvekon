@@ -564,6 +564,7 @@
 				"description1": "Artbook is a compilation of guides for attendees and features artwork created by our community’s artists, brimming with personal style and event spirit.",
 				"description2": "If you love art and want to contribute your creative energy to the event, send your work to FUVE and join the conbook!",
 				"button": "Submit Now",
+				"buttonDisable": "Log in to submit!",
 				"login": "Login",
 				"buyticket": "Buy Ticket"
 			}

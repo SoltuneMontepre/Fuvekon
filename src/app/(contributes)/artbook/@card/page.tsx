@@ -2,6 +2,7 @@
 
 import GrainyBox from '@/components/boxes/GrainyBox'
 // import SideImage from '@/components/boxes/SideImage'
+import Image from 'next/image'
 import Button from '@/components/ui/Button'
 import { useTranslations } from 'next-intl'
 import React, { useState } from 'react'
@@ -14,9 +15,12 @@ import {
 // import DrumImage from '@/components/landing/DrumImage'
 import { FloatingLabelInput } from '@/components/auth/register/FloatingLabelInput'
 import ImageUploader from '@/components/common/ImageUploader'
+import { useAuthStore } from '@/stores/authStore'
+import Link from 'next/link'
 
 const ArtBookCardSection = () => {
   const t = useTranslations('artbook')
+  const isLoggedIn = useAuthStore(state => state.isAuthenticated)
   const [isSuccess, setIsSuccess] = useState(false)
 
   const {
@@ -70,7 +74,7 @@ const ArtBookCardSection = () => {
 		<div className="relative flex flex-col md:flex-row shadow-xl">
 
 		{/* LEFT PANEL */}
-		<div className="md:w-[1300px] bg-[#48715B] px-16 py-20 flex flex-col rounded-2xl md:rounded-r-none z-10">
+		<div className="md:w-[1700px] bg-[#48715B] px-16 py-20 flex flex-col rounded-2xl md:rounded-r-none z-10">
   			<div className="max-w-lg">
 				<h3 className="text-2xl font-bold text-[#E2EEE2] text-center">
 				{t('artbook.card.title')}
@@ -91,66 +95,103 @@ const ArtBookCardSection = () => {
 			<h3 className="text-2xl text-center font-bold text-secondary mb-6">
 			{t('artbook.card.righttitle')}
 			</h3>
+			{/* appear when user not logged in */}
+			{!isLoggedIn ? (
+			<>
+				<p className="text-[#48715B] text-sm mt-4 leading-relaxed">
+				{t('artbook.card.rightdescription')}
+				</p>
 
+				<div className="flex flex-col justify-center">
+
+				<Button className="mt-10 w-full" props={{ disabled: true }}>
+				{t('artbook.card.buttonDisable')}
+				</Button>
+				{/* Links */}
+					<div className='text-center text-nowrap text-secondary mt-2'>
+						<Link href='/login'>{t('artbook.card.login')}</Link>
+						<span> | </span>
+						<Link href='/ticket'>{t('artbook.card.buyticket')}</Link>
+					</div>
+				</div>
+			</>
+			) : (
 			<form
-			onSubmit={handleSubmit(onSubmit)}
-			className="flex flex-col gap-6"
+				onSubmit={handleSubmit(onSubmit)}
+				className="flex flex-col gap-6"
 			>
-			<FloatingLabelInput
+				{isSuccess && (
+				<p className="text-green-600 text-sm mt-2">
+					Submission successful!
+				</p>
+				)}
+				<FloatingLabelInput
 				id="title"
 				name="title"
 				control={control}
 				type="text"
 				label={t('artbook.card.labelTitle')}
 				placeholder={t('artbook.card.placeholderTitle')}
-			/>
+				/>
 
-			<FloatingLabelInput
+				<FloatingLabelInput
 				id="description"
 				name="description"
 				control={control}
 				type="text"
 				label={t('artbook.card.labelDescription')}
 				placeholder={t('artbook.card.placeholderDescription')}
-			/>
+				/>
 
-			<FloatingLabelInput
+				<FloatingLabelInput
 				id="handle"
 				name="handle"
 				control={control}
 				type="text"
 				label={t('artbook.card.labelHandle')}
 				placeholder={t('artbook.card.placeholderHandle')}
-			/>
+				/>
 
-			<ImageUploader
+				<ImageUploader
 				className="h-24"
 				folder="artbooks"
 				accept="image/*,application/pdf"
 				maxSizeMB={15}
 				onUploadSuccess={(fileUrl) => {
-				// onUploadSuccess={(fileUrl, fileKey) => {
-				setValue('imageUrl', fileUrl, { shouldValidate: true })
+					setValue('imageUrl', fileUrl, { shouldValidate: true })
 				}}
 				onRemove={() => {
-				setValue('imageUrl', null)
+					setValue('imageUrl', null)
 				}}
-			/>
+				/>
 
-			{errors.imageUrl && (
+				{uploadedFileUrl && (
+				<div className="relative mt-4 h-48 w-full">
+					<Image
+					src={uploadedFileUrl}
+					alt="Preview"
+					fill
+					className="rounded-lg object-contain border"
+					/>
+				</div>
+				)}
+
+				{errors.imageUrl && (
 				<p className="text-sm text-red-500">
-				{errors.imageUrl.message}
+					{errors.imageUrl.message}
 				</p>
-			)}
+				)}
 
-				<Button 
-				className='mt-10 cursor-pointer'
-				disabled={isSubmitting}>
-					{isSubmitting
+				<Button
+				className="mt-10 cursor-pointer"
+				props={{ disabled: isSubmitting }}
+				>
+				{isSubmitting
 					? 'Submitting...'
 					: t('artbook.card.button')}
 				</Button>
-				</form>
+			</form>
+			)}
 
 			{/* <div className='fixed inset-0 flex items-center justify-center pointer-events-none overflow-visible'>
 				<DrumImage id='feat-drum' />
