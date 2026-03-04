@@ -159,7 +159,7 @@ const ArtBookCardSection = () => {
 				<ImageUploader
 				className="h-24"
 				folder="artbooks"
-				accept="image/*,application/pdf"
+				accept="image/*"
 				maxSizeMB={15}
 				onUploadSuccess={(fileUrl) => {
 					setValue('image_url', fileUrl, { shouldValidate: true })
