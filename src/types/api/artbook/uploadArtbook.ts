@@ -1,7 +1,6 @@
 import { z } from 'zod'
 import { ERROR_MESSAGES } from '@/utils/validation/registerValidation.constants'
 
-// Form schema for verifying OTP
 export const ArtbookFormSchema = z.object({
 	title: z
 		.string()

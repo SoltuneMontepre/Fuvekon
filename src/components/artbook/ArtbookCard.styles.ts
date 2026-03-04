@@ -32,7 +32,7 @@ export const FORM_STYLES = {
 		wrapper:
 			'relative mt-24 sm:pt-20 md:pt-36 w-full max-w-5xl min-h-[790px] h-auto',
 		panel:
-			'relative bg-[#E2EEE2] translate-y-0 rounded-2xl md:rounded-[32px] overflow-hidden shadow-2xl flex flex-col md:flex-row min-h-[850px] h-auto items-center justify-center md:justify-starttar',
+			'relative bg-[#E2EEE2] translate-y-0 rounded-2xl md:rounded-[32px] overflow-hidden shadow-2xl flex flex-col md:flex-row min-h-[850px] h-auto items-center justify-center md:justify-start',
 		background:
 			'absolute inset-0 w-full h-full z-10 pointer-events-none select-none hidden md:block overflow-hidden',
 		formPanel:
