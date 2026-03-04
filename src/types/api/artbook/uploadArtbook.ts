@@ -7,8 +7,9 @@ export const ArtbookFormSchema = z.object({
 		.string()
 		.min(1, ERROR_MESSAGES.REQUIRED_FIELD),
 	description: z.string().min(1, ERROR_MESSAGES.REQUIRED_FIELD),
-	Handle: z.string().min(1, ERROR_MESSAGES.REQUIRED_FIELD),
-	ImageUrl: z.string().nullable(),
+	handle: z.string().min(1, ERROR_MESSAGES.REQUIRED_FIELD),
+	imageUrl: z.string().nullable(),
+	// fileKey: z.string().nullable(),
 })
 
 export type UploadArtbookFormData = z.infer<typeof ArtbookFormSchema>
@@ -18,6 +19,7 @@ export const mapArtbookToApiRequest = (
 ): import('@/types/api/artbook/uploadArtbook.d').UploadArtbookRequest => ({
 	title: data.title,
 	description: data.description,
-	Handle: data.Handle,
-	ImageUrl: data.ImageUrl,
+	handle: data.handle,
+	imageUrl: data.imageUrl,
+	// fileKey: data.fileKey,
 })

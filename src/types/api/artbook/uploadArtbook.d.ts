@@ -1,7 +1,8 @@
 export interface UploadArtbookRequest {
 	title: string
 	description: string
-	Handle: string
-	ImageUrl: string | null
+	handle: string
+	imageUrl: string | null
+	// fileKey: string | null
 }
 
