@@ -52,6 +52,7 @@ const ArtBookCardSection = () => {
 
   const onSubmit = async (data: UploadArtbookFormData) => {
     try {
+	  setIsSuccess(false)
       clearErrors()
 
       if (!data.image_url) {
@@ -68,6 +69,7 @@ const ArtBookCardSection = () => {
       setIsSuccess(true)
       reset()
     } catch (error: unknown) {
+		setIsSuccess(false)
       if (error instanceof Error) {
         setError('root', { type: 'manual', message: error.message })
       }
@@ -188,7 +190,7 @@ const ArtBookCardSection = () => {
 
 				<Button
 				className="mt-10 cursor-pointer"
-				props={{ disabled: isUploadingArtbook }}
+				props={{ disabled: isUploadingArtbook || isSubmitting }}
 				>
 				{isSubmitting
 					? 'Submitting...'
