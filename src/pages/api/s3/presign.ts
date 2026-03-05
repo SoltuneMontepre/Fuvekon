@@ -19,6 +19,39 @@ export const config = {
 	},
 }
 
+const ALLOWED_DOCUMENT_MIME_TYPES = new Set([
+	'application/pdf',
+	'application/msword',
+	'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+])
+
+const DOCUMENT_EXTENSIONS = ['.doc', '.docx']
+
+function hasAllowedDocumentExtension(fileName: string): boolean {
+	const lower = fileName.toLowerCase()
+	return DOCUMENT_EXTENSIONS.some(ext => lower.endsWith(ext))
+}
+
+function isArtbookFolder(folder?: string): boolean {
+	if (!folder) return false
+	return folder === 'artbooks' || folder.startsWith('artbooks/')
+}
+
+function isAllowedFileType(
+	fileType: string,
+	fileName: string,
+	folder?: string
+): boolean {
+	if (isValidImageType(fileType)) return true
+
+	if (isArtbookFolder(folder)) {
+		if (ALLOWED_DOCUMENT_MIME_TYPES.has(fileType.toLowerCase())) return true
+		if (hasAllowedDocumentExtension(fileName)) return true
+	}
+
+	return false
+}
+
 function parseRequestBody(req: NextApiRequest): PresignRequest {
 	return typeof req.body === 'string' ? JSON.parse(req.body) : req.body
 }
@@ -50,10 +83,11 @@ function validatePresignRequest(body: PresignRequest): {
 		}
 	}
 
-	if (!isValidImageType(fileType)) {
+	if (!isAllowedFileType(fileType, fileName, folder)) {
 		return {
 			isValid: false,
-			error: 'File type not allowed. Allowed: JPEG, PNG, GIF, WebP, SVG, AVIF',
+			error:
+				'File type not allowed. Allowed: JPEG, PNG, GIF, WebP, SVG, AVIF (and for artbooks: PDF, DOC, DOCX, TXT).',
 		}
 	}
 

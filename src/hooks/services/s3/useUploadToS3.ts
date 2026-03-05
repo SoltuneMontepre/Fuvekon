@@ -5,6 +5,20 @@ import axios from 'axios'
 import { usePresignUrl } from './usePresignUrl'
 import type { PresignRequest } from '@/types/api/s3/presign'
 
+const MIME_BY_EXTENSION: Record<string, string> = {
+	jpg: 'image/jpeg',
+	jpeg: 'image/jpeg',
+	png: 'image/png',
+	doc: 'application/msword',
+	docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+}
+
+function resolveFileType(file: File): string {
+	if (file.type && file.type.trim().length > 0) return file.type
+	const extension = file.name.split('.').pop()?.toLowerCase() ?? ''
+	return MIME_BY_EXTENSION[extension] ?? 'application/octet-stream'
+}
+
 export interface UploadToS3Options {
 	onSuccess?: (fileUrl: string, fileKey: string) => void
 	onError?: (error: Error) => void
@@ -52,10 +66,12 @@ export function useUploadToS3(options?: UploadToS3Options): UploadToS3Result {
 		setError(null)
 
 		try {
+			const resolvedFileType = resolveFileType(file)
+
 			// Step 1: Get presigned URL from backend
 			const presignResponse = await getPresignedUrl({
 				fileName: file.name,
-				fileType: file.type,
+				fileType: resolvedFileType,
 				expiresIn: 3600, // 1 hour default
 				...presignOptions,
 				contentLength: file.size, // always use actual size so server can validate; presigned URL is bound to this
@@ -72,7 +88,7 @@ export function useUploadToS3(options?: UploadToS3Options): UploadToS3Result {
 			// Step 2: Upload file directly to S3 using presigned URL
 			await axios.put(presignedUrl, file, {
 				headers: {
-					'Content-Type': file.type,
+					'Content-Type': resolvedFileType,
 				},
 				onUploadProgress: progressEvent => {
 					if (progressEvent.total) {

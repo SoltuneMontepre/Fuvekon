@@ -31,7 +31,8 @@
 			},
 			"validation": {
 				"fileTooLarge": "Kích thước tệp vượt quá giới hạn {maxSizeMB}MB",
-				"invalidType": "Vui lòng chọn tệp hình ảnh"
+				"invalidType": "Vui lòng chọn tệp hình ảnh",
+				"invalidFileType": "Vui lòng chọn loại tệp hợp lệ"
 			},
 			"actions": {
 				"replace": "Thay thế",
@@ -49,6 +50,7 @@
 		}
 	},
 	"nav": {
+		"myConbook": "Gửi Conbook",
 		"ticket": "Vé",
 		"register": "Đăng ký",
 		"contributes": "Đóng góp",
@@ -552,11 +554,41 @@
 		"artbook": {
 			"card": {
 				"imageAlt": "Huy hiệu artbook",
-				"title": "Artbook",
-				"description": "Gửi tác phẩm của bạn và trở thành một phần của Fuvekon Artbook!",
+				"labelTitle": "Tên Tác Phẩm",
+				"placeholderTitle": "Nhập tên tác phẩm của bạn",
+				"placeholderDescription": "Nhập mô tả tác phẩm của bạn (tối đa 500 ký tự)",
+				"placeholderHandle": "Mạng Xã Hội của bạn (ví dụ: Tên - Twitter)",
+				"labelHandle": "Mạng Xã Hội",
+				"labelDescription": "Mô Tả",
+				"righttitle": "Tham gia Conbook",
+				"rightdescription": "Conbook là ấn phẩm tổng hợp các hướng dẫn cho người tham dự sự kiện và bao gồm cả các tác phẩm nghệ thuật do chính những nhà sáng tạo trong cộng đồng sáng tác, mang đậm màu sắc cá nhân và tinh thần của sự kiện. Nếu bạn yêu nghệ thuật và muốn đóng góp một phần tinh thần cho sự kiện thì hãy gửi ngay tác phẩm của bạn đến FUVE để tham gia nhé conbook nhé",
+				"title": "CONBOOK",
+				"conbookLink": "Gửi Conbook",
+				"description1": "Conbook là ấn phẩm tổng hợp các hướng dẫn cho người tham dự sự kiện và bao gồm cả các tác phẩm nghệ thuật do chính những nhà sáng tạo trong cộng đồng sáng tác, mang đậm màu sắc cá nhân và tinh thần của sự kiện.",
+				"description2": " Nếu bạn yêu nghệ thuật và muốn đóng góp một phần tinh thần cho sự kiện thì hãy gửi ngay tác phẩm của bạn đến FUVE để tham gia nhé conbook nhé",
 				"button": "Gửi ngay",
+				"buttonDisable": "Đăng nhập để gửi!",
 				"login": "Đăng nhập",
 				"buyticket": "Mua vé"
+			},
+			"rules": {
+				"title": "QUY ĐỊNH KHI NỘP TÁC PHẨM CHO CONBOOK",
+				"item1": "YÊU CẦU ĐỊNH DẠNG:",
+				"item2": "● Kích thước: Khổ A5 (2480x3508px), cỡ ngang hay dọc đều được nha!",
+				"item3": "● Độ phân giải: 300dpi, hệ màu CMYK",
+				"item4": "● Định dạng tệp: JPG/PNG",
+				"item5": "● Sản phẩm cho phép khác: Tranh vẽ, ảnh chụp, văn ngắn",
+				"item6": "",
+				"item7": "MỘT VÀI LƯU Ý NHỎ:",
+				"item8": "● Tác phẩm bạn tạo ra phải là của chính bạn, chưa từng xuất hiện công khai trên bất cứ nền tảng nào trước ngày diễn ra FUVE 2026.",
+				"item9": "● Tác phẩm gửi đến FUVE phải là phiên bản đã hoàn thiện, không phải là bản vẽ nháp.",
+				"item10": "● Đối với tác phẩm viết văn, bạn chỉ nên viết khoảng 300-500 từ. Hãy nộp tác phẩm của bạn dưới dạng file Word.",
+				"item11": "● Đối với tác phẩm chụp hình, hình ảnh cần ghi rõ thông tin người chụp ảnh, model hoặc fursuiter.",
+				"item12": "● Không nhất thiết phải có linh vật FUVE nhưng cần có liên quan đến chủ đề của sự kiện.",
+				"item13": "● Tất cả tác phẩm sẽ được chiếu trong video bế mạc hoặc đính kèm trong folder được đăng lên page sau sự kiện. Tuy nhiên, chỉ có một lượng tác phẩm được chọn góp mặt trong sổ tay sự kiện vì giới hạn số lượng trong handbook.",
+				"item14": "● Tác phẩm của bạn có thể được sử dụng dưới các hình thức phi lợi nhuận ở sự kiện (bao gồm truyền thông trên mạng xã hội, bìa và nội dung trong sổ tay sự kiện, các sản phẩm in ấn phục vụ quảng bá như poster, thư mời, vòng tay...). Chúng mình sẽ gửi xin phép qua email nếu tác phẩm của bạn được lựa chọn.",
+				"item15": "● Tác phẩm của bạn sẽ không được chọn nếu không có thông tin tác giả, không phù hợp với quy tắc ứng xử hoặc có chủ đề nhạy cảm, bạo lực, chính trị, tôn giáo.",
+				"item16": "● Khi tham gia gửi tác phẩm, FUVE xin chân thành cảm ơn bạn đã dành thời gian đóng góp cho sự kiện của chúng mình."
 			}
 		}
 	},
@@ -573,7 +605,7 @@
 		},
 		"artbook": {
 			"title": "CONBOOK",
-			"description": "Ccnbook là ấn phẩm tổng hợp các hướng dẫn cho người tham sự sự kiện và bao gồm cả các tác phẩm nghệ thuật do chính những nhà sáng tạo trong cộng đồng sáng tác, mang đậm màu sắc cá nhân và tinh thần của sự kiện. Nếu bạn yêu nghệ thuật và muốn đóng góp một phần tinh thần cho sự kiện thì hãy gửi ngay tác phẩm của bạn đến FUVE để tham gia nhé conbook nhé",
+			"description": "Conbook là ấn phẩm tổng hợp các hướng dẫn cho người tham dự sự kiện và bao gồm cả các tác phẩm nghệ thuật do chính những nhà sáng tạo trong cộng đồng sáng tác, mang đậm màu sắc cá nhân và tinh thần của sự kiện. Nếu bạn yêu nghệ thuật và muốn đóng góp một phần tinh thần cho sự kiện thì hãy gửi ngay tác phẩm của bạn đến FUVE để tham gia nhé conbook nhé",
 			"buttonLabel": "Hướng dẫn tham gia",
 			"buttonHref": "/contributes/artbook"
 		},

@@ -31,7 +31,8 @@
 			},
 			"validation": {
 				"fileTooLarge": "File size exceeds {maxSizeMB}MB limit",
-				"invalidType": "Please select an image file"
+				"invalidType": "Please select an image file",
+				"invalidFileType": "Please select a valid file type"
 			},
 			"actions": {
 				"replace": "Replace",
@@ -49,6 +50,7 @@
 		}
 	},
 	"nav": {
+		"myConbook": "Conbook Submissions",
 		"ticket": "Ticket",
 		"register": "Register",
 		"contributes": "Contributes",
@@ -552,11 +554,41 @@
 		"artbook": {
 			"card": {
 				"imageAlt": "Artbook badges",
-				"title": "Artbook",
-				"description": "Submit your artwork and be part of the Fuvekon Artbook!",
+				"labelTitle": "Title",
+				"placeholderTitle": "Enter your artwork title",
+				"placeholderDescription": "Enter your artwork description (max 500 characters)",
+				"placeholderHandle": "Your Social Handle (example: Handle - Twitter)",
+				"labelHandle": "Social Handle",
+				"labelDescription": "Description",
+				"righttitle": "Joining Conbook",
+				"rightdescription": "Conbook is a compilation of guides for attendees and features artwork created by our community’s artists, brimming with personal style and event spirit. If you love art and want to contribute your creative energy to the event, send your work to FUVE and join the conbook!",
+				"title": "CONBOOK",
+				"conbookLink": "Submit Conbook",
+				"description1": "Conbook is a compilation of guides for attendees and features artwork created by our community’s artists, brimming with personal style and event spirit.",
+				"description2": "If you love art and want to contribute your creative energy to the event, send your work to FUVE and join the conbook!",
 				"button": "Submit Now",
+				"buttonDisable": "Log in to submit!",
 				"login": "Login",
 				"buyticket": "Buy Ticket"
+			},
+			"rules": {
+				"title": "CONBOOK SUBMISSION GUIDELINES",
+				"item1": "FORMAT REQUIREMENTS:",
+				"item2": "● Size: A5 (2480x3508px), landscape or portrait are both accepted.",
+				"item3": "● Resolution: 300dpi, CMYK color mode",
+				"item4": "● File format: JPG/PNG",
+				"item5": "● Other accepted submissions: illustrations, photography, short writing",
+				"item6": "",
+				"item7": "A FEW IMPORTANT NOTES:",
+				"item8": "● The work must be your own and must not have been publicly posted on any platform before FUVE 2026.",
+				"item9": "● Submissions to FUVE must be final versions, not sketches or drafts.",
+				"item10": "● For written pieces, please keep the length around 300-500 words and submit as a Word file.",
+				"item11": "● For photography, please clearly include credits for the photographer, model, or fursuiter.",
+				"item12": "● Including the FUVE mascot is optional, but the work should relate to the event theme.",
+				"item13": "● All submissions may be shown in the closing video or included in a post-event folder on the page. However, only a limited number of works can be selected for the printed handbook.",
+				"item14": "● Your work may be used in non-profit event materials (including social media communication, handbook cover/content, and printed promotional materials such as posters, invitations, and wristbands). We will request your permission by email if your work is selected.",
+				"item15": "● Your submission may be rejected if author information is missing, if it violates the code of conduct, or if it contains sensitive themes such as violence, politics, or religion.",
+				"item16": "● Thank you for contributing your work and time to support FUVE."
 			}
 		}
 	},
