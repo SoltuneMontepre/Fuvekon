@@ -12,6 +12,7 @@ import {
   ArtbookFormSchema,
 } from '@/types/api/artbook/uploadArtbook'
 // import DrumImage from '@/components/landing/DrumImage'
+import Image from 'next/image'
 import { FloatingLabelInput } from '@/components/auth/register/FloatingLabelInput'
 import ImageUploader from '@/components/common/ImageUploader'
 import { useAuthStore } from '@/stores/authStore'
@@ -80,7 +81,7 @@ const ArtBookCardSection = () => {
 		<div className="relative flex flex-col md:flex-row shadow-xl">
 
 		{/* LEFT PANEL */}
-		<div className="md:w-[1700px] bg-[#48715B] px-16 py-20 flex flex-col rounded-2xl md:rounded-r-none z-10">
+		<div className="md:w-[1300px] bg-[#48715B] px-16 py-20 flex flex-col rounded-2xl md:rounded-r-none z-10">
   			<div className="max-w-lg">
 				<h3 className="text-2xl font-bold text-[#E2EEE2] text-center">
 				{t('artbook.card.title')}
@@ -97,7 +98,14 @@ const ArtBookCardSection = () => {
 		</div>
 
 		{/* RIGHT PANEL */}
-		<div className="md:w-max bg-[#E2EEE2] p-12 rounded-2xl md:-ml-10 relative shadow-2xl z-20">
+		<div className="md:w-[1700px] bg-[#E2EEE2] p-12 rounded-2xl md:-ml-10 relative overflow-hidden shadow-2xl z-20">
+			<Image
+				src='/assets/common/drum_pattern.webp'
+				alt='Drum Pattern'
+				fill
+				className='absolute inset-0 z-0 opacity-[3%] object-cover pointer-events-none'
+				draggable={false}
+			/>
 			<h3 className="text-2xl text-center font-bold text-secondary mb-6">
 			{t('artbook.card.righttitle')}
 			</h3>
@@ -202,6 +210,7 @@ const ArtBookCardSection = () => {
 			{/* <div className='fixed inset-0 flex items-center justify-center pointer-events-none overflow-visible'>
 				<DrumImage id='feat-drum' />
 			</div> */}
+			
 
 			{/* <div className="absolute inset-0 [-webkit-mask-image:url('/textures/asfalt-dark.png')] [mask-image:url('/textures/asfalt-dark.png')] [-webkit-mask-repeat:repeat] [mask-repeat:repeat] [-webkit-mask-size:100px] [mask-size:100px] bg-[rgba(0,0,0,0.6)]" /> */}
 			</div>
