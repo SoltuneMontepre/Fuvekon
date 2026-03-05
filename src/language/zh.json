@@ -49,6 +49,7 @@
 		}
 	},
 	"nav": {
+		"myConbook": "我的 Conbook 投稿",
 		"ticket": "票务",
 		"register": "注册",
 		"contributes": "投稿",
@@ -561,6 +562,7 @@
 				"righttitle": "画册",
 				"rightdescription": "画册 是为参会者准备的指南汇编，同时收录社区创作者的艺术作品，充满个人风格和活动精神。如果您热爱艺术并想为活动贡献创意，就把您的作品发送到 FUVE，加入 conbook 吧！",
 				"title": "画册",
+				"conbookLink": "提交 Conbook",
 				"description1": "Artbook 是为参会者准备的指南汇编，同时收录社区创作者的艺术作品，充满个人风格和活动精神。",
 				"description2": "如果您热爱艺术并想为活动贡献创意，就把您的作品发送到 FUVE，加入 conbook 吧！",
 				"button": "立即提交",

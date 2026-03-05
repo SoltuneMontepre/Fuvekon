@@ -49,6 +49,7 @@
 		}
 	},
 	"nav": {
+		"myConbook": "Gửi Conbook",
 		"ticket": "Vé",
 		"register": "Đăng ký",
 		"contributes": "Đóng góp",
@@ -561,6 +562,7 @@
 				"righttitle": "Tham gia Conbook",
 				"rightdescription": "Conbook là ấn phẩm tổng hợp các hướng dẫn cho người tham dự sự kiện và bao gồm cả các tác phẩm nghệ thuật do chính những nhà sáng tạo trong cộng đồng sáng tác, mang đậm màu sắc cá nhân và tinh thần của sự kiện. Nếu bạn yêu nghệ thuật và muốn đóng góp một phần tinh thần cho sự kiện thì hãy gửi ngay tác phẩm của bạn đến FUVE để tham gia nhé conbook nhé",
 				"title": "CONBOOK",
+				"conbookLink": "Gửi Conbook",
 				"description1": "Conbook là ấn phẩm tổng hợp các hướng dẫn cho người tham dự sự kiện và bao gồm cả các tác phẩm nghệ thuật do chính những nhà sáng tạo trong cộng đồng sáng tác, mang đậm màu sắc cá nhân và tinh thần của sự kiện.",
 				"description2": " Nếu bạn yêu nghệ thuật và muốn đóng góp một phần tinh thần cho sự kiện thì hãy gửi ngay tác phẩm của bạn đến FUVE để tham gia nhé conbook nhé",
 				"button": "Gửi ngay",

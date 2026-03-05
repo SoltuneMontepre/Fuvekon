@@ -3,6 +3,7 @@
 import SideBar from '@/components/nav/SideBar'
 import type { ReactNode } from 'react'
 import { UserCircle, Ticket, Store, Lock } from 'lucide-react'
+import { FolderUp } from 'lucide-react'
 import { useGetMe } from '@/hooks/services/auth/useAccount'
 import { useAuthStore } from '@/stores/authStore'
 import { useEffect } from 'react'
@@ -36,6 +37,11 @@ const AccountLayout = ({ children }: AccountLayoutProps) => {
 					label: t('myTicket'),
 					href: '/account/ticket',
 					icon: Ticket,
+				},
+				{
+					label: t('myConbook'),
+					href: '/account/conbook',
+					icon: FolderUp,
 				},
 				{
 					label: t('changePassword'),
