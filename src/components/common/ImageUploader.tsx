@@ -110,7 +110,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = props => {
 			const lastPart = parsed.pathname.split('/').pop() || ''
 			return decodeURIComponent(lastPart)
 		} catch {
-			return 'Uploaded document'
+			return tCommon('imageUploader.status.uploadSuccessful')
 		}
 	}
 
@@ -162,7 +162,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = props => {
 			if (!isAcceptedFileType(file, accept)) {
 				const errorMsg = accept.includes('image')
 					? tCommon('imageUploader.validation.invalidType')
-					: 'Please select a valid file type.'
+					: tCommon('imageUploader.validation.invalidFileType')
 				setUploadError(errorMsg)
 				onUploadError?.(new Error(errorMsg))
 				return

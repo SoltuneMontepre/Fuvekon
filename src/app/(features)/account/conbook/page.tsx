@@ -1,8 +1,9 @@
 'use client'
 
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { FileText } from 'lucide-react'
 import Link from 'next/link'
+import { createPortal } from 'react-dom'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import Button from '@/components/ui/Button'
@@ -37,9 +38,17 @@ const AccountConbookPage = (): React.ReactElement => {
 			return 'Document'
 		}
 	}
+    // const useTranslations = () => {
 
 	const [isSuccess, setIsSuccess] = useState(false)
+	const [lastSubmitWasEdit, setLastSubmitWasEdit] = useState(false)
 	const [editingId, setEditingId] = useState<string | null>(null)
+	const [zoomedImageUrl, setZoomedImageUrl] = useState<string | null>(null)
+	const [isClient, setIsClient] = useState(false)
+
+	useEffect(() => {
+		setIsClient(true)
+	}, [])
 	const {
 		mutateAsync: uploadArtbook,
 		isPending: isUploadingArtbook,
@@ -117,6 +126,7 @@ const AccountConbookPage = (): React.ReactElement => {
 		try {
 			setIsSuccess(false)
 			clearErrors()
+			const isEditSubmission = Boolean(editingId)
 
 			if (!formData.image_url) {
 				setError('image_url', {
@@ -135,6 +145,7 @@ const AccountConbookPage = (): React.ReactElement => {
 			} else {
 				await uploadArtbook(mapArtbookToApiRequest(formData))
 			}
+			setLastSubmitWasEdit(isEditSubmission)
 			setIsSuccess(true)
 			reset()
 		} catch (error: unknown) {
@@ -147,6 +158,25 @@ const AccountConbookPage = (): React.ReactElement => {
 
 	return (
 		<div className='w-full space-y-6'>
+			{isClient &&
+				zoomedImageUrl &&
+				createPortal(
+					<div
+						className='fixed inset-0 z-1000 bg-black/85 flex items-center justify-center cursor-zoom-out'
+						onClick={() => setZoomedImageUrl(null)}
+					>
+						<div className='relative w-[80vw] h-[80vh] max-w-[1200px] max-h-[1200px]'>
+							<S3Image
+								src={zoomedImageUrl}
+								alt='Zoomed preview'
+								fill
+								className='object-contain'
+							/>
+						</div>
+					</div>,
+					document.body
+				)}
+
 			<div className='rounded-[30px] bg-[#E9F5E7] p-4 sm:p-6 md:p-8 shadow-sm text-text-secondary'>
 				<h2 className='text-2xl sm:text-3xl font-bold text-text-primary'>
 					Submit Conbook
@@ -155,7 +185,7 @@ const AccountConbookPage = (): React.ReactElement => {
 					Submit your artwork and manage your own conbook submissions here.
 				</p>
 				<div className='mt-3'>
-					<Link href='/artbook' className='text-sm font-medium text-[#48715B] hover:underline'>
+					<Link href='/artbook' className='text-lg font-bold text-[#48715B] hover:underline'>
 						View conbook rules
 					</Link>
 				</div>
@@ -163,7 +193,9 @@ const AccountConbookPage = (): React.ReactElement => {
 				<form onSubmit={handleSubmit(onSubmit)} className='mt-6 flex flex-col gap-6'>
 					{isSuccess && (
 						<p className='text-green-700 text-sm'>
-							{editingId ? 'Submission updated successfully!' : 'Submission successful!'}
+							{lastSubmitWasEdit
+								? 'Submission updated successfully!'
+								: 'Submission successful!'}
 						</p>
 					)}
 					{errors.root?.message && (
@@ -212,7 +244,10 @@ const AccountConbookPage = (): React.ReactElement => {
 
 					{uploadedFileUrl && (
 						isImageUrl(uploadedFileUrl) ? (
-							<div className='relative mt-12 -mb-5 h-48 w-full rounded-xl overflow-hidden border border-[#48715B]/20 bg-white'>
+							<div
+								className='relative mt-12 -mb-5 h-48 w-full rounded-xl overflow-hidden border border-[#48715B]/20 bg-white cursor-zoom-in'
+								onClick={() => setZoomedImageUrl(uploadedFileUrl)}
+							>
 								<S3Image
 									src={uploadedFileUrl}
 									alt='Preview'
@@ -298,7 +333,10 @@ const AccountConbookPage = (): React.ReactElement => {
 								</div>
 								{item.image_url &&
 									(isImageUrl(item.image_url) ? (
-										<div className='relative h-40 w-full rounded-lg overflow-hidden border border-[#48715B]/20'>
+										<div
+											className='relative h-40 w-full rounded-lg overflow-hidden border border-[#48715B]/20 cursor-zoom-in'
+											onClick={() => setZoomedImageUrl(item.image_url as string)}
+										>
 											<S3Image
 												src={item.image_url}
 												alt={item.title}

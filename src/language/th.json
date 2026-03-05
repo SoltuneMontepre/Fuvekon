@@ -31,7 +31,8 @@
 			},
 			"validation": {
 				"fileTooLarge": "ขนาดไฟล์เกินขีดจำกัด {maxSizeMB}MB",
-				"invalidType": "กรุณาเลือกไฟล์รูปภาพ"
+				"invalidType": "กรุณาเลือกไฟล์รูปภาพ",
+				"invalidFileType": "กรุณาเลือกประเภทไฟล์ที่ถูกต้อง"
 			},
 			"actions": {
 				"replace": "แทนที่",

@@ -31,7 +31,8 @@
 			},
 			"validation": {
 				"fileTooLarge": "文件大小超过 {maxSizeMB}MB 限制",
-				"invalidType": "请选择图片文件"
+				"invalidType": "请选择图片文件",
+				"invalidFileType": "请选择有效的文件类型"
 			},
 			"actions": {
 				"replace": "替换",

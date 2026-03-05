@@ -29,7 +29,7 @@ const ConbookApi = {
 		return data
 	},
 	update: async (id: string, payload: UploadArtbookRequest) => {
-		const { data } = await axios.general.patch<UploadArtbookResponse>(
+		const { data } = await axios.general.put<UploadArtbookResponse>(
 			`/conbooks/${id}`,
 			payload
 		)

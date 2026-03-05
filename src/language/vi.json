@@ -31,7 +31,8 @@
 			},
 			"validation": {
 				"fileTooLarge": "Kích thước tệp vượt quá giới hạn {maxSizeMB}MB",
-				"invalidType": "Vui lòng chọn tệp hình ảnh"
+				"invalidType": "Vui lòng chọn tệp hình ảnh",
+				"invalidFileType": "Vui lòng chọn loại tệp hợp lệ"
 			},
 			"actions": {
 				"replace": "Thay thế",
