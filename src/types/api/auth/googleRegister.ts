@@ -18,21 +18,28 @@ export const GoogleRegisterFormSchema = z.object({
 		.min(1, ERROR_MESSAGES.REQUIRED_FIELD)
 		.trim()
 		.min(FORM_CONSTANTS.MIN_NICKNAME_LENGTH, ERROR_MESSAGES.NICKNAME_TOO_SHORT)
-		.max(FORM_CONSTANTS.MAX_NICKNAME_LENGTH, ERROR_MESSAGES.NICKNAME_TOO_LONG)
-		.regex(VALIDATION_PATTERNS.NICKNAME, ERROR_MESSAGES.INVALID_NICKNAME),
+		.max(FORM_CONSTANTS.MAX_NICKNAME_LENGTH, ERROR_MESSAGES.NICKNAME_TOO_LONG),
+	dateOfBirth: z
+		.string()
+		.min(1, ERROR_MESSAGES.REQUIRED_FIELD)
+		.refine(date => {
+			const birthDate = new Date(date)
+			const today = new Date()
+			const age = today.getFullYear() - birthDate.getFullYear()
+			const monthDiff = today.getMonth() - birthDate.getMonth()
+			if (
+				monthDiff < 0 ||
+				(monthDiff === 0 && today.getDate() < birthDate.getDate())
+			) {
+				return age - 1 >= 16
+			}
+			return age >= 16
+		}, 'validation.ageRequirement'),
 	country: z
 		.string()
 		.min(1, ERROR_MESSAGES.REQUIRED_FIELD)
 		.trim()
 		.min(2, ERROR_MESSAGES.INVALID_COUNTRY),
-	idCard: z
-		.string()
-		.min(1, ERROR_MESSAGES.REQUIRED_FIELD)
-		.transform(val => val.replace(/\s/g, '').toUpperCase())
-		.refine(
-			val => VALIDATION_PATTERNS.ID_CARD.test(val),
-			ERROR_MESSAGES.INVALID_ID_CARD
-		),
 })
 
 export type GoogleRegisterFormData = z.infer<typeof GoogleRegisterFormSchema>
@@ -41,6 +48,6 @@ export interface GoogleRegisterRequest {
 	credential: string
 	fullName: string
 	nickname: string
+	dateOfBirth: string
 	country: string
-	idCard: string
 }
