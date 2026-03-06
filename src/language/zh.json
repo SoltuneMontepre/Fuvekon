@@ -496,10 +496,15 @@
 		"unableToLoadSubmissions": "当前无法加载您的投稿。",
 		"noSubmissions": "您还没有提交任何 conbook 投稿。",
 		"handleLabel": "社交账号",
-		"verified": "已审核",
-		"pendingVerification": "待审核",
-		"verifiedByStaff": "已由工作人员审核",
-		"editSubmission": "编辑投稿"
+		"verified": "已批准",
+		"pendingVerification": "待批准",
+		"verifiedByStaff": "已由工作人员批准",
+		"editSubmission": "编辑投稿",
+		"deleteSubmission": "删除",
+		"deleting": "删除中...",
+		"confirmDelete": "确定删除\"{title}\"吗？此操作无法撤销。",
+		"deleteSuccess": "投稿删除成功。",
+		"deleteError": "删除投稿失败，请重试。"
 	},
 	"changePassword": {
 		"title": "修改密码",

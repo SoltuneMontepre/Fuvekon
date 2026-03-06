@@ -496,10 +496,15 @@
 		"unableToLoadSubmissions": "Hiện không thể tải bài gửi của bạn.",
 		"noSubmissions": "Bạn chưa gửi conbook nào.",
 		"handleLabel": "Mạng xã hội",
-		"verified": "Đã xác minh",
-		"pendingVerification": "Đang chờ xác minh",
-		"verifiedByStaff": "Đã được staff xác minh",
-		"editSubmission": "Chỉnh sửa bài gửi"
+		"verified": "Đã duyệt",
+		"pendingVerification": "Đang chờ duyệt",
+		"verifiedByStaff": "Đã được staff duyệt",
+		"editSubmission": "Chỉnh sửa bài gửi",
+		"deleteSubmission": "Xóa",
+		"deleting": "Đang xóa...",
+		"confirmDelete": "Xóa \"{title}\"? Hành động này không thể hoàn tác.",
+		"deleteSuccess": "Đã xóa bài gửi thành công.",
+		"deleteError": "Xóa bài gửi thất bại. Vui lòng thử lại."
 	},
 	"changePassword": {
 		"title": "ĐỔI MẬT KHẨU",

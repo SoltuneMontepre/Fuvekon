@@ -41,6 +41,12 @@ const ConbookApi = {
 		)
 		return data
 	},
+	delete: async (id: string) => {
+		const { data } = await axios.general.delete<UploadArtbookResponse>(
+			`/conbooks/${id}`
+		)
+		return data
+	},
 }
 
 export function useGetMyConbooks() {
@@ -77,6 +83,19 @@ export function useUpdateConbookSubmission() {
 			payload: UploadArtbookRequest
 		}) => {
 			return ConbookApi.update(id, payload)
+		},
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: conbookKeys.mySubmissions })
+		},
+	})
+}
+
+export function useDeleteConbookSubmission() {
+	const queryClient = getQueryClient()
+
+	return useMutation({
+		mutationFn: async (id: string) => {
+			return ConbookApi.delete(id)
 		},
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: conbookKeys.mySubmissions })

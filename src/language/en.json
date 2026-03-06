@@ -496,10 +496,15 @@
 		"unableToLoadSubmissions": "Unable to load your submissions right now.",
 		"noSubmissions": "You have not submitted any conbook yet.",
 		"handleLabel": "Handle",
-		"verified": "Verified",
-		"pendingVerification": "Pending verification",
-		"verifiedByStaff": "Verified by staff",
-		"editSubmission": "Edit submission"
+		"verified": "Approved",
+		"pendingVerification": "Pending approval",
+		"verifiedByStaff": "Approved by staff",
+		"editSubmission": "Edit submission",
+		"deleteSubmission": "Delete",
+		"deleting": "Deleting...",
+		"confirmDelete": "Delete \"{title}\"? This action cannot be undone.",
+		"deleteSuccess": "Submission deleted successfully.",
+		"deleteError": "Failed to delete submission. Please try again."
 	},
 	"changePassword": {
 		"title": "CHANGE PASSWORD",

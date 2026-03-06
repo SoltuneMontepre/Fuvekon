@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useEffect, useMemo, useState } from 'react'
-import { Camera, FileText, X } from 'lucide-react'
+import { Camera, FileText, Trash2, X } from 'lucide-react'
 import Link from 'next/link'
 import { createPortal } from 'react-dom'
 import { useForm } from 'react-hook-form'
@@ -19,6 +19,7 @@ import {
 } from '@/types/api/artbook/uploadArtbook'
 import {
 	useGetMyConbooks,
+	useDeleteConbookSubmission,
 	useUpdateConbookSubmission,
 	useUploadArtbook,
 } from '@/hooks/services/artbook/useUploadFile'
@@ -70,6 +71,10 @@ const AccountConbookPage = (): React.ReactElement => {
 		mutateAsync: updateConbook,
 		isPending: isUpdatingConbook,
 	} = useUpdateConbookSubmission()
+	const {
+		mutateAsync: deleteConbook,
+		isPending: isDeletingConbook,
+	} = useDeleteConbookSubmission()
 	const {
 		data: myConbooksResponse,
 		isLoading: isLoadingSubmissions,
@@ -134,6 +139,35 @@ const AccountConbookPage = (): React.ReactElement => {
 			handle: '',
 			image_url: null,
 		})
+	}
+
+	const handleDelete = async (item: {
+		id: string
+		title: string
+		is_verified?: boolean
+	}) => {
+		if (isSubmissionVerified(item.is_verified)) return
+
+		try {
+			setIsSuccess(false)
+			clearErrors()
+			await deleteConbook(item.id)
+
+			if (editingId === item.id) {
+				cancelEdit()
+			}
+
+			setError('root', {
+				type: 'manual',
+				message: t('deleteSuccess'),
+			})
+		} catch (error: unknown) {
+			if (error instanceof Error) {
+				setError('root', { type: 'manual', message: error.message })
+				return
+			}
+			setError('root', { type: 'manual', message: t('deleteError') })
+		}
 	}
 	const submissions = useMemo(() => {
 		if (!myConbooksResponse?.isSuccess || !myConbooksResponse.data) {
@@ -224,7 +258,7 @@ const AccountConbookPage = (): React.ReactElement => {
 					{t('description')}
 				</p>
 				<div className='mt-3'>
-					<Link href='/artbook' className='!border-none inline-flex items-center rounded-xl border border-[#48715B]/25 bg-white px-3 py-2 text-sm font-semibold text-[#3a5a4a] transition-colors hover:!bg-[#48715B] hover:!text-[#f0f8f3]'>
+					<Link href='/artbook' className='!border-none inline-flex items-center rounded-xl border border-[#48715B]/25 bg-white px-3 py-2 text-sm text-[#3a5a4a] transition-colors hover:!bg-[#48715B] hover:!text-[#f0f8f3] underline font-bold'>
 						{t('readGuidelines')}
 					</Link>
 				</div>
@@ -401,16 +435,18 @@ const AccountConbookPage = (): React.ReactElement => {
 						{submissions.map(item => (
 							<div
 								key={item.id}
-								className='group space-y-3 rounded-2xl border border-[#48715B]/20 bg-gradient-to-b from-white to-[#f8fcf9] p-4 shadow-[0_14px_28px_-20px_rgba(42,74,59,0.9)] transition-all hover:-translate-y-[2px]'
+								className='group flex h-full flex-col gap-3 rounded-2xl border border-[#48715B]/20 bg-gradient-to-b from-white to-[#f8fcf9] p-4 shadow-[0_14px_28px_-20px_rgba(42,74,59,0.9)] transition-all hover:-translate-y-[2px]'
 							>
 								<div>
-									<p className='font-semibold text-text-primary transition-colors group-hover:text-[#2f4c3d]'>{item.title}</p>
+									<p className='font-bold text-text-primary transition-colors text-xl'>{item.title}</p>
 									<p className='text-sm text-text-secondary/90 break-words'>
 										{item.description}
 									</p>
 									<p className='mt-1 text-xs text-[#48715B]'>
-										{t('handleLabel')}: {item.handle}
+										{item.handle}
 									</p>
+								</div>
+								<div className='mt-auto space-y-3'>
 									<p
 										className={`mt-2 inline-flex items-center rounded-full border px-2 py-1 text-xs font-medium ${
 											item.is_verified
@@ -420,8 +456,7 @@ const AccountConbookPage = (): React.ReactElement => {
 									>
 										{item.is_verified ? t('verified') : t('pendingVerification')}
 									</p>
-								</div>
-								{item.image_url &&
+									{item.image_url &&
 									(isImageUrl(item.image_url) ? (
 										<div
 											className='group/preview relative h-40 w-full cursor-zoom-in overflow-hidden rounded-xl border border-[#48715B]/20 bg-[#edf5ef]'
@@ -448,18 +483,41 @@ const AccountConbookPage = (): React.ReactElement => {
 											</p>
 										</div>
 									))}
-								<div className='pt-1'>
+								</div>
+								<div className='pt-1 flex gap-2 justify-between'>
 									<Button
-										className='cursor-pointer border border-[#48715B]/25 bg-white text-[#355643] transition-colors hover:bg-[#ecf6ef]'
+										// className='cursor-pointer border border-[#48715B]/25 !bg-[#3f654f] !text-[#f0f8f3] transition-colors hover:!bg-[#335241] hover:!text-[#f0f8f3]'
+										className='cursor-pointer'
 										props={{
 											type: 'button',
 											onClick: () => startEdit(item),
-											disabled: isSubmissionVerified(item.is_verified),
+											disabled:
+												isSubmissionVerified(item.is_verified) ||
+												isDeletingConbook ||
+												isUpdatingConbook ||
+												isUploadingArtbook,
 										}}
 									>
 											{isSubmissionVerified(item.is_verified)
 												? t('verifiedByStaff')
 												: t('editSubmission')}
+									</Button>
+									<Button
+										className='cursor-pointer border border-rose-300/70 bg-white !text-rose-700 transition-colors hover:bg-rose-50'
+										props={{
+											type: 'button',
+											onClick: () => handleDelete(item),
+											disabled:
+												isSubmissionVerified(item.is_verified) ||
+												isDeletingConbook ||
+												isUpdatingConbook ||
+												isUploadingArtbook,
+										}}
+									>
+										<span className='inline-flex items-center gap-1'>
+											<Trash2 size={14} />
+											{isDeletingConbook ? t('deleting') : t('deleteSubmission')}
+										</span>
 									</Button>
 								</div>
 							</div>
