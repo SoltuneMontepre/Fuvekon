@@ -10,6 +10,7 @@ const ALLOWED_FILE_EXTENSIONS = [
 	// '.bmp',
 	'.doc',
 	'.docx',
+	'.pdf',
 ]
 
 const isAllowedFileUrl = (value: string): boolean => {

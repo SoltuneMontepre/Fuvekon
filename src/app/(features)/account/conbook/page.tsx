@@ -309,7 +309,7 @@ const AccountConbookPage = (): React.ReactElement => {
 						key={uploaderKey}
 						className='mb-10 h-24 rounded-2xl'
 						folder='artbooks'
-						accept='image/*,.doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+						accept='image/*,.doc,.docx,.pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/pdf'
 						maxSizeMB={15}
 						// successMessageDurationMs={3000}
 						onUploadSuccess={fileUrl => {
