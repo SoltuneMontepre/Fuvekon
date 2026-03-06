@@ -176,6 +176,19 @@ const AccountConbookPage = (): React.ReactElement => {
 		return myConbooksResponse.data
 	}, [myConbooksResponse])
 
+	const prioritizedSubmissions = useMemo(() => {
+		return [...submissions].sort((a, b) => {
+			// Priority 1: approved submissions first
+			const verificationPriority = Number(isSubmissionVerified(b.is_verified)) - Number(isSubmissionVerified(a.is_verified))
+			if (verificationPriority !== 0) return verificationPriority
+
+			// Priority 2: newest submissions first
+			const dateA = new Date(a.created_at || a.createdAt || 0).getTime()
+			const dateB = new Date(b.created_at || b.createdAt || 0).getTime()
+			return dateB - dateA
+		})
+	}, [submissions])
+
 	const onSubmit = async (formData: UploadArtbookFormData) => {
 		try {
 			setIsSuccess(false)
@@ -432,7 +445,7 @@ const AccountConbookPage = (): React.ReactElement => {
 					</p>
 				) : (
 					<div className='mt-5 grid grid-cols-1 gap-4 md:grid-cols-2'>
-						{submissions.map(item => (
+						{prioritizedSubmissions.map(item => (
 							<div
 								key={item.id}
 								className='group flex h-full flex-col gap-3 rounded-2xl border border-[#48715B]/20 bg-gradient-to-b from-white to-[#f8fcf9] p-4 shadow-[0_14px_28px_-20px_rgba(42,74,59,0.9)] transition-all hover:-translate-y-[2px]'
