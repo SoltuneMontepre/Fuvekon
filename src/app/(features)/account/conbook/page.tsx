@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useEffect, useMemo, useState } from 'react'
-import { FileText } from 'lucide-react'
+import { Camera, FileText } from 'lucide-react'
 import Link from 'next/link'
 import { createPortal } from 'react-dom'
 import { useForm } from 'react-hook-form'
@@ -157,7 +157,9 @@ const AccountConbookPage = (): React.ReactElement => {
 	}
 
 	return (
-		<div className='w-full max-w-5xl mx-auto space-y-6'>
+		<div className='relative w-full max-w-6xl mx-auto overflow-hidden rounded-[36px] bg-gradient-to-br from-[#f3fbef] via-[#edf7f2] to-[#e3efe9] px-4 py-6 sm:px-6 sm:py-8 md:px-8 md:py-10'>
+			<div className='pointer-events-none absolute -left-24 -top-24 h-64 w-64 rounded-full bg-[#84b893]/20 blur-3xl' />
+			<div className='pointer-events-none absolute -bottom-28 -right-20 h-72 w-72 rounded-full bg-[#48715B]/15 blur-3xl' />
 			{isClient &&
 				zoomedImageUrl &&
 				createPortal(
@@ -165,7 +167,8 @@ const AccountConbookPage = (): React.ReactElement => {
 						className='fixed inset-0 z-[1000] bg-black/85 backdrop-blur-[2px] flex items-center justify-center cursor-zoom-out'
 						onClick={() => setZoomedImageUrl(null)}
 					>
-						<div className='relative w-[80vw] h-[80vh] max-w-[1200px] max-h-[1200px]'>
+						{/* <div className='relative w-[80vw] h-[80vh] max-w-[1200px] max-h-[1200px]'>*/}
+						<div className='relative w-full h-full max-w-[1200px] max-h-[1200px]'> 
 							<S3Image
 								src={zoomedImageUrl}
 								alt='Zoomed preview'
@@ -178,29 +181,30 @@ const AccountConbookPage = (): React.ReactElement => {
 					document.body
 				)}
 
-			<div className='rounded-[30px] bg-[#E9F5E7] p-4 sm:p-6 md:p-8 shadow-md border border-[#48715B]/10 text-text-secondary'>
-				<h2 className='text-2xl sm:text-3xl font-bold text-text-primary'>
+			<div className='relative rounded-[30px] bg-transparent p-5 text-text-secondary shadow-[0_20px_60px_-30px_rgba(72,113,91,0.55)] backdrop-blur-sm sm:p-7 md:p-9'>
+				<h2 className='text-2xl font-black tracking-tight text-text-primary sm:text-3xl md:text-[2rem]'>
 					Submit Conbook
 				</h2>
-				<p className='mt-2 text-sm text-text-secondary'>
+				<p className='mt-2 max-w-2xl text-sm leading-relaxed text-text-secondary/90'>
 					Submit your artwork and manage your own conbook submissions here.
 				</p>
 				<div className='mt-3'>
-					<Link href='/artbook' className='inline-flex items-center px-3 py-2 rounded-lg border border-[#48715B]/20 bg-white text-sm font-semibold text-[#48715B] hover:underline'>
-						View conbook rules
+					<Link href='/artbook' className='!border-none inline-flex items-center rounded-xl border border-[#48715B]/25 bg-white px-3 py-2 text-sm font-semibold text-[#3a5a4a] transition-colors hover:!bg-[#485a51] hover:!text-[#f0f8f3]'>
+						Please read the submission guidelines before submitting
 					</Link>
 				</div>
-
-				<form onSubmit={handleSubmit(onSubmit)} className='mt-6 flex flex-col gap-6'>
+				<form onSubmit={handleSubmit(onSubmit)} className='mt-7 flex flex-col gap-6'>
 					{isSuccess && (
-						<p className='text-green-700 text-sm bg-green-50 border border-green-200 rounded-lg px-3 py-2'>
-							{lastSubmitWasEdit
+						// <p className='rounded-xl border border-emerald-300/60 bg-emerald-50 px-3 py-2 text-sm font-medium text-emerald-800'>
+						<p className='text-green-600 rounded-xl border border-emerald-300/60 bg-emerald-50 px-3 py-2 text-sm font-medium'>
+	
+						{lastSubmitWasEdit
 								? 'Submission updated successfully!'
 								: 'Submission successful!'}
 						</p>
 					)}
 					{errors.root?.message && (
-						<p className='text-red-600 text-sm bg-red-50 border border-red-200 rounded-lg px-3 py-2'>
+						<p className='rounded-xl border border-rose-300/70 bg-rose-50 px-3 py-2 text-sm font-medium text-rose-700'>
 							{errors.root.message}
 						</p>
 					)}
@@ -233,7 +237,7 @@ const AccountConbookPage = (): React.ReactElement => {
 					/>
 
 					<ImageUploader
-						className='h-24 mb-8'
+						className='mb-10 h-24 rounded-2xl'
 						folder='artbooks'
 						accept='image/*,.doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document'
 						maxSizeMB={15}
@@ -248,18 +252,26 @@ const AccountConbookPage = (): React.ReactElement => {
 					{uploadedFileUrl && (
 						isImageUrl(uploadedFileUrl) ? (
 							<div
-								className='relative mt-10 h-56 w-full rounded-xl overflow-hidden border border-[#48715B]/20 bg-white cursor-zoom-in shadow-sm'
+								className='group/preview relative mt-2 h-56 w-full cursor-zoom-in overflow-hidden rounded-2xl border border-[#48715B]/20 bg-white shadow-[0_14px_28px_-18px_rgba(48,82,65,0.65)] ring-1 ring-white/60'
 								onClick={() => setZoomedImageUrl(uploadedFileUrl)}
 							>
 								<S3Image
 									src={uploadedFileUrl}
 									alt='Preview'
 									fill
-									className='object-contain'
+									className='z-0 object-contain'
 								/>
+								<div
+									className='pointer-events-none absolute inset-0 z-10 flex flex-col items-center justify-center transition-all duration-200 bg-black/0 opacity-0 group-hover/preview:bg-black/40 group-hover/preview:opacity-100'
+								>
+									<Camera className='text-white drop-shadow' size={32} />
+									<span className='mt-2 text-xs font-semibold text-white/95'>
+										Click to zoom
+									</span>
+								</div>
 							</div>
 						) : (
-							<div className='mt-10 h-56 w-full rounded-xl border border-[#48715B]/20 bg-white p-4 flex flex-col items-center justify-center gap-2 text-center shadow-sm'>
+							<div className='mt-2 flex h-56 w-full flex-col items-center justify-center gap-2 rounded-2xl border border-[#48715B]/20 bg-white p-4 text-center shadow-[0_14px_28px_-18px_rgba(48,82,65,0.65)] ring-1 ring-white/60'>
 								<FileText className='w-12 h-12 text-[#48715B]' />
 								<p className='text-sm text-[#48715B] break-all'>
 									{getFileNameFromUrl(uploadedFileUrl)}
@@ -269,12 +281,12 @@ const AccountConbookPage = (): React.ReactElement => {
 					)}
 
 					{errors.image_url && (
-						<p className='text-sm text-red-500'>{errors.image_url.message}</p>
+						<p className='text-sm font-medium text-rose-600'>{errors.image_url.message}</p>
 					)}
 
-					<div className='pt-2 flex flex-col sm:flex-row gap-3'>
+					<div className='flex flex-col gap-3 pt-2 sm:flex-row'>
 						<Button
-							className='cursor-pointer sm:min-w-[360px] bg-[#48715B] text-white hover:bg-[#3a5a4a] border-none'
+							className='cursor-pointer !border-none w-full !bg-[#3f654f] !text-white shadow-[0_12px_24px_-14px_rgba(48,82,65,0.9)] transition-all hover:-translate-y-[1px] hover:!bg-[#355643] sm:min-w-[360px]'
 							props={{ disabled: isUploadingArtbook || isUpdatingConbook || isSubmitting }}
 						>
 							{isSubmitting
@@ -288,7 +300,7 @@ const AccountConbookPage = (): React.ReactElement => {
 
 						{editingId && (
 							<Button
-								className='cursor-pointer sm:min-w-[140px]'
+								className='cursor-pointer border border-[#48715B]/30 bg-white text-[#355643] transition-colors hover:bg-[#ecf6ef] sm:min-w-[140px]'
 								props={{
 									type: 'button',
 									onClick: cancelEdit,
@@ -302,8 +314,8 @@ const AccountConbookPage = (): React.ReactElement => {
 				</form>
 			</div>
 
-			<div className='rounded-[30px] bg-[#E9F5E7] p-4 sm:p-6 md:p-8 shadow-md border border-[#48715B]/10 text-text-secondary'>
-				<h3 className='text-xl sm:text-2xl font-bold text-text-primary'>
+			<div className='relative rounded-[30px] border mt-10 border-[#48715B]/15 bg-transparent p-5 text-text-secondary shadow-[0_20px_60px_-30px_rgba(72,113,91,0.55)] backdrop-blur-sm sm:p-7 md:p-9'>
+				<h3 className='text-xl font-black tracking-tight text-text-primary sm:text-2xl'>
 					My Submissions ({submissions.length})
 				</h3>
 
@@ -320,37 +332,43 @@ const AccountConbookPage = (): React.ReactElement => {
 						You have not submitted any conbook yet.
 					</p>
 				) : (
-					<div className='mt-5 grid grid-cols-1 md:grid-cols-2 gap-4'>
+					<div className='mt-5 grid grid-cols-1 gap-4 md:grid-cols-2'>
 						{submissions.map(item => (
 							<div
 								key={item.id}
-								className='rounded-2xl border border-[#48715B]/20 bg-white p-4 space-y-3 shadow-sm hover:shadow-md transition-shadow'
+								className='group space-y-3 rounded-2xl border border-[#48715B]/20 bg-gradient-to-b from-white to-[#f8fcf9] p-4 shadow-[0_14px_28px_-20px_rgba(42,74,59,0.9)] transition-all hover:-translate-y-[2px]'
 							>
 								<div>
-									<p className='font-semibold text-text-primary'>{item.title}</p>
-									<p className='text-sm text-text-secondary break-words'>
+									<p className='font-semibold text-text-primary transition-colors group-hover:text-[#2f4c3d]'>{item.title}</p>
+									<p className='text-sm text-text-secondary/90 break-words'>
 										{item.description}
 									</p>
-									<p className='text-xs text-[#48715B] mt-1'>Handle: {item.handle}</p>
-									<p className='inline-flex items-center text-xs mt-2 px-2 py-1 rounded-full border border-[#48715B]/20 bg-[#E9F5E7] text-[#48715B]'>
+									<p className='mt-1 text-xs text-[#48715B]'>Handle: {item.handle}</p>
+									<p className='mt-2 inline-flex items-center rounded-full border border-[#48715B]/20 bg-[#e7f3ea] px-2 py-1 text-xs font-medium text-[#426a55]'>
 										{item.is_verified ? 'Verified' : 'Pending verification'}
 									</p>
 								</div>
 								{item.image_url &&
 									(isImageUrl(item.image_url) ? (
 										<div
-											className='relative h-40 w-full rounded-lg overflow-hidden border border-[#48715B]/20 cursor-zoom-in'
+											className='group/preview relative h-40 w-full cursor-zoom-in overflow-hidden rounded-xl border border-[#48715B]/20 bg-[#edf5ef]'
 											onClick={() => setZoomedImageUrl(item.image_url as string)}
 										>
 											<S3Image
 												src={item.image_url}
 												alt={item.title}
 												fill
-												className='object-contain bg-[#E2EEE2]'
+												className='z-0 object-contain bg-[#E2EEE2]'
 											/>
+											<div className='pointer-events-none absolute inset-0 z-10 flex flex-col items-center justify-center transition-all duration-200 bg-black/0 opacity-0 group-hover/preview:bg-black/40 group-hover/preview:opacity-100'>
+												<Camera className='text-white drop-shadow' size={24} />
+												<span className='mt-1 text-[11px] font-semibold text-white/95'>
+													Click to zoom
+												</span>
+											</div>
 										</div>
 									) : (
-										<div className='h-40 w-full rounded-lg border border-[#48715B]/20 bg-[#E2EEE2] p-4 flex flex-col items-center justify-center gap-2 text-center'>
+										<div className='flex h-40 w-full flex-col items-center justify-center gap-2 rounded-xl border border-[#48715B]/20 bg-[#e2eee2] p-4 text-center'>
 											<FileText className='w-10 h-10 text-[#48715B]' />
 											<p className='text-xs text-[#48715B] break-all'>
 												{getFileNameFromUrl(item.image_url)}
@@ -359,7 +377,7 @@ const AccountConbookPage = (): React.ReactElement => {
 									))}
 								<div className='pt-1'>
 									<Button
-										className='cursor-pointer'
+										className='cursor-pointer border border-[#48715B]/25 bg-white text-[#355643] transition-colors hover:bg-[#ecf6ef]'
 										props={{
 											type: 'button',
 											onClick: () => startEdit(item),
