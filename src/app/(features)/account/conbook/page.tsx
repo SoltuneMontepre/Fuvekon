@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useEffect, useMemo, useState } from 'react'
-import { Camera, FileText } from 'lucide-react'
+import { Camera, FileText, X } from 'lucide-react'
 import Link from 'next/link'
 import { createPortal } from 'react-dom'
 import { useForm } from 'react-hook-form'
@@ -21,6 +21,7 @@ import {
 	useUpdateConbookSubmission,
 	useUploadArtbook,
 } from '@/hooks/services/artbook/useUploadFile'
+import Image from 'next/image'
 
 const AccountConbookPage = (): React.ReactElement => {
 	const isImageUrl = (url: string) => {
@@ -94,6 +95,12 @@ const AccountConbookPage = (): React.ReactElement => {
 	})
 
 	const uploadedFileUrl = watch('image_url')
+
+	const clearSelectedFile = () => {
+		setZoomedImageUrl(null)
+		setValue('image_url', null, { shouldValidate: true })
+		setUploaderKey(prev => prev + 1)
+	}
 
 	const isSubmissionVerified = (isVerified?: boolean) => Boolean(isVerified)
 
@@ -171,6 +178,13 @@ const AccountConbookPage = (): React.ReactElement => {
 
 	return (
 		<div className='relative w-full max-w-6xl mx-auto overflow-hidden rounded-[36px] bg-gradient-to-br from-[#f3fbef] via-[#edf7f2] to-[#e3efe9] px-4 py-6 sm:px-6 sm:py-8 md:px-8 md:py-10'>
+			<Image
+							src='/assets/common/drum_pattern.webp'
+							alt='Drum Pattern'
+							fill
+							className='absolute inset-0 z-0 opacity-[3%] object-cover pointer-events-none'
+							draggable={false}
+						/>
 			<div className='pointer-events-none absolute -left-24 -top-24 h-64 w-64 rounded-full bg-[#84b893]/20 blur-3xl' />
 			<div className='pointer-events-none absolute -bottom-28 -right-20 h-72 w-72 rounded-full bg-[#48715B]/15 blur-3xl' />
 			{isClient &&
@@ -195,6 +209,13 @@ const AccountConbookPage = (): React.ReactElement => {
 				)}
 
 			<div className='relative rounded-[30px] bg-transparent p-5 text-text-secondary shadow-[0_20px_60px_-30px_rgba(72,113,91,0.55)] backdrop-blur-sm sm:p-7 md:p-9'>
+				<Image
+							src='/assets/common/drum_pattern.webp'
+							alt='Drum Pattern'
+							fill
+							className='absolute inset-0 z-0 opacity-[3%] object-cover pointer-events-none'
+							draggable={false}
+						/>
 				<h2 className='text-2xl font-black tracking-tight text-text-primary sm:text-3xl md:text-[2rem]'>
 					Submit Conbook
 				</h2>
@@ -202,7 +223,7 @@ const AccountConbookPage = (): React.ReactElement => {
 					Submit your artwork and manage your own conbook submissions here.
 				</p>
 				<div className='mt-3'>
-					<Link href='/artbook' className='!border-none inline-flex items-center rounded-xl border border-[#48715B]/25 bg-white px-3 py-2 text-sm font-semibold text-[#3a5a4a] transition-colors hover:!bg-[#485a51] hover:!text-[#f0f8f3]'>
+					<Link href='/artbook' className='!border-none inline-flex items-center rounded-xl border border-[#48715B]/25 bg-white px-3 py-2 text-sm font-semibold text-[#3a5a4a] transition-colors hover:!bg-[#48715B] hover:!text-[#f0f8f3]'>
 						Please read the submission guidelines before submitting
 					</Link>
 				</div>
@@ -255,7 +276,7 @@ const AccountConbookPage = (): React.ReactElement => {
 						folder='artbooks'
 						accept='image/*,.doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document'
 						maxSizeMB={15}
-						successMessageDurationMs={3000}
+						// successMessageDurationMs={3000}
 						onUploadSuccess={fileUrl => {
 							setValue('image_url', fileUrl, { shouldValidate: true })
 							setUploaderKey(prev => prev + 1)
@@ -272,11 +293,22 @@ const AccountConbookPage = (): React.ReactElement => {
 								className='group/preview relative mt-2 h-56 w-full cursor-zoom-in overflow-hidden rounded-2xl border border-[#48715B]/20 bg-white shadow-[0_14px_28px_-18px_rgba(48,82,65,0.65)] ring-1 ring-white/60'
 								onClick={() => setZoomedImageUrl(uploadedFileUrl)}
 							>
+								<button
+									type='button'
+									className='absolute right-2 top-2 z-20 inline-flex items-center gap-1 rounded-full border border-white/50 bg-black/60 px-2 py-1 text-[11px] font-semibold text-white transition-colors hover:bg-[#656565]'
+									onClick={event => {
+										event.preventDefault()
+										event.stopPropagation()
+										clearSelectedFile()
+									}}
+								>
+									<X size={15} className='cursor-pointer'/>
+								</button>
 								<S3Image
 									src={uploadedFileUrl}
 									alt='Preview'
 									fill
-									className='z-0 object-contain'
+									className='z-0 object-cover'
 								/>
 								<div
 									className='pointer-events-none absolute inset-0 z-10 flex flex-col items-center justify-center transition-all duration-200 bg-black/0 opacity-0 group-hover/preview:bg-black/40 group-hover/preview:opacity-100'
@@ -288,7 +320,15 @@ const AccountConbookPage = (): React.ReactElement => {
 								</div>
 							</div>
 						) : (
-							<div className='mt-2 flex h-56 w-full flex-col items-center justify-center gap-2 rounded-2xl border border-[#48715B]/20 bg-white p-4 text-center shadow-[0_14px_28px_-18px_rgba(48,82,65,0.65)] ring-1 ring-white/60'>
+							<div className='relative mt-2 flex h-56 w-full flex-col items-center justify-center gap-2 rounded-2xl border border-[#48715B]/20 bg-white p-4 text-center shadow-[0_14px_28px_-18px_rgba(48,82,65,0.65)] ring-1 ring-white/60'>
+								<button
+									type='button'
+									className='absolute right-2 top-2 z-20 inline-flex items-center gap-1 rounded-full border border-[#48715B]/20 bg-[#f4faf6] px-2 py-1 text-[11px] font-semibold text-[#355643] transition-colors hover:bg-[#e8f2eb]'
+									onClick={clearSelectedFile}
+								>
+									<X size={12} />
+									Remove file
+								</button>
 								<FileText className='w-12 h-12 text-[#48715B]' />
 								<p className='text-sm text-[#48715B] break-all'>
 									{getFileNameFromUrl(uploadedFileUrl)}
@@ -332,6 +372,13 @@ const AccountConbookPage = (): React.ReactElement => {
 			</div>
 
 			<div className='relative rounded-[30px] border mt-10 border-[#48715B]/15 bg-transparent p-5 text-text-secondary shadow-[0_20px_60px_-30px_rgba(72,113,91,0.55)] backdrop-blur-sm sm:p-7 md:p-9'>
+				<Image
+							src='/assets/common/drum_pattern.webp'
+							alt='Drum Pattern'
+							fill
+							className='absolute inset-0 z-0 opacity-[3%] object-cover pointer-events-none'
+							draggable={false}
+						/>
 				<h3 className='text-xl font-black tracking-tight text-text-primary sm:text-2xl'>
 					My Submissions ({submissions.length})
 				</h3>
@@ -375,7 +422,7 @@ const AccountConbookPage = (): React.ReactElement => {
 												src={item.image_url}
 												alt={item.title}
 												fill
-												className='z-0 object-contain bg-[#E2EEE2]'
+												className='z-0 object-cover'
 											/>
 											<div className='pointer-events-none absolute inset-0 z-10 flex flex-col items-center justify-center transition-all duration-200 bg-black/0 opacity-0 group-hover/preview:bg-black/40 group-hover/preview:opacity-100'>
 												<Camera className='text-white drop-shadow' size={24} />
