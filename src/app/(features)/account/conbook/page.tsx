@@ -45,7 +45,7 @@ const AccountConbookPage = (): React.ReactElement => {
 	}
 
 	const [isSuccess, setIsSuccess] = useState(false)
-	const [lastSubmitWasEdit, setLastSubmitWasEdit] = useState(false)
+	// const [lastSubmitWasEdit, setLastSubmitWasEdit] = useState(false)
 	const [editingId, setEditingId] = useState<string | null>(null)
 	const [zoomedImageUrl, setZoomedImageUrl] = useState<string | null>(null)
 	const [isClient, setIsClient] = useState(false)
@@ -210,7 +210,7 @@ const AccountConbookPage = (): React.ReactElement => {
 			} else {
 				await uploadArtbook(mapArtbookToApiRequest(formData))
 			}
-			setLastSubmitWasEdit(isEditSubmission)
+			// setLastSubmitWasEdit(isEditSubmission)
 			toast.success(
 				isEditSubmission ? t('submissionUpdated') : t('submissionSuccess')
 			)
