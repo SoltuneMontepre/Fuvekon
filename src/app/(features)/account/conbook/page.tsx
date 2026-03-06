@@ -45,10 +45,21 @@ const AccountConbookPage = (): React.ReactElement => {
 	const [editingId, setEditingId] = useState<string | null>(null)
 	const [zoomedImageUrl, setZoomedImageUrl] = useState<string | null>(null)
 	const [isClient, setIsClient] = useState(false)
+	const [uploaderKey, setUploaderKey] = useState(0)
 
 	useEffect(() => {
 		setIsClient(true)
 	}, [])
+
+	useEffect(() => {
+		if (!isSuccess) return
+		const timer = setTimeout(() => {
+			setIsSuccess(false)
+		}, 3000)
+
+		return () => clearTimeout(timer)
+	}, [isSuccess])
+
 	const {
 		mutateAsync: uploadArtbook,
 		isPending: isUploadingArtbook,
@@ -108,6 +119,7 @@ const AccountConbookPage = (): React.ReactElement => {
 	const cancelEdit = () => {
 		setEditingId(null)
 		setIsSuccess(false)
+		setUploaderKey(prev => prev + 1)
 		reset({
 			title: '',
 			description: '',
@@ -147,6 +159,7 @@ const AccountConbookPage = (): React.ReactElement => {
 			}
 			setLastSubmitWasEdit(isEditSubmission)
 			setIsSuccess(true)
+			setUploaderKey(prev => prev + 1)
 			reset()
 		} catch (error: unknown) {
 			setIsSuccess(false)
@@ -237,15 +250,19 @@ const AccountConbookPage = (): React.ReactElement => {
 					/>
 
 					<ImageUploader
+						key={uploaderKey}
 						className='mb-10 h-24 rounded-2xl'
 						folder='artbooks'
 						accept='image/*,.doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document'
 						maxSizeMB={15}
+						successMessageDurationMs={3000}
 						onUploadSuccess={fileUrl => {
 							setValue('image_url', fileUrl, { shouldValidate: true })
+							setUploaderKey(prev => prev + 1)
 						}}
 						onRemove={() => {
 							setValue('image_url', null)
+							setUploaderKey(prev => prev + 1)
 						}}
 					/>
 
