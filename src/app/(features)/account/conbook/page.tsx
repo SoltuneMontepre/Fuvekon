@@ -7,6 +7,7 @@ import { createPortal } from 'react-dom'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslations } from 'next-intl'
+import { toast } from 'sonner'
 import Button from '@/components/ui/Button'
 import ImageUploader from '@/components/common/ImageUploader'
 import S3Image from '@/components/common/S3Image'
@@ -157,10 +158,7 @@ const AccountConbookPage = (): React.ReactElement => {
 				cancelEdit()
 			}
 
-			setError('root', {
-				type: 'manual',
-				message: t('deleteSuccess'),
-			})
+			toast.success(t('deleteSuccess'))
 		} catch (error: unknown) {
 			if (error instanceof Error) {
 				setError('root', { type: 'manual', message: error.message })
@@ -213,9 +211,18 @@ const AccountConbookPage = (): React.ReactElement => {
 				await uploadArtbook(mapArtbookToApiRequest(formData))
 			}
 			setLastSubmitWasEdit(isEditSubmission)
+			toast.success(
+				isEditSubmission ? t('submissionUpdated') : t('submissionSuccess')
+			)
 			setIsSuccess(true)
+			setZoomedImageUrl(null)
 			setUploaderKey(prev => prev + 1)
-			reset()
+			reset({
+				title: '',
+				description: '',
+				handle: '',
+				image_url: null,
+			})
 		} catch (error: unknown) {
 			setIsSuccess(false)
 			if (error instanceof Error) {
@@ -276,7 +283,7 @@ const AccountConbookPage = (): React.ReactElement => {
 					</Link>
 				</div>
 				<form onSubmit={handleSubmit(onSubmit)} className='mt-7 flex flex-col gap-6'>
-					{isSuccess && (
+					{/* {isSuccess && (
 						// <p className='rounded-xl border border-emerald-300/60 bg-emerald-50 px-3 py-2 text-sm font-medium text-emerald-800'>
 						<p className='text-green-600 rounded-xl border border-emerald-300/60 bg-emerald-50 px-3 py-2 text-sm font-medium'>
 	
@@ -284,7 +291,7 @@ const AccountConbookPage = (): React.ReactElement => {
 								? t('submissionUpdated')
 								: t('submissionSuccess')}
 						</p>
-					)}
+					)} */}
 					{errors.root?.message && (
 						<p className='rounded-xl border border-rose-300/70 bg-rose-50 px-3 py-2 text-sm font-medium text-rose-700'>
 							{errors.root.message}
