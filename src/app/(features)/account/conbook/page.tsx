@@ -157,12 +157,12 @@ const AccountConbookPage = (): React.ReactElement => {
 	}
 
 	return (
-		<div className='w-full space-y-6'>
+		<div className='w-full max-w-5xl mx-auto space-y-6'>
 			{isClient &&
 				zoomedImageUrl &&
 				createPortal(
 					<div
-						className='fixed inset-0 z-1000 bg-black/85 flex items-center justify-center cursor-zoom-out'
+						className='fixed inset-0 z-[1000] bg-black/85 backdrop-blur-[2px] flex items-center justify-center cursor-zoom-out'
 						onClick={() => setZoomedImageUrl(null)}
 					>
 						<div className='relative w-[80vw] h-[80vh] max-w-[1200px] max-h-[1200px]'>
@@ -171,13 +171,14 @@ const AccountConbookPage = (): React.ReactElement => {
 								alt='Zoomed preview'
 								fill
 								className='object-contain'
+                                // draggable={false}
 							/>
 						</div>
 					</div>,
 					document.body
 				)}
 
-			<div className='rounded-[30px] bg-[#E9F5E7] p-4 sm:p-6 md:p-8 shadow-sm text-text-secondary'>
+			<div className='rounded-[30px] bg-[#E9F5E7] p-4 sm:p-6 md:p-8 shadow-md border border-[#48715B]/10 text-text-secondary'>
 				<h2 className='text-2xl sm:text-3xl font-bold text-text-primary'>
 					Submit Conbook
 				</h2>
@@ -185,21 +186,23 @@ const AccountConbookPage = (): React.ReactElement => {
 					Submit your artwork and manage your own conbook submissions here.
 				</p>
 				<div className='mt-3'>
-					<Link href='/artbook' className='text-lg font-bold text-[#48715B] hover:underline'>
+					<Link href='/artbook' className='inline-flex items-center px-3 py-2 rounded-lg border border-[#48715B]/20 bg-white text-sm font-semibold text-[#48715B] hover:underline'>
 						View conbook rules
 					</Link>
 				</div>
 
 				<form onSubmit={handleSubmit(onSubmit)} className='mt-6 flex flex-col gap-6'>
 					{isSuccess && (
-						<p className='text-green-700 text-sm'>
+						<p className='text-green-700 text-sm bg-green-50 border border-green-200 rounded-lg px-3 py-2'>
 							{lastSubmitWasEdit
 								? 'Submission updated successfully!'
 								: 'Submission successful!'}
 						</p>
 					)}
 					{errors.root?.message && (
-						<p className='text-red-600 text-sm'>{errors.root.message}</p>
+						<p className='text-red-600 text-sm bg-red-50 border border-red-200 rounded-lg px-3 py-2'>
+							{errors.root.message}
+						</p>
 					)}
 
 					<FloatingLabelInput
@@ -230,7 +233,7 @@ const AccountConbookPage = (): React.ReactElement => {
 					/>
 
 					<ImageUploader
-						className='h-24'
+						className='h-24 mb-8'
 						folder='artbooks'
 						accept='image/*,.doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document'
 						maxSizeMB={15}
@@ -245,7 +248,7 @@ const AccountConbookPage = (): React.ReactElement => {
 					{uploadedFileUrl && (
 						isImageUrl(uploadedFileUrl) ? (
 							<div
-								className='relative mt-12 -mb-5 h-48 w-full rounded-xl overflow-hidden border border-[#48715B]/20 bg-white cursor-zoom-in'
+								className='relative mt-10 h-56 w-full rounded-xl overflow-hidden border border-[#48715B]/20 bg-white cursor-zoom-in shadow-sm'
 								onClick={() => setZoomedImageUrl(uploadedFileUrl)}
 							>
 								<S3Image
@@ -256,7 +259,7 @@ const AccountConbookPage = (): React.ReactElement => {
 								/>
 							</div>
 						) : (
-							<div className='mt-12 -mb-5 h-48 w-full rounded-xl border border-[#48715B]/20 bg-white p-4 flex flex-col items-center justify-center gap-2 text-center'>
+							<div className='mt-10 h-56 w-full rounded-xl border border-[#48715B]/20 bg-white p-4 flex flex-col items-center justify-center gap-2 text-center shadow-sm'>
 								<FileText className='w-12 h-12 text-[#48715B]' />
 								<p className='text-sm text-[#48715B] break-all'>
 									{getFileNameFromUrl(uploadedFileUrl)}
@@ -269,37 +272,39 @@ const AccountConbookPage = (): React.ReactElement => {
 						<p className='text-sm text-red-500'>{errors.image_url.message}</p>
 					)}
 
-					<Button
-						className='mt-10 cursor-pointer'
-						props={{ disabled: isUploadingArtbook || isUpdatingConbook || isSubmitting }}
-					>
-						{isSubmitting
-							? editingId
-								? 'Saving...'
-								: 'Submitting...'
-							: editingId
-								? 'Save Changes'
-								: 'Submit Conbook'}
-					</Button>
-
-					{editingId && (
+					<div className='pt-2 flex flex-col sm:flex-row gap-3'>
 						<Button
-							className='cursor-pointer'
-							props={{
-								type: 'button',
-								onClick: cancelEdit,
-								disabled: isUploadingArtbook || isUpdatingConbook || isSubmitting,
-							}}
+							className='cursor-pointer sm:min-w-[360px] bg-[#48715B] text-white hover:bg-[#3a5a4a] border-none'
+							props={{ disabled: isUploadingArtbook || isUpdatingConbook || isSubmitting }}
 						>
-							Cancel Edit
+							{isSubmitting
+								? editingId
+									? 'Saving...'
+									: 'Submitting...'
+								: editingId
+									? 'Save Changes'
+									: 'Submit Conbook'}
 						</Button>
-					)}
+
+						{editingId && (
+							<Button
+								className='cursor-pointer sm:min-w-[140px]'
+								props={{
+									type: 'button',
+									onClick: cancelEdit,
+									disabled: isUploadingArtbook || isUpdatingConbook || isSubmitting,
+								}}
+							>
+								Cancel Edit
+							</Button>
+						)}
+					</div>
 				</form>
 			</div>
 
-			<div className='rounded-[30px] bg-[#E9F5E7] p-4 sm:p-6 md:p-8 shadow-sm text-text-secondary'>
+			<div className='rounded-[30px] bg-[#E9F5E7] p-4 sm:p-6 md:p-8 shadow-md border border-[#48715B]/10 text-text-secondary'>
 				<h3 className='text-xl sm:text-2xl font-bold text-text-primary'>
-					My Submissions
+					My Submissions ({submissions.length})
 				</h3>
 
 				{isLoadingSubmissions ? (
@@ -319,16 +324,16 @@ const AccountConbookPage = (): React.ReactElement => {
 						{submissions.map(item => (
 							<div
 								key={item.id}
-								className='rounded-2xl border border-[#48715B]/20 bg-white p-4 space-y-3'
+								className='rounded-2xl border border-[#48715B]/20 bg-white p-4 space-y-3 shadow-sm hover:shadow-md transition-shadow'
 							>
 								<div>
-									<p className='font-semibold text-text-primary'>Title: {item.title}</p>
+									<p className='font-semibold text-text-primary'>{item.title}</p>
 									<p className='text-sm text-text-secondary break-words'>
-										Description: {item.description}
+										{item.description}
 									</p>
 									<p className='text-xs text-[#48715B] mt-1'>Handle: {item.handle}</p>
-									<p className='text-xs text-[#48715B]/70 mt-1'>
-										Status: {item.is_verified ? 'Verified' : 'Pending verification'}
+									<p className='inline-flex items-center text-xs mt-2 px-2 py-1 rounded-full border border-[#48715B]/20 bg-[#E9F5E7] text-[#48715B]'>
+										{item.is_verified ? 'Verified' : 'Pending verification'}
 									</p>
 								</div>
 								{item.image_url &&
