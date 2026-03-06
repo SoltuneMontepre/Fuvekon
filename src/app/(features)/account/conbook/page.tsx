@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { createPortal } from 'react-dom'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useTranslations } from 'next-intl'
 import Button from '@/components/ui/Button'
 import ImageUploader from '@/components/common/ImageUploader'
 import S3Image from '@/components/common/S3Image'
@@ -30,16 +31,16 @@ const AccountConbookPage = (): React.ReactElement => {
 			ext => cleanUrl.endsWith(ext)
 		)
 	}
+	const t = useTranslations('accountConbook')
 
 	const getFileNameFromUrl = (url: string) => {
 		try {
 			const parsed = new URL(url)
-			return decodeURIComponent(parsed.pathname.split('/').pop() || 'Document')
+			return decodeURIComponent(parsed.pathname.split('/').pop() || t('documentFallback'))
 		} catch {
-			return 'Document'
+			return t('documentFallback')
 		}
 	}
-    // const useTranslations = () => {
 
 	const [isSuccess, setIsSuccess] = useState(false)
 	const [lastSubmitWasEdit, setLastSubmitWasEdit] = useState(false)
@@ -150,7 +151,7 @@ const AccountConbookPage = (): React.ReactElement => {
 			if (!formData.image_url) {
 				setError('image_url', {
 					type: 'manual',
-					message: 'Please upload a file before submitting.',
+					message: t('pleaseUploadBeforeSubmitting'),
 				})
 				return
 			}
@@ -180,7 +181,7 @@ const AccountConbookPage = (): React.ReactElement => {
 		<div className='relative w-full max-w-6xl mx-auto overflow-hidden rounded-[36px] bg-gradient-to-br from-[#f3fbef] via-[#edf7f2] to-[#e3efe9] px-4 py-6 sm:px-6 sm:py-8 md:px-8 md:py-10'>
 			<Image
 							src='/assets/common/drum_pattern.webp'
-							alt='Drum Pattern'
+							alt={t('drumPatternAlt')}
 							fill
 							className='absolute inset-0 z-0 opacity-[3%] object-cover pointer-events-none'
 							draggable={false}
@@ -198,7 +199,7 @@ const AccountConbookPage = (): React.ReactElement => {
 						<div className='relative w-full h-full max-w-[1200px] max-h-[1200px]'> 
 							<S3Image
 								src={zoomedImageUrl}
-								alt='Zoomed preview'
+								alt={t('zoomedPreviewAlt')}
 								fill
 								className='object-contain'
                                 // draggable={false}
@@ -211,20 +212,20 @@ const AccountConbookPage = (): React.ReactElement => {
 			<div className='relative rounded-[30px] bg-transparent p-5 text-text-secondary shadow-[0_20px_60px_-30px_rgba(72,113,91,0.55)] backdrop-blur-sm sm:p-7 md:p-9'>
 				<Image
 							src='/assets/common/drum_pattern.webp'
-							alt='Drum Pattern'
+							alt=''
 							fill
-							className='absolute inset-0 z-0 opacity-[3%] object-cover pointer-events-none'
+							className='absolute inset-0 z-0 opacity-[3%] object-none pointer-events-none'
 							draggable={false}
 						/>
 				<h2 className='text-2xl font-black tracking-tight text-text-primary sm:text-3xl md:text-[2rem]'>
-					Submit Conbook
+					{t('title')}
 				</h2>
 				<p className='mt-2 max-w-2xl text-sm leading-relaxed text-text-secondary/90'>
-					Submit your artwork and manage your own conbook submissions here.
+					{t('description')}
 				</p>
 				<div className='mt-3'>
 					<Link href='/artbook' className='!border-none inline-flex items-center rounded-xl border border-[#48715B]/25 bg-white px-3 py-2 text-sm font-semibold text-[#3a5a4a] transition-colors hover:!bg-[#48715B] hover:!text-[#f0f8f3]'>
-						Please read the submission guidelines before submitting
+						{t('readGuidelines')}
 					</Link>
 				</div>
 				<form onSubmit={handleSubmit(onSubmit)} className='mt-7 flex flex-col gap-6'>
@@ -233,8 +234,8 @@ const AccountConbookPage = (): React.ReactElement => {
 						<p className='text-green-600 rounded-xl border border-emerald-300/60 bg-emerald-50 px-3 py-2 text-sm font-medium'>
 	
 						{lastSubmitWasEdit
-								? 'Submission updated successfully!'
-								: 'Submission successful!'}
+								? t('submissionUpdated')
+								: t('submissionSuccess')}
 						</p>
 					)}
 					{errors.root?.message && (
@@ -248,8 +249,8 @@ const AccountConbookPage = (): React.ReactElement => {
 						name='title'
 						control={control}
 						type='text'
-						label='Title'
-						placeholder='Enter your artwork title'
+						label={t('labelTitle')}
+						placeholder={t('placeholderTitle')}
 					/>
 
 					<FloatingLabelInput
@@ -257,8 +258,8 @@ const AccountConbookPage = (): React.ReactElement => {
 						name='description'
 						control={control}
 						type='text'
-						label='Description'
-						placeholder='Enter your artwork description'
+						label={t('labelDescription')}
+						placeholder={t('placeholderDescription')}
 					/>
 
 					<FloatingLabelInput
@@ -266,8 +267,8 @@ const AccountConbookPage = (): React.ReactElement => {
 						name='handle'
 						control={control}
 						type='text'
-						label='Social Handle'
-						placeholder='Your social handle (e.g. name - Twitter)'
+						label={t('labelHandle')}
+						placeholder={t('placeholderHandle')}
 					/>
 
 					<ImageUploader
@@ -306,7 +307,7 @@ const AccountConbookPage = (): React.ReactElement => {
 								</button>
 								<S3Image
 									src={uploadedFileUrl}
-									alt='Preview'
+									alt={t('previewAlt')}
 									fill
 									className='z-0 object-cover'
 								/>
@@ -315,7 +316,7 @@ const AccountConbookPage = (): React.ReactElement => {
 								>
 									<Camera className='text-white drop-shadow' size={32} />
 									<span className='mt-2 text-xs font-semibold text-white/95'>
-										Click to zoom
+										{t('clickToZoom')}
 									</span>
 								</div>
 							</div>
@@ -327,7 +328,7 @@ const AccountConbookPage = (): React.ReactElement => {
 									onClick={clearSelectedFile}
 								>
 									<X size={12} />
-									Remove file
+									{t('removeFile')}
 								</button>
 								<FileText className='w-12 h-12 text-[#48715B]' />
 								<p className='text-sm text-[#48715B] break-all'>
@@ -348,11 +349,11 @@ const AccountConbookPage = (): React.ReactElement => {
 						>
 							{isSubmitting
 								? editingId
-									? 'Saving...'
-									: 'Submitting...'
+									? t('saving')
+									: t('submitting')
 								: editingId
-									? 'Save Changes'
-									: 'Submit Conbook'}
+									? t('saveChanges')
+									: t('submitButton')}
 						</Button>
 
 						{editingId && (
@@ -364,7 +365,7 @@ const AccountConbookPage = (): React.ReactElement => {
 									disabled: isUploadingArtbook || isUpdatingConbook || isSubmitting,
 								}}
 							>
-								Cancel Edit
+								{t('cancelEdit')}
 							</Button>
 						)}
 					</div>
@@ -374,13 +375,13 @@ const AccountConbookPage = (): React.ReactElement => {
 			<div className='relative rounded-[30px] border mt-10 border-[#48715B]/15 bg-transparent p-5 text-text-secondary shadow-[0_20px_60px_-30px_rgba(72,113,91,0.55)] backdrop-blur-sm sm:p-7 md:p-9'>
 				<Image
 							src='/assets/common/drum_pattern.webp'
-							alt='Drum Pattern'
+							alt=''
 							fill
 							className='absolute inset-0 z-0 opacity-[3%] object-cover pointer-events-none'
 							draggable={false}
 						/>
 				<h3 className='text-xl font-black tracking-tight text-text-primary sm:text-2xl'>
-					My Submissions ({submissions.length})
+					{t('mySubmissions', { count: submissions.length })}
 				</h3>
 
 				{isLoadingSubmissions ? (
@@ -389,11 +390,11 @@ const AccountConbookPage = (): React.ReactElement => {
 					</div>
 				) : isLoadingSubmissionsError ? (
 					<p className='mt-4 text-sm text-red-600'>
-						Unable to load your submissions right now.
+						{t('unableToLoadSubmissions')}
 					</p>
 				) : submissions.length === 0 ? (
 					<p className='mt-4 text-sm text-text-secondary'>
-						You have not submitted any conbook yet.
+						{t('noSubmissions')}
 					</p>
 				) : (
 					<div className='mt-5 grid grid-cols-1 gap-4 md:grid-cols-2'>
@@ -407,9 +408,17 @@ const AccountConbookPage = (): React.ReactElement => {
 									<p className='text-sm text-text-secondary/90 break-words'>
 										{item.description}
 									</p>
-									<p className='mt-1 text-xs text-[#48715B]'>Handle: {item.handle}</p>
-									<p className='mt-2 inline-flex items-center rounded-full border border-[#48715B]/20 bg-[#e7f3ea] px-2 py-1 text-xs font-medium text-[#426a55]'>
-										{item.is_verified ? 'Verified' : 'Pending verification'}
+									<p className='mt-1 text-xs text-[#48715B]'>
+										{t('handleLabel')}: {item.handle}
+									</p>
+									<p
+										className={`mt-2 inline-flex items-center rounded-full border px-2 py-1 text-xs font-medium ${
+											item.is_verified
+												? 'border-emerald-300/70 bg-emerald-100 text-emerald-800'
+												: 'border-amber-300/70 bg-amber-100 text-amber-800'
+										}`}
+									>
+										{item.is_verified ? t('verified') : t('pendingVerification')}
 									</p>
 								</div>
 								{item.image_url &&
@@ -427,7 +436,7 @@ const AccountConbookPage = (): React.ReactElement => {
 											<div className='pointer-events-none absolute inset-0 z-10 flex flex-col items-center justify-center transition-all duration-200 bg-black/0 opacity-0 group-hover/preview:bg-black/40 group-hover/preview:opacity-100'>
 												<Camera className='text-white drop-shadow' size={24} />
 												<span className='mt-1 text-[11px] font-semibold text-white/95'>
-													Click to zoom
+													{t('clickToZoom')}
 												</span>
 											</div>
 										</div>
@@ -448,7 +457,9 @@ const AccountConbookPage = (): React.ReactElement => {
 											disabled: isSubmissionVerified(item.is_verified),
 										}}
 									>
-										{isSubmissionVerified(item.is_verified) ? 'Verified by staff' : 'Edit submission'}
+											{isSubmissionVerified(item.is_verified)
+												? t('verifiedByStaff')
+												: t('editSubmission')}
 									</Button>
 								</div>
 							</div>
