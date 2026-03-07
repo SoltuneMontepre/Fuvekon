@@ -1,5 +1,3 @@
-import imageCompression from 'browser-image-compression'
-
 export interface CompressImageOptions {
 	/** Max file size in MB (default: 1) */
 	maxSizeMB?: number
@@ -20,6 +18,7 @@ const DEFAULT_OPTIONS: CompressImageOptions = {
 /**
  * Compresses an image file for upload. Returns the original file if it's not
  * an image or if compression fails (e.g. in Node/SSR).
+ * Loads browser-image-compression only when called to keep initial bundle smaller.
  */
 export async function compressImage(
 	file: File,
@@ -35,6 +34,7 @@ export async function compressImage(
 	}
 
 	try {
+		const imageCompression = (await import('browser-image-compression')).default
 		const opts = { ...DEFAULT_OPTIONS, ...options }
 		const compressed = await imageCompression(file, {
 			maxSizeMB: opts.maxSizeMB,

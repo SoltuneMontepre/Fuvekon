@@ -75,6 +75,7 @@ const AccountPage = () => {
 		fursona_name: '',
 		country: '',
 		id_card: '',
+		date_of_birth: '',
 	})
 	const updateMeMutation = useUpdateMe()
 	const updateAvatarMutation = useUpdateAvatar()
@@ -137,6 +138,7 @@ const AccountPage = () => {
 				fursona_name: account.fursona_name || '',
 				country: account.country || '',
 				id_card: account.id_card || '',
+				date_of_birth: account.date_of_birth || '',
 			})
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -164,6 +166,7 @@ const AccountPage = () => {
 			fursona_name: account.fursona_name || '',
 			country: account.country || '',
 			id_card: account.id_card || '',
+			date_of_birth: account.date_of_birth || '',
 		})
 		setIsEditing(false)
 	}
@@ -225,6 +228,7 @@ const AccountPage = () => {
 				fursona_name: formData.fursona_name || undefined,
 				country: getCode(formData.country) || undefined,
 				id_card: formData.id_card || undefined,
+				date_of_birth: formData.date_of_birth || undefined,
 			},
 			{
 				onSuccess: data => {
@@ -233,8 +237,15 @@ const AccountPage = () => {
 						toast.success(t('updateSuccess'))
 					}
 				},
-				onError: () => {
-					toast.error(t('updateError'))
+				onError: (err: Error) => {
+					const key = (
+						err as { response?: { data?: { errorMessage?: string } } }
+					)?.response?.data?.errorMessage
+					toast.error(
+						key
+							? tAuth(key as 'validation.ageRequirement' | 'validationFailed')
+							: t('updateError')
+					)
 				},
 			}
 		)
@@ -346,6 +357,27 @@ const AccountPage = () => {
 									onChange={handleInputChange}
 									emptyLabel={t('na')}
 								/>
+								{isEditing ? (
+									<div className='space-y-0.5 px-3 py-2 rounded-xl bg-[#E2EEE2] border border-[#8C8C8C]/30 focus-within:border-[#48715B] transition-colors duration-200 cursor-text'>
+										<label
+											htmlFor='date_of_birth-input'
+											className='text-sm font-medium text-[#48715B] pointer-events-none'
+										>
+											{t('dateOfBirth')}
+										</label>
+										<div className='flex items-center gap-2'>
+											<input
+												type='date'
+												id='date_of_birth-input'
+												name='date_of_birth'
+												value={formData.date_of_birth}
+												onChange={handleInputChange}
+												className='block w-full bg-transparent text-lg text-text-secondary font-normal focus:outline-none'
+											/>
+											<Pencil className='w-3.5 h-3.5 text-[#8C8C8C]/50 flex-shrink-0' />
+										</div>
+									</div>
+								) : null}
 							</div>
 						</>
 					) : (
@@ -382,6 +414,11 @@ const AccountPage = () => {
 							<InfoField
 								label={t('idCard')}
 								value={account.id_card}
+								emptyLabel={t('na')}
+							/>
+							<InfoField
+								label={t('dateOfBirth')}
+								value={account.date_of_birth}
 								emptyLabel={t('na')}
 							/>
 						</div>
@@ -454,6 +491,7 @@ const AccountPage = () => {
 									fursona_name: account.fursona_name || '',
 									country: account.country || '',
 									id_card: account.id_card || '',
+									date_of_birth: account.date_of_birth || '',
 								})
 								setIsEditing(true)
 							}}

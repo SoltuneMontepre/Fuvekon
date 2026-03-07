@@ -5,8 +5,8 @@
 export const FORM_CONSTANTS = {
 	MIN_NAME_LENGTH: 2,
 	MAX_NAME_LENGTH: 50,
-	MIN_NICKNAME_LENGTH: 3,
-	MAX_NICKNAME_LENGTH: 20,
+	MIN_NICKNAME_LENGTH: 1,
+	MAX_NICKNAME_LENGTH: 255,
 	MIN_PASSWORD_LENGTH: 8,
 	MAX_PASSWORD_LENGTH: 128,
 	MIN_ID_CARD_LENGTH: 9,
@@ -18,7 +18,7 @@ export const VALIDATION_PATTERNS = {
 	PASSWORD: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/,
 	ID_CARD: /^[0-9A-Z]{9,12}$/,
 	NAME: /^[a-zA-Z\s\u00C0-\u024F\u1E00-\u1EFF]+$/, // Letters, spaces, and Vietnamese characters
-	NICKNAME: /^[a-zA-Z0-9_-]+$/, // Alphanumeric, underscore, hyphen
+	NICKNAME: /^[\s\S]+$/, // Any character (nickname can be anything)
 } as const
 
 export const ERROR_MESSAGES = {

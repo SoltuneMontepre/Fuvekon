@@ -12,9 +12,6 @@ export default function AccountLoading() {
 					className='animate-spin h-6 w-6 text-sky-600'
 					aria-hidden='true'
 				/>
-				<span className='text-sm font-medium text-gray-700 dark:text-gray-200'>
-					Loading...
-				</span>
 			</div>
 		</div>
 	)

@@ -13,7 +13,7 @@ import {
 } from '@/types/api/auth/googleRegister'
 import { FORM_STYLES } from './RegisterForm.styles'
 import { FloatingLabelInput } from './FloatingLabelInput'
-import { ValidationSpeechBubble } from './ValidationSpeechBubble'
+import { CountrySelect } from './CountrySelect'
 import { sanitizeInput } from '@/utils/sanitization'
 import {
 	useGoogleRegister,
@@ -42,9 +42,7 @@ const GoogleRegisterForm = (): React.ReactElement => {
 		if (errorMessage?.trim()) {
 			try {
 				const translated = t(errorMessage.trim())
-				return translated !== errorMessage.trim()
-					? translated
-					: t(fallbackKey)
+				return translated !== errorMessage.trim() ? translated : t(fallbackKey)
 			} catch {
 				return t(fallbackKey)
 			}
@@ -62,8 +60,8 @@ const GoogleRegisterForm = (): React.ReactElement => {
 		defaultValues: {
 			fullName: '',
 			nickname: '',
+			dateOfBirth: '',
 			country: '',
-			idCard: '',
 		},
 	})
 
@@ -85,8 +83,8 @@ const GoogleRegisterForm = (): React.ReactElement => {
 				credential,
 				fullName: sanitizeInput(data.fullName),
 				nickname: sanitizeInput(data.nickname),
+				dateOfBirth: data.dateOfBirth,
 				country: sanitizeInput(data.country),
-				idCard: sanitizeInput(data.idCard),
 			},
 			{
 				onError: err => {
@@ -108,21 +106,12 @@ const GoogleRegisterForm = (): React.ReactElement => {
 					if (!responseData.isSuccess) {
 						setError('root', {
 							type: 'manual',
-							message: getAuthErrorMessage(
-								responseData.errorMessage
-							),
+							message: getAuthErrorMessage(responseData.errorMessage),
 						})
 					}
 				},
 			}
 		)
-	}
-
-	const fieldErrors: Record<string, string | undefined> = {
-		fullName: errors.fullName?.message,
-		nickname: errors.nickname?.message,
-		country: errors.country?.message,
-		idCard: errors.idCard?.message,
 	}
 
 	if (!credential) {
@@ -131,7 +120,6 @@ const GoogleRegisterForm = (): React.ReactElement => {
 
 	return (
 		<div className={`${FORM_STYLES.container.wrapper} relative`}>
-			<ValidationSpeechBubble errors={fieldErrors} />
 			<div className={FORM_STYLES.container.panel}>
 				<div className={FORM_STYLES.container.background}>
 					<Image
@@ -157,10 +145,7 @@ const GoogleRegisterForm = (): React.ReactElement => {
 							className={FORM_STYLES.form.wrapper}
 						>
 							{errors.root && (
-								<div
-									className={FORM_STYLES.error.message}
-									role='alert'
-								>
+								<div className={FORM_STYLES.error.message} role='alert'>
 									{errors.root.message}
 								</div>
 							)}
@@ -173,7 +158,7 @@ const GoogleRegisterForm = (): React.ReactElement => {
 								label={`${t('fullName')}:`}
 								placeholder={t('fullName')}
 								required
-								showError={false}
+								translateError={t}
 							/>
 
 							<FloatingLabelInput
@@ -184,46 +169,43 @@ const GoogleRegisterForm = (): React.ReactElement => {
 								label={`${t('nickname')}:`}
 								placeholder={t('nickname')}
 								required
-								showError={false}
+								translateError={t}
 							/>
 
 							<FloatingLabelInput
-								id='country'
-								name='country'
+								id='dateOfBirth'
+								name='dateOfBirth'
 								control={control}
-								type='text'
-								label={`${t('country')}:`}
-								placeholder={t('country')}
+								type='date'
+								label={t('dateOfBirth')}
+								placeholder={t('dateOfBirth')}
 								required
-								showError={false}
+								translateError={t}
 							/>
 
-							<FloatingLabelInput
-								id='idCard'
-								name='idCard'
-								control={control}
-								type='text'
-								label='Passport ID/ CCCD:'
-								placeholder='Passport ID/ CCCD'
-								required
-								showError={false}
-							/>
+							<div className={FORM_STYLES.container.inputWrapper}>
+								<CountrySelect
+									id='country'
+									name='country'
+									control={control}
+									label={t('country')}
+									placeholder={t('selectCountry')}
+									required
+									showError={false}
+									translateError={t}
+								/>
+							</div>
 
 							<button
 								type='submit'
-								disabled={
-									isSubmitting ||
-									googleRegisterMutation.isPending
-								}
+								disabled={isSubmitting || googleRegisterMutation.isPending}
 								className={`${FORM_STYLES.button.primary} ${
-									isSubmitting ||
-									googleRegisterMutation.isPending
+									isSubmitting || googleRegisterMutation.isPending
 										? FORM_STYLES.button.disabled
 										: ''
 								}`}
 							>
-								{isSubmitting ||
-								googleRegisterMutation.isPending
+								{isSubmitting || googleRegisterMutation.isPending
 									? t('registering')
 									: t('register')}
 							</button>
@@ -236,9 +218,7 @@ const GoogleRegisterForm = (): React.ReactElement => {
 								>
 									{t('backToRegister')}
 								</Link>
-								<span className={FORM_STYLES.link.separator}>
-									|
-								</span>
+								<span className={FORM_STYLES.link.separator}>|</span>
 								<Link
 									href='/login'
 									className={FORM_STYLES.link.base}

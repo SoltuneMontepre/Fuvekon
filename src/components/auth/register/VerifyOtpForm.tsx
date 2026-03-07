@@ -14,7 +14,6 @@ import {
 } from '@/types/api/auth/verifyOtp'
 import { FORM_STYLES } from './RegisterForm.styles'
 import { FloatingLabelInput } from './FloatingLabelInput'
-import { ValidationSpeechBubble } from './ValidationSpeechBubble'
 import axios from '@/common/axios'
 import { useTranslations } from 'next-intl'
 
@@ -36,9 +35,7 @@ const VerifyOtpForm = (): React.ReactElement => {
 		if (errorMessage?.trim()) {
 			try {
 				const translated = t(errorMessage.trim())
-				return translated !== errorMessage.trim()
-					? translated
-					: t(fallbackKey)
+				return translated !== errorMessage.trim() ? translated : t(fallbackKey)
 			} catch {
 				return t(fallbackKey)
 			}
@@ -99,12 +96,6 @@ const VerifyOtpForm = (): React.ReactElement => {
 		return () => clearInterval(timer)
 	}, [secondsLeft])
 
-	// collect field errors for speech bubble
-	const fieldErrors: Record<string, string | undefined> = {
-		email: errors.email?.message && t(errors.email.message as string),
-		otp: errors.otp?.message && t(errors.otp.message as string),
-	}
-
 	const onSubmit = async (data: VerifyOtpFormData) => {
 		try {
 			const requestData = mapVerifyOtpToApiRequest(data)
@@ -129,9 +120,7 @@ const VerifyOtpForm = (): React.ReactElement => {
 				const axiosError = err as {
 					response?: { data?: { errorMessage?: string } }
 				}
-				const msg = getAuthErrorMessage(
-					axiosError.response?.data?.errorMessage
-				)
+				const msg = getAuthErrorMessage(axiosError.response?.data?.errorMessage)
 				setError('root', { type: 'manual', message: msg })
 			} else if (err instanceof Error) {
 				setError('root', { type: 'manual', message: err.message })
@@ -146,7 +135,6 @@ const VerifyOtpForm = (): React.ReactElement => {
 
 	return (
 		<div className={`${FORM_STYLES.container.wrapper} relative`}>
-			<ValidationSpeechBubble errors={fieldErrors} />
 			<div className={FORM_STYLES.container.panel}>
 				<div className={FORM_STYLES.container.background}>
 					<Image
@@ -167,7 +155,9 @@ const VerifyOtpForm = (): React.ReactElement => {
 						)}
 						{secondsLeft > 0 && !isSuccess && (
 							<p className='text-xs text-center text-[#8C8C8C]'>
-								{t('otpExpiresIn', { time: `${Math.floor(secondsLeft / 60)}:${String(secondsLeft % 60).padStart(2,'0')}` })}
+								{t('otpExpiresIn', {
+									time: `${Math.floor(secondsLeft / 60)}:${String(secondsLeft % 60).padStart(2, '0')}`,
+								})}
 							</p>
 						)}
 						{secondsLeft <= 0 && !isSuccess && (
@@ -175,7 +165,10 @@ const VerifyOtpForm = (): React.ReactElement => {
 								{t('otpExpired')}
 							</p>
 						)}
-						<form onSubmit={handleSubmit(onSubmit)} className={FORM_STYLES.form.wrapper}>
+						<form
+							onSubmit={handleSubmit(onSubmit)}
+							className={FORM_STYLES.form.wrapper}
+						>
 							{errors.root && (
 								<div className={FORM_STYLES.error.message} role='alert'>
 									{errors.root.message}
@@ -199,27 +192,28 @@ const VerifyOtpForm = (): React.ReactElement => {
 
 							<button
 								type='submit'
-							disabled={isSubmitting || secondsLeft <= 0}
-							className={`${FORM_STYLES.button.primary} ${
-								(isSubmitting || secondsLeft <= 0) ? FORM_STYLES.button.disabled : ''
-							}`}
-						>
-							{isSubmitting ? t('verifying') : t('verify')}
-						</button>
-						<div className={FORM_STYLES.link.container}>
-							<Link href='/register' className={FORM_STYLES.link.base}>
-								{t('backToRegister')}
-							</Link>
-							<span className={FORM_STYLES.link.separator}>|</span>
-							<Link href='/login' className={FORM_STYLES.link.base}>
-								{t('login')}
-							</Link>
-						</div>
+								disabled={isSubmitting || secondsLeft <= 0}
+								className={`${FORM_STYLES.button.primary} ${
+									isSubmitting || secondsLeft <= 0
+										? FORM_STYLES.button.disabled
+										: ''
+								}`}
+							>
+								{isSubmitting ? t('verifying') : t('verify')}
+							</button>
+							<div className={FORM_STYLES.link.container}>
+								<Link href='/register' className={FORM_STYLES.link.base}>
+									{t('backToRegister')}
+								</Link>
+								<span className={FORM_STYLES.link.separator}>|</span>
+								<Link href='/login' className={FORM_STYLES.link.base}>
+									{t('login')}
+								</Link>
+							</div>
 						</form>
-						</div>
 					</div>
 				</div>
-
+			</div>
 		</div>
 	)
 }

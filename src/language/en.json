@@ -116,8 +116,6 @@
 			"passwordMismatch": "Passwords do not match",
 			"invalidIdCard": "Invalid passport/ID (9-12 alphanumeric characters)",
 			"invalidCountry": "Please enter a valid country name",
-			"invalidPhone": "Invalid phone number",
-			"phoneTooShort": "Phone number must be at least 10 characters",
 			"termsAccepted": "You must accept the terms of service",
 			"ageRequirement": "You must be at least 16 years old"
 		},
@@ -138,9 +136,9 @@
 		"googleRegisterSubtitle": "Fill in the remaining details to complete your Google registration.",
 		"fullName": "Full name",
 		"nickname": "Nickname",
-		"phone": "Phone",
 		"idCard": "Passport/Identification Card",
 		"country": "Country",
+		"dateOfBirth": "Date of birth",
 		"selectCountry": "Select country",
 		"confirmPassword": "Confirm password",
 		"registerTitle": "REGISTER ACCOUNT",
@@ -150,9 +148,9 @@
 		"otpPlaceholder": "Enter code",
 		"verifyOtpSuccess": "Verification successful! Redirecting to login...",
 		"verifying": "Verifying...",
-		"verify": "Verify",		
+		"verify": "Verify",
 		"otpExpiresIn": "Code expires in {time}",
-		"otpExpired": "Code has expired. Please request a new one.",		
+		"otpExpired": "Code has expired. Please request a new one.",
 		"registerButton": "Register account",
 		"termsAgreement": "I have read and accept all terms and conditions of FUVE",
 		"registering": "Registering...",
@@ -455,6 +453,7 @@
 		"country": "Country",
 		"selectCountry": "Select country",
 		"idCard": "Passport/Identification Card",
+		"dateOfBirth": "Date of birth",
 		"fullName": "Full name",
 		"editInfo": "Edit profile",
 		"saveChanges": "Save changes",
@@ -661,7 +660,7 @@
 		},
 		"theme": {
 			"theme": "Theme",
-			"title": "Field Wind",
+			"title": "Breeze of Homeland",
 			"description_1": "Inspired by the winds carrying the familiar scent of the Vietnamese countryside.",
 			"description_2": "In 2026, follow Lang to visit Gió Đồng - the most vibrant furry village festival on earth! FUVE will bring a space infused with the soul of Vietnam, inviting you to immerse yourself where reality and dreams intertwine. A joyful festival that makes you forget the way home awaits beneath this communal house roof!"
 		}

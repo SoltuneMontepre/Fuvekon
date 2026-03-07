@@ -15,6 +15,10 @@ const nextConfig: NextConfig = {
 		],
 	},
 	devIndicators: false,
+	// Tree-shake icon libraries so only used icons are bundled
+	experimental: {
+		optimizePackageImports: ['lucide-react', 'react-icons'],
+	},
 }
 
 export default withNextIntl(nextConfig)

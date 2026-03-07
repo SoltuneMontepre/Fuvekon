@@ -1,7 +1,6 @@
 'use client'
 
 import React, { useState, useEffect, useRef, useCallback } from 'react'
-import { Html5Qrcode } from 'html5-qrcode'
 import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 import {
@@ -46,7 +45,7 @@ export default function ScanTicketPage() {
 	const [scannedId, setScannedId] = useState<string | null>(null)
 	const [manualCode, setManualCode] = useState('')
 	const [scanning, setScanning] = useState(false)
-	const scannerRef = useRef<Html5Qrcode | null>(null)
+	const scannerRef = useRef<{ stop: () => Promise<void> } | null>(null)
 	const scannerContainerRef = useRef<HTMLDivElement>(null)
 	const lastScannedAtRef = useRef(0)
 	const manualInputRef = useRef<HTMLInputElement>(null)
@@ -62,6 +61,7 @@ export default function ScanTicketPage() {
 	const startScanner = useCallback(async () => {
 		if (scannerRef.current || !scannerContainerRef.current) return
 		try {
+			const { Html5Qrcode } = await import('html5-qrcode')
 			const html5Qr = new Html5Qrcode(SCANNER_CONTAINER_ID)
 			scannerRef.current = html5Qr
 			const containerWidth = scannerContainerRef.current.offsetWidth

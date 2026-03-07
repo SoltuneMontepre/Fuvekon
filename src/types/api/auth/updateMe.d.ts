@@ -11,6 +11,7 @@ export interface UpdateMeRequest {
 	last_name?: string
 	country?: string
 	id_card?: string
+	date_of_birth?: string // "YYYY-MM-DD"
 }
 
 /**
