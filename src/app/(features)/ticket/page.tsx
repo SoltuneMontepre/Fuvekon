@@ -99,8 +99,9 @@ const TicketPage = (): React.ReactElement => {
 	return (
 		<>
 			<Background />
+			<div className="fixed inset-0 z-[1] bg-black/40" />
 			<div className='min-h-screen relative z-10 py-12 px-4'>
-				<div className='max-w-7xl mx-auto'>
+				<div className='max-w-7xl mx-auto relative z-20'>
 					{/* 3 Scrolls Side by Side */}
 					<div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
 						{tiers.map(tier => {
@@ -206,10 +207,10 @@ const TicketPage = (): React.ReactElement => {
 
 					{account && hasActiveTicket && (
 						<div className='mt-6 text-center'>
-							<p className='text-sm text-blue-200'>
+							<p className='text-sm text-white bg-black/50 backdrop-blur-sm inline-block px-4 py-2 rounded-lg'>
 								{t('alreadyHaveTicket')}{' '}
 								<button
-									onClick={() => router.push('/account')}
+									onClick={() => router.push('/account/ticket')}
 									className='text-[#7cbc97] underline hover:no-underline'
 								>
 									{t('viewYourTicket')}

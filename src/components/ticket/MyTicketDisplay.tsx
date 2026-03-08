@@ -33,26 +33,22 @@ const formatPrice = (price: number): string => {
 // Status display configuration (icons only, labels come from translations)
 const STATUS_ICONS: Record<
 	TicketStatus,
-	{ icon: React.ReactNode; bgColor: string; textColor: string }
+	{ icon: React.ReactNode; bgColor?: string; textColor: string }
 > = {
 	pending: {
 		icon: <Clock className='w-5 h-5' />,
-		bgColor: 'bg-yellow-50',
 		textColor: 'text-yellow-700',
 	},
 	self_confirmed: {
 		icon: <RefreshCw className='w-5 h-5 animate-spin' />,
-		bgColor: 'bg-blue-50',
 		textColor: 'text-blue-700',
 	},
 	approved: {
 		icon: <CheckCircle className='w-5 h-5' />,
-		bgColor: 'bg-green-50',
 		textColor: 'text-green-700',
 	},
 	denied: {
 		icon: <XCircle className='w-5 h-5' />,
-		bgColor: 'bg-red-50',
 		textColor: 'text-red-700',
 	},
 }
@@ -180,7 +176,15 @@ const MyTicketDisplay = (): React.ReactElement => {
 	const tier = ticket.tier
 
 	return (
-		<div className='bg-[#e2eee2] rounded-xl border-2 border-[#548780] overflow-hidden'>
+		<div
+			className='bg-[#e2eee2] rounded-xl border-2 border-[#548780] overflow-hidden'
+			style={{
+				backgroundImage: "url('/assets/common/drum_pattern.webp')",
+				backgroundSize: 'cover',
+				backgroundPosition: 'center',
+				backgroundBlendMode: 'overlay',
+			}}
+		>
 			{/* Header */}
 			<div className='bg-[#548780] px-6 py-4'>
 				<h3 className='text-xl font-bold text-white josefin'>
@@ -231,7 +235,7 @@ const MyTicketDisplay = (): React.ReactElement => {
 
 				{/* Status-specific content */}
 				{ticket.status === 'pending' && (
-					<div className='bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4'>
+					<div className='bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4 relative z-40'>
 						<p className='text-yellow-800 text-sm'>{t('completePayment')}</p>
 						<div className='flex gap-2 mt-3'>
 							<button
@@ -254,7 +258,7 @@ const MyTicketDisplay = (): React.ReactElement => {
 				)}
 
 				{ticket.status === 'self_confirmed' && (
-					<div className='bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4'>
+					<div className='bg-white border border-blue-200 rounded-lg p-4 mb-4 relative z-40'>
 						<p className='text-blue-800 text-sm'>{t('paymentReceived')}</p>
 						<p className='text-blue-600 text-xs mt-2'>
 							{t('verificationTime')}
@@ -272,7 +276,7 @@ const MyTicketDisplay = (): React.ReactElement => {
 				)}
 
 				{ticket.status === 'denied' && (
-					<div className='bg-red-50 border border-red-200 rounded-lg p-4 mb-4'>
+					<div className='bg-red-50 border border-red-200 rounded-lg p-4 mb-4 relative z-[60]'>
 						<p className='text-red-800 text-sm mb-2'>{t('ticketDenied')}</p>
 						{ticket.denial_reason && (
 							<p className='text-red-700 text-sm'>
@@ -291,7 +295,7 @@ const MyTicketDisplay = (): React.ReactElement => {
 				{/* Badge Details for Approved Tickets */}
 				{ticket.status === 'approved' && (
 					<>
-						<div className='border-t border-[#548780] pt-4 mt-4'>
+						<div className='border-t border-[#548780] pt-4 mt-4 relative z-[60]'>
 							<h4 className='font-semibold text-[#154c5b] mb-4'>
 								{t('badgeInfo')}
 							</h4>
@@ -422,8 +426,8 @@ const MyTicketDisplay = (): React.ReactElement => {
 				)}
 
 				{/* Upgrade Button — shown for all non-denied statuses */}
-				{ticket.status !== 'denied' && ticket.status !== 'pending' &&  tier && (
-					<div className='border-t border-[#548780] pt-4 mt-4'>
+				{ticket.status === 'approved' && tier && (
+					<div className='border-t border-[#548780] pt-4 mt-4 relative z-[60]'>
 						<button
 							onClick={() => setShowUpgradeModal(true)}
 							className='w-full py-3 px-4 rounded-lg border-2 border-dashed border-[#48715b] text-[#48715b] hover:bg-[#d2ddd2] flex items-center justify-center gap-2 transition-colors'
