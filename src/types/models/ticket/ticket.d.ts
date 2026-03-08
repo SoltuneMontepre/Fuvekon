@@ -31,6 +31,7 @@ export interface UserTicket {
 	denied_at?: string
 	upgraded_from_tier_id?: string
 	previous_reference_code?: string
+	upgrade_denial_reason?: string
 	tier?: TicketTier
 	user?: TicketUser
 }

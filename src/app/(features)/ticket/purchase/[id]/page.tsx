@@ -6,8 +6,6 @@ import { Copy, Check, AlertCircle, ArrowUpCircle } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 import Image from 'next/image'
-import CollapsibleScroll from '@/components/animated/CollapsibleScroll'
-import Separator from '@/components/common/scroll/Separator'
 import { useGetMyTicket, useConfirmPayment } from '@/hooks/services/ticket/useTicket'
 import Background from '@/components/ui/Background'
 import Loading from '@/components/common/Loading'
@@ -32,6 +30,48 @@ const BANK_DETAILS = {
 	accountHolder: 'FUVE CONVENTION',
 }
 
+// Reusable info field matching account page style
+const InfoField = ({ label, value, mono }: { label: string; value: string; mono?: boolean }) => (
+	<div className='space-y-0.5 px-3 py-2.5 rounded-xl bg-[#E2EEE2]/60 border border-[#8C8C8C]/15'>
+		<p className='text-sm font-medium text-[#48715B]'>{label}</p>
+		<p className={`text-lg text-text-secondary ${mono ? 'font-mono font-bold' : ''}`}>{value}</p>
+	</div>
+)
+
+// Copyable info field
+const CopyableField = ({
+	label,
+	value,
+	field,
+	copied,
+	onCopy,
+	mono,
+}: {
+	label: string
+	value: string
+	field: string
+	copied: string | null
+	onCopy: (text: string, field: string) => void
+	mono?: boolean
+}) => (
+	<div className='space-y-0.5 px-3 py-2.5 rounded-xl bg-[#E2EEE2]/60 border border-[#8C8C8C]/15'>
+		<p className='text-sm font-medium text-[#48715B]'>{label}</p>
+		<div className='flex items-center gap-2'>
+			<p className={`text-lg text-text-secondary ${mono ? 'font-mono font-bold' : ''}`}>{value}</p>
+			<button
+				onClick={() => onCopy(value, field)}
+				className='p-1 hover:bg-[#E2EEE2] rounded-lg transition-colors'
+			>
+				{copied === field ? (
+					<Check className='w-4 h-4 text-green-600' />
+				) : (
+					<Copy className='w-4 h-4 text-[#8C8C8C]' />
+				)}
+			</button>
+		</div>
+	</div>
+)
+
 const TicketPurchasePage = ({ params }: TicketPurchasePageProps): React.ReactElement => {
 	use(params)
 	const router = useRouter()
@@ -41,7 +81,6 @@ const TicketPurchasePage = ({ params }: TicketPurchasePageProps): React.ReactEle
 	const [copied, setCopied] = useState<string | null>(null)
 	const [showConfirmDialog, setShowConfirmDialog] = useState(false)
 
-	// Upgrade mode: read from URL query params set by UpgradeTicketModal
 	const isUpgrade = searchParams?.get('upgrade') === 'true'
 	const upgradeDiff = searchParams?.get('diff') ?? null
 
@@ -50,9 +89,6 @@ const TicketPurchasePage = ({ params }: TicketPurchasePageProps): React.ReactEle
 
 	const ticket = ticketData?.data
 
-	// Redirect if ticket is already confirmed or approved
-	// Skip redirect in upgrade mode — the user just upgraded and needs to see the payment page
-	// (stale cache may still have the old status while refetch is in-flight)
 	useEffect(() => {
 		if (isUpgrade) return
 		if (ticket && (ticket.status === 'self_confirmed' || ticket.status === 'approved')) {
@@ -60,7 +96,6 @@ const TicketPurchasePage = ({ params }: TicketPurchasePageProps): React.ReactEle
 		}
 	}, [ticket, router, isUpgrade])
 
-	// Copy to clipboard helper
 	const copyToClipboard = async (text: string, field: string) => {
 		try {
 			await navigator.clipboard.writeText(text)
@@ -68,7 +103,6 @@ const TicketPurchasePage = ({ params }: TicketPurchasePageProps): React.ReactEle
 			setTimeout(() => setCopied(null), 2000)
 			toast.success(t('copiedToClipboard') || 'Copied to clipboard!')
 		} catch {
-			// Fallback for older browsers
 			try {
 				const textArea = document.createElement('textarea')
 				textArea.value = text
@@ -91,7 +125,6 @@ const TicketPurchasePage = ({ params }: TicketPurchasePageProps): React.ReactEle
 			const result = await confirmMutation.mutateAsync()
 			if (result.isSuccess) {
 				toast.success(t('paymentConfirmed') || 'Payment confirmed successfully!')
-				// Redirect to ticket page to see ticket status
 				router.push('/account/ticket')
 			}
 		} catch {
@@ -107,11 +140,11 @@ const TicketPurchasePage = ({ params }: TicketPurchasePageProps): React.ReactEle
 		return (
 			<div className='min-h-screen flex items-center justify-center'>
 				<div className='text-center'>
-					<AlertCircle className='w-16 h-16 text-red-500 mx-auto mb-4' />
-					<p className='text-red-600 text-xl mb-4'>{t('ticketNotFound')}</p>
+					<AlertCircle className='w-12 h-12 text-[#48715b] mx-auto mb-4' />
+					<p className='text-text-secondary text-lg mb-4'>{t('ticketNotFound')}</p>
 					<button
 						onClick={() => router.push('/ticket')}
-						className='px-6 py-2 bg-[#48715b] text-white rounded-lg hover:bg-[#3a5a4a]'
+						className='px-6 py-2.5 rounded-xl btn-primary font-medium'
 					>
 						{t('backToTicket')}
 					</button>
@@ -120,21 +153,20 @@ const TicketPurchasePage = ({ params }: TicketPurchasePageProps): React.ReactEle
 		)
 	}
 
-	// If ticket is denied, show message
 	if (ticket.status === 'denied') {
 		return (
 			<div className='min-h-screen flex items-center justify-center'>
 				<div className='text-center'>
-					<AlertCircle className='w-16 h-16 text-red-500 mx-auto mb-4' />
-					<p className='text-red-600 text-xl mb-4'>{t('ticketDenied')}</p>
+					<AlertCircle className='w-12 h-12 text-red-500 mx-auto mb-4' />
+					<p className='text-red-600 text-lg mb-4'>{t('ticketDenied')}</p>
 					{ticket.denial_reason && (
-						<p className='text-gray-600 mb-4'>
+						<p className='text-text-secondary mb-4'>
 							{t('denialReason')}: {ticket.denial_reason}
 						</p>
 					)}
 					<button
 						onClick={() => router.push('/ticket')}
-						className='px-6 py-2 bg-[#48715b] text-white rounded-lg hover:bg-[#3a5a4a]'
+						className='px-6 py-2.5 rounded-xl btn-primary font-medium'
 					>
 						{t('tryAnotherTicket')}
 					</button>
@@ -150,18 +182,31 @@ const TicketPurchasePage = ({ params }: TicketPurchasePageProps): React.ReactEle
 	return (
 		<>
 			<Background />
+			<div className='fixed inset-0 z-[1] bg-black/40' />
 			<div className='min-h-screen relative z-10 py-12 px-4'>
 				<div className='max-w-2xl mx-auto'>
-					<CollapsibleScroll initialOpen>
-						<h3 className="scroll-title pt-5 josefin bg-[url('/textures/asfalt-dark.png')] bg-scroll-title bg-clip-text text-transparent">
-							{t('payment')}
-						</h3>
-						<Separator className='w-[95%] mx-auto' />
+					<div className='bg-main backdrop-blur-md rounded-2xl shadow-2xl overflow-hidden relative'>
+						{/* Drum pattern overlay */}
+						<Image
+							src='/assets/common/drum_pattern.webp'
+							alt=''
+							width={2000}
+							height={2000}
+							className='absolute inset-0 z-0 opacity-[3%] w-full h-full object-cover pointer-events-none'
+							draggable={false}
+						/>
 
-						<div className='px-6 py-6'>
+						<div className='relative z-10 rounded-[30px] p-6 sm:p-10 text-text-secondary'>
+							{/* Title */}
+							<div className='pb-6 border-b border-[#48715B]/15'>
+								<h2 className='text-2xl font-bold text-text-primary josefin'>
+									{t('payment')}
+								</h2>
+							</div>
+
 							{/* Upgrade Info Banner */}
 							{isUpgrade && ticket.previous_reference_code && (
-								<div className='bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4 flex items-center gap-3'>
+								<div className='mt-6 rounded-xl border border-blue-200 bg-blue-50/50 px-4 py-4 flex items-center gap-3'>
 									<ArrowUpCircle className='w-5 h-5 text-blue-600 flex-shrink-0' />
 									<div>
 										<p className='text-blue-800 font-medium'>{t('upgradeFrom')} {ticket.previous_reference_code}</p>
@@ -171,98 +216,59 @@ const TicketPurchasePage = ({ params }: TicketPurchasePageProps): React.ReactEle
 							)}
 
 							{/* Ticket Info Summary */}
-							<div className='bg-[#d2ddd2] rounded-lg p-4 mb-6'>
-								<div className='grid grid-cols-2 gap-4'>
-									<div>
-										<p className='text-sm text-[#48715b]'>{t('ticketType')}</p>
-										<p className='font-semibold text-[#154c5b]'>{tier?.ticket_name || 'N/A'}</p>
-									</div>
-									<div>
-										<p className='text-sm text-[#48715b]'>
-											{isUpgrade ? t('upgradePriceDifference') : t('amount')}
-										</p>
-										<p className='font-semibold text-[#154c5b] text-xl'>
-											{isUpgrade && '+'}
-											{formatPrice(price)} VND
-										</p>
-									</div>
-									<div className='col-span-2'>
-										<p className='text-sm text-[#48715b]'>{t('referenceCode')}</p>
-										<div className='flex items-center gap-2'>
-											<p className='font-mono font-bold text-[#154c5b] text-lg'>
-												{ticket.reference_code}
-											</p>
-											<button
-												onClick={() => copyToClipboard(ticket.reference_code, 'reference')}
-												className='p-1 hover:bg-[#c2cdc2] rounded transition-colors'
-												title={tCommon('copy')}
-											>
-												{copied === 'reference' ? (
-													<Check className='w-4 h-4 text-green-600' />
-												) : (
-													<Copy className='w-4 h-4 text-[#48715b]' />
-												)}
-											</button>
-										</div>
-									</div>
-								</div>
+							<div className='grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6'>
+								<InfoField label={t('ticketType')} value={tier?.ticket_name || 'N/A'} />
+								<InfoField
+									label={isUpgrade ? t('upgradePriceDifference') : t('amount')}
+									value={`${isUpgrade ? '+' : ''}${formatPrice(price)} VND`}
+								/>
+								<CopyableField
+									label={t('referenceCode')}
+									value={ticket.reference_code}
+									field='reference'
+									copied={copied}
+									onCopy={copyToClipboard}
+									mono
+								/>
 							</div>
 
-							{/* QR Code */}
-							<div className='flex flex-col md:flex-row gap-6 mb-6'>
-								<div className='flex-shrink-0'>
-									<div className='w-48 h-48 bg-white rounded-lg border-2 border-[#548780] p-2 flex items-center justify-center'>
-										<Image
-											src='/images/qr.png'
-											alt={t('qrTransfer')}
-											width={176}
-											height={176}
-											className='w-full h-full object-contain'
-										/>
+							{/* QR Code + Bank Details */}
+							<div className='mt-6 pt-6 border-t border-[#48715B]/15'>
+								<div className='flex flex-col md:flex-row gap-6'>
+									<div className='flex-shrink-0 mx-auto md:mx-0'>
+										<div className='w-48 h-48 bg-white rounded-xl border border-[#8C8C8C]/15 p-2 flex items-center justify-center'>
+											<Image
+												src='/images/qr.png'
+												alt={t('qrTransfer')}
+												width={176}
+												height={176}
+												className='w-full h-full object-contain'
+											/>
+										</div>
 									</div>
-								</div>
 
-								{/* Bank Details */}
-								<div className='flex-1'>
-									<h4 className='font-semibold text-[#154c5b] mb-3'>{t('bankDetails')}:</h4>
-									<div className='space-y-3'>
-										<div>
-											<p className='text-sm text-[#48715b]'>{t('bankName')}</p>
-											<p className='font-medium text-[#154c5b]'>{BANK_DETAILS.bankName}</p>
-										</div>
-										<div>
-											<p className='text-sm text-[#48715b]'>{t('accountNumber')}</p>
-											<div className='flex items-center gap-2'>
-												<p className='font-mono font-medium text-[#154c5b]'>
-													{BANK_DETAILS.accountNumber}
-												</p>
-												<button
-													onClick={() =>
-														copyToClipboard(BANK_DETAILS.accountNumber, 'account')
-													}
-													className='p-1 hover:bg-[#c2cdc2] rounded transition-colors'
-													title={tCommon('copy')}
-												>
-													{copied === 'account' ? (
-														<Check className='w-4 h-4 text-green-600' />
-													) : (
-														<Copy className='w-4 h-4 text-[#48715b]' />
-													)}
-												</button>
-											</div>
-										</div>
-										<div>
-											<p className='text-sm text-[#48715b]'>{t('accountHolder')}</p>
-											<p className='font-medium text-[#154c5b]'>{BANK_DETAILS.accountHolder}</p>
-										</div>
+									<div className='flex-1 space-y-3'>
+										<h4 className='text-lg font-semibold text-text-primary'>
+											{t('bankDetails')}
+										</h4>
+										<InfoField label={t('bankName')} value={BANK_DETAILS.bankName} />
+										<CopyableField
+											label={t('accountNumber')}
+											value={BANK_DETAILS.accountNumber}
+											field='account'
+											copied={copied}
+											onCopy={copyToClipboard}
+											mono
+										/>
+										<InfoField label={t('accountHolder')} value={BANK_DETAILS.accountHolder} />
 									</div>
 								</div>
 							</div>
 
 							{/* Instructions */}
-							<div className='bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6'>
-								<h4 className='font-semibold text-yellow-800 mb-2'>{t('instructions')}:</h4>
-								<ol className='list-decimal list-inside space-y-1 text-sm text-yellow-800'>
+							<div className='mt-6 rounded-xl border border-amber-200 bg-amber-50/50 px-4 py-4'>
+								<h4 className='font-semibold text-amber-800 mb-2'>{t('instructions')}</h4>
+								<ol className='list-decimal list-inside space-y-1 text-sm text-amber-800'>
 									<li>{t('instruction1')}</li>
 									<li>{t('instruction2', { amount: formatPrice(price) })}</li>
 									<li>{t('instruction3', { code: ticket.reference_code })}</li>
@@ -271,21 +277,12 @@ const TicketPurchasePage = ({ params }: TicketPurchasePageProps): React.ReactEle
 								</ol>
 							</div>
 
-							{/* Confirm Button */}
-							<div className='space-y-3'>
+							{/* Actions */}
+							<div className='mt-6 pt-5 border-t border-[#48715B]/15 space-y-3'>
 								<button
 									onClick={() => setShowConfirmDialog(true)}
 									disabled={confirmMutation.isPending}
-									className={`
-										w-full py-4 px-6 rounded-[12px] font-semibold text-lg uppercase tracking-wide
-										transition-all duration-200
-										shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)]
-										${
-											confirmMutation.isPending
-												? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-												: 'bg-[#7cbc97] text-white hover:bg-[#6aab85] active:translate-y-0.5'
-										}
-									`}
+									className='shadow-md w-full py-2.5 px-4 text-xl rounded-xl btn-primary font-medium transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed'
 								>
 									{confirmMutation.isPending ? tCommon('processing') : t('iHavePaid')}
 								</button>
@@ -293,38 +290,36 @@ const TicketPurchasePage = ({ params }: TicketPurchasePageProps): React.ReactEle
 								<button
 									onClick={() => router.push('/account')}
 									disabled={confirmMutation.isPending}
-									className='w-full py-3 px-6 rounded-[12px] font-semibold text-base border-2 border-[#48715b] text-[#48715b] hover:bg-[#e9f5e7] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed'
+									className='w-full py-2.5 px-4 rounded-xl border border-[#8C8C8C]/40 font-medium hover:bg-[#E2EEE2] transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed'
 								>
 									{tCommon('cancel')}
 								</button>
+
+								<p className='text-center text-sm text-[#8C8C8C] pt-1'>{t('clickAfterPayment')}</p>
 							</div>
-
-							<p className='text-center text-sm text-[#48715b] mt-4'>{t('clickAfterPayment')}</p>
 						</div>
-
-						<div className='pb-5' />
-					</CollapsibleScroll>
+					</div>
 				</div>
 			</div>
 
 			{/* Confirmation Dialog */}
 			{showConfirmDialog && (
 				<div className='fixed inset-0 z-50 flex items-center justify-center bg-black/50'>
-					<div className='bg-white rounded-xl p-6 max-w-md mx-4 shadow-2xl'>
-						<h3 className='text-xl font-semibold text-[#154c5b] mb-4'>{t('confirmPaymentTitle')}</h3>
-						<p className='text-[#48715b] mb-6'>
+					<div className='bg-white rounded-2xl p-6 max-w-md mx-4 shadow-2xl'>
+						<h3 className='text-xl font-semibold text-text-primary mb-4'>{t('confirmPaymentTitle')}</h3>
+						<p className='text-text-secondary mb-6'>
 							{t('confirmPaymentDesc', { amount: formatPrice(price), code: ticket.reference_code })}
 						</p>
 						<div className='flex gap-3'>
 							<button
 								onClick={() => setShowConfirmDialog(false)}
-								className='flex-1 py-2 px-4 rounded-lg border border-[#48715b] text-[#48715b] hover:bg-[#e9f5e7]'
+								className='flex-1 py-2.5 px-4 rounded-xl border border-[#8C8C8C]/40 font-medium hover:bg-[#E2EEE2]'
 							>
 								{tCommon('cancel')}
 							</button>
 							<button
 								onClick={handleConfirmPayment}
-								className='flex-1 py-2 px-4 rounded-lg bg-[#7cbc97] text-white hover:bg-[#6aab85]'
+								className='flex-1 py-2.5 px-4 rounded-xl btn-primary font-medium'
 							>
 								{tCommon('confirm')}
 							</button>

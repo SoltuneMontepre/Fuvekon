@@ -136,7 +136,7 @@ const AccountLayout = ({ children }: AccountLayoutProps) => {
 			{/* Main Content - Card-based layout with dark background visible */}
 			<div id='account-content' className='relative z-10 gap-6 p-8 w-full '>
 				<div className='bg-main backdrop-blur-md rounded-2xl shadow-2xl max-w-3xl mx-auto overflow-hidden '>
-					<section id='account-main-section' className='relative z-10'>
+					<section id='account-main-section' className='relative z-[60]'>
 						{children}
 					</section>
 					<Image
@@ -144,7 +144,7 @@ const AccountLayout = ({ children }: AccountLayoutProps) => {
 						alt='Drum Pattern'
 						width={2000}
 						height={2000}
-						className='absolute top-0 z-0 opacity-[3%] size-500 object-cover'
+						className='absolute top-0 z-50 opacity-[3%] size-500 object-cover'
 						draggable={false}
 					/>
 				</div>
