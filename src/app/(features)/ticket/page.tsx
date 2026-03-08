@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useTranslations } from 'next-intl'
 import { Check } from 'lucide-react'
 import { AxiosError } from 'axios'
+import { toast } from 'sonner'
 import CollapsibleScroll from '@/components/animated/CollapsibleScroll'
 import Separator from '@/components/common/scroll/Separator'
 import {
@@ -60,8 +61,12 @@ const TicketPage = (): React.ReactElement => {
 			if (result?.isSuccess) {
 				router.push(`/ticket/purchase/${tierId}`)
 			}
-		} catch {
-			// Error is handled by mutation
+		} catch (err) {
+			const message =
+				(err as AxiosError<{ message?: string }>)?.response?.data?.message ||
+				(err as Error).message ||
+				t('errorOccurred')
+			toast.error(message)
 		}
 	}
 
@@ -196,17 +201,6 @@ const TicketPage = (): React.ReactElement => {
 					{account && isBlacklisted && (
 						<div className='mt-6 text-center'>
 							<p className='text-sm text-red-300'>{t('accountRestricted')}</p>
-						</div>
-					)}
-
-					{purchaseMutation.error && (
-						<div className='mt-6 text-center'>
-							<p className='text-sm text-red-300'>
-								{(purchaseMutation.error as AxiosError<{ message?: string }>)
-									?.response?.data?.message ||
-									(purchaseMutation.error as Error).message ||
-									t('errorOccurred')}
-							</p>
 						</div>
 					)}
 
