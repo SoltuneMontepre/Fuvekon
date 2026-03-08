@@ -1190,6 +1190,12 @@ const TicketManagementPage = (): React.ReactElement => {
 										<th className='px-4 py-3 text-left text-sm font-semibold text-[#48715B]'>
 											{t('createdAt')}
 										</th>
+										<th className='px-4 py-3 text-left text-sm font-semibold text-[#48715B]'>
+											{t('approvedAt') || 'Approved At'}
+										</th>
+										<th className='px-4 py-3 text-left text-sm font-semibold text-[#48715B]'>
+											{t('deniedAt') || 'Denied At'}
+										</th>
 										<th className='px-4 py-3 text-center text-sm font-semibold text-[#48715B]'>
 											{t('actions')}
 										</th>
@@ -1273,7 +1279,7 @@ const TicketManagementPage = (): React.ReactElement => {
 														</p>
 													)}
 												</td>
-												<td className='px-4 py-3 text-sm text-[#48715B]-secondary'>
+												<td className='px-4 py-3 text-sm text-text-secondary'>
 													{new Date(ticket.created_at).toLocaleDateString(
 														'vi-VN'
 													)}
@@ -1283,6 +1289,36 @@ const TicketManagementPage = (): React.ReactElement => {
 															'vi-VN'
 														)}
 													</span>
+												</td>
+												<td className='px-4 py-3 text-sm'>
+													{ticket.approved_at ? (
+														<>
+															<span className='text-green-700'>
+																{new Date(ticket.approved_at).toLocaleDateString('vi-VN')}
+															</span>
+															<br />
+															<span className='text-xs text-[#8C8C8C]'>
+																{new Date(ticket.approved_at).toLocaleTimeString('vi-VN')}
+															</span>
+														</>
+													) : (
+														<span className='text-[#8C8C8C]'>–</span>
+													)}
+												</td>
+												<td className='px-4 py-3 text-sm'>
+													{ticket.denied_at ? (
+														<>
+															<span className='text-red-700'>
+																{new Date(ticket.denied_at).toLocaleDateString('vi-VN')}
+															</span>
+															<br />
+															<span className='text-xs text-[#8C8C8C]'>
+																{new Date(ticket.denied_at).toLocaleTimeString('vi-VN')}
+															</span>
+														</>
+													) : (
+														<span className='text-[#8C8C8C]'>–</span>
+													)}
 												</td>
 												<td className='px-4 py-3'>
 													<div className='flex justify-center gap-2'>
@@ -1380,7 +1416,7 @@ const TicketManagementPage = (): React.ReactElement => {
 			{/* Deny Dialog */}
 			{showDenyDialog && selectedTicket && (
 				<div className='fixed inset-0 z-50 flex items-center justify-center bg-black/50'>
-					<div className='rounded-xl p-6 max-w-md mx-4 shadow-2xl border border-[#8C8C8C]/15 bg-white'>
+					<div className='rounded-xl p-6 max-w-lg w-full mx-4 shadow-2xl border border-[#8C8C8C]/15 bg-white'>
 						<h3 className='text-xl font-semibold text-text-primary mb-4'>
 							{t('denyTicketTitle')}
 						</h3>
@@ -1391,6 +1427,20 @@ const TicketManagementPage = (): React.ReactElement => {
 							{t('user')}: {selectedTicket.user?.first_name}{' '}
 							{selectedTicket.user?.last_name} ({selectedTicket.user?.email})
 						</p>
+
+						{selectedTicket.upgraded_from_tier_id && (
+							<div className='bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4'>
+								<p className='text-blue-800 text-sm flex items-center gap-2'>
+									<AlertTriangle className='w-4 h-4' />
+									{t('upgradeRollbackWarning') || 'This is an upgrade ticket. Denying will only reject the upgrade — the user will keep their original ticket.'}
+								</p>
+								{selectedTicket.previous_reference_code && (
+									<p className='text-blue-700 text-xs mt-1'>
+										{t('previousTicket') || 'Previous ticket'}: {selectedTicket.previous_reference_code}
+									</p>
+								)}
+							</div>
+						)}
 
 						{selectedTicket.user && selectedTicket.user.denial_count >= 2 && (
 							<div className='bg-orange-50 border border-orange-200 rounded-lg p-3 mb-4'>
@@ -1609,7 +1659,7 @@ const TicketManagementPage = (): React.ReactElement => {
 			{/* Delete Ticket Confirmation */}
 			{showDeleteConfirm && (
 				<div className='fixed inset-0 z-50 flex items-center justify-center bg-black/50'>
-					<div className='rounded-xl p-6 max-w-md mx-4 shadow-2xl border border-[#8C8C8C]/15 bg-white'>
+					<div className='rounded-xl p-6 max-w-lg w-full mx-4 shadow-2xl border border-[#8C8C8C]/15 bg-white'>
 						<h3 className='text-xl font-semibold text-text-primary mb-4'>
 							{t('deleteTicketTitle') || 'Delete Ticket'}
 						</h3>

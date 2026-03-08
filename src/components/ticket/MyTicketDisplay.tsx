@@ -251,6 +251,26 @@ const MyTicketDisplay = (): React.ReactElement => {
 				</div>
 			)}
 
+			{/* Upgrade Rejection Notice */}
+			{ticket.status === 'approved' && ticket.upgrade_denial_reason && (
+				<div className='mt-6 rounded-xl border border-orange-200 bg-orange-50/50 px-4 py-4'>
+					<div className='flex items-start gap-2'>
+						<AlertCircle className='w-5 h-5 text-orange-600 shrink-0 mt-0.5' />
+						<div>
+							<p className='text-sm font-medium text-orange-800'>
+								{t('upgradeRejected') || 'Your upgrade request was rejected'}
+							</p>
+							<p className='text-sm text-orange-700 mt-1'>
+								{ticket.upgrade_denial_reason}
+							</p>
+							<p className='text-xs text-orange-600 mt-2'>
+								{t('upgradeRejectedKeepTicket') || 'Your original ticket has been restored. You can try upgrading again.'}
+							</p>
+						</div>
+					</div>
+				</div>
+			)}
+
 			{/* Badge Details for Approved Tickets */}
 			{ticket.status === 'approved' && (
 				<div className='mt-6 pt-6 border-t border-[#48715B]/15'>
