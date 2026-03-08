@@ -21,6 +21,8 @@
 		"of": "of",
 		"results": "results",
 		"page": "Page",
+		"previousPage": "Previous page",
+		"nextPage": "Next page",
 		"edit": "Edit",
 		"delete": "Delete",
 		"continue": "Continue",
