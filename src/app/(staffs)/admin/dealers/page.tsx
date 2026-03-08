@@ -23,14 +23,12 @@ import {
 import type { DealerBoothDetail } from '@/types/models/dealer/dealer'
 import { logger } from '@/utils/logger'
 
-// ========== Helper Functions ==========
 const formatDateTime = (dateString?: string): string => {
 	if (!dateString) return '–'
 	const date = new Date(dateString)
 	return date.toLocaleDateString('vi-VN') + ' ' + date.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })
 }
 
-// Translation helper function with fallback
 const createTWithFallback = (t: (key: string) => string) => {
 	return (key: string, fallback: string) => {
 		const translation = t(key)
@@ -38,151 +36,29 @@ const createTWithFallback = (t: (key: string) => string) => {
 	}
 }
 
-// ========== Reusable Components ==========
-
-interface StatCardProps {
-	label: string
-	value: number | string
-	bgColor?: string
-	borderColor?: string
-	textColor?: string
-}
-
-const StatCard: React.FC<StatCardProps> = ({
-	label,
-	value,
-	bgColor = 'bg-white',
-	borderColor = 'border',
-	textColor = 'text-[#154c5b]',
-}) => (
-	<div className={`${bgColor} rounded-lg p-4 shadow-sm ${borderColor}`}>
-		<p className='text-sm text-gray-500'>{label}</p>
-		<p className={`text-2xl font-bold ${textColor}`}>{value}</p>
-	</div>
-)
-
-interface StatusBadgeProps {
-	isVerified: boolean
-	label: string
-}
-
-const StatusBadge: React.FC<StatusBadgeProps> = ({ isVerified, label }) => {
-	const Icon = isVerified ? CheckCircle : AlertCircle
-	const bgColor = isVerified ? 'bg-green-100' : 'bg-yellow-100'
-	const textColor = isVerified ? 'text-green-700' : 'text-yellow-700'
-
-	return (
-		<span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${bgColor} ${textColor}`}>
-			<Icon className='w-4 h-4' />
-			{label}
-		</span>
-	)
-}
-
-interface StaffListProps {
-	staffs?: Array<{ id: string; user_name?: string; user_email?: string; is_owner?: boolean }>
-}
-
-const StaffList: React.FC<StaffListProps> = ({ staffs }) => {
-	if (!staffs || staffs.length === 0) {
-		return <span className='text-gray-400 text-sm'>Không có</span>
-	}
-
-	return (
-		<div className='flex flex-col gap-1'>
-			{staffs.slice(0, 2).map(staff => (
-				<div key={staff.id} className='flex items-center gap-2'>
-					<Users className='w-3 h-3 text-gray-400' />
-					<span className='text-sm text-gray-700'>
-						{staff.user_name || staff.user_email}
-						{staff.is_owner && (
-							<span className='ml-1 text-xs text-[#7cbc97] font-medium'>(Owner)</span>
-						)}
-					</span>
-				</div>
-			))}
-			{staffs.length > 2 && (
-				<p className='text-xs text-gray-500'>+{staffs.length - 2} người khác</p>
-			)}
-		</div>
-	)
-}
-
-interface TableCellProps {
-	children: React.ReactNode
-	className?: string
-}
-
-const TableCell: React.FC<TableCellProps> = ({ children, className = '' }) => (
-	<td className={`px-4 py-3 ${className}`}>{children}</td>
-)
-
-interface PaginationProps {
-	currentPage: number
-	totalPages: number
-	onPageChange: (page: number) => void
-	pageLabel: string
-}
-
-const Pagination: React.FC<PaginationProps> = ({
-	currentPage,
-	totalPages,
-	onPageChange,
-	pageLabel,
-}) => {
-	if (totalPages <= 1) return null
-
-	return (
-		<div className='px-4 py-3 border-t flex items-center justify-between'>
-			<p className='text-sm text-gray-600'>{pageLabel}</p>
-			<div className='flex gap-2'>
-				<button
-					onClick={() => onPageChange(currentPage - 1)}
-					disabled={currentPage <= 1}
-					className='p-2 border rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed'
-				>
-					<ChevronLeft className='w-4 h-4' />
-				</button>
-				<button
-					onClick={() => onPageChange(currentPage + 1)}
-					disabled={currentPage >= totalPages}
-					className='p-2 border rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed'
-				>
-					<ChevronRight className='w-4 h-4' />
-				</button>
-			</div>
-		</div>
-	)
-}
-
-// ========== Main Component ==========
 const DealerManagementPage = (): React.ReactElement => {
 	const tRaw = useTranslations('admin')
 	const t = createTWithFallback(tRaw)
 	const tCommon = useTranslations('common')
 
-	// Filter state
 	const [filter, setFilter] = useState<AdminDealerFilter>({
 		page: 1,
 		page_size: 20,
 	})
 	const [searchInput, setSearchInput] = useState('')
 
-	// Queries
 	const { data: dealersData, isLoading: dealersLoading, refetch: refetchDealers } = useAdminGetDealers(filter)
 	const verifyMutation = useAdminVerifyDealer()
 
 	const dealers = useMemo(() => dealersData?.data || [], [dealersData?.data])
 	const pagination = dealersData?.meta
 
-	// Calculate statistics
 	const stats = useMemo(() => ({
 		total: pagination?.totalItems || dealers.length,
 		verified: dealers.filter((d: DealerBoothDetail) => d.is_verified).length,
 		unverified: dealers.filter((d: DealerBoothDetail) => !d.is_verified).length,
 	}), [dealers, pagination])
 
-	// Client-side search filtering
 	const filteredDealers = useMemo(() => {
 		if (!dealers.length) return []
 		if (!searchInput.trim()) return dealers
@@ -203,7 +79,6 @@ const DealerManagementPage = (): React.ReactElement => {
 		})
 	}, [dealers, searchInput])
 
-	// Handlers
 	const handleVerificationFilter = (isVerified: boolean | 'all') => {
 		setFilter(prev => ({
 			...prev,
@@ -227,73 +102,59 @@ const DealerManagementPage = (): React.ReactElement => {
 	}
 
 	return (
-		<div id='dealer-management-page' className='dealer-management-page w-full'>
+		<div className='w-full'>
 			{/* Header */}
-			<div id='dealer-management-header' className='dealer-management-header mb-6'>
-				<h1 className='text-2xl font-bold text-[#154c5b] dark:text-dark-text'>
+			<div className='pb-6 border-b border-[#48715B]/15'>
+				<h1 className='text-2xl font-bold text-text-primary josefin flex items-center gap-2'>
+					<Store className='w-6 h-6' />
 					{t('dealerManagement', 'Quản lý Dealer')}
 				</h1>
-				<p className='text-[#48715b] dark:text-dark-text-secondary'>
+				<p className='text-text-secondary mt-1'>
 					{t('dealerManagementDesc', 'Quản lý và xác minh các dealer booth')}
 				</p>
 			</div>
 
 			{/* Statistics Cards */}
-			<div className='grid grid-cols-2 md:grid-cols-3 gap-4 mb-6'>
-				<StatCard
-					label={t('totalDealers', 'Tổng số Dealer')}
-					value={stats.total}
-				/>
-				<StatCard
-					label={t('verifiedDealers', 'Đã xác minh')}
-					value={stats.verified}
-					bgColor='bg-green-50'
-					borderColor='border border-green-200'
-					textColor='text-green-700'
-				/>
-				<StatCard
-					label={t('unverifiedDealers', 'Chưa xác minh')}
-					value={stats.unverified}
-					bgColor='bg-yellow-50'
-					borderColor='border border-yellow-200'
-					textColor='text-yellow-700'
-				/>
+			<div className='grid grid-cols-2 md:grid-cols-3 gap-4 mt-6'>
+				<div className='rounded-xl bg-[#E2EEE2]/60 border border-[#8C8C8C]/15 p-4'>
+					<p className='text-sm font-medium text-[#48715B]'>{t('totalDealers', 'Tổng số Dealer')}</p>
+					<p className='text-2xl font-bold text-text-primary'>{stats.total}</p>
+				</div>
+				<div className='rounded-xl bg-emerald-50/80 border border-emerald-200 p-4'>
+					<p className='text-sm font-medium text-emerald-700'>{t('verifiedDealers', 'Đã xác minh')}</p>
+					<p className='text-2xl font-bold text-emerald-800'>{stats.verified}</p>
+				</div>
+				<div className='rounded-xl bg-amber-50/80 border border-amber-200 p-4'>
+					<p className='text-sm font-medium text-amber-700'>{t('unverifiedDealers', 'Chưa xác minh')}</p>
+					<p className='text-2xl font-bold text-amber-800'>{stats.unverified}</p>
+				</div>
 			</div>
 
 			{/* Filters */}
-			<div className='bg-white rounded-lg shadow-sm border p-4 mb-6'>
+			<div className='mt-6 rounded-xl bg-[#E2EEE2]/60 border border-[#8C8C8C]/15 p-4'>
 				<div className='flex flex-wrap gap-4 items-center'>
-					{/* Search */}
-					<div className='flex-1 min-w-[200px] flex gap-2'>
-						<div className='relative flex-1'>
-							<Search className='absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400' />
+					<div className='flex-1 min-w-[200px]'>
+						<div className='relative'>
+							<Search className='absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[#8C8C8C]' />
 							<input
 								type='text'
 								placeholder={t('searchPlaceholder', 'Tìm kiếm dealer...')}
 								value={searchInput}
 								onChange={e => setSearchInput(e.target.value)}
-								onKeyDown={e => e.key === 'Enter'}
-								className='w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#7cbc97]'
+								className='w-full pl-10 pr-4 py-2.5 rounded-xl bg-white border border-[#8C8C8C]/15 text-text-secondary placeholder-[#8C8C8C]/40 focus:outline-none focus:border-[#48715B] transition-colors'
 							/>
 						</div>
-						<button
-							onClick={() => {}}
-							className='px-4 py-2 bg-[#7cbc97] text-white rounded-lg hover:bg-[#6aab85]'
-						>
-							{t('search', 'Tìm kiếm')}
-						</button>
 					</div>
 
-					{/* Verification Status Filter */}
 					<div className='flex items-center gap-2'>
-						<Filter className='w-4 h-4 text-gray-400' />
+						<Filter className='w-4 h-4 text-[#8C8C8C]' />
 						<select
 							value={filter.is_verified === undefined ? 'all' : String(filter.is_verified)}
 							onChange={e => {
 								const value = e.target.value
 								handleVerificationFilter(value === 'all' ? 'all' : value === 'true')
 							}}
-							className='border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#7cbc97]'
+							className='rounded-xl bg-white border border-[#8C8C8C]/15 px-3 py-2.5 text-text-secondary focus:outline-none focus:border-[#48715B] transition-colors'
 						>
 							<option value='all'>{t('allStatus', 'Tất cả')}</option>
 							<option value='true'>{t('verified', 'Đã xác minh')}</option>
@@ -301,124 +162,165 @@ const DealerManagementPage = (): React.ReactElement => {
 						</select>
 					</div>
 
-					{/* Refresh Button */}
 					<button
 						onClick={() => refetchDealers()}
-						className='p-2 border rounded-lg hover:bg-gray-50'
+						className='p-2.5 rounded-xl bg-white border border-[#8C8C8C]/15 hover:bg-[#E2EEE2] transition-colors'
 						title={t('refresh', 'Làm mới')}
 					>
-						<RefreshCw className='w-4 h-4 text-gray-600' />
+						<RefreshCw className='w-4 h-4 text-[#48715B]' />
 					</button>
 				</div>
 			</div>
 
 			{/* Dealers Table */}
-			<div className='bg-white rounded-lg shadow-sm border overflow-hidden'>
+			<div className='mt-6'>
 				{dealersLoading ? (
-					<div className='p-8 text-center text-gray-500'>{tCommon('loading')}</div>
+					<div className='p-8 text-center text-text-secondary rounded-xl bg-[#E2EEE2]/60 border border-[#8C8C8C]/15'>
+						{tCommon('loading')}
+					</div>
 				) : filteredDealers.length === 0 ? (
-					<div className='p-8 text-center text-gray-500'>{t('noDealers', 'Không có dealer nào')}</div>
+					<div className='p-8 text-center text-text-secondary rounded-xl bg-[#E2EEE2]/60 border border-[#8C8C8C]/15'>
+						{t('noDealers', 'Không có dealer nào')}
+					</div>
 				) : (
 					<>
-						<div className='overflow-x-auto'>
+						<div className='overflow-x-auto rounded-xl border border-[#8C8C8C]/15 bg-white/50'>
 							<table className='w-full'>
-								<thead className='bg-gray-50 border-b'>
-									<tr>
-										<th className='px-4 py-3 text-left text-sm font-semibold text-gray-600'>
+								<thead>
+									<tr className='border-b border-[#48715B]/15 bg-[#E2EEE2]/40'>
+										<th className='px-4 py-3 text-left text-sm font-semibold text-[#48715B]'>
 											{t('boothName', 'Tên Booth')}
 										</th>
-										<th className='px-4 py-3 text-left text-sm font-semibold text-gray-600'>
+										<th className='px-4 py-3 text-left text-sm font-semibold text-[#48715B]'>
 											{t('boothNumber', 'Số Booth')}
 										</th>
-										<th className='px-4 py-3 text-left text-sm font-semibold text-gray-600'>
+										<th className='px-4 py-3 text-left text-sm font-semibold text-[#48715B]'>
 											{t('description', 'Mô tả')}
 										</th>
-										<th className='px-4 py-3 text-left text-sm font-semibold text-gray-600'>
+										<th className='px-4 py-3 text-left text-sm font-semibold text-[#48715B]'>
 											{t('staff', 'Nhân viên')}
 										</th>
-										<th className='px-4 py-3 text-left text-sm font-semibold text-gray-600'>
+										<th className='px-4 py-3 text-left text-sm font-semibold text-[#48715B]'>
 											{t('status', 'Trạng thái')}
 										</th>
-										<th className='px-4 py-3 text-left text-sm font-semibold text-gray-600'>
+										<th className='px-4 py-3 text-left text-sm font-semibold text-[#48715B]'>
 											{t('createdAt', 'Ngày tạo')}
 										</th>
-										<th className='px-4 py-3 text-center text-sm font-semibold text-gray-600'>
+										<th className='px-4 py-3 text-center text-sm font-semibold text-[#48715B]'>
 											{t('actions', 'Hành động')}
 										</th>
 									</tr>
 								</thead>
-								<tbody className='divide-y'>
+								<tbody className='divide-y divide-[#48715B]/10'>
 									{filteredDealers.map((dealer: DealerBoothDetail) => (
-										<tr key={dealer.id} className='hover:bg-gray-50'>
-											<TableCell>
+										<tr key={dealer.id} className='hover:bg-[#E2EEE2]/40 transition-colors'>
+											<td className='px-4 py-3'>
 												<div className='flex items-center gap-2'>
-													<Store className='w-4 h-4 text-[#7cbc97]' />
-													<span className='font-semibold text-[#154c5b]'>
+													<Store className='w-4 h-4 text-[#48715B]' />
+													<span className='font-semibold text-text-primary'>
 														{dealer.booth_name || '–'}
 													</span>
 												</div>
-											</TableCell>
-											<TableCell>
+											</td>
+											<td className='px-4 py-3'>
 												{dealer.booth_number ? (
-													<span className='font-mono text-sm bg-gray-100 px-2 py-1 rounded'>
+													<span className='font-mono text-sm bg-[#E2EEE2]/60 px-2 py-1 rounded-lg'>
 														{dealer.booth_number}
 													</span>
 												) : (
-													<span className='text-gray-400 text-sm'>Chưa gán</span>
+													<span className='text-[#8C8C8C] text-sm'>Chưa gán</span>
 												)}
-											</TableCell>
-											<TableCell>
-												<p className='text-sm text-gray-600 line-clamp-2 max-w-xs'>
+											</td>
+											<td className='px-4 py-3'>
+												<p className='text-sm text-text-secondary line-clamp-2 max-w-xs'>
 													{dealer.description || '–'}
 												</p>
-											</TableCell>
-											<TableCell>
-												<StaffList staffs={dealer.staffs} />
-											</TableCell>
-											<TableCell>
-												<StatusBadge
-													isVerified={dealer.is_verified}
-													label={dealer.is_verified ? t('verified', 'Đã xác minh') : t('unverified', 'Chưa xác minh')}
-												/>
-											</TableCell>
-											<TableCell>
-												<span className='text-sm text-gray-600'>
+											</td>
+											<td className='px-4 py-3'>
+												{(!dealer.staffs || dealer.staffs.length === 0) ? (
+													<span className='text-[#8C8C8C] text-sm'>Không có</span>
+												) : (
+													<div className='flex flex-col gap-1'>
+														{dealer.staffs.slice(0, 2).map(staff => (
+															<div key={staff.id} className='flex items-center gap-2'>
+																<Users className='w-3 h-3 text-[#8C8C8C]' />
+																<span className='text-sm text-text-secondary'>
+																	{staff.user_name || staff.user_email}
+																	{staff.is_owner && (
+																		<span className='ml-1 text-xs text-[#48715B] font-medium'>(Owner)</span>
+																	)}
+																</span>
+															</div>
+														))}
+														{dealer.staffs.length > 2 && (
+															<p className='text-xs text-[#8C8C8C]'>+{dealer.staffs.length - 2} người khác</p>
+														)}
+													</div>
+												)}
+											</td>
+											<td className='px-4 py-3'>
+												<span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${
+													dealer.is_verified
+														? 'bg-green-100 text-green-700'
+														: 'bg-yellow-100 text-yellow-700'
+												}`}>
+													{dealer.is_verified ? <CheckCircle className='w-4 h-4' /> : <AlertCircle className='w-4 h-4' />}
+													{dealer.is_verified ? t('verified', 'Đã xác minh') : t('unverified', 'Chưa xác minh')}
+												</span>
+											</td>
+											<td className='px-4 py-3'>
+												<span className='text-sm text-text-secondary'>
 													{formatDateTime(dealer.created_at)}
 												</span>
-											</TableCell>
-											<TableCell>
+											</td>
+											<td className='px-4 py-3'>
 												<div className='flex justify-center gap-2'>
 													{!dealer.is_verified ? (
 														<button
 															onClick={() => handleVerify(dealer)}
 															disabled={verifyMutation.isPending}
-															className='px-3 py-1 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1'
+															className='inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-emerald-50 border border-emerald-400 text-emerald-700 text-sm font-medium hover:bg-emerald-100 disabled:opacity-50 disabled:cursor-not-allowed'
 														>
 															<Shield className='w-4 h-4' />
 															{t('verify', 'Xác minh')}
 														</button>
 													) : (
-														<span className='text-xs text-green-600 flex items-center gap-1'>
+														<span className='text-xs text-emerald-600 flex items-center gap-1'>
 															<CheckCircle className='w-4 h-4' />
 															{t('verified', 'Đã xác minh')}
 														</span>
 													)}
 												</div>
-											</TableCell>
+											</td>
 										</tr>
 									))}
 								</tbody>
 							</table>
 						</div>
 
-						{pagination && (
-							<Pagination
-								currentPage={pagination.currentPage}
-								totalPages={pagination.totalPages}
-								onPageChange={handlePageChange}
-								pageLabel={t('page', `Trang ${pagination.currentPage} / ${pagination.totalPages}`) || 
-									`Trang ${pagination.currentPage} / ${pagination.totalPages}`}
-							/>
+						{/* Pagination */}
+						{pagination && pagination.totalPages > 1 && (
+							<div className='mt-4 px-4 py-3 rounded-xl bg-[#E2EEE2]/40 border border-[#8C8C8C]/15 flex items-center justify-between'>
+								<p className='text-sm text-text-secondary'>
+									{tCommon('page')} {pagination.currentPage} / {pagination.totalPages}
+								</p>
+								<div className='flex gap-2'>
+									<button
+										onClick={() => handlePageChange(pagination.currentPage - 1)}
+										disabled={pagination.currentPage <= 1}
+										className='p-2 rounded-xl border border-[#8C8C8C]/15 hover:bg-[#E2EEE2] disabled:opacity-50 disabled:cursor-not-allowed transition-colors'
+									>
+										<ChevronLeft className='w-4 h-4 text-[#48715B]' />
+									</button>
+									<button
+										onClick={() => handlePageChange(pagination.currentPage + 1)}
+										disabled={pagination.currentPage >= pagination.totalPages}
+										className='p-2 rounded-xl border border-[#8C8C8C]/15 hover:bg-[#E2EEE2] disabled:opacity-50 disabled:cursor-not-allowed transition-colors'
+									>
+										<ChevronRight className='w-4 h-4 text-[#48715B]' />
+									</button>
+								</div>
+							</div>
 						)}
 					</>
 				)}

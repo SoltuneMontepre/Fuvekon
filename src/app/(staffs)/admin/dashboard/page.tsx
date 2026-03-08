@@ -32,7 +32,7 @@ const DashboardCharts = dynamic(
 	{ ssr: false }
 )
 
-// Stat card with optional icon and link
+// Stat card
 interface StatCardProps {
 	label: string
 	value: number | string
@@ -52,14 +52,16 @@ const StatCard: React.FC<StatCardProps> = ({
 }) => {
 	const router = useRouter()
 	const variantStyles = {
-		default:
-			'border-slate-300/20 dark:border-dark-border/20 bg-white/80 dark:bg-dark-surface/80 text-[#154c5b] dark:text-dark-text',
-		warning:
-			'border-amber-400/30 dark:border-amber-500/20 bg-amber-50/80 dark:bg-amber-900/10 text-amber-800 dark:text-amber-200',
-		success:
-			'border-emerald-400/30 dark:border-emerald-500/20 bg-emerald-50/80 dark:bg-emerald-900/10 text-emerald-800 dark:text-emerald-200',
-		muted:
-			'border-slate-300/20 dark:border-dark-border/20 bg-slate-50/80 dark:bg-dark-surface/60 text-slate-600 dark:text-dark-text-secondary',
+		default: 'bg-[#E2EEE2]/60 border-[#8C8C8C]/15 text-text-primary',
+		warning: 'bg-amber-50/80 border-amber-200 text-amber-800',
+		success: 'bg-emerald-50/80 border-emerald-200 text-emerald-800',
+		muted: 'bg-[#E2EEE2]/30 border-[#8C8C8C]/15 text-text-secondary',
+	}
+	const iconBg = {
+		default: 'bg-[#E2EEE2]',
+		warning: 'bg-amber-100',
+		success: 'bg-emerald-100',
+		muted: 'bg-[#E2EEE2]/60',
 	}
 	const style = variantStyles[variant]
 	const isClickable = !!href
@@ -79,40 +81,28 @@ const StatCard: React.FC<StatCardProps> = ({
 						}
 					: undefined
 			}
-			className={`rounded-xl border p-5 shadow-sm transition-all ${style} ${
+			className={`rounded-xl border p-5 transition-all ${style} ${
 				isClickable
-					? 'cursor-pointer hover:shadow-md hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-[#7cbc97] focus:ring-offset-2 dark:focus:ring-offset-dark-surface'
+					? 'cursor-pointer hover:shadow-md hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-[#48715B]'
 					: ''
 			}`}
 		>
 			<div className='flex items-start justify-between'>
 				<div>
-					<p className='text-sm font-medium text-gray-500 dark:text-dark-text-secondary'>
-						{label}
-					</p>
+					<p className='text-sm font-medium text-[#48715B]'>{label}</p>
 					<p className='mt-1 text-2xl font-bold tabular-nums'>{value}</p>
 					{subLabel && (
-						<p className='mt-0.5 text-xs text-gray-500 dark:text-dark-text-secondary'>
-							{subLabel}
-						</p>
+						<p className='mt-0.5 text-xs text-[#8C8C8C]'>{subLabel}</p>
 					)}
 				</div>
 				{Icon && (
-					<div
-						className={`rounded-lg p-2 ${
-							variant === 'warning'
-								? 'bg-amber-100/80 dark:bg-amber-800/30'
-								: variant === 'success'
-									? 'bg-emerald-100/80 dark:bg-emerald-800/30'
-									: 'bg-slate-100 dark:bg-dark-surface'
-						}`}
-					>
+					<div className={`rounded-xl p-2 ${iconBg[variant]}`}>
 						<Icon className='h-5 w-5' />
 					</div>
 				)}
 			</div>
 			{href && (
-				<div className='mt-3 flex items-center gap-1 text-sm font-medium text-[#7cbc97] dark:text-emerald-400'>
+				<div className='mt-3 flex items-center gap-1 text-sm font-medium text-[#48715B]'>
 					<span>Xem chi tiết</span>
 					<ArrowRight className='h-4 w-4' />
 				</div>
@@ -140,22 +130,18 @@ const QuickLink: React.FC<QuickLinkProps> = ({
 		<button
 			type='button'
 			onClick={() => router.push(href)}
-			className='flex w-full items-center gap-4 rounded-xl border border-slate-300/20 dark:border-dark-border/20 bg-white/80 dark:bg-dark-surface/80 p-4 text-left shadow-sm transition-all hover:border-[#7cbc97]/40 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-[#7cbc97] focus:ring-offset-2 dark:focus:ring-offset-dark-surface'
+			className='flex w-full items-center gap-4 rounded-xl border border-[#8C8C8C]/15 bg-[#E2EEE2]/60 p-4 text-left transition-all hover:border-[#48715B]/30 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-[#48715B]'
 		>
-			<div className='rounded-lg bg-slate-100 p-3 dark:bg-dark-surface'>
-				<Icon className='h-6 w-6 text-[#154c5b] dark:text-dark-text' />
+			<div className='rounded-xl bg-[#E2EEE2] p-3'>
+				<Icon className='h-6 w-6 text-[#48715B]' />
 			</div>
 			<div className='min-w-0 flex-1'>
-				<p className='font-semibold text-[#154c5b] dark:text-dark-text'>
-					{label}
-				</p>
+				<p className='font-semibold text-text-primary'>{label}</p>
 				{description && (
-					<p className='text-sm text-gray-500 dark:text-dark-text-secondary'>
-						{description}
-					</p>
+					<p className='text-sm text-text-secondary'>{description}</p>
 				)}
 			</div>
-			<ArrowRight className='h-5 w-5 shrink-0 text-gray-400' />
+			<ArrowRight className='h-5 w-5 shrink-0 text-[#8C8C8C]' />
 		</button>
 	)
 }
@@ -195,22 +181,22 @@ const AdminDashboardPage: React.FC = () => {
 	}
 
 	return (
-		<div id='admin-dashboard-page' className='admin-dashboard-page w-full'>
+		<div className='w-full'>
 			{/* Header */}
-			<div className='mb-8 flex flex-wrap items-center justify-between gap-4'>
+			<div className='flex flex-wrap items-center justify-between gap-4 pb-6 border-b border-[#48715B]/15'>
 				<div>
-					<h1 className='flex items-center gap-2 text-2xl font-bold text-[#154c5b] dark:text-dark-text'>
+					<h1 className='flex items-center gap-2 text-2xl font-bold text-text-primary josefin'>
 						<LayoutDashboard className='h-7 w-7' />
 						Dashboard
 					</h1>
-					<p className='mt-1 text-[#48715b] dark:text-dark-text-secondary'>
+					<p className='mt-1 text-text-secondary'>
 						Tổng quan và thao tác nhanh
 					</p>
 				</div>
 				<button
 					type='button'
 					onClick={() => refetchStats()}
-					className='flex items-center gap-2 rounded-lg border border-slate-300/20 dark:border-dark-border/20 bg-white/80 dark:bg-dark-surface/80 px-4 py-2 text-sm font-medium text-[#154c5b] dark:text-dark-text shadow-sm transition-colors hover:bg-slate-50 dark:hover:bg-dark-surface'
+					className='flex items-center gap-2 rounded-xl border border-[#8C8C8C]/15 bg-[#E2EEE2]/60 px-4 py-2.5 text-sm font-medium text-[#48715B] transition-colors hover:bg-[#E2EEE2]'
 					aria-label='Làm mới'
 				>
 					<RefreshCw className='h-4 w-4' />
@@ -219,8 +205,8 @@ const AdminDashboardPage: React.FC = () => {
 			</div>
 
 			{/* Overview stats */}
-			<section className='mb-8'>
-				<h2 className='mb-4 text-lg font-semibold text-[#154c5b] dark:text-dark-text'>
+			<section className='mt-6 mb-8'>
+				<h2 className='mb-4 text-lg font-semibold text-text-primary'>
 					Thống kê tổng quan
 				</h2>
 				<div className='grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4'>
@@ -287,15 +273,15 @@ const AdminDashboardPage: React.FC = () => {
 			{(stats?.pending_over_24_hours ?? 0) > 0 && (
 				<section className='mb-8'>
 					<div
-						className='flex items-center gap-3 rounded-xl border border-amber-400/40 bg-amber-50/90 p-4 dark:border-amber-500/30 dark:bg-amber-900/20'
+						className='flex items-center gap-3 rounded-xl border border-amber-200 bg-amber-50/80 p-4'
 						role='alert'
 					>
-						<AlertCircle className='h-6 w-6 shrink-0 text-amber-600 dark:text-amber-400' />
+						<AlertCircle className='h-6 w-6 shrink-0 text-amber-600' />
 						<div className='min-w-0 flex-1'>
-							<p className='font-medium text-amber-800 dark:text-amber-200'>
+							<p className='font-medium text-amber-800'>
 								{stats?.pending_over_24_hours} vé đang chờ duyệt quá 24 giờ
 							</p>
-							<p className='text-sm text-amber-700 dark:text-amber-300'>
+							<p className='text-sm text-amber-700'>
 								Xem và xử lý tại Quản lý vé.
 							</p>
 						</div>
@@ -304,7 +290,7 @@ const AdminDashboardPage: React.FC = () => {
 							onClick={() =>
 								window.location.assign('/admin/tickets?status=pending')
 							}
-							className='shrink-0 rounded-lg bg-amber-200/80 px-4 py-2 text-sm font-medium text-amber-900 transition-colors hover:bg-amber-300/80 dark:bg-amber-700/50 dark:text-amber-100 dark:hover:bg-amber-600/50'
+							className='shrink-0 rounded-xl bg-amber-200/80 px-4 py-2.5 text-sm font-medium text-amber-900 transition-colors hover:bg-amber-300/80'
 						>
 							Xem ngay
 						</button>
@@ -324,46 +310,46 @@ const AdminDashboardPage: React.FC = () => {
 				formatRevenue={formatRevenue}
 			/>
 
-			{/* Tier breakdown (if available) */}
+			{/* Tier breakdown */}
 			{stats?.tier_stats && stats.tier_stats.length > 0 && (
 				<section className='mb-8'>
-					<h2 className='mb-4 text-lg font-semibold text-[#154c5b] dark:text-dark-text'>
+					<h2 className='mb-4 text-lg font-semibold text-text-primary'>
 						Thống kê theo loại vé
 					</h2>
-					<div className='overflow-hidden rounded-xl border border-slate-300/20 dark:border-dark-border/20 bg-white/80 dark:bg-dark-surface/80 shadow-sm'>
+					<div className='overflow-hidden rounded-xl border border-[#8C8C8C]/15'>
 						<table className='w-full'>
 							<thead>
-								<tr className='border-b border-slate-300/20 dark:border-dark-border/20 bg-slate-50/80 dark:bg-dark-surface/50'>
-									<th className='px-4 py-3 text-left text-sm font-semibold text-[#154c5b] dark:text-dark-text'>
+								<tr className='border-b border-[#48715B]/15'>
+									<th className='px-4 py-3 text-left text-sm font-semibold text-[#48715B]'>
 										Loại vé
 									</th>
-									<th className='px-4 py-3 text-right text-sm font-semibold text-[#154c5b] dark:text-dark-text'>
+									<th className='px-4 py-3 text-right text-sm font-semibold text-[#48715B]'>
 										Đã bán
 									</th>
-									<th className='px-4 py-3 text-right text-sm font-semibold text-[#154c5b] dark:text-dark-text'>
+									<th className='px-4 py-3 text-right text-sm font-semibold text-[#48715B]'>
 										Tồn kho
 									</th>
-									<th className='px-4 py-3 text-right text-sm font-semibold text-[#154c5b] dark:text-dark-text'>
+									<th className='px-4 py-3 text-right text-sm font-semibold text-[#48715B]'>
 										Tổng
 									</th>
 								</tr>
 							</thead>
-							<tbody className='divide-y divide-slate-300/20 dark:divide-dark-border/20'>
+							<tbody className='divide-y divide-[#48715B]/10'>
 								{stats.tier_stats.map(tier => (
 									<tr
 										key={tier.tier_id}
-										className='transition-colors hover:bg-slate-50/50 dark:hover:bg-dark-surface/50'
+										className='transition-colors hover:bg-[#E2EEE2]/40'
 									>
-										<td className='px-4 py-3 font-medium text-[#154c5b] dark:text-dark-text'>
+										<td className='px-4 py-3 font-medium text-text-primary'>
 											{tier.tier_name}
 										</td>
-										<td className='px-4 py-3 text-right tabular-nums text-gray-700 dark:text-dark-text'>
+										<td className='px-4 py-3 text-right tabular-nums text-text-secondary'>
 											{tier.sold}
 										</td>
-										<td className='px-4 py-3 text-right tabular-nums text-gray-700 dark:text-dark-text'>
+										<td className='px-4 py-3 text-right tabular-nums text-text-secondary'>
 											{tier.available}
 										</td>
-										<td className='px-4 py-3 text-right tabular-nums text-gray-600 dark:text-dark-text-secondary'>
+										<td className='px-4 py-3 text-right tabular-nums text-[#8C8C8C]'>
 											{tier.total_stock}
 										</td>
 									</tr>
@@ -376,7 +362,7 @@ const AdminDashboardPage: React.FC = () => {
 
 			{/* Quick actions */}
 			<section>
-				<h2 className='mb-4 text-lg font-semibold text-[#154c5b] dark:text-dark-text'>
+				<h2 className='mb-4 text-lg font-semibold text-text-primary'>
 					Thao tác nhanh
 				</h2>
 				<div className='grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3'>

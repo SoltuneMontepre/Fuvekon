@@ -30,32 +30,40 @@ const formatPrice = (price: number): string => {
 	}).format(price)
 }
 
-// Status display configuration (icons only, labels come from translations)
-const STATUS_ICONS: Record<
+// Status display configuration
+const STATUS_CONFIG: Record<
 	TicketStatus,
-	{ icon: React.ReactNode; bgColor: string; textColor: string }
+	{ icon: React.ReactNode; textColor: string; pillBg: string }
 > = {
 	pending: {
-		icon: <Clock className='w-5 h-5' />,
-		bgColor: 'bg-yellow-50',
-		textColor: 'text-yellow-700',
+		icon: <Clock className='w-4 h-4' />,
+		textColor: 'text-amber-700',
+		pillBg: 'bg-amber-100',
 	},
 	self_confirmed: {
-		icon: <RefreshCw className='w-5 h-5 animate-spin' />,
-		bgColor: 'bg-blue-50',
+		icon: <RefreshCw className='w-4 h-4 animate-spin' />,
 		textColor: 'text-blue-700',
+		pillBg: 'bg-blue-100',
 	},
 	approved: {
-		icon: <CheckCircle className='w-5 h-5' />,
-		bgColor: 'bg-green-50',
+		icon: <CheckCircle className='w-4 h-4' />,
 		textColor: 'text-green-700',
+		pillBg: 'bg-green-100',
 	},
 	denied: {
-		icon: <XCircle className='w-5 h-5' />,
-		bgColor: 'bg-red-50',
+		icon: <XCircle className='w-4 h-4' />,
 		textColor: 'text-red-700',
+		pillBg: 'bg-red-100',
 	},
 }
+
+// Reusable info field matching account page style
+const InfoField = ({ label, value }: { label: string; value: string }) => (
+	<div className='space-y-0.5 px-3 py-2.5 rounded-xl bg-[#E2EEE2]/60 border border-[#8C8C8C]/15'>
+		<p className='text-sm font-medium text-[#48715B]'>{label}</p>
+		<p className='text-lg text-text-secondary'>{value}</p>
+	</div>
+)
 
 const MyTicketDisplay = (): React.ReactElement => {
 	const router = useRouter()
@@ -74,7 +82,6 @@ const MyTicketDisplay = (): React.ReactElement => {
 
 	const ticket = ticketData?.data
 
-	// Get status label from translations
 	const getStatusLabel = (status: TicketStatus): string => {
 		const statusLabels: Record<TicketStatus, string> = {
 			pending: t('status.pending'),
@@ -87,7 +94,6 @@ const MyTicketDisplay = (): React.ReactElement => {
 
 	const handleUpdateBadge = async () => {
 		if (!badgeName.trim()) return
-
 		try {
 			await updateBadgeMutation.mutateAsync({
 				con_badge_name: badgeName.trim(),
@@ -95,14 +101,9 @@ const MyTicketDisplay = (): React.ReactElement => {
 				is_fursuit_staff: isFursuitStaff,
 			})
 			setShowBadgeForm(false)
-			toast.success(
-				t('badgeUpdatedSuccess') || 'Badge details updated successfully!'
-			)
+			toast.success(t('badgeUpdatedSuccess') || 'Badge details updated successfully!')
 		} catch {
-			toast.error(
-				t('badgeUpdateError') ||
-					'Failed to update badge details. Please try again.'
-			)
+			toast.error(t('badgeUpdateError') || 'Failed to update badge details. Please try again.')
 		}
 	}
 
@@ -110,29 +111,22 @@ const MyTicketDisplay = (): React.ReactElement => {
 		setShowCancelDialog(false)
 		try {
 			await cancelTicketMutation.mutateAsync()
-			toast.success(
-				t('ticketCancelledSuccess') || 'Ticket cancelled successfully!'
-			)
+			toast.success(t('ticketCancelledSuccess') || 'Ticket cancelled successfully!')
 			router.push('/ticket')
 		} catch {
-			toast.error(
-				t('ticketCancelError') || 'Failed to cancel ticket. Please try again.'
-			)
+			toast.error(t('ticketCancelError') || 'Failed to cancel ticket. Please try again.')
 		}
 	}
 
-	// Show error toast when error occurs
 	useEffect(() => {
 		if (error) {
-			toast.error(
-				t('couldNotLoadTicket') || 'Could not load ticket information'
-			)
+			toast.error(t('couldNotLoadTicket') || 'Could not load ticket information')
 		}
 	}, [error, t])
 
 	if (isLoading) {
 		return (
-			<div className='p-6 bg-[#e2eee2] rounded-xl border-2 border-[#548780]'>
+			<div className='rounded-[30px] p-6 sm:p-10'>
 				<div className='text-center text-[#48715b]'>{tCommon('loading')}</div>
 			</div>
 		)
@@ -140,14 +134,14 @@ const MyTicketDisplay = (): React.ReactElement => {
 
 	if (error) {
 		return (
-			<div className='p-6 bg-[#e2eee2] rounded-xl border-2 border-[#548780]'>
+			<div className='rounded-[30px] p-6 sm:p-10'>
 				<div className='text-center text-[#48715b]'>
 					<AlertCircle className='w-12 h-12 mx-auto mb-4' />
 					<p>{t('couldNotLoadTicket')}</p>
 				</div>
 				<button
 					onClick={() => refetch()}
-					className='mt-4 px-4 py-2 bg-[#7cbc97] text-white rounded-lg hover:bg-[#6aab85] mx-auto block'
+					className='mt-4 px-4 py-2.5 rounded-xl btn-primary font-medium mx-auto block'
 				>
 					{tCommon('retry')}
 				</button>
@@ -155,285 +149,247 @@ const MyTicketDisplay = (): React.ReactElement => {
 		)
 	}
 
-	// No ticket - show buy ticket prompt
 	if (!ticket) {
 		return (
-			<div className='p-6 bg-[#e2eee2] rounded-xl border-2 border-[#548780]'>
-				<div className='text-center'>
-					<AlertCircle className='w-12 h-12 text-[#48715b] mx-auto mb-4' />
-					<h3 className='text-lg font-semibold text-[#154c5b] mb-2'>
-						{t('noTicket')}
-					</h3>
-					<p className='text-[#48715b] mb-4'>{t('noTicketDesc')}</p>
-					<button
-						onClick={() => router.push('/ticket')}
-						className='px-6 py-2 bg-[#7cbc97] text-white rounded-lg hover:bg-[#6aab85] font-semibold'
-					>
-						{t('buyNow')}
-					</button>
-				</div>
+			<div className='rounded-[30px] p-6 sm:p-10 text-center'>
+				<AlertCircle className='w-12 h-12 text-[#48715b] mx-auto mb-4' />
+				<h3 className='text-lg font-semibold text-text-primary mb-2'>
+					{t('noTicket')}
+				</h3>
+				<p className='text-text-secondary mb-4'>{t('noTicketDesc')}</p>
+				<button
+					onClick={() => router.push('/ticket')}
+					className='px-6 py-2.5 rounded-xl btn-primary font-medium'
+				>
+					{t('buyNow')}
+				</button>
 			</div>
 		)
 	}
 
-	const statusConfig = STATUS_ICONS[ticket.status]
+	const statusConfig = STATUS_CONFIG[ticket.status]
 	const tier = ticket.tier
 
 	return (
-		<div className='bg-[#e2eee2] rounded-xl border-2 border-[#548780] overflow-hidden'>
-			{/* Header */}
-			<div className='bg-[#548780] px-6 py-4'>
-				<h3 className='text-xl font-bold text-white josefin'>
+		<div className='rounded-[30px] p-6 sm:p-10 text-text-secondary'>
+			{/* Title + Status pill */}
+			<div className='flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-6 border-b border-[#48715B]/15'>
+				<h2 className='text-xl font-semibold text-text-primary'>
 					{t('ticketInfo')}
-				</h3>
-			</div>
-
-			{/* Status Banner */}
-			<div
-				className={`px-6 py-3 ${statusConfig.bgColor} flex items-center gap-2`}
-			>
-				<span className={statusConfig.textColor}>{statusConfig.icon}</span>
-				<span className={`font-semibold ${statusConfig.textColor}`}>
+				</h2>
+				<span
+					className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-medium ${statusConfig.pillBg} ${statusConfig.textColor}`}
+				>
+					{statusConfig.icon}
 					{getStatusLabel(ticket.status)}
 				</span>
 			</div>
 
-			<div className='p-6'>
-				{/* Ticket Details */}
-				<div className='grid grid-cols-2 gap-4 mb-6'>
-					<div>
-						<p className='text-sm text-[#48715b]'>{t('referenceCode')}</p>
-						<p className='font-mono font-bold text-[#154c5b] text-lg'>
-							{ticket.reference_code}
-						</p>
-					</div>
-					<div>
-						<p className='text-sm text-[#48715b]'>{t('ticketType')}</p>
-						<p className='font-semibold text-[#154c5b]'>
-							{tier?.ticket_name || 'N/A'}
-						</p>
-					</div>
-					{tier && (
-						<div>
-							<p className='text-sm text-[#48715b]'>{t('ticketPrice')}</p>
-							<p className='font-semibold text-[#154c5b]'>
-								{formatPrice(tier.price)} VND
-							</p>
-						</div>
-					)}
-					<div>
-						<p className='text-sm text-[#48715b]'>{t('purchaseDate')}</p>
-						<p className='font-medium text-[#154c5b]'>
-							{new Date(ticket.created_at).toLocaleDateString('vi-VN')}
-						</p>
-					</div>
-				</div>
-
-				{/* Status-specific content */}
-				{ticket.status === 'pending' && (
-					<div className='bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4'>
-						<p className='text-yellow-800 text-sm'>{t('completePayment')}</p>
-						<div className='flex gap-2 mt-3'>
-							<button
-								onClick={() => router.push(`/ticket/purchase/${tier?.id}`)}
-								className='flex-1 px-4 py-2 bg-[#7cbc97] text-white rounded-lg hover:bg-[#6aab85] font-semibold'
-							>
-								{t('payNow')}
-							</button>
-							<button
-								onClick={() => setShowCancelDialog(true)}
-								disabled={cancelTicketMutation.isPending}
-								className='px-4 py-2 border-2 border-red-500 text-red-600 rounded-lg hover:bg-red-50 font-semibold disabled:opacity-50'
-							>
-								{cancelTicketMutation.isPending
-									? tCommon('processing')
-									: tCommon('cancel')}
-							</button>
-						</div>
-					</div>
+			{/* Ticket Details — grid matching account page */}
+			<div className='grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6'>
+				<InfoField label={t('referenceCode')} value={ticket.reference_code} />
+				<InfoField label={t('ticketType')} value={tier?.ticket_name || 'N/A'} />
+				{tier && (
+					<InfoField label={t('ticketPrice')} value={`${formatPrice(tier.price)} VND`} />
 				)}
+				<InfoField
+					label={t('purchaseDate')}
+					value={new Date(ticket.created_at).toLocaleDateString('vi-VN')}
+				/>
+			</div>
 
-				{ticket.status === 'self_confirmed' && (
-					<div className='bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4'>
-						<p className='text-blue-800 text-sm'>{t('paymentReceived')}</p>
-						<p className='text-blue-600 text-xs mt-2'>
-							{t('verificationTime')}
-						</p>
+			{/* Status-specific content */}
+			{ticket.status === 'pending' && (
+				<div className='mt-6 rounded-xl border border-amber-200 bg-amber-50/50 px-4 py-4'>
+					<p className='text-sm text-amber-800'>{t('completePayment')}</p>
+					<div className='flex gap-3 mt-3'>
+						<button
+							onClick={() => router.push(`/ticket/purchase/${tier?.id}`)}
+							className='flex-1 py-2.5 px-4 rounded-xl btn-primary font-medium'
+						>
+							{t('payNow')}
+						</button>
 						<button
 							onClick={() => setShowCancelDialog(true)}
 							disabled={cancelTicketMutation.isPending}
-							className='mt-3 w-full px-4 py-2 border-2 border-red-500 text-red-600 rounded-lg hover:bg-red-50 font-semibold disabled:opacity-50'
+							className='py-2.5 px-4 rounded-xl border border-red-400 text-red-600 font-medium hover:bg-red-50 disabled:opacity-50 disabled:cursor-not-allowed'
 						>
-							{cancelTicketMutation.isPending
-								? tCommon('processing')
-								: tCommon('cancel')}
+							{cancelTicketMutation.isPending ? tCommon('processing') : tCommon('cancel')}
 						</button>
 					</div>
-				)}
+				</div>
+			)}
 
-				{ticket.status === 'denied' && (
-					<div className='bg-red-50 border border-red-200 rounded-lg p-4 mb-4'>
-						<p className='text-red-800 text-sm mb-2'>{t('ticketDenied')}</p>
-						{ticket.denial_reason && (
-							<p className='text-red-700 text-sm'>
-								<strong>{t('denialReason')}:</strong> {ticket.denial_reason}
+			{ticket.status === 'self_confirmed' && (
+				<div className='mt-6 rounded-xl border border-blue-200 bg-blue-50/50 px-4 py-4'>
+					<p className='text-sm text-blue-800'>{t('paymentReceived')}</p>
+					<p className='text-xs text-blue-600 mt-1'>{t('verificationTime')}</p>
+					<button
+						onClick={() => setShowCancelDialog(true)}
+						disabled={cancelTicketMutation.isPending}
+						className='mt-3 w-full py-2.5 px-4 rounded-xl border border-red-400 text-red-600 font-medium hover:bg-red-50 disabled:opacity-50 disabled:cursor-not-allowed'
+					>
+						{cancelTicketMutation.isPending ? tCommon('processing') : tCommon('cancel')}
+					</button>
+				</div>
+			)}
+
+			{ticket.status === 'denied' && (
+				<div className='mt-6 rounded-xl border border-red-200 bg-red-50/50 px-4 py-4'>
+					<p className='text-sm text-red-800 mb-2'>{t('ticketDenied')}</p>
+					{ticket.denial_reason && (
+						<p className='text-sm text-red-700'>
+							<strong>{t('denialReason')}:</strong> {ticket.denial_reason}
+						</p>
+					)}
+					<button
+						onClick={() => router.push('/ticket')}
+						className='mt-3 py-2.5 px-4 rounded-xl btn-primary font-medium'
+					>
+						{t('tryAnotherTicket')}
+					</button>
+				</div>
+			)}
+
+			{/* Upgrade Rejection Notice */}
+			{ticket.status === 'approved' && ticket.upgrade_denial_reason && (
+				<div className='mt-6 rounded-xl border border-orange-200 bg-orange-50/50 px-4 py-4'>
+					<div className='flex items-start gap-2'>
+						<AlertCircle className='w-5 h-5 text-orange-600 shrink-0 mt-0.5' />
+						<div>
+							<p className='text-sm font-medium text-orange-800'>
+								{t('upgradeRejected') || 'Your upgrade request was rejected'}
 							</p>
-						)}
-						<button
-							onClick={() => router.push('/ticket')}
-							className='mt-3 px-4 py-2 bg-[#48715b] text-white rounded-lg hover:bg-[#3a5a4a] font-semibold'
-						>
-							{t('tryAnotherTicket')}
-						</button>
+							<p className='text-sm text-orange-700 mt-1'>
+								{ticket.upgrade_denial_reason}
+							</p>
+							<p className='text-xs text-orange-600 mt-2'>
+								{t('upgradeRejectedKeepTicket') || 'Your original ticket has been restored. You can try upgrading again.'}
+							</p>
+						</div>
 					</div>
-				)}
+				</div>
+			)}
 
-				{/* Badge Details for Approved Tickets */}
-				{ticket.status === 'approved' && (
-					<>
-						<div className='border-t border-[#548780] pt-4 mt-4'>
-							<h4 className='font-semibold text-[#154c5b] mb-4'>
-								{t('badgeInfo')}
-							</h4>
+			{/* Badge Details for Approved Tickets */}
+			{ticket.status === 'approved' && (
+				<div className='mt-6 pt-6 border-t border-[#48715B]/15'>
+					<h4 className='text-lg font-semibold text-text-primary mb-4'>
+						{t('badgeInfo')}
+					</h4>
 
-							{ticket.con_badge_name ? (
-								<div className='flex gap-4'>
-									{ticket.badge_image && (
-										<div className='w-24 h-24 relative rounded-lg overflow-hidden border-2 border-[#548780]'>
-											<Image
-												src={ticket.badge_image}
-												alt='Badge'
-												fill
-												className='object-cover'
+					{ticket.con_badge_name ? (
+						<div className='flex gap-4'>
+							{ticket.badge_image && (
+								<div className='w-24 h-24 relative rounded-xl overflow-hidden border border-[#8C8C8C]/15'>
+									<Image
+										src={ticket.badge_image}
+										alt='Badge'
+										fill
+										className='object-cover'
+									/>
+								</div>
+							)}
+							<div className='flex-1 grid grid-cols-1 sm:grid-cols-2 gap-3'>
+								<InfoField label={t('badgeName')} value={ticket.con_badge_name} />
+								<InfoField
+									label={t('fursuiter')}
+									value={ticket.is_fursuiter ? tCommon('yes') : tCommon('no')}
+								/>
+								<InfoField
+									label={t('fursuitStaff')}
+									value={ticket.is_fursuit_staff ? tCommon('yes') : tCommon('no')}
+								/>
+							</div>
+						</div>
+					) : (
+						<>
+							{!showBadgeForm ? (
+								<div className='rounded-xl bg-[#E2EEE2]/60 border border-[#8C8C8C]/15 p-4'>
+									<p className='text-sm text-text-secondary mb-3'>
+										{t('noBadgeYet')}
+									</p>
+									<button
+										onClick={() => setShowBadgeForm(true)}
+										className='py-2.5 px-4 rounded-xl btn-primary font-medium'
+									>
+										{t('updateBadge')}
+									</button>
+								</div>
+							) : (
+								<div className='rounded-xl bg-[#E2EEE2]/60 border border-[#8C8C8C]/15 p-4'>
+									<div className='space-y-4'>
+										<div className='space-y-0.5 px-3 py-2 rounded-xl bg-[#E2EEE2] border border-[#8C8C8C]/30 focus-within:border-[#48715B] transition-colors duration-200'>
+											<label className='text-sm font-medium text-[#48715B]'>
+												{t('badgeName')} <span className='text-red-500'>*</span>
+											</label>
+											<input
+												type='text'
+												value={badgeName}
+												onChange={e => setBadgeName(e.target.value)}
+												placeholder={t('enterFursonaName')}
+												className='block w-full bg-transparent text-lg text-text-secondary font-normal placeholder-[#8C8C8C]/40 focus:outline-none'
 											/>
 										</div>
-									)}
-									<div className='flex-1'>
-										<div className='mb-2'>
-											<p className='text-sm text-[#48715b]'>{t('badgeName')}</p>
-											<p className='font-semibold text-[#154c5b]'>
-												{ticket.con_badge_name}
-											</p>
-										</div>
-										<div className='flex gap-4'>
-											<div>
-												<p className='text-sm text-[#48715b]'>
-													{t('fursuiter')}
-												</p>
-												<p className='font-medium text-[#154c5b]'>
-													{ticket.is_fursuiter ? tCommon('yes') : tCommon('no')}
-												</p>
-											</div>
-											<div>
-												<p className='text-sm text-[#48715b]'>
+										<div className='flex gap-6'>
+											<label className='flex items-center gap-2 cursor-pointer'>
+												<input
+													type='checkbox'
+													checked={isFursuiter}
+													onChange={e => setIsFursuiter(e.target.checked)}
+													className='w-4 h-4 accent-[#48715B]'
+												/>
+												<span className='text-text-secondary'>
+													{t('iAmFursuiter')}
+												</span>
+											</label>
+											<label className='flex items-center gap-2 cursor-pointer'>
+												<input
+													type='checkbox'
+													checked={isFursuitStaff}
+													onChange={e => setIsFursuitStaff(e.target.checked)}
+													className='w-4 h-4 accent-[#48715B]'
+												/>
+												<span className='text-text-secondary'>
 													{t('fursuitStaff')}
-												</p>
-												<p className='font-medium text-[#154c5b]'>
-													{ticket.is_fursuit_staff
-														? tCommon('yes')
-														: tCommon('no')}
-												</p>
-											</div>
+												</span>
+											</label>
+										</div>
+										<div className='flex gap-3'>
+											<button
+												onClick={() => setShowBadgeForm(false)}
+												className='py-2.5 px-4 rounded-xl border border-[#8C8C8C]/40 font-medium hover:bg-[#E2EEE2]'
+											>
+												{tCommon('cancel')}
+											</button>
+											<button
+												onClick={handleUpdateBadge}
+												disabled={!badgeName.trim() || updateBadgeMutation.isPending}
+												className='py-2.5 px-4 rounded-xl btn-primary font-medium disabled:opacity-50 disabled:cursor-not-allowed'
+											>
+												{updateBadgeMutation.isPending ? tCommon('saving') : tCommon('save')}
+											</button>
 										</div>
 									</div>
 								</div>
-							) : (
-								<>
-									{!showBadgeForm ? (
-										<div className='bg-[#d2ddd2] rounded-lg p-4'>
-											<p className='text-[#48715b] text-sm mb-3'>
-												{t('noBadgeYet')}
-											</p>
-											<button
-												onClick={() => setShowBadgeForm(true)}
-												className='px-4 py-2 bg-[#7cbc97] text-white rounded-lg hover:bg-[#6aab85] font-semibold'
-											>
-												{t('updateBadge')}
-											</button>
-										</div>
-									) : (
-										<div className='bg-[#d2ddd2] rounded-lg p-4'>
-											<div className='space-y-4'>
-												<div>
-													<label className='block text-sm text-[#48715b] mb-1'>
-														{t('badgeName')}{' '}
-														<span className='text-red-500'>*</span>
-													</label>
-													<input
-														type='text'
-														value={badgeName}
-														onChange={e => setBadgeName(e.target.value)}
-														placeholder={t('enterFursonaName')}
-														className='w-full px-3 py-2 rounded-lg border border-[#548780] focus:outline-none focus:ring-2 focus:ring-[#7cbc97]'
-													/>
-												</div>
-												<div className='flex gap-6'>
-													<label className='flex items-center gap-2 cursor-pointer'>
-														<input
-															type='checkbox'
-															checked={isFursuiter}
-															onChange={e => setIsFursuiter(e.target.checked)}
-															className='w-4 h-4 accent-[#7cbc97]'
-														/>
-														<span className='text-[#154c5b]'>
-															{t('iAmFursuiter')}
-														</span>
-													</label>
-													<label className='flex items-center gap-2 cursor-pointer'>
-														<input
-															type='checkbox'
-															checked={isFursuitStaff}
-															onChange={e =>
-																setIsFursuitStaff(e.target.checked)
-															}
-															className='w-4 h-4 accent-[#7cbc97]'
-														/>
-														<span className='text-[#154c5b]'>
-															{t('fursuitStaff')}
-														</span>
-													</label>
-												</div>
-												<div className='flex gap-3'>
-													<button
-														onClick={() => setShowBadgeForm(false)}
-														className='px-4 py-2 border border-[#48715b] text-[#48715b] rounded-lg hover:bg-[#c2cdc2]'
-													>
-														{tCommon('cancel')}
-													</button>
-													<button
-														onClick={handleUpdateBadge}
-														disabled={
-															!badgeName.trim() || updateBadgeMutation.isPending
-														}
-														className='px-4 py-2 bg-[#7cbc97] text-white rounded-lg hover:bg-[#6aab85] disabled:bg-gray-300 disabled:cursor-not-allowed'
-													>
-														{updateBadgeMutation.isPending
-															? tCommon('saving')
-															: tCommon('save')}
-													</button>
-												</div>
-											</div>
-										</div>
-									)}
-								</>
 							)}
-						</div>
-					</>
-				)}
+						</>
+					)}
+				</div>
+			)}
 
-				{/* Upgrade Button — shown for all non-denied statuses */}
-				{ticket.status !== 'denied' && tier && (
-					<div className='border-t border-[#548780] pt-4 mt-4'>
-						<button
-							onClick={() => setShowUpgradeModal(true)}
-							className='w-full py-3 px-4 rounded-lg border-2 border-dashed border-[#48715b] text-[#48715b] hover:bg-[#d2ddd2] flex items-center justify-center gap-2 transition-colors'
-						>
-							<ArrowUpCircle className='w-5 h-5' />
-							<span>{t('upgradeTicket')}</span>
-						</button>
-					</div>
-				)}
-			</div>
+			{/* Upgrade Button */}
+			{ticket.status === 'approved' && tier && (
+				<div className='mt-6 pt-5 border-t border-[#48715B]/15'>
+					<button
+						onClick={() => setShowUpgradeModal(true)}
+						className='shadow-md w-full py-2.5 px-4 text-xl rounded-xl btn-primary font-medium transition-colors duration-200 flex items-center justify-center gap-2'
+					>
+						<ArrowUpCircle className='w-5 h-5' />
+						{t('upgradeTicket')}
+					</button>
+				</div>
+			)}
 
 			{/* Upgrade Modal */}
 			{showUpgradeModal && tier && (
@@ -446,11 +402,11 @@ const MyTicketDisplay = (): React.ReactElement => {
 			{/* Cancel Confirmation Dialog */}
 			{showCancelDialog && (
 				<div className='fixed inset-0 z-50 flex items-center justify-center bg-black/50'>
-					<div className='bg-white rounded-xl p-6 max-w-md mx-4 shadow-2xl'>
-						<h3 className='text-xl font-semibold text-[#154c5b] mb-4'>
+					<div className='bg-white rounded-2xl p-6 max-w-md mx-4 shadow-2xl'>
+						<h3 className='text-xl font-semibold text-text-primary mb-4'>
 							{t('confirmCancelTicket')}
 						</h3>
-						<p className='text-[#48715b] mb-6'>
+						<p className='text-text-secondary mb-6'>
 							{t('confirmCancelTicketDesc') ||
 								'Bạn có chắc chắn muốn hủy vé này không? Số lượng vé sẽ được hoàn lại và bạn có thể mua vé mới.'}
 						</p>
@@ -458,14 +414,14 @@ const MyTicketDisplay = (): React.ReactElement => {
 							<button
 								onClick={() => setShowCancelDialog(false)}
 								disabled={cancelTicketMutation.isPending}
-								className='flex-1 py-2 px-4 rounded-lg border border-[#48715b] text-[#48715b] hover:bg-[#e9f5e7] disabled:opacity-50'
+								className='flex-1 py-2.5 px-4 rounded-xl border border-[#8C8C8C]/40 font-medium hover:bg-[#E2EEE2] disabled:opacity-50'
 							>
 								{tCommon('cancel')}
 							</button>
 							<button
 								onClick={handleCancelTicket}
 								disabled={cancelTicketMutation.isPending}
-								className='flex-1 py-2 px-4 rounded-lg bg-red-500 text-white hover:bg-red-600 disabled:opacity-50'
+								className='flex-1 py-2.5 px-4 rounded-xl bg-red-500 text-white font-medium hover:bg-red-600 disabled:opacity-50'
 							>
 								{cancelTicketMutation.isPending
 									? tCommon('processing')

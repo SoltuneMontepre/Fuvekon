@@ -433,7 +433,8 @@
 		"firstName": "名",
 		"lastName": "姓",
 		"fursonaName": "Fursona 名称",
-		"upgradedFrom": "从 {code} 升级"
+		"upgradedFrom": "从 {code} 升级",
+		"upgradeDiff": "升级差价"
 	},
 	"account": {
 		"noAccountInfo": "暂无账户信息",

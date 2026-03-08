@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useTranslations } from 'next-intl'
 import { Check } from 'lucide-react'
 import { AxiosError } from 'axios'
+import { toast } from 'sonner'
 import CollapsibleScroll from '@/components/animated/CollapsibleScroll'
 import Separator from '@/components/common/scroll/Separator'
 import {
@@ -59,8 +60,12 @@ const TicketPage = (): React.ReactElement => {
 			if (result?.isSuccess) {
 				router.push(`/ticket/purchase/${tierId}`)
 			}
-		} catch {
-			// Error is handled by mutation
+		} catch (err) {
+			const message =
+				(err as AxiosError<{ message?: string }>)?.response?.data?.message ||
+				(err as Error).message ||
+				t('errorOccurred')
+			toast.error(message)
 		}
 	}
 
@@ -94,9 +99,47 @@ const TicketPage = (): React.ReactElement => {
 	return (
 		<>
 			<Background />
+			<div className='fixed inset-0 z-[1] bg-black/40' />
 			<div className='min-h-screen relative z-10 py-12 px-4'>
-				<div className='max-w-7xl mx-auto'>
-					{/* 3 Scrolls Side by Side */}
+				<div className='max-w-7xl mx-auto relative z-20'>
+					{/* Status messages — shown above tiers */}
+					{!account && (
+						<div className='mb-6 text-center'>
+							<p className='text-sm text-[#e2eee2] bg-black/40 backdrop-blur-sm inline-block px-5 py-2.5 rounded-xl'>
+								{t('loginToBuy')}{' '}
+								<button
+									onClick={() => router.push('/login')}
+									className='text-[#7cbc97] underline hover:no-underline font-medium'
+								>
+									{t('loginNow')}
+								</button>
+							</p>
+						</div>
+					)}
+
+					{account && hasActiveTicket && (
+						<div className='mb-6 text-center'>
+							<p className='text-sm text-[#e2eee2] bg-black/40 backdrop-blur-sm inline-block px-5 py-2.5 rounded-xl'>
+								{t('alreadyHaveTicket')}{' '}
+								<button
+									onClick={() => router.push('/account/ticket')}
+									className='text-[#7cbc97] underline hover:no-underline font-medium'
+								>
+									{t('viewYourTicket')}
+								</button>
+							</p>
+						</div>
+					)}
+
+					{account && isBlacklisted && (
+						<div className='mb-6 text-center'>
+							<p className='text-sm text-red-300 bg-black/40 backdrop-blur-sm inline-block px-5 py-2.5 rounded-xl'>
+								{t('accountRestricted')}
+							</p>
+						</div>
+					)}
+
+					{/* Tier Cards */}
 					<div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
 						{tiers.map(tier => {
 							const closed = isTierClosed(tier)
@@ -104,39 +147,39 @@ const TicketPage = (): React.ReactElement => {
 								<CollapsibleScroll key={tier.id} initialOpen>
 									{/* Tier Header */}
 									<div
-										className={`px-4 py-4 text-center ${closed ? 'bg-[#548780]/70' : 'bg-[#548780]'}`}
+										className={`px-4 py-5 text-center ${closed ? 'bg-[#548780]/60' : 'bg-[#548780]'}`}
 									>
 										<div className='flex items-center justify-center gap-2 flex-wrap'>
 											<h3
-												className={`text-2xl font-bold josefin italic ${closed ? 'text-[#e2eee2]/80' : 'text-[#e2eee2]'}`}
+												className={`text-2xl font-bold josefin italic ${closed ? 'text-[#e2eee2]/70' : 'text-[#e2eee2]'}`}
 											>
 												{tier.ticket_name}
 											</h3>
 											{closed && (
-												<span className='px-2 py-0.5 rounded text-xs font-semibold uppercase bg-[#e2eee2]/20 text-[#e2eee2]'>
+												<span className='px-2 py-0.5 rounded-md text-xs font-semibold uppercase bg-[#e2eee2]/20 text-[#e2eee2]/80'>
 													{t('closed')}
 												</span>
 											)}
 										</div>
 										<div
-											className={`text-lg mt-1 ${closed ? 'text-[#e2eee2]/80' : 'text-[#e2eee2]'}`}
+											className={`text-xl font-semibold mt-1 josefin ${closed ? 'text-[#e2eee2]/60' : 'text-[#e2eee2]'}`}
 										>
 											{formatPrice(tier.price)} VND
 										</div>
 									</div>
 
-									{/* Benefits List */}
-									<div className={`px-4 py-4 ${closed ? 'opacity-75' : ''}`}>
+									{/* Benefits + Buy */}
+									<div className={`px-4 py-5 ${closed ? 'opacity-60' : ''}`}>
 										{tier.benefits && tier.benefits.length > 0 && (
 											<>
 												<p className='text-sm text-[#48715b] font-medium mb-3'>
 													{t('ticketIncludes')}:
 												</p>
-												<ul className='space-y-2'>
+												<ul className='space-y-2.5'>
 													{tier.benefits.map((benefit, index) => (
 														<li key={index} className='flex items-start gap-2'>
-															<Check className='w-4 h-4 text-[#7cbc97] flex-shrink-0 mt-0.5' />
-															<span className='text-sm text-[#154c5b] break-all'>
+															<Check className='w-4 h-4 text-[#48715b] flex-shrink-0 mt-0.5' />
+															<span className='text-sm text-text-secondary break-all leading-relaxed'>
 																{benefit}
 															</span>
 														</li>
@@ -145,29 +188,21 @@ const TicketPage = (): React.ReactElement => {
 											</>
 										)}
 
-										{/* Buy Button for this tier */}
 										<div className='mt-6'>
 											<button
 												onClick={() => !closed && handlePurchase(tier.id)}
-												disabled={
+												disabled={isDisabled || closed || purchaseMutation.isPending}
+												className={`w-full py-3 px-6 rounded-xl font-semibold text-lg uppercase tracking-wide transition-all duration-200 ${
 													isDisabled || closed || purchaseMutation.isPending
-												}
-												className={`
-													w-full py-3 px-6 rounded-lg font-semibold text-lg uppercase tracking-wide
-													transition-all duration-200
-													shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)]
-													${
-														isDisabled || closed || purchaseMutation.isPending
-															? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-															: 'bg-[#e8f0e8] text-[#48715b] hover:bg-[#d8e8d8] active:translate-y-0.5'
-													}
-												`}
+														? 'bg-[#8C8C8C]/20 text-[#8C8C8C] cursor-not-allowed'
+														: 'bg-[#48715b] text-[#e2eee2] hover:bg-[#3d6150] active:scale-[0.98] shadow-md'
+												}`}
 											>
 												{purchaseMutation.isPending
 													? tCommon('processing')
 													: closed
 														? t('closed')
-														: `${t('buyNow')} !!`}
+														: t('buyNow')}
 											</button>
 										</div>
 									</div>
@@ -180,65 +215,21 @@ const TicketPage = (): React.ReactElement => {
 
 					{tiers.length === 0 && (
 						<div className='text-center py-12'>
-							<p className='text-[#48715b] text-lg'>{t('noTiersAvailable')}</p>
-						</div>
-					)}
-
-					{/* Status messages */}
-					{!account && (
-						<div className='mt-6 text-center'>
-							<p className='text-sm text-yellow-200'>
-								{t('loginToBuy')}{' '}
-								<button
-									onClick={() => router.push('/login')}
-									className='text-[#7cbc97] underline hover:no-underline'
-								>
-									{t('loginNow')}
-								</button>
+							<p className='text-[#e2eee2] text-lg bg-black/40 backdrop-blur-sm inline-block px-5 py-2.5 rounded-xl'>
+								{t('noTiersAvailable')}
 							</p>
 						</div>
 					)}
 
-					{account && hasActiveTicket && (
-						<div className='mt-6 text-center'>
-							<p className='text-sm text-blue-200'>
-								{t('alreadyHaveTicket')}{' '}
-								<button
-									onClick={() => router.push('/account')}
-									className='text-[#7cbc97] underline hover:no-underline'
-								>
-									{t('viewYourTicket')}
-								</button>
-							</p>
-						</div>
-					)}
-
-					{account && isBlacklisted && (
-						<div className='mt-6 text-center'>
-							<p className='text-sm text-red-300'>{t('accountRestricted')}</p>
-						</div>
-					)}
-
-					{purchaseMutation.error && (
-						<div className='mt-6 text-center'>
-							<p className='text-sm text-red-300'>
-								{(purchaseMutation.error as AxiosError<{ message?: string }>)
-									?.response?.data?.message ||
-									(purchaseMutation.error as Error).message ||
-									t('errorOccurred')}
-							</p>
-						</div>
-					)}
-
-					{/* Purchase Notices Scroll */}
+					{/* Purchase Notices */}
 					<div className='mt-8'>
 						<CollapsibleScroll initialOpen>
 							<h3 className="scroll-title pt-5 josefin bg-[url('/textures/asfalt-dark.png')] bg-scroll-title bg-clip-text text-transparent">
 								{t('purchaseNoticesTitle')}
 							</h3>
 							<Separator className='w-[95%] mx-auto' />
-							<div className='text-scroll-text text-md font-sm px-4 py-4'>
-								<p className='text-[#48715b] leading-relaxed'>
+							<div className='px-4 py-5'>
+								<p className='text-text-secondary leading-relaxed text-[15px]'>
 									{purchaseNotices.join(' ')}
 								</p>
 							</div>

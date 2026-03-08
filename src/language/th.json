@@ -433,7 +433,8 @@
 		"firstName": "ชื่อ",
 		"lastName": "นามสกุล",
 		"fursonaName": "ชื่อ Fursona",
-		"upgradedFrom": "อัปเกรดจาก {code}"
+		"upgradedFrom": "อัปเกรดจาก {code}",
+		"upgradeDiff": "ส่วนต่าง"
 	},
 	"account": {
 		"noAccountInfo": "ไม่มีข้อมูลบัญชี",
