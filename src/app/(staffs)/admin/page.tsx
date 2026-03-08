@@ -26,7 +26,6 @@ import Loading from '@/components/common/Loading'
 
 const SEARCH_DEBOUNCE_MS = 400
 
-// Format datetime
 const formatDateTime = (dateString?: string): string => {
 	if (!dateString) return '–'
 	const date = new Date(dateString)
@@ -37,7 +36,6 @@ const formatDateTime = (dateString?: string): string => {
 	)
 }
 
-// Get role display
 const getRoleDisplay = (
 	role?: string
 ): { label: string; color: string; bgColor: string } => {
@@ -61,7 +59,6 @@ const UserManagementPage = (): React.ReactElement => {
 	const tCommon = useTranslations('common')
 	const router = useRouter()
 
-	// Filter state (server-side pagination)
 	const [filter, setFilter] = useState<AdminUserFilter>({
 		page: 1,
 		pageSize: 20,
@@ -70,7 +67,6 @@ const UserManagementPage = (): React.ReactElement => {
 	const [appliedSearch, setAppliedSearch] = useState('')
 	const searchDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-	// Debounce search; when it updates, reset to page 1
 	useEffect(() => {
 		if (searchDebounceRef.current) clearTimeout(searchDebounceRef.current)
 		searchDebounceRef.current = setTimeout(() => {
@@ -82,7 +78,6 @@ const UserManagementPage = (): React.ReactElement => {
 		}
 	}, [searchInput])
 
-	// API filter: pagination + debounced search
 	const apiFilter: AdminUserFilter = {
 		page: filter.page,
 		pageSize: filter.pageSize,
@@ -107,7 +102,7 @@ const UserManagementPage = (): React.ReactElement => {
 			return
 		}
 		const reason = window.prompt(t('banReasonPrompt') || 'Reason for banning this user (optional):')
-		if (reason === null) return // cancelled
+		if (reason === null) return
 		try {
 			await blacklistMutation.mutateAsync({ userId: user.id, reason: reason || '' })
 			toast.success(t('userBanned') || 'User banned.')
@@ -126,6 +121,7 @@ const UserManagementPage = (): React.ReactElement => {
 			toast.error(t('unbanFailed') || 'Failed to unban user.')
 		}
 	}
+
 	const meta = usersData?.meta
 	const currentPage = meta?.currentPage ?? filter.page ?? 1
 	const pageSize = meta?.pageSize ?? filter.pageSize ?? 20
@@ -134,7 +130,6 @@ const UserManagementPage = (): React.ReactElement => {
 	const startIndex = totalItems === 0 ? 0 : (currentPage - 1) * pageSize + 1
 	const endIndex = Math.min(currentPage * pageSize, Number(totalItems))
 
-	// Pagination handlers
 	const handlePageChange = (page: number) => {
 		setFilter(prev => ({ ...prev, page }))
 	}
@@ -148,47 +143,42 @@ const UserManagementPage = (): React.ReactElement => {
 	}
 
 	return (
-		<div id='user-management-page' className='user-management-page w-full'>
+		<div className='w-full'>
 			{/* Header */}
-			<div id='user-management-header' className='user-management-header mb-6'>
-				<h1 className='text-2xl font-bold text-[#154c5b] dark:text-dark-text flex items-center gap-2'>
+			<div className='pb-6 border-b border-[#48715B]/15'>
+				<h1 className='text-2xl font-bold text-text-primary josefin flex items-center gap-2'>
 					<UserCircle className='w-6 h-6' />
 					{t('userManagement') || 'User Management'}
 				</h1>
-				<p className='text-[#48715b] dark:text-dark-text-secondary mt-1'>
+				<p className='text-text-secondary mt-1'>
 					{t('userManagementDesc') || 'View and manage all users'}
 				</p>
 			</div>
 
 			{/* Controls */}
-			<div className=' rounded-lg shadow-sm border border-slate-300/20 dark:border-dark-border/20 p-4 mb-6'>
+			<div className='mt-6 rounded-xl bg-[#E2EEE2]/60 border border-[#8C8C8C]/15 p-4'>
 				<div className='flex flex-wrap gap-4 items-center'>
-					{/* Search */}
-					<div className='flex-1 min-w-[200px] flex gap-2'>
-						<div className='relative flex-1'>
-							<Search className='absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400' />
+					<div className='flex-1 min-w-[200px]'>
+						<div className='relative'>
+							<Search className='absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[#8C8C8C]' />
 							<input
 								type='text'
-								placeholder={
-									t('searchPlaceholder') ||
-									'Search by email, name, fursona name...'
-								}
+								placeholder={t('searchPlaceholder') || 'Search by email, name, fursona name...'}
 								value={searchInput}
 								onChange={e => setSearchInput(e.target.value)}
-								className='w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#7cbc97] dark:bg-dark-surface dark:border-dark-border dark:text-dark-text'
+								className='w-full pl-10 pr-4 py-2.5 rounded-xl bg-white border border-[#8C8C8C]/15 text-text-secondary placeholder-[#8C8C8C]/40 focus:outline-none focus:border-[#48715B] transition-colors'
 							/>
 						</div>
 					</div>
 
-					{/* Page Size Selector */}
 					<div className='flex items-center gap-2'>
-						<span className='text-sm text-gray-600 dark:text-dark-text-secondary'>
+						<span className='text-sm font-medium text-[#48715B]'>
 							{tCommon('itemsPerPage') || 'Items per page'}:
 						</span>
 						<select
 							value={filter.pageSize}
 							onChange={e => handlePageSizeChange(Number(e.target.value))}
-							className='border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#7cbc97] dark:bg-dark-surface dark:border-dark-border dark:text-dark-text'
+							className='rounded-xl bg-white border border-[#8C8C8C]/15 px-3 py-2.5 text-text-secondary focus:outline-none focus:border-[#48715B] transition-colors'
 						>
 							<option value={10}>10</option>
 							<option value={20}>20</option>
@@ -197,52 +187,51 @@ const UserManagementPage = (): React.ReactElement => {
 						</select>
 					</div>
 
-					{/* Refresh Button */}
 					<button
 						onClick={() => refetchUsers()}
-						className='p-2 border rounded-lg hover:bg-gray-50 dark:hover:bg-dark-surface/50 transition-colors'
+						className='p-2.5 rounded-xl bg-white border border-[#8C8C8C]/15 hover:bg-[#E2EEE2] transition-colors'
 						title={t('refresh') || 'Refresh'}
 					>
-						<RefreshCw className='w-4 h-4 text-gray-600 dark:text-dark-text' />
+						<RefreshCw className='w-4 h-4 text-[#48715B]' />
 					</button>
 				</div>
 			</div>
 
 			{/* Users Table */}
-			<div className=' rounded-lg   overflow-hidden'>
+			<div className='mt-6'>
 				{users.length === 0 ? (
-					<div className='p-8 text-center text-gray-500 dark:text-dark-text-secondary'>
+					<div className='p-8 text-center text-text-secondary rounded-xl bg-[#E2EEE2]/60 border border-[#8C8C8C]/15'>
 						{appliedSearch
 							? t('noSearchResults') || 'No users found matching your search'
 							: t('noUsers') || 'No users found'}
 					</div>
 				) : (
 					<>
-						<div className='overflow-x-auto'>
+						<div className='overflow-x-auto rounded-xl border border-[#8C8C8C]/15 bg-white/50'>
 							<table className='w-full'>
-								<thead className=''>
-									<tr>
-										<th className='px-4 py-3 text-left text-sm font-semibold text-gray-600 dark:text-dark-text'>
+								<thead>
+									<tr className='border-b border-[#48715B]/15 bg-[#E2EEE2]/40'>
+										<th className='px-4 py-3 text-left text-sm font-semibold text-[#48715B]'>
 											{t('user') || 'User'}
 										</th>
-										<th className='px-4 py-3 text-left text-sm font-semibold text-gray-600 dark:text-dark-text'>
+										<th className='px-4 py-3 text-left text-sm font-semibold text-[#48715B]'>
 											{t('email') || 'Email'}
 										</th>
-										<th className='px-4 py-3 text-left text-sm font-semibold text-gray-600 dark:text-dark-text'>
+										<th className='px-4 py-3 text-left text-sm font-semibold text-[#48715B]'>
 											{t('role') || 'Role'}
 										</th>
-										<th className='px-4 py-3 text-left text-sm font-semibold text-gray-600 dark:text-dark-text'>
+										<th className='px-4 py-3 text-left text-sm font-semibold text-[#48715B]'>
 											{t('status') || 'Status'}
 										</th>
-										<th className='px-4 py-3 text-left text-sm font-semibold text-gray-600 dark:text-dark-text'>
+										<th className='px-4 py-3 text-left text-sm font-semibold text-[#48715B]'>
 											{t('createdAt') || 'Created At'}
 										</th>
-										<th className='px-4 py-3 text-right text-sm font-semibold text-gray-600 dark:text-dark-text'>
+										<th className='px-4 py-3 text-right text-sm font-semibold text-[#48715B]'>
 											{t('actions') || 'Actions'}
 										</th>
 									</tr>
 								</thead>
-								<tbody className='divide-y divide-slate-300/20 dark:divide-dark-border/20'>
+								<tbody className='divide-y divide-[#48715B]/10'>
 									{users.map((user: Account) => {
 										const roleDisplay = getRoleDisplay(user.role)
 										return (
@@ -257,31 +246,29 @@ const UserManagementPage = (): React.ReactElement => {
 														router.push(`/admin/users/${user.id}`)
 													}
 												}}
-												className='hover:bg-gray-50 dark:hover:bg-dark-surface/50 transition-colors cursor-pointer'
+												className='hover:bg-[#E2EEE2]/40 transition-colors cursor-pointer'
 											>
 												<td className='px-4 py-3'>
-													<div className='flex items-center gap-3'>
-														<div>
-															<p className='font-medium text-gray-900 dark:text-dark-text'>
-																{user.first_name || user.last_name
-																	? `${user.first_name || ''} ${user.last_name || ''}`.trim()
-																	: user.fursona_name || user.email}
+													<div>
+														<p className='font-medium text-text-primary'>
+															{user.first_name || user.last_name
+																? `${user.first_name || ''} ${user.last_name || ''}`.trim()
+																: user.fursona_name || user.email}
+														</p>
+														{user.fursona_name && (
+															<p className='text-xs text-[#48715B]'>
+																({user.fursona_name})
 															</p>
-															{user.fursona_name && (
-																<p className='text-xs text-[#48715b] dark:text-dark-text-secondary'>
-																	({user.fursona_name})
-																</p>
-															)}
-															{user.country && (
-																<p className='text-xs text-gray-500 dark:text-dark-text-secondary'>
-																	{user.country}
-																</p>
-															)}
-														</div>
+														)}
+														{user.country && (
+															<p className='text-xs text-[#8C8C8C]'>
+																{user.country}
+															</p>
+														)}
 													</div>
 												</td>
 												<td className='px-4 py-3'>
-													<p className='text-sm text-gray-900 dark:text-dark-text'>
+													<p className='text-sm text-text-secondary'>
 														{user.email}
 													</p>
 												</td>
@@ -299,8 +286,8 @@ const UserManagementPage = (): React.ReactElement => {
 															<span
 																className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium w-fit ${
 																	user.is_verified
-																		? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
-																		: 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400'
+																		? 'bg-green-100 text-green-700'
+																		: 'bg-yellow-100 text-yellow-700'
 																}`}
 															>
 																{user.is_verified ? (
@@ -314,21 +301,21 @@ const UserManagementPage = (): React.ReactElement => {
 															</span>
 														)}
 														{user.is_blacklisted && (
-															<span className='inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium w-fit bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'>
+															<span className='inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium w-fit bg-red-100 text-red-700'>
 																<XCircle className='w-3 h-3' />
 																{t('blacklisted') || 'Blacklisted'}
 															</span>
 														)}
 														{user.denial_count !== undefined &&
 															user.denial_count > 0 && (
-																<span className='text-xs text-orange-600 dark:text-orange-400'>
+																<span className='text-xs text-orange-600'>
 																	{t('denials') || 'Denials'}:{' '}
 																	{user.denial_count}
 																</span>
 															)}
 													</div>
 												</td>
-												<td className='px-4 py-3 text-sm text-gray-600 dark:text-dark-text-secondary'>
+												<td className='px-4 py-3 text-sm text-text-secondary'>
 													{formatDateTime(user.created_at)}
 												</td>
 												<td className='px-4 py-3 text-right' onClick={e => e.stopPropagation()}>
@@ -337,7 +324,7 @@ const UserManagementPage = (): React.ReactElement => {
 															type='button'
 															onClick={e => handleUnban(e, user)}
 															disabled={unblacklistMutation.isPending}
-															className='inline-flex items-center gap-1.5 rounded-lg border border-emerald-600/50 bg-emerald-50 px-2.5 py-1.5 text-xs font-medium text-emerald-700 hover:bg-emerald-100 dark:bg-emerald-900/20 dark:text-emerald-300 dark:hover:bg-emerald-900/30 disabled:opacity-50'
+															className='inline-flex items-center gap-1.5 rounded-xl border border-emerald-400 bg-emerald-50 px-2.5 py-1.5 text-xs font-medium text-emerald-700 hover:bg-emerald-100 disabled:opacity-50'
 															title={t('unban') || 'Unban'}
 														>
 															<CircleCheck className='h-3.5 w-3.5' />
@@ -352,7 +339,7 @@ const UserManagementPage = (): React.ReactElement => {
 																user.role?.toLowerCase() === 'admin' ||
 																user.role?.toLowerCase() === 'staff'
 															}
-															className='inline-flex items-center gap-1.5 rounded-lg border border-red-600/50 bg-red-50 px-2.5 py-1.5 text-xs font-medium text-red-700 hover:bg-red-100 dark:bg-red-900/20 dark:text-red-300 dark:hover:bg-red-900/30 disabled:opacity-50 disabled:cursor-not-allowed'
+															className='inline-flex items-center gap-1.5 rounded-xl border border-red-400 bg-red-50 px-2.5 py-1.5 text-xs font-medium text-red-700 hover:bg-red-100 disabled:opacity-50 disabled:cursor-not-allowed'
 															title={
 																user.role?.toLowerCase() === 'admin' || user.role?.toLowerCase() === 'staff'
 																	? t('cannotBanStaffOrAdmin') || 'Cannot ban admin or staff'
@@ -373,14 +360,14 @@ const UserManagementPage = (): React.ReactElement => {
 
 						{/* Pagination */}
 						{totalItems > 0 && (
-							<div className='px-4 py-3 border-t border-slate-300/20 dark:border-dark-border/20 bg-gray-50 dark:bg-dark-surface/50'>
+							<div className='mt-4 px-4 py-3 rounded-xl bg-[#E2EEE2]/40 border border-[#8C8C8C]/15'>
 								<div className='flex items-center justify-between'>
-									<div className='text-sm text-gray-600 dark:text-dark-text-secondary'>
+									<div className='text-sm text-text-secondary'>
 										{tCommon('showing') || 'Showing'} {startIndex}{' '}
 										{tCommon('to') || 'to'} {endIndex} {tCommon('of') || 'of'}{' '}
 										{totalItems} {tCommon('results') || 'results'}
 										{appliedSearch && (
-											<span className='ml-2 text-xs text-gray-500'>
+											<span className='ml-2 text-xs text-[#8C8C8C]'>
 												({tCommon('filtered') || 'filtered'})
 											</span>
 										)}
@@ -389,17 +376,17 @@ const UserManagementPage = (): React.ReactElement => {
 										<button
 											onClick={() => handlePageChange(currentPage - 1)}
 											disabled={currentPage <= 1 || usersFetching}
-											className='p-2 border rounded-lg hover:bg-gray-100 dark:hover:bg-dark-surface disabled:opacity-50 disabled:cursor-not-allowed transition-colors'
+											className='p-2 rounded-xl border border-[#8C8C8C]/15 hover:bg-[#E2EEE2] disabled:opacity-50 disabled:cursor-not-allowed transition-colors'
 											aria-label={tCommon('previousPage') || 'Previous page'}
 										>
-											<ChevronLeft className='w-4 h-4' />
+											<ChevronLeft className='w-4 h-4 text-[#48715B]' />
 										</button>
-										<span className='text-sm text-gray-600 dark:text-dark-text-secondary px-2 flex items-center gap-1'>
+										<span className='text-sm text-text-secondary px-2 flex items-center gap-1'>
 											{tCommon('page') || 'Page'} {currentPage}{' '}
 											{tCommon('of') || 'of'} {totalPages || 1}
 											{usersFetching && (
 												<span
-													className='inline-block w-4 h-4 border-2 border-gray-300 border-t-[#7cbc97] rounded-full animate-spin'
+													className='inline-block w-4 h-4 border-2 border-[#8C8C8C]/30 border-t-[#48715B] rounded-full animate-spin'
 													aria-hidden
 												/>
 											)}
@@ -407,10 +394,10 @@ const UserManagementPage = (): React.ReactElement => {
 										<button
 											onClick={() => handlePageChange(currentPage + 1)}
 											disabled={currentPage >= totalPages || usersFetching}
-											className='p-2 border rounded-lg hover:bg-gray-100 dark:hover:bg-dark-surface disabled:opacity-50 disabled:cursor-not-allowed transition-colors'
+											className='p-2 rounded-xl border border-[#8C8C8C]/15 hover:bg-[#E2EEE2] disabled:opacity-50 disabled:cursor-not-allowed transition-colors'
 											aria-label={tCommon('nextPage') || 'Next page'}
 										>
-											<ChevronRight className='w-4 h-4' />
+											<ChevronRight className='w-4 h-4 text-[#48715B]' />
 										</button>
 									</div>
 								</div>

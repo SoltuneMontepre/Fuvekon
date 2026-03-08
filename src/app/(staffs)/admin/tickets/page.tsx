@@ -601,18 +601,17 @@ const TicketManagementPage = (): React.ReactElement => {
 		return <div aria-hidden className='sr-only' />
 
 	return (
-		<div id='ticket-management-page' className='ticket-management-page w-full'>
+		<div className='w-full'>
 			{/* Header */}
 			<div
-				id='ticket-management-header'
-				className='ticket-management-header mb-6 flex flex-wrap items-center justify-between gap-4'
+				className='pb-6 border-b border-[#48715B]/15 flex flex-wrap items-center justify-between gap-4'
 			>
 				<div>
-					<h1 className='text-2xl font-bold text-[#154c5b] dark:text-dark-text flex items-center gap-2'>
+					<h1 className='text-2xl font-bold text-text-primary josefin flex items-center gap-2'>
 						<Ticket className='w-6 h-6' />
 						{t('ticketManagement')}
 					</h1>
-					<p className='text-[#48715b] dark:text-dark-text-secondary mt-1'>
+					<p className='text-text-secondary mt-1'>
 						{t('ticketManagementDesc')}
 					</p>
 				</div>
@@ -648,16 +647,16 @@ const TicketManagementPage = (): React.ReactElement => {
 
 			{/* Create Ticket Form */}
 			{showCreateForm && (
-				<div className='rounded-lg shadow-sm border border-slate-300/20 dark:border-dark-border/20 p-4 mb-6 dark:bg-dark-surface/30'>
-					<h3 className='font-semibold text-[#154c5b] dark:text-dark-text mb-2'>
+				<div className='rounded-xl border border-[#8C8C8C]/15 p-4 mb-6'>
+					<h3 className='font-semibold text-text-primary mb-2'>
 						{t('createTicketTitle')}
 					</h3>
-					<p className='text-sm text-[#48715b] dark:text-dark-text-secondary mb-4'>
+					<p className='text-sm text-text-secondary mb-4'>
 						{t('createTicketDesc')}
 					</p>
 					<div className='flex flex-wrap gap-4 items-end'>
 						<div className='flex-1 min-w-[200px] relative' ref={userSearchRef}>
-							<label className='block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1'>
+							<label className='block text-sm font-medium text-text-secondary mb-1'>
 								{t('user')}
 							</label>
 							<input
@@ -672,10 +671,10 @@ const TicketManagementPage = (): React.ReactElement => {
 									userSearchText.trim() && setShowUserDropdown(true)
 								}
 								placeholder={t('searchPlaceholder')}
-								className='w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#7cbc97] dark:bg-dark-surface dark:border-dark-border dark:text-dark-text'
+								className='w-full px-3 py-2 border border-[#8C8C8C]/15 rounded-xl focus:outline-none focus:border-[#48715B]'
 							/>
 							{showUserDropdown && filteredUsers.length > 0 && (
-								<ul className='absolute z-50 mt-1 w-full bg-white dark:bg-dark-surface border border-slate-300 dark:border-dark-border rounded-lg shadow-lg max-h-60 overflow-y-auto'>
+								<ul className='absolute z-50 mt-1 w-full bg-white border border-[#8C8C8C]/15 rounded-lg shadow-lg max-h-60 overflow-y-auto'>
 									{filteredUsers.map(user => (
 										<li
 											key={user.id}
@@ -690,10 +689,10 @@ const TicketManagementPage = (): React.ReactElement => {
 												setShowUserDropdown(false)
 											}}
 										>
-											<div className='font-medium text-[#154c5b] dark:text-dark-text'>
+											<div className='font-medium text-text-primary'>
 												{user.fursona_name || user.first_name || user.email}
 											</div>
-											<div className='text-xs text-[#48715b] dark:text-dark-text-secondary'>
+											<div className='text-xs text-text-secondary'>
 												{user.email}
 												{user.fursona_name && user.first_name
 													? ` · ${user.first_name} ${user.last_name || ''}`
@@ -705,13 +704,13 @@ const TicketManagementPage = (): React.ReactElement => {
 							)}
 						</div>
 						<div className='min-w-[200px]'>
-							<label className='block text-sm font-medium text-gray-700 dark:text-dark-text-secondary mb-1'>
+							<label className='block text-sm font-medium text-text-secondary mb-1'>
 								{t('type')}
 							</label>
 							<select
 								value={createTierId}
 								onChange={e => setCreateTierId(e.target.value)}
-								className='w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#7cbc97] dark:bg-dark-surface dark:border-dark-border dark:text-dark-text'
+								className='w-full px-3 py-2 border border-[#8C8C8C]/15 rounded-xl focus:outline-none focus:border-[#48715B]'
 							>
 								<option value=''>{t('selectTierPlaceholder')}</option>
 								{(tiers as TicketTier[]).map((tier: TicketTier) => (
@@ -741,16 +740,16 @@ const TicketManagementPage = (): React.ReactElement => {
 
 			{/* Create Tier Form */}
 			{showCreateTierForm && (
-				<div className='rounded-lg shadow-sm border border-slate-300/20 dark:border-dark-border/20 p-4 mb-6 dark:bg-dark-surface/30'>
-					<h3 className='font-semibold text-[#154c5b] dark:text-dark-text mb-2'>
+				<div className='rounded-xl border border-[#8C8C8C]/15 p-4 mb-6'>
+					<h3 className='font-semibold text-text-primary mb-2'>
 						{t('createTierTitle')}
 					</h3>
-					<p className='text-sm text-[#48715b] dark:text-dark-text-secondary mb-4'>
+					<p className='text-sm text-text-secondary mb-4'>
 						{t('createTierDesc')}
 					</p>
 					<div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
 						<div>
-							<label className='block text-sm font-medium text-gray-700 dark:text-dark-text-secondary mb-1'>
+							<label className='block text-sm font-medium text-text-secondary mb-1'>
 								{t('tierName')}
 							</label>
 							<input
@@ -758,11 +757,11 @@ const TicketManagementPage = (): React.ReactElement => {
 								value={tierName}
 								onChange={e => setTierName(e.target.value)}
 								placeholder={t('tierNamePlaceholder')}
-								className='w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#7cbc97] dark:bg-dark-surface dark:border-dark-border dark:text-dark-text'
+								className='w-full px-3 py-2 border border-[#8C8C8C]/15 rounded-xl focus:outline-none focus:border-[#48715B]'
 							/>
 						</div>
 						<div>
-							<label className='block text-sm font-medium text-gray-700 dark:text-dark-text-secondary mb-1'>
+							<label className='block text-sm font-medium text-text-secondary mb-1'>
 								{t('tierPrice')} (VND)
 							</label>
 							<input
@@ -772,11 +771,11 @@ const TicketManagementPage = (): React.ReactElement => {
 								value={tierPrice}
 								onChange={e => setTierPrice(e.target.value)}
 								placeholder='0'
-								className='w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#7cbc97] dark:bg-dark-surface dark:border-dark-border dark:text-dark-text'
+								className='w-full px-3 py-2 border border-[#8C8C8C]/15 rounded-xl focus:outline-none focus:border-[#48715B]'
 							/>
 						</div>
 						<div>
-							<label className='block text-sm font-medium text-gray-700 dark:text-dark-text-secondary mb-1'>
+							<label className='block text-sm font-medium text-text-secondary mb-1'>
 								{t('tierStock')}
 							</label>
 							<input
@@ -785,7 +784,7 @@ const TicketManagementPage = (): React.ReactElement => {
 								value={tierStock}
 								onChange={e => setTierStock(e.target.value)}
 								placeholder='0'
-								className='w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#7cbc97] dark:bg-dark-surface dark:border-dark-border dark:text-dark-text'
+								className='w-full px-3 py-2 border border-[#8C8C8C]/15 rounded-xl focus:outline-none focus:border-[#48715B]'
 							/>
 						</div>
 						<div className='flex items-center gap-2'>
@@ -794,17 +793,17 @@ const TicketManagementPage = (): React.ReactElement => {
 								id='tier-is-active'
 								checked={tierIsActive}
 								onChange={e => setTierIsActive(e.target.checked)}
-								className='rounded border-gray-300 text-[#7cbc97] focus:ring-[#7cbc97] dark:border-dark-border'
+								className='rounded border-gray-300 text-[#7cbc97] focus:ring-[#7cbc97]'
 							/>
 							<label
 								htmlFor='tier-is-active'
-								className='text-sm font-medium text-gray-700 dark:text-dark-text'
+								className='text-sm font-medium text-text-secondary'
 							>
 								{t('tierIsActive')}
 							</label>
 						</div>
 						<div className='md:col-span-2'>
-							<label className='block text-sm font-medium text-gray-700 dark:text-dark-text-secondary mb-1'>
+							<label className='block text-sm font-medium text-text-secondary mb-1'>
 								{t('description')}
 							</label>
 							<input
@@ -812,11 +811,11 @@ const TicketManagementPage = (): React.ReactElement => {
 								value={tierDescription}
 								onChange={e => setTierDescription(e.target.value)}
 								placeholder={t('tierDescriptionPlaceholder')}
-								className='w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#7cbc97] dark:bg-dark-surface dark:border-dark-border dark:text-dark-text'
+								className='w-full px-3 py-2 border border-[#8C8C8C]/15 rounded-xl focus:outline-none focus:border-[#48715B]'
 							/>
 						</div>
 						<div className='md:col-span-2'>
-							<label className='block text-sm font-medium text-gray-700 dark:text-dark-text-secondary mb-1'>
+							<label className='block text-sm font-medium text-text-secondary mb-1'>
 								{t('tierBenefits')}
 							</label>
 							<textarea
@@ -824,7 +823,7 @@ const TicketManagementPage = (): React.ReactElement => {
 								onChange={e => setTierBenefitsText(e.target.value)}
 								placeholder={t('tierBenefitsPlaceholder')}
 								rows={3}
-								className='w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#7cbc97] dark:bg-dark-surface dark:border-dark-border dark:text-dark-text resize-none'
+								className='w-full px-3 py-2 border border-[#8C8C8C]/15 rounded-xl focus:outline-none focus:border-[#48715B] resize-none'
 							/>
 						</div>
 						<div className='md:col-span-2'>
@@ -849,46 +848,46 @@ const TicketManagementPage = (): React.ReactElement => {
 			)}
 
 			{/* Tier management table (with sold/remaining from stats) */}
-			<div className='rounded-lg shadow-sm border border-slate-300/20 dark:border-dark-border/20 overflow-hidden mb-6'>
-				<h3 className='font-semibold text-[#154c5b] dark:text-dark-text px-4 py-3 border-b border-slate-300/20 dark:border-dark-border/20'>
+			<div className='rounded-xl border border-[#8C8C8C]/15 overflow-hidden mb-6'>
+				<h3 className='font-semibold text-text-primary px-4 py-3 border-b border-[#8C8C8C]/15'>
 					{t('manageTiers')}
 				</h3>
 				{adminTiers.length === 0 ? (
-					<div className='p-8 text-center text-gray-500 dark:text-dark-text-secondary'>
+					<div className='p-8 text-center text-[#8C8C8C]'>
 						{t('noTiers')}
 					</div>
 				) : (
-					<div className='overflow-x-auto'>
+					<div className='overflow-x-auto rounded-xl border border-[#8C8C8C]/15 bg-white/50'>
 						<table className='w-full'>
-							<thead className=''>
-								<tr>
-									<th className='px-4 py-3 text-left text-sm font-semibold text-gray-600 dark:text-dark-text'>
+							<thead>
+								<tr className='bg-[#E2EEE2]/40 border-b border-[#48715B]/15'>
+									<th className='px-4 py-3 text-left text-sm font-semibold text-[#48715B]'>
 										{t('tierName')}
 									</th>
-									<th className='px-4 py-3 text-left text-sm font-semibold text-gray-600 dark:text-dark-text'>
+									<th className='px-4 py-3 text-left text-sm font-semibold text-[#48715B]'>
 										{t('code')}
 									</th>
-									<th className='px-4 py-3 text-left text-sm font-semibold text-gray-600 dark:text-dark-text'>
+									<th className='px-4 py-3 text-left text-sm font-semibold text-[#48715B]'>
 										{t('tierPrice')}
 									</th>
-									<th className='px-4 py-3 text-left text-sm font-semibold text-gray-600 dark:text-dark-text'>
+									<th className='px-4 py-3 text-left text-sm font-semibold text-[#48715B]'>
 										{t('tierStock')}
 									</th>
-									<th className='px-4 py-3 text-left text-sm font-semibold text-gray-600 dark:text-dark-text'>
+									<th className='px-4 py-3 text-left text-sm font-semibold text-[#48715B]'>
 										{t('status')}
 									</th>
-									<th className='px-4 py-3 text-left text-sm font-semibold text-gray-600 dark:text-dark-text'>
+									<th className='px-4 py-3 text-left text-sm font-semibold text-[#48715B]'>
 										{t('tierIsActive')}
 									</th>
-									<th className='px-4 py-3 text-left text-sm font-semibold text-gray-600 dark:text-dark-text'>
+									<th className='px-4 py-3 text-left text-sm font-semibold text-[#48715B]'>
 										{t('tierVisibility')}
 									</th>
-									<th className='px-4 py-3 text-right text-sm font-semibold text-gray-600 dark:text-dark-text'>
+									<th className='px-4 py-3 text-right text-sm font-semibold text-[#48715B]'>
 										{t('actions')}
 									</th>
 								</tr>
 							</thead>
-							<tbody className='divide-y divide-slate-300/20 dark:divide-dark-border/20'>
+							<tbody className='divide-y divide-[#48715B]/10'>
 								{adminTiers.map((tier: TicketTier) => {
 									const tierStat = stats?.tier_stats?.find(
 										(s: TierStatistics) => s.tier_id === tier.id
@@ -897,12 +896,12 @@ const TicketManagementPage = (): React.ReactElement => {
 									return (
 										<tr
 											key={tier.id}
-											className='hover:bg-gray-50 dark:hover:bg-dark-surface/50 transition-colors'
+											className='hover:bg-[#E2EEE2]/40 transition-colors'
 										>
-											<td className='px-4 py-3 font-medium text-[#154c5b] dark:text-dark-text'>
+											<td className='px-4 py-3 font-medium text-text-primary'>
 												{tier.ticket_name}
 											</td>
-											<td className='px-4 py-3 text-sm text-gray-600 dark:text-dark-text-secondary'>
+											<td className='px-4 py-3 text-sm text-[#48715B]-secondary'>
 												{tier.tier_code}
 											</td>
 											<td className='px-4 py-3 text-sm'>
@@ -925,7 +924,7 @@ const TicketManagementPage = (): React.ReactElement => {
 																}}
 															/>
 														</div>
-														<div className='flex justify-between text-xs text-gray-600 dark:text-dark-text-secondary'>
+														<div className='flex justify-between text-xs text-[#48715B]-secondary'>
 															<span>
 																{t('sold')}: {tierStat.sold}
 															</span>
@@ -935,7 +934,7 @@ const TicketManagementPage = (): React.ReactElement => {
 														</div>
 													</div>
 												) : (
-													<span className='text-gray-400 dark:text-dark-text-secondary text-sm'>
+													<span className='text-[#8C8C8C] text-sm'>
 														—
 													</span>
 												)}
@@ -978,7 +977,7 @@ const TicketManagementPage = (): React.ReactElement => {
 														setTierVisibilityMutation.isPending &&
 														setTierVisibilityMutation.variables?.tierId === tier.id
 													}
-													className='p-2 rounded-lg border border-slate-300/20 dark:border-dark-border hover:bg-gray-100 dark:hover:bg-dark-surface/50 transition-colors disabled:opacity-50'
+													className='p-2 rounded-lg border border-[#8C8C8C]/15 hover:bg-[#E2EEE2] transition-colors disabled:opacity-50'
 													title={
 														isVisible
 															? t('hideFromListing')
@@ -986,9 +985,9 @@ const TicketManagementPage = (): React.ReactElement => {
 													}
 												>
 													{isVisible ? (
-														<Eye className='w-4 h-4 text-gray-600 dark:text-dark-text' />
+														<Eye className='w-4 h-4 text-[#48715B]' />
 													) : (
-														<EyeOff className='w-4 h-4 text-gray-400 dark:text-dark-text-secondary' />
+														<EyeOff className='w-4 h-4 text-[#8C8C8C]' />
 													)}
 												</button>
 											</td>
@@ -997,10 +996,10 @@ const TicketManagementPage = (): React.ReactElement => {
 													<button
 														type='button'
 														onClick={() => openEditTierModal(tier)}
-														className='p-2 rounded-lg border border-slate-300/20 dark:border-dark-border hover:bg-gray-100 dark:hover:bg-dark-surface/50 transition-colors'
+														className='p-2 rounded-lg border border-[#8C8C8C]/15 hover:bg-[#E2EEE2] transition-colors'
 														title={t('editTier')}
 													>
-														<Pencil className='w-4 h-4 text-gray-600 dark:text-dark-text' />
+														<Pencil className='w-4 h-4 text-[#48715B]' />
 													</button>
 													<button
 														type='button'
@@ -1025,11 +1024,11 @@ const TicketManagementPage = (): React.ReactElement => {
 			{/* Summary statistics cards */}
 			{!statsLoading && stats && (
 				<div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-6'>
-					<div className='rounded-lg p-4 shadow-sm border border-slate-300/20 dark:border-dark-border/20 dark:bg-dark-surface/30'>
-						<p className='text-sm text-gray-500 dark:text-dark-text-secondary'>
+					<div className='rounded-lg p-4 shadow-sm border border-[#8C8C8C]/15'>
+						<p className='text-sm text-[#8C8C8C]'>
 							{t('totalTickets')}
 						</p>
-						<p className='text-2xl font-bold text-[#154c5b] dark:text-dark-text'>
+						<p className='text-2xl font-bold text-text-primary'>
 							{stats.total_tickets}
 						</p>
 					</div>
@@ -1085,7 +1084,7 @@ const TicketManagementPage = (): React.ReactElement => {
 			)}
 
 			{/* Filters */}
-			<div className='rounded-lg shadow-sm border border-slate-300/20 dark:border-dark-border/20 p-4 mb-6'>
+			<div className='rounded-xl border border-[#8C8C8C]/15 p-4 mb-6'>
 				<div className='flex flex-wrap gap-4 items-center'>
 					{/* Search */}
 					<div className='flex-1 min-w-[200px] flex gap-2'>
@@ -1097,7 +1096,7 @@ const TicketManagementPage = (): React.ReactElement => {
 								value={searchInput}
 								onChange={e => setSearchInput(e.target.value)}
 								onKeyDown={e => e.key === 'Enter' && handleSearch()}
-								className='w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#7cbc97] dark:bg-dark-surface dark:border-dark-border dark:text-dark-text'
+								className='w-full pl-10 pr-4 py-2 border border-[#8C8C8C]/15 rounded-xl focus:outline-none focus:border-[#48715B]'
 							/>
 						</div>
 						<button onClick={handleSearch} className='btn-primary'>
@@ -1119,7 +1118,7 @@ const TicketManagementPage = (): React.ReactElement => {
 									e.target.value as TicketStatus | 'all' | 'pending_over_24'
 								)
 							}
-							className='border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#7cbc97] dark:bg-dark-surface dark:border-dark-border dark:text-dark-text'
+							className='border border-[#8C8C8C]/15 rounded-xl px-3 py-2 focus:outline-none focus:border-[#48715B]'
 						>
 							<option value='all'>{t('allStatus')}</option>
 							<option value='pending'>{tTicket('status.pending')}</option>
@@ -1136,7 +1135,7 @@ const TicketManagementPage = (): React.ReactElement => {
 					<select
 						value={filter.tier_id || ''}
 						onChange={e => handleTierFilter(e.target.value)}
-						className='border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#7cbc97] dark:bg-dark-surface dark:border-dark-border dark:text-dark-text'
+						className='border border-[#8C8C8C]/15 rounded-xl px-3 py-2 focus:outline-none focus:border-[#48715B]'
 					>
 						<option value=''>{t('allTypes')}</option>
 						{tiers.map((tier: TicketTier) => (
@@ -1149,10 +1148,10 @@ const TicketManagementPage = (): React.ReactElement => {
 					{/* Refresh Button */}
 					<button
 						onClick={() => refetchTickets()}
-						className='p-2 border rounded-lg hover:bg-gray-50 dark:hover:bg-dark-surface/50 transition-colors'
+						className='p-2 border rounded-lg hover:bg-[#E2EEE2]/40 transition-colors'
 						title={t('refresh')}
 					>
-						<RefreshCw className='w-4 h-4 text-gray-600 dark:text-dark-text' />
+						<RefreshCw className='w-4 h-4 text-[#48715B]' />
 					</button>
 				</div>
 			</div>
@@ -1160,53 +1159,53 @@ const TicketManagementPage = (): React.ReactElement => {
 			{/* Tickets Table */}
 			<div className='rounded-lg overflow-hidden'>
 				{ticketsLoading ? (
-					<div className='p-8 text-center text-gray-500 dark:text-dark-text-secondary'>
+					<div className='p-8 text-center text-[#8C8C8C]'>
 						{tCommon('loading')}
 					</div>
 				) : tickets.length === 0 ? (
-					<div className='p-8 text-center text-gray-500 dark:text-dark-text-secondary'>
+					<div className='p-8 text-center text-[#8C8C8C]'>
 						{t('noTickets')}
 					</div>
 				) : (
 					<>
-						<div className='overflow-x-auto'>
+						<div className='overflow-x-auto rounded-xl border border-[#8C8C8C]/15 bg-white/50'>
 							<table className='w-full'>
-								<thead className=''>
-									<tr>
-										<th className='px-4 py-3 text-left text-sm font-semibold text-gray-600 dark:text-dark-text'>
+								<thead>
+									<tr className='bg-[#E2EEE2]/40 border-b border-[#48715B]/15'>
+										<th className='px-4 py-3 text-left text-sm font-semibold text-[#48715B]'>
 											{t('code')}
 										</th>
-										<th className='px-4 py-3 text-left text-sm font-semibold text-gray-600 dark:text-dark-text'>
+										<th className='px-4 py-3 text-left text-sm font-semibold text-[#48715B]'>
 											{t('buyer')}
 										</th>
-										<th className='px-4 py-3 text-left text-sm font-semibold text-gray-600 dark:text-dark-text'>
+										<th className='px-4 py-3 text-left text-sm font-semibold text-[#48715B]'>
 											{t('type')}
 										</th>
-										<th className='px-4 py-3 text-left text-sm font-semibold text-gray-600 dark:text-dark-text'>
+										<th className='px-4 py-3 text-left text-sm font-semibold text-[#48715B]'>
 											{t('upgradeDiff')}
 										</th>
-										<th className='px-4 py-3 text-left text-sm font-semibold text-gray-600 dark:text-dark-text'>
+										<th className='px-4 py-3 text-left text-sm font-semibold text-[#48715B]'>
 											{t('status')}
 										</th>
-										<th className='px-4 py-3 text-left text-sm font-semibold text-gray-600 dark:text-dark-text'>
+										<th className='px-4 py-3 text-left text-sm font-semibold text-[#48715B]'>
 											{t('createdAt')}
 										</th>
-										<th className='px-4 py-3 text-center text-sm font-semibold text-gray-600 dark:text-dark-text'>
+										<th className='px-4 py-3 text-center text-sm font-semibold text-[#48715B]'>
 											{t('actions')}
 										</th>
 									</tr>
 								</thead>
-								<tbody className='divide-y divide-slate-300/20 dark:divide-dark-border/20'>
+								<tbody className='divide-y divide-[#48715B]/10'>
 									{tickets.map((ticket: UserTicket) => {
 										const statusConfig = STATUS_ICONS[ticket.status]
 										const user = ticket.user
 										return (
 											<tr
 												key={ticket.id}
-												className='hover:bg-gray-50 dark:hover:bg-dark-surface/50 transition-colors'
+												className='hover:bg-[#E2EEE2]/40 transition-colors'
 											>
 												<td className='px-4 py-3'>
-													<span className='font-mono font-semibold text-[#154c5b] dark:text-dark-text'>
+													<span className='font-mono font-semibold text-text-primary'>
 														{ticket.reference_code}
 													</span>
 													{ticket.previous_reference_code && (
@@ -1220,14 +1219,14 @@ const TicketManagementPage = (): React.ReactElement => {
 												</td>
 												<td className='px-4 py-3'>
 													<div>
-														<p className='font-medium text-gray-900 dark:text-dark-text'>
+														<p className='font-medium text-text-primary'>
 															{user?.first_name} {user?.last_name}
 														</p>
-														<p className='text-sm text-gray-500 dark:text-dark-text-secondary'>
+														<p className='text-sm text-[#8C8C8C]'>
 															{user?.email}
 														</p>
 														{user?.fursona_name && (
-															<p className='text-xs text-[#48715b] dark:text-dark-text-secondary'>
+															<p className='text-xs text-text-secondary'>
 																({user.fursona_name})
 															</p>
 														)}
@@ -1235,10 +1234,10 @@ const TicketManagementPage = (): React.ReactElement => {
 												</td>
 												<td className='px-4 py-3'>
 													<div>
-														<p className='font-medium text-gray-900 dark:text-dark-text'>
+														<p className='font-medium text-text-primary'>
 															{ticket.tier?.ticket_name}
 														</p>
-														<p className='text-sm text-gray-500 dark:text-dark-text-secondary'>
+														<p className='text-sm text-[#8C8C8C]'>
 															{ticket.tier?.price
 																? formatPrice(ticket.tier.price)
 																: '–'}{' '}
@@ -1255,10 +1254,10 @@ const TicketManagementPage = (): React.ReactElement => {
 																+{formatPrice(diff)} VND
 															</span>
 														) : (
-															<span className='text-gray-400 dark:text-dark-text-secondary text-sm'>—</span>
+															<span className='text-[#8C8C8C] text-sm'>—</span>
 														)
 													})() : (
-														<span className='text-gray-400 dark:text-dark-text-secondary text-sm'>—</span>
+														<span className='text-[#8C8C8C] text-sm'>—</span>
 													)}
 												</td>
 												<td className='px-4 py-3'>
@@ -1274,12 +1273,12 @@ const TicketManagementPage = (): React.ReactElement => {
 														</p>
 													)}
 												</td>
-												<td className='px-4 py-3 text-sm text-gray-600 dark:text-dark-text-secondary'>
+												<td className='px-4 py-3 text-sm text-[#48715B]-secondary'>
 													{new Date(ticket.created_at).toLocaleDateString(
 														'vi-VN'
 													)}
 													<br />
-													<span className='text-xs text-gray-400 dark:text-dark-text-secondary'>
+													<span className='text-xs text-[#8C8C8C]'>
 														{new Date(ticket.created_at).toLocaleTimeString(
 															'vi-VN'
 														)}
@@ -1309,7 +1308,7 @@ const TicketManagementPage = (): React.ReactElement => {
 														</button>
 														<button
 															onClick={() => openEditTicketModal(ticket)}
-															className='p-1.5 text-[#48715b] dark:text-dark-text-secondary hover:bg-gray-100 dark:hover:bg-dark-surface/50 rounded-lg'
+															className='p-1.5 text-text-secondary hover:bg-[#E2EEE2] rounded-lg'
 															title={tCommon('edit') || 'Edit'}
 														>
 															<Pencil className='w-4 h-4' />
@@ -1322,28 +1321,6 @@ const TicketManagementPage = (): React.ReactElement => {
 															<Trash2 className='w-4 h-4' />
 														</button>
 													</div>
-													{ticket.status === 'approved' && (
-														<div className='text-center mt-2'>
-															<span className='text-xs text-green-600 dark:text-green-400'>
-																{ticket.approved_at
-																	? new Date(
-																			ticket.approved_at
-																		).toLocaleDateString('vi-VN')
-																	: '–'}
-															</span>
-														</div>
-													)}
-													{ticket.status === 'denied' && (
-														<div className='text-center mt-2'>
-															<span className='text-xs text-red-600 dark:text-red-400'>
-																{ticket.denied_at
-																	? new Date(
-																			ticket.denied_at
-																		).toLocaleDateString('vi-VN')
-																	: '–'}
-															</span>
-														</div>
-													)}
 												</td>
 											</tr>
 										)
@@ -1354,9 +1331,9 @@ const TicketManagementPage = (): React.ReactElement => {
 
 						{/* Pagination */}
 						{pagination && pagination.totalPages > 1 && (
-							<div className='px-4 py-3 border-t border-slate-300/20 dark:border-dark-border/20 bg-gray-50 dark:bg-dark-surface/50'>
+							<div className='px-4 py-3 border-t border-[#8C8C8C]/15 bg-[#E2EEE2]/40'>
 								<div className='flex items-center justify-between'>
-									<div className='text-sm text-gray-600 dark:text-dark-text-secondary'>
+									<div className='text-sm text-[#48715B]-secondary'>
 										{tCommon('showing') || 'Showing'}{' '}
 										{(pagination.currentPage - 1) *
 											(pagination.pageSize || 20) +
@@ -1375,11 +1352,11 @@ const TicketManagementPage = (): React.ReactElement => {
 												handlePageChange(pagination.currentPage - 1)
 											}
 											disabled={pagination.currentPage <= 1}
-											className='p-2 border rounded-lg hover:bg-gray-100 dark:hover:bg-dark-surface disabled:opacity-50 disabled:cursor-not-allowed transition-colors'
+											className='p-2 border rounded-lg hover:bg-[#E2EEE2] disabled:opacity-50 disabled:cursor-not-allowed transition-colors'
 										>
 											<ChevronLeft className='w-4 h-4' />
 										</button>
-										<span className='text-sm text-gray-600 dark:text-dark-text-secondary px-2'>
+										<span className='text-sm text-[#48715B]-secondary px-2'>
 											{tCommon('page') || 'Page'} {pagination.currentPage}{' '}
 											{tCommon('of') || 'of'} {pagination.totalPages}
 										</span>
@@ -1388,7 +1365,7 @@ const TicketManagementPage = (): React.ReactElement => {
 												handlePageChange(pagination.currentPage + 1)
 											}
 											disabled={pagination.currentPage >= pagination.totalPages}
-											className='p-2 border rounded-lg hover:bg-gray-100 dark:hover:bg-dark-surface disabled:opacity-50 disabled:cursor-not-allowed transition-colors'
+											className='p-2 border rounded-lg hover:bg-[#E2EEE2] disabled:opacity-50 disabled:cursor-not-allowed transition-colors'
 										>
 											<ChevronRight className='w-4 h-4' />
 										</button>
@@ -1403,14 +1380,14 @@ const TicketManagementPage = (): React.ReactElement => {
 			{/* Deny Dialog */}
 			{showDenyDialog && selectedTicket && (
 				<div className='fixed inset-0 z-50 flex items-center justify-center bg-black/50'>
-					<div className='rounded-xl p-6 max-w-md mx-4 shadow-2xl border border-slate-300/20 dark:border-dark-border/20 bg-white dark:bg-dark-surface'>
-						<h3 className='text-xl font-semibold text-[#154c5b] dark:text-dark-text mb-4'>
+					<div className='rounded-xl p-6 max-w-md mx-4 shadow-2xl border border-[#8C8C8C]/15 bg-white'>
+						<h3 className='text-xl font-semibold text-text-primary mb-4'>
 							{t('denyTicketTitle')}
 						</h3>
-						<p className='text-[#48715b] dark:text-dark-text-secondary mb-2'>
+						<p className='text-text-secondary mb-2'>
 							{t('denyingTicket', { code: selectedTicket.reference_code })}
 						</p>
-						<p className='text-sm text-gray-500 dark:text-dark-text-secondary mb-4'>
+						<p className='text-sm text-[#8C8C8C] mb-4'>
 							{t('user')}: {selectedTicket.user?.first_name}{' '}
 							{selectedTicket.user?.last_name} ({selectedTicket.user?.email})
 						</p>
@@ -1427,14 +1404,14 @@ const TicketManagementPage = (): React.ReactElement => {
 						)}
 
 						<div className='mb-4'>
-							<label className='block text-sm text-[#48715b] dark:text-dark-text-secondary mb-1'>
+							<label className='block text-sm text-text-secondary mb-1'>
 								{t('denyReason')}
 							</label>
 							<textarea
 								value={denyReason}
 								onChange={e => setDenyReason(e.target.value)}
 								placeholder={t('denyReasonPlaceholder')}
-								className='w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#7cbc97] dark:bg-dark-surface dark:border-dark-border dark:text-dark-text resize-none'
+								className='w-full px-3 py-2 border border-[#8C8C8C]/15 rounded-xl focus:outline-none focus:border-[#48715B] resize-none'
 								rows={3}
 							/>
 						</div>
@@ -1453,7 +1430,7 @@ const TicketManagementPage = (): React.ReactElement => {
 									setShowDenyDialog(false)
 									setSelectedTicket(null)
 								}}
-								className='flex-1 py-2 px-4 rounded-lg border border-slate-300 dark:border-dark-border text-[#48715b] dark:text-dark-text hover:bg-gray-50 dark:hover:bg-dark-surface/50'
+								className='flex-1 py-2 px-4 rounded-lg border border-[#8C8C8C]/15 text-text-secondary hover:bg-[#E2EEE2]/40'
 							>
 								{tCommon('cancel')}
 							</button>
@@ -1474,11 +1451,11 @@ const TicketManagementPage = (): React.ReactElement => {
 			{/* Edit Ticket Modal (Admin Back-Door) */}
 			{editTicketModal && (
 				<div className='fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4'>
-					<div className='rounded-xl p-6 max-w-lg w-full shadow-2xl max-h-[90vh] overflow-y-auto border border-slate-300/20 dark:border-dark-border/20 bg-white dark:bg-dark-surface'>
-						<h3 className='text-xl font-semibold text-[#154c5b] dark:text-dark-text mb-1'>
+					<div className='rounded-xl p-6 max-w-lg w-full shadow-2xl max-h-[90vh] overflow-y-auto border border-[#8C8C8C]/15 bg-white'>
+						<h3 className='text-xl font-semibold text-text-primary mb-1'>
 							{t('editTicket') || 'Edit Ticket'}
 						</h3>
-						<p className='text-sm text-gray-500 dark:text-dark-text-secondary mb-4'>
+						<p className='text-sm text-[#8C8C8C] mb-4'>
 							{editTicketModal.reference_code} –{' '}
 							{editTicketModal.user?.first_name}{' '}
 							{editTicketModal.user?.last_name}
@@ -1496,13 +1473,13 @@ const TicketManagementPage = (): React.ReactElement => {
 						<div className='grid grid-cols-1 gap-4'>
 							{/* Status */}
 							<div>
-								<label className='block text-sm font-medium text-gray-700 dark:text-dark-text-secondary mb-1'>
+								<label className='block text-sm font-medium text-text-secondary mb-1'>
 									{t('status') || 'Status'}
 								</label>
 								<select
 									value={editTicketStatus}
 									onChange={e => setEditTicketStatus(e.target.value)}
-									className='w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#7cbc97] dark:bg-dark-surface dark:border-dark-border dark:text-dark-text'
+									className='w-full px-3 py-2 border border-[#8C8C8C]/15 rounded-xl focus:outline-none focus:border-[#48715B]'
 								>
 									<option value='pending'>{tTicket('status.pending')}</option>
 									<option value='self_confirmed'>
@@ -1515,13 +1492,13 @@ const TicketManagementPage = (): React.ReactElement => {
 
 							{/* Tier */}
 							<div>
-								<label className='block text-sm font-medium text-gray-700 dark:text-dark-text-secondary mb-1'>
+								<label className='block text-sm font-medium text-text-secondary mb-1'>
 									{t('ticketTier') || 'Tier'}
 								</label>
 								<select
 									value={editTicketTierId}
 									onChange={e => setEditTicketTierId(e.target.value)}
-									className='w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#7cbc97] dark:bg-dark-surface dark:border-dark-border dark:text-dark-text'
+									className='w-full px-3 py-2 border border-[#8C8C8C]/15 rounded-xl focus:outline-none focus:border-[#48715B]'
 								>
 									<option value=''>–</option>
 									{adminTiers.map(tier => (
@@ -1535,58 +1512,58 @@ const TicketManagementPage = (): React.ReactElement => {
 
 							{/* Badge Name */}
 							<div>
-								<label className='block text-sm font-medium text-gray-700 dark:text-dark-text-secondary mb-1'>
+								<label className='block text-sm font-medium text-text-secondary mb-1'>
 									{tTicket('conBadgeName') || 'Badge Name'}
 								</label>
 								<input
 									type='text'
 									value={editTicketBadgeName}
 									onChange={e => setEditTicketBadgeName(e.target.value)}
-									className='w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#7cbc97] dark:bg-dark-surface dark:border-dark-border dark:text-dark-text'
+									className='w-full px-3 py-2 border border-[#8C8C8C]/15 rounded-xl focus:outline-none focus:border-[#48715B]'
 								/>
 							</div>
 
 							{/* Badge Image */}
 							<div>
-								<label className='block text-sm font-medium text-gray-700 dark:text-dark-text-secondary mb-1'>
+								<label className='block text-sm font-medium text-text-secondary mb-1'>
 									{tTicket('badgeImage') || 'Badge Image URL'}
 								</label>
 								<input
 									type='text'
 									value={editTicketBadgeImage}
 									onChange={e => setEditTicketBadgeImage(e.target.value)}
-									className='w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#7cbc97] dark:bg-dark-surface dark:border-dark-border dark:text-dark-text'
+									className='w-full px-3 py-2 border border-[#8C8C8C]/15 rounded-xl focus:outline-none focus:border-[#48715B]'
 								/>
 							</div>
 
 							{/* Checkboxes */}
 							<div className='flex flex-wrap gap-4'>
-								<label className='flex items-center gap-2 text-sm text-gray-700 dark:text-dark-text'>
+								<label className='flex items-center gap-2 text-sm text-text-secondary'>
 									<input
 										type='checkbox'
 										checked={editTicketIsFursuiter}
 										onChange={e => setEditTicketIsFursuiter(e.target.checked)}
-										className='rounded border-gray-300 text-[#7cbc97] focus:ring-[#7cbc97] dark:border-dark-border'
+										className='rounded border-gray-300 text-[#7cbc97] focus:ring-[#7cbc97]'
 									/>
 									{tTicket('isFursuiter') || 'Fursuiter'}
 								</label>
-								<label className='flex items-center gap-2 text-sm text-gray-700 dark:text-dark-text'>
+								<label className='flex items-center gap-2 text-sm text-text-secondary'>
 									<input
 										type='checkbox'
 										checked={editTicketIsFursuitStaff}
 										onChange={e =>
 											setEditTicketIsFursuitStaff(e.target.checked)
 										}
-										className='rounded border-gray-300 text-[#7cbc97] focus:ring-[#7cbc97] dark:border-dark-border'
+										className='rounded border-gray-300 text-[#7cbc97] focus:ring-[#7cbc97]'
 									/>
 									{tTicket('isFursuitStaff') || 'Fursuit Staff'}
 								</label>
-								<label className='flex items-center gap-2 text-sm text-gray-700 dark:text-dark-text'>
+								<label className='flex items-center gap-2 text-sm text-text-secondary'>
 									<input
 										type='checkbox'
 										checked={editTicketIsCheckedIn}
 										onChange={e => setEditTicketIsCheckedIn(e.target.checked)}
-										className='rounded border-gray-300 text-[#7cbc97] focus:ring-[#7cbc97] dark:border-dark-border'
+										className='rounded border-gray-300 text-[#7cbc97] focus:ring-[#7cbc97]'
 									/>
 									{tTicket('isCheckedIn') || 'Checked In'}
 								</label>
@@ -1594,14 +1571,14 @@ const TicketManagementPage = (): React.ReactElement => {
 
 							{/* Denial Reason */}
 							<div>
-								<label className='block text-sm font-medium text-gray-700 dark:text-dark-text-secondary mb-1'>
+								<label className='block text-sm font-medium text-text-secondary mb-1'>
 									{t('denyReason') || 'Denial Reason'}
 								</label>
 								<textarea
 									value={editTicketDenialReason}
 									onChange={e => setEditTicketDenialReason(e.target.value)}
 									rows={2}
-									className='w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#7cbc97] dark:bg-dark-surface dark:border-dark-border dark:text-dark-text resize-none'
+									className='w-full px-3 py-2 border border-[#8C8C8C]/15 rounded-xl focus:outline-none focus:border-[#48715B] resize-none'
 								/>
 							</div>
 						</div>
@@ -1610,7 +1587,7 @@ const TicketManagementPage = (): React.ReactElement => {
 							<button
 								type='button'
 								onClick={() => setEditTicketModal(null)}
-								className='flex-1 py-2 px-4 rounded-lg border border-slate-300 dark:border-dark-border text-gray-700 dark:text-dark-text hover:bg-gray-100 dark:hover:bg-dark-surface/50'
+								className='flex-1 py-2 px-4 rounded-lg border border-[#8C8C8C]/15 text-text-secondary hover:bg-[#E2EEE2]'
 							>
 								{tCommon('cancel')}
 							</button>
@@ -1632,16 +1609,16 @@ const TicketManagementPage = (): React.ReactElement => {
 			{/* Delete Ticket Confirmation */}
 			{showDeleteConfirm && (
 				<div className='fixed inset-0 z-50 flex items-center justify-center bg-black/50'>
-					<div className='rounded-xl p-6 max-w-md mx-4 shadow-2xl border border-slate-300/20 dark:border-dark-border/20 bg-white dark:bg-dark-surface'>
-						<h3 className='text-xl font-semibold text-[#154c5b] dark:text-dark-text mb-4'>
+					<div className='rounded-xl p-6 max-w-md mx-4 shadow-2xl border border-[#8C8C8C]/15 bg-white'>
+						<h3 className='text-xl font-semibold text-text-primary mb-4'>
 							{t('deleteTicketTitle') || 'Delete Ticket'}
 						</h3>
-						<p className='text-[#48715b] dark:text-dark-text-secondary mb-2'>
+						<p className='text-text-secondary mb-2'>
 							{t('deleteTicketConfirm', {
 								code: showDeleteConfirm.reference_code,
 							}) || `Delete ticket ${showDeleteConfirm.reference_code}?`}
 						</p>
-						<p className='text-sm text-gray-500 dark:text-dark-text-secondary mb-2'>
+						<p className='text-sm text-[#8C8C8C] mb-2'>
 							{t('user')}: {showDeleteConfirm.user?.first_name}{' '}
 							{showDeleteConfirm.user?.last_name} (
 							{showDeleteConfirm.user?.email})
@@ -1660,7 +1637,7 @@ const TicketManagementPage = (): React.ReactElement => {
 						<div className='flex gap-3'>
 							<button
 								onClick={() => setShowDeleteConfirm(null)}
-								className='flex-1 py-2 px-4 rounded-lg border border-slate-300 dark:border-dark-border text-[#48715b] dark:text-dark-text hover:bg-gray-50 dark:hover:bg-dark-surface/50'
+								className='flex-1 py-2 px-4 rounded-lg border border-[#8C8C8C]/15 text-text-secondary hover:bg-[#E2EEE2]/40'
 							>
 								{tCommon('cancel')}
 							</button>
@@ -1681,25 +1658,25 @@ const TicketManagementPage = (): React.ReactElement => {
 			{/* Edit Tier Modal */}
 			{editTierModal && (
 				<div className='fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4'>
-					<div className='rounded-xl p-6 max-w-lg w-full shadow-2xl max-h-[90vh] overflow-y-auto border border-slate-300/20 dark:border-dark-border/20 bg-white dark:bg-dark-surface'>
-						<h3 className='text-xl font-semibold text-[#154c5b] dark:text-dark-text mb-4'>
+					<div className='rounded-xl p-6 max-w-lg w-full shadow-2xl max-h-[90vh] overflow-y-auto border border-[#8C8C8C]/15 bg-white'>
+						<h3 className='text-xl font-semibold text-text-primary mb-4'>
 							{t('editTier')} – {editTierModal.tier_code}
 						</h3>
 						<div className='grid grid-cols-1 gap-4'>
 							<div>
-								<label className='block text-sm font-medium text-gray-700 dark:text-dark-text-secondary mb-1'>
+								<label className='block text-sm font-medium text-text-secondary mb-1'>
 									{t('tierName')}
 								</label>
 								<input
 									type='text'
 									value={editTierName}
 									onChange={e => setEditTierName(e.target.value)}
-									className='w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#7cbc97] dark:bg-dark-surface dark:border-dark-border dark:text-dark-text'
+									className='w-full px-3 py-2 border border-[#8C8C8C]/15 rounded-xl focus:outline-none focus:border-[#48715B]'
 								/>
 							</div>
 							<div className='grid grid-cols-2 gap-4'>
 								<div>
-									<label className='block text-sm font-medium text-gray-700 dark:text-dark-text-secondary mb-1'>
+									<label className='block text-sm font-medium text-text-secondary mb-1'>
 										{t('tierPrice')} (VND)
 									</label>
 									<input
@@ -1707,11 +1684,11 @@ const TicketManagementPage = (): React.ReactElement => {
 										min={0}
 										value={editTierPrice}
 										onChange={e => setEditTierPrice(e.target.value)}
-										className='w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#7cbc97] dark:bg-dark-surface dark:border-dark-border dark:text-dark-text'
+										className='w-full px-3 py-2 border border-[#8C8C8C]/15 rounded-xl focus:outline-none focus:border-[#48715B]'
 									/>
 								</div>
 								<div>
-									<label className='block text-sm font-medium text-gray-700 dark:text-dark-text-secondary mb-1'>
+									<label className='block text-sm font-medium text-text-secondary mb-1'>
 										{t('tierStock')}
 									</label>
 									<input
@@ -1719,7 +1696,7 @@ const TicketManagementPage = (): React.ReactElement => {
 										min={0}
 										value={editTierStock}
 										onChange={e => setEditTierStock(e.target.value)}
-										className='w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#7cbc97] dark:bg-dark-surface dark:border-dark-border dark:text-dark-text'
+										className='w-full px-3 py-2 border border-[#8C8C8C]/15 rounded-xl focus:outline-none focus:border-[#48715B]'
 									/>
 								</div>
 							</div>
@@ -1729,35 +1706,35 @@ const TicketManagementPage = (): React.ReactElement => {
 									id='edit-tier-active'
 									checked={editTierIsActive}
 									onChange={e => setEditTierIsActive(e.target.checked)}
-									className='rounded border-gray-300 text-[#7cbc97] focus:ring-[#7cbc97] dark:border-dark-border'
+									className='rounded border-gray-300 text-[#7cbc97] focus:ring-[#7cbc97]'
 								/>
 								<label
 									htmlFor='edit-tier-active'
-									className='text-sm font-medium text-gray-700 dark:text-dark-text'
+									className='text-sm font-medium text-text-secondary'
 								>
 									{t('tierIsActive')}
 								</label>
 							</div>
 							<div>
-								<label className='block text-sm font-medium text-gray-700 dark:text-dark-text-secondary mb-1'>
+								<label className='block text-sm font-medium text-text-secondary mb-1'>
 									{t('description')}
 								</label>
 								<input
 									type='text'
 									value={editTierDescription}
 									onChange={e => setEditTierDescription(e.target.value)}
-									className='w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#7cbc97] dark:bg-dark-surface dark:border-dark-border dark:text-dark-text'
+									className='w-full px-3 py-2 border border-[#8C8C8C]/15 rounded-xl focus:outline-none focus:border-[#48715B]'
 								/>
 							</div>
 							<div>
-								<label className='block text-sm font-medium text-gray-700 dark:text-dark-text-secondary mb-1'>
+								<label className='block text-sm font-medium text-text-secondary mb-1'>
 									{t('tierBenefits')}
 								</label>
 								<textarea
 									value={editTierBenefitsText}
 									onChange={e => setEditTierBenefitsText(e.target.value)}
 									rows={3}
-									className='w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#7cbc97] dark:bg-dark-surface dark:border-dark-border dark:text-dark-text resize-none'
+									className='w-full px-3 py-2 border border-[#8C8C8C]/15 rounded-xl focus:outline-none focus:border-[#48715B] resize-none'
 								/>
 							</div>
 						</div>
@@ -1765,7 +1742,7 @@ const TicketManagementPage = (): React.ReactElement => {
 							<button
 								type='button'
 								onClick={() => setEditTierModal(null)}
-								className='flex-1 py-2 px-4 rounded-lg border border-slate-300 dark:border-dark-border text-gray-700 dark:text-dark-text hover:bg-gray-100 dark:hover:bg-dark-surface/50'
+								className='flex-1 py-2 px-4 rounded-lg border border-[#8C8C8C]/15 text-text-secondary hover:bg-[#E2EEE2]'
 							>
 								{tCommon('cancel')}
 							</button>

@@ -72,21 +72,21 @@ export default function DashboardCharts({
 	return (
 		<>
 			{/* Ticket sell timeline */}
-			<section className="mb-8">
-				<div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-					<h2 className="text-lg font-semibold text-[#154c5b] dark:text-dark-text">
+			<section className='mb-8'>
+				<div className='mb-4 flex flex-wrap items-center justify-between gap-3'>
+					<h2 className='text-lg font-semibold text-text-primary'>
 						Timeline bán vé
 					</h2>
-					<div className="flex gap-2">
+					<div className='flex gap-2'>
 						{TIMELINE_DAYS_OPTIONS.map(d => (
 							<button
 								key={d}
-								type="button"
+								type='button'
 								onClick={() => setTimelineDays(d)}
-								className={`rounded-lg border px-3 py-1.5 text-sm font-medium transition-colors ${
+								className={`rounded-xl border px-3 py-1.5 text-sm font-medium transition-colors ${
 									timelineDays === d
-										? 'border-[#7cbc97] bg-[#7cbc97]/20 text-[#154c5b] dark:border-emerald-500 dark:bg-emerald-500/20 dark:text-dark-text'
-										: 'border-slate-300/20 dark:border-dark-border/20 bg-white/80 dark:bg-dark-surface/80 text-gray-600 dark:text-dark-text-secondary hover:bg-slate-50 dark:hover:bg-dark-surface'
+										? 'border-[#48715B] bg-[#48715B]/10 text-[#48715B]'
+										: 'border-[#8C8C8C]/15 bg-[#E2EEE2]/60 text-text-secondary hover:bg-[#E2EEE2]'
 								}`}
 							>
 								{d} ngày
@@ -94,83 +94,81 @@ export default function DashboardCharts({
 						))}
 					</div>
 				</div>
-				<div className="overflow-hidden rounded-xl border border-slate-300/20 dark:border-dark-border/20 bg-white/80 dark:bg-dark-surface/80 shadow-sm">
+				<div className='overflow-hidden rounded-xl border border-[#8C8C8C]/15'>
 					{timelineLoading ? (
-						<div className="flex items-center justify-center py-12">
-							<RefreshCw className="h-8 w-8 animate-spin text-gray-400" />
+						<div className='flex items-center justify-center py-12'>
+							<RefreshCw className='h-8 w-8 animate-spin text-[#8C8C8C]' />
 						</div>
 					) : timelineItems.length === 0 ? (
-						<div className="py-12 text-center text-gray-500 dark:text-dark-text-secondary">
+						<div className='py-12 text-center text-text-secondary'>
 							Chưa có dữ liệu bán vé trong khoảng thời gian này.
 						</div>
 					) : (
-						<div className="p-4">
-							<div className="h-64 w-full sm:h-80">
-								<ResponsiveContainer width="100%" height="100%">
+						<div className='p-4'>
+							<div className='h-64 w-full sm:h-80'>
+								<ResponsiveContainer width='100%' height='100%'>
 									<AreaChart
 										data={timelineData}
 										margin={{ top: 8, right: 8, left: 0, bottom: 0 }}
 									>
 										<defs>
 											<linearGradient
-												id="timelineFill"
-												x1="0"
-												y1="0"
-												x2="0"
-												y2="1"
+												id='timelineFill'
+												x1='0'
+												y1='0'
+												x2='0'
+												y2='1'
 											>
 												<stop
-													offset="0%"
-													stopColor="var(--chart-fill, #7cbc97)"
-													stopOpacity={0.4}
+													offset='0%'
+													stopColor='#48715B'
+													stopOpacity={0.3}
 												/>
 												<stop
-													offset="100%"
-													stopColor="var(--chart-fill, #7cbc97)"
+													offset='100%'
+													stopColor='#48715B'
 													stopOpacity={0}
 												/>
 											</linearGradient>
 										</defs>
 										<CartesianGrid
-											strokeDasharray="3 3"
-											stroke="currentColor"
-											className="text-slate-200 dark:text-dark-border/40"
+											strokeDasharray='3 3'
+											stroke='#8C8C8C'
+											opacity={0.15}
 											vertical={false}
 										/>
 										<XAxis
-											dataKey="dateLabel"
-											tick={{ fontSize: 11, fill: 'currentColor' }}
+											dataKey='dateLabel'
+											tick={{ fontSize: 11, fill: '#8C8C8C' }}
 											tickLine={false}
-											axisLine={{ stroke: 'currentColor', opacity: 0.3 }}
-											className="text-gray-500 dark:text-dark-text-secondary"
-											interval="preserveStartEnd"
+											axisLine={{ stroke: '#8C8C8C', opacity: 0.2 }}
+											interval='preserveStartEnd'
 										/>
 										<YAxis
-											dataKey="count"
-											tick={{ fontSize: 11, fill: 'currentColor' }}
+											dataKey='count'
+											tick={{ fontSize: 11, fill: '#8C8C8C' }}
 											tickLine={false}
 											axisLine={false}
-											className="text-gray-500 dark:text-dark-text-secondary"
 											allowDecimals={false}
 											width={28}
 										/>
 										<Tooltip
 											contentStyle={{
-												backgroundColor: 'var(--tooltip-bg, rgba(255,255,255,0.95))',
-												border: '1px solid rgba(0,0,0,0.08)',
-												borderRadius: '8px',
+												backgroundColor: 'rgba(255,255,255,0.95)',
+												border: '1px solid rgba(140,140,140,0.15)',
+												borderRadius: '12px',
 												boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
 											}}
-											labelStyle={{ color: 'var(--tooltip-text, #154c5b)', fontWeight: 600 }}
+											labelStyle={{ color: '#48715B', fontWeight: 600 }}
 											formatter={(value: number | undefined) => [`${value ?? 0} vé`, 'Số vé']}
 											labelFormatter={(label: React.ReactNode) => label}
 										/>
 										<Area
-											type="monotone"
-											dataKey="count"
-											stroke="var(--chart-stroke, #7cbc97)"
+											type='monotone'
+											dataKey='count'
+											stroke='#48715B'
 											strokeWidth={2}
-											fill="url(#timelineFill)"
+											fill='url(#timelineFill)'
 											isAnimationActive={true}
 											animationDuration={600}
 										/>
@@ -183,21 +181,21 @@ export default function DashboardCharts({
 			</section>
 
 			{/* Revenue timeline */}
-			<section className="mb-8">
-				<div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-					<h2 className="text-lg font-semibold text-[#154c5b] dark:text-dark-text">
+			<section className='mb-8'>
+				<div className='mb-4 flex flex-wrap items-center justify-between gap-3'>
+					<h2 className='text-lg font-semibold text-text-primary'>
 						Doanh thu theo ngày
 					</h2>
-					<div className="flex gap-2">
+					<div className='flex gap-2'>
 						{TIMELINE_DAYS_OPTIONS.map(d => (
 							<button
 								key={d}
-								type="button"
+								type='button'
 								onClick={() => setRevenueDays(d)}
-								className={`rounded-lg border px-3 py-1.5 text-sm font-medium transition-colors ${
+								className={`rounded-xl border px-3 py-1.5 text-sm font-medium transition-colors ${
 									revenueDays === d
-										? 'border-[#7cbc97] bg-[#7cbc97]/20 text-[#154c5b] dark:border-emerald-500 dark:bg-emerald-500/20 dark:text-dark-text'
-										: 'border-slate-300/20 dark:border-dark-border/20 bg-white/80 dark:bg-dark-surface/80 text-gray-600 dark:text-dark-text-secondary hover:bg-slate-50 dark:hover:bg-dark-surface'
+										? 'border-[#48715B] bg-[#48715B]/10 text-[#48715B]'
+										: 'border-[#8C8C8C]/15 bg-[#E2EEE2]/60 text-text-secondary hover:bg-[#E2EEE2]'
 								}`}
 							>
 								{d} ngày
@@ -205,75 +203,73 @@ export default function DashboardCharts({
 						))}
 					</div>
 				</div>
-				<div className="overflow-hidden rounded-xl border border-slate-300/20 dark:border-dark-border/20 bg-white/80 dark:bg-dark-surface/80 shadow-sm">
+				<div className='overflow-hidden rounded-xl border border-[#8C8C8C]/15'>
 					{revenueLoading ? (
-						<div className="flex items-center justify-center py-12">
-							<RefreshCw className="h-8 w-8 animate-spin text-gray-400" />
+						<div className='flex items-center justify-center py-12'>
+							<RefreshCw className='h-8 w-8 animate-spin text-[#8C8C8C]' />
 						</div>
 					) : revenueByDay.length === 0 ? (
-						<div className="py-12 text-center text-gray-500 dark:text-dark-text-secondary">
+						<div className='py-12 text-center text-text-secondary'>
 							Chưa có dữ liệu doanh thu trong khoảng thời gian này.
 						</div>
 					) : (
-						<div className="p-4">
-							<div className="h-64 w-full sm:h-80">
-								<ResponsiveContainer width="100%" height="100%">
+						<div className='p-4'>
+							<div className='h-64 w-full sm:h-80'>
+								<ResponsiveContainer width='100%' height='100%'>
 									<AreaChart
 										data={revenueData}
 										margin={{ top: 8, right: 8, left: 0, bottom: 0 }}
 									>
 										<defs>
 											<linearGradient
-												id="revenueFill"
-												x1="0"
-												y1="0"
-												x2="0"
-												y2="1"
+												id='revenueFill'
+												x1='0'
+												y1='0'
+												x2='0'
+												y2='1'
 											>
 												<stop
-													offset="0%"
-													stopColor="var(--chart-revenue, #0d9488)"
-													stopOpacity={0.4}
+													offset='0%'
+													stopColor='#0d9488'
+													stopOpacity={0.3}
 												/>
 												<stop
-													offset="100%"
-													stopColor="var(--chart-revenue, #0d9488)"
+													offset='100%'
+													stopColor='#0d9488'
 													stopOpacity={0}
 												/>
 											</linearGradient>
 										</defs>
 										<CartesianGrid
-											strokeDasharray="3 3"
-											stroke="currentColor"
-											className="text-slate-200 dark:text-dark-border/40"
+											strokeDasharray='3 3'
+											stroke='#8C8C8C'
+											opacity={0.15}
 											vertical={false}
 										/>
 										<XAxis
-											dataKey="dateLabel"
-											tick={{ fontSize: 11, fill: 'currentColor' }}
+											dataKey='dateLabel'
+											tick={{ fontSize: 11, fill: '#8C8C8C' }}
 											tickLine={false}
-											axisLine={{ stroke: 'currentColor', opacity: 0.3 }}
-											className="text-gray-500 dark:text-dark-text-secondary"
-											interval="preserveStartEnd"
+											axisLine={{ stroke: '#8C8C8C', opacity: 0.2 }}
+											interval='preserveStartEnd'
 										/>
 										<YAxis
-											dataKey="revenue"
-											tick={{ fontSize: 11, fill: 'currentColor' }}
+											dataKey='revenue'
+											tick={{ fontSize: 11, fill: '#8C8C8C' }}
 											tickLine={false}
 											axisLine={false}
-											className="text-gray-500 dark:text-dark-text-secondary"
 											allowDecimals={false}
 											width={48}
 											tickFormatter={(v: number) => `${(v / 1000).toFixed(0)}k`}
 										/>
 										<Tooltip
 											contentStyle={{
-												backgroundColor: 'var(--tooltip-bg, rgba(255,255,255,0.95))',
-												border: '1px solid rgba(0,0,0,0.08)',
-												borderRadius: '8px',
+												backgroundColor: 'rgba(255,255,255,0.95)',
+												border: '1px solid rgba(140,140,140,0.15)',
+												borderRadius: '12px',
 												boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
 											}}
-											labelStyle={{ color: 'var(--tooltip-text, #154c5b)', fontWeight: 600 }}
+											labelStyle={{ color: '#48715B', fontWeight: 600 }}
 											formatter={(value: number | undefined) => [
 												formatRevenue(value ?? 0),
 												'Doanh thu',
@@ -281,11 +277,11 @@ export default function DashboardCharts({
 											labelFormatter={(label: React.ReactNode) => label}
 										/>
 										<Area
-											type="monotone"
-											dataKey="revenue"
-											stroke="var(--chart-revenue, #0d9488)"
+											type='monotone'
+											dataKey='revenue'
+											stroke='#0d9488'
 											strokeWidth={2}
-											fill="url(#revenueFill)"
+											fill='url(#revenueFill)'
 											isAnimationActive={true}
 											animationDuration={600}
 										/>
