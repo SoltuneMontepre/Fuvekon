@@ -10,17 +10,20 @@ import { FORM_STYLES, INLINE_STYLES } from './RegisterForm.styles'
 
 interface FloatingLabelInputProps<
 	TFieldValues extends FieldValues = FieldValues,
-	TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>
+	TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
 > {
 	id: string
 	name: TName
 	control: Control<TFieldValues>
-	type: 'text' | 'email' | 'password'
+	type: 'text' | 'email' | 'password' | 'date' | 'tel'
 	label: string
 	placeholder: string
 	required?: boolean
 	showPasswordToggle?: boolean
 	showError?: boolean
+	disabled?: boolean
+	/** Optional translator for error messages (e.g. i18n keys) */
+	translateError?: (message: string) => string
 }
 
 /**
@@ -29,7 +32,7 @@ interface FloatingLabelInputProps<
  */
 export const FloatingLabelInput = <
 	TFieldValues extends FieldValues = FieldValues,
-	TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>
+	TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
 >({
 	id,
 	name,
@@ -40,6 +43,8 @@ export const FloatingLabelInput = <
 	required = false,
 	showPasswordToggle = false,
 	showError = true,
+	disabled = false,
+	translateError,
 }: FloatingLabelInputProps<TFieldValues, TName>) => {
 	const [showPassword, setShowPassword] = useState(false)
 
@@ -63,8 +68,10 @@ export const FloatingLabelInput = <
 		error ? FORM_STYLES.input.error : FORM_STYLES.input.default
 	} ${showPasswordToggle ? FORM_STYLES.input.withIcon : ''}`
 
+	// For date inputs, always show floating label since they don't work well with placeholder
+	const shouldFloat = field.value || type === 'date'
 	const labelClasses = `${FORM_STYLES.label.base} ${
-		field.value ? FORM_STYLES.label.floating : FORM_STYLES.label.focused
+		shouldFloat ? FORM_STYLES.label.floating : FORM_STYLES.label.focused
 	}`
 
 	return (
@@ -74,8 +81,8 @@ export const FloatingLabelInput = <
 				type={inputType}
 				{...field}
 				className={inputClasses}
-				placeholder={placeholder}
-				required={required}
+				placeholder={type !== 'date' ? placeholder : undefined}
+				disabled={disabled}
 				aria-invalid={!!error}
 				aria-describedby={error ? `${id}-error` : undefined}
 			/>
@@ -95,10 +102,10 @@ export const FloatingLabelInput = <
 			{showError && error && (
 				<p
 					id={`${id}-error`}
-					className={FORM_STYLES.error.fieldError}
+					className={`${FORM_STYLES.error.fieldError} `}
 					role='alert'
 				>
-					{error.message}
+					{translateError ? translateError(error.message ?? '') : error.message}
 				</p>
 			)}
 		</div>

@@ -4,6 +4,7 @@ import React from 'react'
 const Moon = ({ className }: { className?: string }) => {
 	return (
 		<Image
+			id='moon'
 			className={`landing-bg ${className ?? ''}`}
 			src='/assets/bg-moon.webp'
 			alt='moon-bg-image'

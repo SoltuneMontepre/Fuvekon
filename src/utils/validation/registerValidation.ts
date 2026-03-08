@@ -48,10 +48,6 @@ export const validateNickname = (nickname: string): string | undefined => {
 		return ERROR_MESSAGES.NICKNAME_TOO_LONG
 	}
 
-	if (!VALIDATION_PATTERNS.NICKNAME.test(trimmed)) {
-		return ERROR_MESSAGES.INVALID_NICKNAME
-	}
-
 	return undefined
 }
 
@@ -169,15 +165,15 @@ export const getPasswordStrengthLabel = (strength: number): string => {
 	switch (strength) {
 		case 0:
 		case 1:
-			return 'Rất yếu'
+			return 'strength.veryWeak'
 		case 2:
-			return 'Yếu'
+			return 'strength.weak'
 		case 3:
-			return 'Trung bình'
+			return 'strength.fair'
 		case 4:
-			return 'Mạnh'
+			return 'strength.strong'
 		case 5:
-			return 'Rất mạnh'
+			return 'strength.veryStrong'
 		default:
 			return ''
 	}
@@ -223,9 +219,6 @@ export const validateRegisterForm = (
 
 	const countryError = validateCountry(data.country)
 	if (countryError) errors.country = countryError
-
-	const idCardError = validateIdCard(data.idCard)
-	if (idCardError) errors.idCard = idCardError
 
 	const passwordError = validatePassword(data.password)
 	if (passwordError) errors.password = passwordError

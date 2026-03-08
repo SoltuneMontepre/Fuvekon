@@ -12,12 +12,6 @@ const ThemeSection = ({ prefersReducedMotion = false }: ThemeSectionProps) => {
 	const t = useTranslations('landing')
 
 	useGSAP(() => {
-		if (prefersReducedMotion) {
-			gsap.set('.crane', { clearProps: 'all' })
-			gsap.set('.crane-reversed', { clearProps: 'all' })
-			return
-		}
-
 		const tl = gsap.timeline({
 			scrollTrigger: {
 				trigger: '.crane',
@@ -68,15 +62,21 @@ const ThemeSection = ({ prefersReducedMotion = false }: ThemeSectionProps) => {
 	return (
 		<div className='h-dvh w-dvw flex flex-col pointer-events-none relative z-10 section theme-section'>
 			<CraneBanner />
-			<div className='grid grid-cols-2 grow text-white text-xl font-thin'>
-				<div className='flex justify-center flex-col gap-5 bg-gradient-to-r from-slate-950/60 via-70% via-slate-900/60 to-90% to-transparent'>
-					<h3 className='ml-[25%]'>
-						<span className='text-5xl text-primary'>{t('theme.theme')}</span>
-						<br />
-						<span className='text-7xl font-bold'>{t('theme.title')}</span>
-					</h3>
-					<div className='ml-[25%] text-xl text-wrap flex-1 max-h-[40%] max-w-full'>
-						{t('theme.description')}
+			<div className='flex h-full md:h-auto md:grid md:grid-cols-2 grow text-xl font-thin'>
+				<div className='flex justify-center text-text flex-col gap-5 bg-slate-950/60 md:bg-transparent md:bg-gradient-to-r from-slate-950/60 via-70% via-slate-900/60 to-90% to-transparent'>
+					<div className='mx-10 md:px-0'>
+						<h3 className='md:ml-[25%]'>
+							<span className='text-5xl hidden md:inline text-primary'>
+								{t('theme.theme')}
+							</span>
+							<br />
+							<span className='text-7xl font-bold'>{t('theme.title')}</span>
+						</h3>
+						<div className='md:ml-[25%] md:mx-auto mt-5 mx-2 text-xl text-wrap flex-1 max-h-[40%] max-w-full'>
+							{t('theme.description_1')}
+							<br />
+							{t('theme.description_2')}
+						</div>
 					</div>
 				</div>
 				<div />

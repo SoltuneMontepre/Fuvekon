@@ -7,11 +7,16 @@ import { lockScroll } from '@/utils/scrollLock'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useLogin } from '@/hooks/services/auth/useLogin'
+import { useGoogleLogin } from '@/hooks/services/auth/useGoogleLogin'
 import { useGetMe } from '@/hooks/services/auth/useAccount'
 import { useAuthStore } from '@/stores/authStore'
+import GoogleLoginButton from './GoogleLoginButton'
+import { storeGoogleCredential } from '@/hooks/services/auth/useGoogleRegister'
 import { useTranslations } from 'next-intl'
 import { useRouter } from 'next/navigation'
-import { LoginRequestSchema, type LoginRequest } from '@/types/api/auth/login'
+import { z } from 'zod'
+// login schema will be constructed inside component with translations
+import { PasswordToggleButton } from '@/components/auth/register/PasswordToggleButton'
 
 const LoginForm = (): React.ReactElement => {
 	const [showPassword, setShowPassword] = useState(false)
@@ -19,17 +24,29 @@ const LoginForm = (): React.ReactElement => {
 	const t = useTranslations('auth')
 	const router = useRouter()
 	const loginMutation = useLogin()
+	const googleLoginMutation = useGoogleLogin()
 	const { refetch: refetchMe } = useGetMe()
 	const setAccount = useAuthStore(state => state.setAccount)
+
+	// build schema using translations so validation messages are localized
+	const LoginSchema = z.object({
+		email: z.string().min(1, t('emailRequired')).email(t('invalidEmail')),
+		password: z.string().min(1, t('passwordRequired')),
+	})
+	type LoginFormData = z.infer<typeof LoginSchema>
+	const hasGoogleClientId =
+		typeof process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID === 'string' &&
+		process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID.length > 0
 
 	const {
 		register,
 		handleSubmit,
 		watch,
+		clearErrors,
 		formState: { errors, isSubmitting },
 		setError: setFormError,
-	} = useForm<LoginRequest>({
-		resolver: zodResolver(LoginRequestSchema),
+	} = useForm<LoginFormData>({
+		resolver: zodResolver(LoginSchema),
 		defaultValues: {
 			email: '',
 			password: '',
@@ -52,7 +69,9 @@ const LoginForm = (): React.ReactElement => {
 			try {
 				const translated = t(errorMessage.trim())
 				// If key was missing, next-intl may return the key; treat as fallback
-				return translated !== errorMessage.trim() ? translated : t('loginFailed')
+				return translated !== errorMessage.trim()
+					? translated
+					: t('loginFailed')
 			} catch {
 				return t('loginFailed')
 			}
@@ -60,7 +79,7 @@ const LoginForm = (): React.ReactElement => {
 		return t('loginFailed')
 	}
 
-	const onSubmit = async (data: LoginRequest) => {
+	const onSubmit = async (data: LoginFormData) => {
 		loginMutation.mutate(data, {
 			onSuccess: async responseData => {
 				if (responseData.isSuccess) {
@@ -107,10 +126,14 @@ const LoginForm = (): React.ReactElement => {
 				}
 			},
 			onError: err => {
-				const data = (err as { response?: { data?: { errorMessage?: string } } })?.response?.data
+				const data = (
+					err as { response?: { data?: { errorMessage?: string } } }
+				)?.response?.data
 				setFormError('root', {
 					type: 'manual',
-					message: getLoginErrorMessage(data?.errorMessage ?? (err as Error).message),
+					message: getLoginErrorMessage(
+						data?.errorMessage ?? (err as Error).message
+					),
 				})
 			},
 		})
@@ -120,12 +143,12 @@ const LoginForm = (): React.ReactElement => {
 		<div
 			id='login-form-container'
 			className='login-form-container relative pt-8 sm:pt-16 md:pt-32 w-full max-w-5xl min-h-[450px] md:min-h-screen h-auto'
-			style={{ 'paddingTop': '20%' }}
+			style={{ paddingTop: '20%' }}
 		>
 			{/* Main Content Panel */}
 			<div
 				id='login-panel'
-				className='login-panel relative bg-[#E2EEE2] -translate-y-8 sm:-translate-y-16 md:-translate-y-25 rounded-2xl md:rounded-[32px] overflow-hidden shadow-2xl flex flex-col md:flex-row min-h-[450px] items-center justify-center md:justify-start'
+				className='login-panel relative bg-[#E2EEE2] -translate-y-8 sm:-translate-y-16 md:-translate-y-25 rounded-2xl md:rounded-[32px] overflow-hidden shadow-2xl flex flex-col md:flex-row min-h-[540px] items-center justify-center md:justify-start'
 			>
 				{/* Left Side - Character Illustration (background tràn panel) */}
 				<div
@@ -134,7 +157,7 @@ const LoginForm = (): React.ReactElement => {
 				>
 					<Image
 						src='/images/landing/tranh full oc.webp'
-						alt='Fantasy Character' 
+						alt='Fantasy Character'
 						fill
 						className='login-illustration object-cover object-[50%_0%] scale-y-130 scale-x-130  translate-x-[-380px] translate-y-[-17px]'
 						priority
@@ -176,20 +199,22 @@ const LoginForm = (): React.ReactElement => {
 							>
 								<input
 									id='email-input'
-									type='email'
+									type='text'
 									{...register('email')}
 									aria-invalid={!!errors.email}
 									aria-describedby={errors.email ? 'email-error' : undefined}
-									className={`email-input block w-full px-3 py-2.5 sm:py-3 rounded-xl bg-[#E2EEE2] border text-[#8C8C8C] text-lg sm:text-xl font-normal placeholder-transparent focus:outline-none focus:border-[#48715B] focus:ring-0 shadow-none peer ${errors.email ? 'border-red-500' : 'border-[#8C8C8C]/30'
-										}`}
+									className={`email-input block w-full px-3 py-2.5 sm:py-3 rounded-xl bg-[#E2EEE2] border text-[#8C8C8C] text-lg sm:text-xl font-normal placeholder-transparent focus:outline-none focus:border-[#48715B] focus:ring-0 shadow-none peer ${
+										errors.email ? 'border-red-500' : 'border-[#8C8C8C]/30'
+									}`}
 									placeholder={t('email')}
 								/>
 								<label
 									htmlFor='email-input'
-									className={`email-label absolute left-3 top-2.5 sm:top-3 text-lg sm:text-xl font-normal text-[#8C8C8C]/70 bg-[#E2EEE2] px-1 transition-all duration-200 pointer-events-none ${emailValue
+									className={`email-label absolute left-3 top-2.5 sm:top-3 text-lg sm:text-xl font-normal text-[#8C8C8C]/70 bg-[#E2EEE2] px-1 transition-all duration-200 pointer-events-none ${
+										emailValue
 											? 'scale-70 -translate-y-8 sm:-translate-y-9'
 											: 'peer-focus:scale-70 peer-focus:-translate-y-8 sm:peer-focus:-translate-y-9'
-										}`}
+									}`}
 									style={{ transformOrigin: 'left' }}
 								>
 									{t('email')}:
@@ -214,69 +239,26 @@ const LoginForm = (): React.ReactElement => {
 									id='password-input'
 									type={showPassword ? 'text' : 'password'}
 									{...register('password')}
-									className={`password-input block w-full px-3 py-2.5 sm:py-3 pr-12 rounded-xl bg-[#E2EEE2] border text-[#8C8C8C] text-lg sm:text-xl font-normal placeholder-transparent focus:outline-none focus:border-[#48715B] focus:ring-0 shadow-none peer ${errors.password ? 'border-red-500' : 'border-[#8C8C8C]/30'
-										}`}
+									className={`password-input block w-full px-3 py-2.5 sm:py-3 pr-12 rounded-xl bg-[#E2EEE2] border text-[#8C8C8C] text-lg sm:text-xl font-normal placeholder-transparent focus:outline-none focus:border-[#48715B] focus:ring-0 shadow-none peer ${
+										errors.password ? 'border-red-500' : 'border-[#8C8C8C]/30'
+									}`}
 									placeholder={t('password')}
 								/>
 								<label
 									htmlFor='password-input'
-									className={`password-label absolute left-3 top-2.5 sm:top-3 text-lg sm:text-xl font-normal text-[#8C8C8C]/70 bg-[#E2EEE2] px-1 transition-all duration-200 pointer-events-none ${passwordValue
+									className={`password-label absolute left-3 top-2.5 sm:top-3 text-lg sm:text-xl font-normal text-[#8C8C8C]/70 bg-[#E2EEE2] px-1 transition-all duration-200 pointer-events-none ${
+										passwordValue
 											? 'scale-70 -translate-y-8 sm:-translate-y-9'
 											: 'peer-focus:scale-70 peer-focus:-translate-y-8 sm:peer-focus:-translate-y-9'
-										}`}
+									}`}
 									style={{ transformOrigin: 'left' }}
 								>
 									{t('password')}:
 								</label>
-								<button
-									id='password-toggle-button'
-									type='button'
-									className='password-toggle-button absolute right-3 top-1/2 -translate-y-1/2 text-[#8C8C8C] hover:text-[#48715B] transition-colors duration-200 focus:outline-none'
-									onClick={() => setShowPassword(!showPassword)}
-									title={showPassword ? t('hidePassword') : t('showPassword')}
-									aria-label={
-										showPassword ? t('hidePassword') : t('showPassword')
-									}
-								>
-									{showPassword ? (
-										<svg
-											id='password-hide-icon'
-											className='password-hide-icon w-6 h-6'
-											xmlns='http://www.w3.org/2000/svg'
-											fill='none'
-											viewBox='0 0 24 24'
-											strokeWidth={1.5}
-											stroke='currentColor'
-										>
-											<path
-												strokeLinecap='round'
-												strokeLinejoin='round'
-												d='M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.242 4.242L9.88 9.88'
-											/>
-										</svg>
-									) : (
-										<svg
-											id='password-show-icon'
-											className='password-show-icon w-6 h-6'
-											xmlns='http://www.w3.org/2000/svg'
-											fill='none'
-											viewBox='0 0 24 24'
-											strokeWidth={1.5}
-											stroke='currentColor'
-										>
-											<path
-												strokeLinecap='round'
-												strokeLinejoin='round'
-												d='M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z'
-											/>
-											<path
-												strokeLinecap='round'
-												strokeLinejoin='round'
-												d='M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z'
-											/>
-										</svg>
-									)}
-								</button>
+								<PasswordToggleButton
+									show={showPassword}
+									onToggle={() => setShowPassword(!showPassword)}
+								/>
 								{errors.password && (
 									<p
 										id='password-error'
@@ -292,13 +274,71 @@ const LoginForm = (): React.ReactElement => {
 							<button
 								id='login-submit-button'
 								type='submit'
-								className='login-submit-button block mx-auto w-full max-w-[200px] sm:w-[200px] py-3 sm:py-3.5 rounded-xl text-[#48715B] font-semibold text-base sm:text-lg hover:bg-[#48715B]/90 hover:text-[#E2EEE2] active:bg-[#48715B]/80 focus:outline-none focus:ring-4 focus:ring-[#48715B]/30 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed'
-								disabled={isSubmitting || loginMutation.isPending}
+								className='login-submit-button block mx-auto w-full md:w-[75%] py-3 sm:py-3.5 rounded-xl font-semibold text-base btn-primary'
+								disabled={
+									isSubmitting ||
+									loginMutation.isPending ||
+									googleLoginMutation.isPending
+								}
 							>
 								{isSubmitting || loginMutation.isPending
 									? t('loggingIn')
 									: t('login')}
 							</button>
+
+							{/* Google Login */}
+							{hasGoogleClientId && (
+								<>
+									<div className='login-divider flex items-center gap-3 w-full max-w-[360px] sm:w-96 mx-auto'>
+										<span className='flex-1 h-px bg-[#8C8C8C]/30' aria-hidden />
+										<span className='text-[#8C8C8C] text-sm'>
+											{t('orContinueWith')}
+										</span>
+										<span className='flex-1 h-px bg-[#8C8C8C]/30' aria-hidden />
+									</div>
+									<div className='flex justify-center w-full max-w-[360px] sm:w-96 mx-auto'>
+										<GoogleLoginButton
+											onSuccess={credential => {
+												clearErrors('root')
+												googleLoginMutation.mutate(credential, {
+													onError: err => {
+														const data = (
+															err as {
+																response?: { data?: { errorMessage?: string } }
+															}
+														)?.response?.data
+														if (
+															data?.errorMessage ===
+															'googleRegistrationDetailsRequired'
+														) {
+															storeGoogleCredential(credential)
+															router.push('/register/google')
+															return
+														}
+														setFormError('root', {
+															type: 'manual',
+															message: data?.errorMessage
+																? getLoginErrorMessage(data.errorMessage)
+																: t('googleLoginFailed'),
+														})
+													},
+												})
+											}}
+											onError={() => {
+												setFormError('root', {
+													type: 'manual',
+													message: t('googleLoginFailed'),
+												})
+											}}
+											disabled={
+												googleLoginMutation.isPending ||
+												isSubmitting ||
+												loginMutation.isPending
+											}
+										/>
+									</div>
+								</>
+							)}
 
 							{/* Links */}
 							<div

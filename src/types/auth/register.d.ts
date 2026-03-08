@@ -5,8 +5,8 @@ export interface RegisterFormData {
 	fullName: string
 	nickname: string
 	email: string
+	dateOfBirth: string
 	country: string
-	idCard: string
 	password: string
 	confirmPassword: string
 	[key: string]: string
@@ -20,7 +20,6 @@ export interface FormErrors {
 	nickname?: string
 	email?: string
 	country?: string
-	idCard?: string
 	password?: string
 	confirmPassword?: string
 	general?: string
@@ -34,8 +33,8 @@ export interface RegisterRequest {
 	fullName: string
 	nickname: string
 	email: string
+	dateOfBirth: string
 	country: string
-	idCard: string
 	password: string
 	confirmPassword: string
 }
@@ -46,6 +45,8 @@ export interface RegisterRequest {
 export interface RegisterResponse {
 	isSuccess: boolean
 	message: string
+	/** i18n key for error message (e.g. "userExists"); only set on error responses */
+	errorMessage?: string
 	data?: {
 		userId: string
 		email: string

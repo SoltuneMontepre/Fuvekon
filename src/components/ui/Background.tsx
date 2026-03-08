@@ -69,6 +69,7 @@ const Background = ({ mascot = false, animated = false }: BackgroundProps) => {
 						>
 							<RightRockSection className='overflow-visible' />
 						</div>
+
 						{/* Middle Layer - Characters */}
 						<div
 							ref={middleLayerRef}
@@ -76,9 +77,10 @@ const Background = ({ mascot = false, animated = false }: BackgroundProps) => {
 						>
 							<StaticBirds className='z-0 overflow-visible scale-[0.5] -translate-y-[30%] -translate-x-[3%]' />
 							{mascot && (
-								<Mascot className='overflow-visible drop-shadow-[0_25px_20px_rgba(0,0,0,0.4)] [filter:drop-shadow(0_25px_35px_rgba(0,0,0,0.4))_drop-shadow(0_10px_15px_rgba(0,0,0,0.25))]' />
+								<Mascot className='overflow-visible drop-shadow-[0_25px_20px_rgba(0,0,0,0.4)] [filter:drop-shadow(0_25px_35px_rgba(0,0,0,0.4))_drop-shadow(0_10px_15px_rgba(0,0,0,0.25))] will-change-transform' />
 							)}
 						</div>
+
 						{/* Foreground Flower Layer */}
 						<div
 							ref={foregroundFlowerRef}

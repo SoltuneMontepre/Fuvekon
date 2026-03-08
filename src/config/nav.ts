@@ -12,7 +12,8 @@ const useNavDatas = (): NavData[] => {
 	const account = useAuthStore(state => state.account)
 
 	// Check if user is admin or staff
-	const isAdminOrStaff = account?.role && ['admin', 'staff'].includes(account.role.toLowerCase())
+	const isAdminOrStaff =
+		account?.role && ['admin', 'staff'].includes(account.role.toLowerCase())
 
 	// If user is admin/staff, return empty array to hide all nav items
 	if (isAdminOrStaff) {

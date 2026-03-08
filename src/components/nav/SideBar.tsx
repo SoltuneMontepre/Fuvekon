@@ -8,6 +8,7 @@ import { IconType } from 'react-icons'
 import { useGSAP } from '@gsap/react'
 import gsap from '@/common/gsap'
 import Image from 'next/image'
+import FuveIconSVG from '../common/FuveIconSVG'
 
 export type SidebarItem = {
 	label: string
@@ -60,18 +61,25 @@ const SideBar = ({
 		{ scope: sidebarRef }
 	)
 
+	const allHrefs = sections
+		.flatMap(s => s.items)
+		.filter((i): i is SidebarItem & { href: string } => !!i.href)
+		.map(i => i.href)
+	const activeHref =
+		pathname &&
+		[...allHrefs]
+			.sort((a, b) => b.length - a.length)
+			.find(href => pathname === href || pathname.startsWith(href + '/'))
+
 	const isActive = (item: SidebarItem): boolean => {
-		if (item.href && pathname) {
-			return pathname === item.href || pathname.startsWith(item.href + '/')
-		}
-		return false
+		return !!(item.href && activeHref && item.href === activeHref)
 	}
 
 	return (
 		<aside
 			id='sidebar'
 			ref={sidebarRef}
-			className={`flex flex-col bg-main border-r-10 border-r-[154C5B] border-l-10 border-l-[154C5B] py-10  ${className}`}
+			className={`flex flex-col bg-bg border-r-10 border-r-[#154c5b] border-l-10 border-l-[#154c5b] py-10  ${className}`}
 			style={{
 				backgroundImage: 'url(/images/sidebar/sidebarBG.png)',
 				backgroundSize: 'cover',
@@ -80,7 +88,6 @@ const SideBar = ({
 			}}
 			aria-label='Sidebar Navigation'
 		>
-
 			<div className='fixed bottom-0 translate-y-1/2 w-[140%] left-[-20%]'>
 				<Image
 					src='/images/sidebar/sidebarScrollThing.png'
@@ -91,16 +98,18 @@ const SideBar = ({
 					className=''
 				/>
 			</div>
-			
-			
+
 			{/* Navigation Sections */}
 			<nav
 				id='sidebar-nav'
 				className='sidebar-nav flex flex-col items-center justify-center w-full h-full py-6 space-y-3'
 			>
+				<Link href='/' className='mb-6'>
+					<FuveIconSVG />
+				</Link>
+
 				{sections.map((section, sectionIndex) => (
-					<div key={sectionIndex} className='sidebar-section space-y-1 '>
-						
+					<div key={sectionIndex} className='sidebar-section space-y-4 '>
 						{section.items.map((item, itemIndex) => (
 							<SidebarItemComponent
 								key={itemIndex}
@@ -147,13 +156,13 @@ const SidebarItemComponent = ({
 		<>
 			{Icon && (
 				<Icon
-					className='sidebar-item-icon flex-shrink-0 w-30 h-20'
+					className='sidebar-item-icon flex-shrink-0 w-30 h-20 text-inherit'
 					aria-hidden='true'
 				/>
 			)}
 			<span className='sidebar-item-label flex-1 truncate'>{item.label}</span>
 			{item.badge !== undefined && (
-				<span className='px-2 py-0.5 text-xs font-medium rounded-full bg-bg text-text-secondary'>
+				<span className='px-2 py-0.5 text-xs font-medium rounded-full bg-bg text-text-secondary group-data-[active=true]:bg-white/20 group-data-[active=true]:text-[#E2EEE2]'>
 					{item.badge}
 				</span>
 			)}
@@ -161,10 +170,13 @@ const SidebarItemComponent = ({
 	)
 
 	const baseClasses = `
-		sidebar-item flex flex-col items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium
-		transition-colors duration-150  justify-center shadow-md bg-bg w-full
+		group sidebar-item flex flex-col items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium
+		transition-colors duration-200 justify-center shadow-md w-full
 		${item.disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
-		${isActive ? ' text-text-secondary' : 'text-text-secondary hover:bg-bg'}
+		bg-bg text-text-secondary
+		data-[active=true]:bg-[#48715B]/90 data-[active=true]:text-[#E2EEE2]
+		hover:bg-[#48715B]/90 hover:text-[#E2EEE2] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#48715B]/50
+		active:bg-[#48715B]/80
 	`
 
 	if (item.href && !item.disabled) {
@@ -173,6 +185,7 @@ const SidebarItemComponent = ({
 				id={`sidebar-item-${itemId}`}
 				href={item.href}
 				className={baseClasses}
+				data-active={isActive}
 				onClick={handleClick}
 				aria-current={isActive ? 'page' : undefined}
 			>
@@ -187,6 +200,7 @@ const SidebarItemComponent = ({
 			onClick={handleClick}
 			disabled={item.disabled}
 			className={baseClasses + ' text-left'}
+			data-active={isActive}
 		>
 			{content}
 		</button>

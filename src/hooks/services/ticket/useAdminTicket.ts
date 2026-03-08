@@ -10,6 +10,8 @@ import type {
 	ApproveTicketResponse,
 	DenyTicketResponse,
 	GetTicketStatisticsResponse,
+	GetTicketSalesTimelineResponse,
+	GetTicketRevenueResponse,
 	GetBlacklistedUsersResponse,
 	PaginationMeta,
 } from '@/types/api/ticket/ticket'
@@ -52,6 +54,28 @@ const AdminTicketAPI = {
 		return data
 	},
 
+	// Get ticket sales timeline (count by day)
+	getSalesTimeline: async (days = 90) => {
+		const params = new URLSearchParams()
+		params.append('days', days.toString())
+		const { data } = await axios.general.get<
+			ApiResponse<GetTicketSalesTimelineResponse>
+		>(`/admin/tickets/statistics/timeline?${params.toString()}`)
+		return data
+	},
+
+	// Get ticket revenue (total + optional by-day timeline)
+	getRevenue: async (days = 0) => {
+		const url =
+			days > 0
+				? `/admin/tickets/statistics/revenue?days=${days}`
+				: '/admin/tickets/statistics/revenue'
+		const { data } = await axios.general.get<
+			ApiResponse<GetTicketRevenueResponse>
+		>(url)
+		return data
+	},
+
 	// Get ticket by ID
 	getTicketById: async (ticketId: string) => {
 		const { data } = await axios.general.get<
@@ -76,6 +100,14 @@ const AdminTicketAPI = {
 				reason: reason || '',
 			}
 		)
+		return data
+	},
+
+	// Confirm check-in (admin/staff). Accepts ticket ID or reference code.
+	confirmCheckIn: async (ticketIdOrRef: string) => {
+		const { data } = await axios.general.patch<
+			ApiResponse<GetTicketByIdResponse>
+		>(`/admin/tickets/${encodeURIComponent(ticketIdOrRef)}/check-in`)
 		return data
 	},
 
@@ -156,6 +188,14 @@ const AdminTicketAPI = {
 		return data
 	},
 
+	// Set tier visibility (admin) - show/hide in public listing
+	setTierVisibility: async (tierId: string, visible: boolean) => {
+		const { data } = await axios.general.patch<
+			ApiResponse<GetTierByIdResponse>
+		>(`/admin/tickets/tiers/${tierId}/visibility?visible=${visible}`)
+		return data
+	},
+
 	// Get blacklisted users
 	getBlacklistedUsers: async (page = 1, pageSize = 20) => {
 		const { data } = await axios.general.get<
@@ -230,6 +270,24 @@ export function useGetTicketStatistics() {
 	})
 }
 
+// Get ticket sales timeline (count by day)
+export function useGetTicketSalesTimeline(days = 90) {
+	return useQuery({
+		queryKey: ['ticket-sales-timeline', days],
+		queryFn: () => AdminTicketAPI.getSalesTimeline(days),
+		staleTime: 1000 * 60 * 2, // 2 minutes
+	})
+}
+
+// Get ticket revenue (total and optional by-day). Pass days=0 for total only.
+export function useGetTicketRevenue(days = 90) {
+	return useQuery({
+		queryKey: ['ticket-revenue', days],
+		queryFn: () => AdminTicketAPI.getRevenue(days),
+		staleTime: 1000 * 60 * 2, // 2 minutes
+	})
+}
+
 // Get ticket by ID
 export function useAdminGetTicketById(ticketId: string) {
 	return useQuery({
@@ -263,6 +321,21 @@ export function useDenyTicket() {
 			queryClient.invalidateQueries({ queryKey: ['admin-tickets'] })
 			queryClient.invalidateQueries({ queryKey: ['ticket-statistics'] })
 			queryClient.invalidateQueries({ queryKey: ['ticket-tiers'] }) // Stock changed
+		},
+	})
+}
+
+// Confirm check-in mutation (admin/staff). Accepts ticket ID or reference code.
+export function useConfirmCheckIn() {
+	const queryClient = getQueryClient()
+
+	return useMutation({
+		mutationFn: (ticketIdOrRef: string) =>
+			AdminTicketAPI.confirmCheckIn(ticketIdOrRef),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ['admin-ticket'] })
+			queryClient.invalidateQueries({ queryKey: ['admin-tickets'] })
+			queryClient.invalidateQueries({ queryKey: ['ticket-statistics'] })
 		},
 	})
 }
@@ -381,6 +454,21 @@ export function useDeactivateTier() {
 	})
 }
 
+// Set tier visibility (admin) mutation
+export function useSetTierVisibility() {
+	const queryClient = getQueryClient()
+
+	return useMutation({
+		mutationFn: ({ tierId, visible }: { tierId: string; visible: boolean }) =>
+			AdminTicketAPI.setTierVisibility(tierId, visible),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ['ticket-tiers'] })
+			queryClient.invalidateQueries({ queryKey: ['admin-tiers'] })
+			queryClient.invalidateQueries({ queryKey: ['ticket-statistics'] })
+		},
+	})
+}
+
 // Update ticket (admin back-door) mutation
 export function useUpdateTicketForAdmin() {
 	const queryClient = getQueryClient()
@@ -443,6 +531,8 @@ export function useBlacklistUser() {
 			AdminTicketAPI.blacklistUser(userId, reason),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ['blacklisted-users'] })
+			queryClient.invalidateQueries({ queryKey: ['admin-users'] })
+			queryClient.invalidateQueries({ queryKey: ['admin-user'] })
 		},
 	})
 }
@@ -455,6 +545,8 @@ export function useUnblacklistUser() {
 		mutationFn: (userId: string) => AdminTicketAPI.unblacklistUser(userId),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ['blacklisted-users'] })
+			queryClient.invalidateQueries({ queryKey: ['admin-users'] })
+			queryClient.invalidateQueries({ queryKey: ['admin-user'] })
 		},
 	})
 }

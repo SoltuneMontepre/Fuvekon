@@ -1,6 +1,6 @@
 'use client'
 
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { useQuery, useMutation, useQueryClient, keepPreviousData } from '@tanstack/react-query'
 import axios from '@/common/axios'
 import type { ApiResponse } from '@/types/api/response'
 import type {
@@ -10,28 +10,30 @@ import type {
 } from '@/types/api/user/user'
 import type { PaginationMeta } from '@/types/api/ticket/ticket'
 
-// Admin filter params
+// Admin filter params (pagination + optional search)
 export interface AdminUserFilter {
 	page?: number
 	pageSize?: number
+	search?: string
 }
 
 // Response type with meta at top level (matching backend structure)
-interface AdminGetUsersResponseWithMeta extends ApiResponse<AdminGetUsersResponse> {
+export interface AdminGetUsersResponseWithMeta extends ApiResponse<AdminGetUsersResponse> {
 	meta?: PaginationMeta
 }
 
 // API Functions
 const AdminUserAPI = {
-	// Get all users with pagination
+	// Get all users with pagination and optional search
 	getUsers: async (filter: AdminUserFilter = {}) => {
 		const params = new URLSearchParams()
-		if (filter.page) params.append('page', filter.page.toString())
-		if (filter.pageSize) params.append('pageSize', filter.pageSize.toString())
+		if (filter.page != null) params.append('page', filter.page.toString())
+		if (filter.pageSize != null) params.append('page_size', filter.pageSize.toString())
+		if (filter.search?.trim()) params.append('search', filter.search.trim())
 
 		const queryString = params.toString()
 		const url = `/admin/users${queryString ? `?${queryString}` : ''}`
-		
+
 		const { data } = await axios.general.get<AdminGetUsersResponseWithMeta>(url)
 		return data
 	},
@@ -60,6 +62,7 @@ export function useAdminGetUsers(filter: AdminUserFilter = {}) {
 		queryKey: ['admin-users', filter],
 		queryFn: () => AdminUserAPI.getUsers(filter),
 		staleTime: 1000 * 30, // 30 seconds - admin needs fresh data
+		placeholderData: keepPreviousData, // keep showing current page while fetching next
 	})
 }
 

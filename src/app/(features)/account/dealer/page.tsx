@@ -1,6 +1,7 @@
 'use client'
 
 import React from 'react'
+import { useTranslations } from 'next-intl'
 import { useGetMyDealer } from '@/hooks/services/dealer/useDealer'
 import { useAuthStore } from '@/stores/authStore'
 import { Store, CheckCircle, XCircle, UserCheck, Users } from 'lucide-react'
@@ -9,6 +10,7 @@ import Loading from '@/components/common/Loading'
 import type { DealerStaff } from '@/types/models/dealer/dealer'
 
 const DealerPage = () => {
+	const t = useTranslations('dealer')
 	const account = useAuthStore(state => state.account)
 	const isDealer = account?.is_dealer || false
 	const { data: myDealerData, isLoading: isLoadingDealer } =
@@ -19,16 +21,15 @@ const DealerPage = () => {
 	// If user is not a dealer, show message immediately
 	if (!isDealer) {
 		return (
-			<div className='rounded-[30px] bg-[#E9F5E7] p-8 shadow-sm text-text-secondary'>
-				<div className='flex items-center gap-3 mb-8'>
-					<Store className='w-8 h-8 text-[#48715B]' />
-					<h1 className='text-3xl font-bold text-center'>GIAN HÀNG</h1>
+			<div className='rounded-2xl sm:rounded-[30px] p-4 sm:p-6 md:p-8 shadow-sm text-text-secondary max-w-full overflow-hidden'>
+				<div className='flex flex-col sm:flex-row items-center gap-3 mb-6 sm:mb-8'>
+					<Store className='w-7 h-7 sm:w-8 sm:h-8 text-[#48715B] shrink-0' />
+					<h1 className='text-xl sm:text-2xl md:text-3xl font-bold text-center'>{t('title')}</h1>
 				</div>
-				<div className='text-center py-12'>
-					<p className='text-lg text-[#48715B] mb-4'>Bạn chưa có gian hàng</p>
-					<p className='text-sm text-gray-600 dark:text-gray-400'>
-						Vui lòng đăng ký hoặc tham gia một gian hàng để xem thông tin tại
-						đây.
+				<div className='text-center py-8 sm:py-12'>
+					<p className='text-base sm:text-lg text-[#48715B] mb-3 sm:mb-4'>{t('noBooth')}</p>
+					<p className='text-sm text-gray-600 dark:text-gray-400 px-1'>
+						{t('noBoothHint')}
 					</p>
 				</div>
 			</div>
@@ -38,7 +39,7 @@ const DealerPage = () => {
 	// Show loading while fetching dealer data
 	if (isLoadingDealer) {
 		return (
-			<div className='rounded-[30px] bg-[#E9F5E7] p-8 shadow-sm text-text-secondary'>
+			<div className='rounded-2xl sm:rounded-[30px] bg-[#E9F5E7] p-4 sm:p-6 md:p-8 shadow-sm text-text-secondary'>
 				<Loading />
 			</div>
 		)
@@ -47,16 +48,15 @@ const DealerPage = () => {
 	// If user doesn't have a booth, show message
 	if (!myDealer) {
 		return (
-			<div className='rounded-[30px] bg-[#E9F5E7] p-8 shadow-sm text-text-secondary'>
-				<div className='flex items-center gap-3 mb-8'>
-					<Store className='w-8 h-8 text-[#48715B]' />
-					<h1 className='text-3xl font-bold text-center'>GIAN HÀNG</h1>
+			<div className='rounded-2xl sm:rounded-[30px] bg-[#E9F5E7] p-4 sm:p-6 md:p-8 shadow-sm text-text-secondary max-w-full overflow-hidden'>
+				<div className='flex flex-col sm:flex-row items-center gap-3 mb-6 sm:mb-8'>
+					<Store className='w-7 h-7 sm:w-8 sm:h-8 text-[#48715B] shrink-0' />
+					<h1 className='text-xl sm:text-2xl md:text-3xl font-bold text-center'>{t('title')}</h1>
 				</div>
-				<div className='text-center py-12'>
-					<p className='text-lg text-[#48715B] mb-4'>Bạn chưa có gian hàng</p>
-					<p className='text-sm text-gray-600 dark:text-gray-400'>
-						Vui lòng đăng ký hoặc tham gia một gian hàng để xem thông tin tại
-						đây.
+				<div className='text-center py-8 sm:py-12'>
+					<p className='text-base sm:text-lg text-[#48715B] mb-3 sm:mb-4'>{t('noBooth')}</p>
+					<p className='text-sm text-gray-600 dark:text-gray-400 px-1'>
+						{t('noBoothHint')}
 					</p>
 				</div>
 			</div>
@@ -73,45 +73,45 @@ const DealerPage = () => {
 	)
 
 	return (
-		<div className='rounded-[30px] bg-[#E9F5E7] p-8 shadow-sm text-text-secondary'>
-			<div className='flex items-center gap-3 mb-8'>
-				<Store className='w-8 h-8 text-[#48715B]' />
-				<h1 className='text-3xl font-bold text-center'>GIAN HÀNG CỦA TÔI</h1>
+		<div className='rounded-2xl sm:rounded-[30px] bg-[#E9F5E7] p-4 sm:p-6 md:p-8 shadow-sm text-text-secondary max-w-full overflow-hidden'>
+			<div className='flex flex-col sm:flex-row items-center gap-3 mb-6 sm:mb-8'>
+				<Store className='w-7 h-7 sm:w-8 sm:h-8 text-[#48715B] shrink-0' />
+				<h1 className='text-xl sm:text-2xl md:text-3xl font-bold text-center'>{t('myBoothTitle')}</h1>
 			</div>
 
-			<div className='space-y-6'>
+			<div className='space-y-4 sm:space-y-6'>
 				{/* Booth Information Card */}
-				<div className='p-6 rounded-lg'>
-					<div className='flex items-start justify-between mb-4'>
-						<div>
-							<h2 className='text-2xl font-bold text-[#48715B] mb-2'>
+				<div className='p-4 sm:p-6 rounded-lg'>
+					<div className='flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-4'>
+						<div className='min-w-0'>
+							<h2 className='text-xl sm:text-2xl font-bold text-[#48715B] mb-2 break-words'>
 								{myDealer.booth_name}
 							</h2>
-							<div className='flex items-center gap-2 mt-2'>
+							<div className='flex flex-wrap items-center gap-2 mt-2'>
 								{isOwner && (
-									<span className='inline-flex items-center gap-1 px-3 py-1 rounded-full bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-sm font-medium'>
-										<UserCheck className='w-4 h-4' />
-										Chủ gian hàng
+									<span className='inline-flex items-center gap-1 px-2.5 sm:px-3 py-1 rounded-full bg-green-200 text-green-700 text-xs sm:text-sm font-medium'>
+										<UserCheck className='w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0' />
+										{t('ownerBadge')}
 									</span>
 								)}
 								{!isOwner && currentUserStaff && (
-									<span className='inline-flex items-center gap-1 px-3 py-1 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 text-sm font-medium'>
-										<Users className='w-4 h-4' />
-										Nhân viên
+									<span className='inline-flex items-center gap-1 px-2.5 sm:px-3 py-1 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 text-xs sm:text-sm font-medium'>
+										<Users className='w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0' />
+										{t('staffBadge')}
 									</span>
 								)}
 							</div>
 						</div>
-						<div className='flex items-center gap-2'>
+						<div className='flex flex-wrap items-center gap-2 shrink-0'>
 							{myDealer.is_verified ? (
-								<span className='inline-flex items-center gap-1 px-3 py-1 rounded-full dark:bg-green-900/30 text-green-700 dark:text-green-400 text-sm font-medium'>
-									<CheckCircle className='w-4 h-4' />
-									Đã xác minh
+								<span className='inline-flex items-center gap-1 px-2.5 sm:px-3 py-1 rounded-full dark:bg-green-900/30 text-green-700 dark:text-green-400 text-xs sm:text-sm font-medium'>
+									<CheckCircle className='w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0' />
+									{t('verified')}
 								</span>
 							) : (
-								<span className='inline-flex items-center gap-1 px-3 py-1 rounded-full  dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400 text-sm font-medium'>
-									<XCircle className='w-4 h-4' />
-									Chưa xác minh
+								<span className='inline-flex items-center gap-1 px-2.5 sm:px-3 py-1 rounded-full dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400 text-xs sm:text-sm font-medium'>
+									<XCircle className='w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0' />
+									{t('unverified')}
 								</span>
 							)}
 						</div>
@@ -120,10 +120,10 @@ const DealerPage = () => {
 					{/* Booth Code */}
 					<div className='mb-4'>
 						<label className='block text-sm font-medium text-[#48715B] mb-2'>
-							Mã gian hàng
+							{t('boothCode')}
 						</label>
-						<div className='px-4 py-3 rounded-lg'>
-							<code className='text-lg font-mono font-bold text-[#48715B]'>
+						<div className='px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg'>
+							<code className='text-base sm:text-lg font-mono font-bold text-[#48715B] break-all'>
 								{myDealer.booth_number}
 							</code>
 						</div>
@@ -132,9 +132,9 @@ const DealerPage = () => {
 					{/* Description */}
 					<div className='mb-4'>
 						<label className='block text-sm font-medium text-[#48715B] mb-2'>
-							Mô tả
+							{t('description')}
 						</label>
-						<p className='text-base text-gray-700 dark:text-gray-300'>
+						<p className='text-sm sm:text-base text-gray-700 dark:text-gray-300 break-words'>
 							{myDealer.description}
 						</p>
 					</div>
@@ -142,13 +142,13 @@ const DealerPage = () => {
 					{/* Price Sheet */}
 					<div className='mb-4'>
 						<label className='block text-sm font-medium text-[#48715B] mb-2'>
-							Bảng giá
+							{t('priceSheet')}
 						</label>
 						{myDealer.price_sheet && (
-							<div className='relative w-full h-64 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700'>
+							<div className='relative h-48 sm:h-64 rounded-lg overflow-hidden min-w-0'>
 								<S3Image
 									src={myDealer.price_sheet}
-									alt='Bảng giá'
+									alt={t('priceSheetAlt')}
 									fill
 									className='object-contain'
 								/>
@@ -160,30 +160,28 @@ const DealerPage = () => {
 					{staffs.length > 0 && (
 						<div>
 							<label className='block text-sm font-medium text-[#48715B] mb-2'>
-								Thành viên ({staffs.length})
+								{t('membersCount', { count: staffs.length })}
 							</label>
 							<div className='space-y-2'>
 								{staffs.map((staff: DealerStaff) => (
 									<div
 										key={staff.id}
-										className='flex items-center justify-between p-3 rounded-lg bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700'
+										className='flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 p-3 border-t border-gray-200 dark:border-gray-700 first:border-t-0'
 									>
-										<div className='flex items-center gap-3'>
-											<div className='w-10 h-10 rounded-full bg-[#48715B] flex items-center justify-center text-white font-semibold'>
+										<div className='flex items-center gap-3 min-w-0'>
+											<div className='w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-[#48715B] flex items-center justify-center text-white text-sm font-semibold shrink-0'>
 												{staff.user_name?.charAt(0).toUpperCase() || 'U'}
 											</div>
-											<div>
-												<p className='font-medium text-gray-900 dark:text-gray-100'>
-													{staff.user_name}
-												</p>
-												<p className='text-sm text-gray-500 dark:text-gray-400'>
+											<div className='min-w-0'>
+												<p className='font-medium truncate'>{staff.user_name}</p>
+												<p className='text-xs sm:text-sm text-gray-600 dark:text-gray-400 truncate' title={staff.user_email}>
 													{staff.user_email}
 												</p>
 											</div>
 										</div>
 										{staff.is_owner && (
-											<span className='px-2 py-1 rounded text-xs font-medium bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400'>
-												Chủ
+											<span className='px-2 py-1 rounded text-xs font-medium bg-green-200 text-green-700 w-fit'>
+												{t('ownerShort')}
 											</span>
 										)}
 									</div>
