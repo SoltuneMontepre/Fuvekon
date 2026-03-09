@@ -28,6 +28,7 @@ import type { PaginationMeta } from '@/types/api/ticket/ticket'
 import type { Account } from '@/types/models/auth/account'
 import Button from '@/components/ui/Button'
 import { createPortal } from 'react-dom'
+import { getS3ProxyUrl, isS3Url } from '@/utils/s3'
 
 type ViewMode = 'pending' | 'verified' | 'all'
 type SortMode = 'newest' | 'oldest' | 'pending-first' | 'verified-first'
@@ -51,6 +52,13 @@ const getFileNameFromUrl = (url: string, fallback: string) => {
 	} catch {
 		return fallback
 	}
+}
+
+const getDocumentPreviewUrl = (url: string) => {
+	if (isS3Url(url)) {
+		return getS3ProxyUrl(url)
+	}
+	return url
 }
 
 const formatDateTime = (dateString?: string) => {
@@ -472,25 +480,20 @@ const ArtSubmitAdminPage = (): React.ReactElement => {
 														</div>
 													</div>
 												) : (
-													// <a
-													// 	href={item.image_url}
-													// 	target='_blank'
-													// 	rel='noreferrer'
-													// 	className='flex h-56 w-full flex-col items-center justify-center gap-2 rounded-xl border border-[#48715B]/20 bg-[#f6fbf8] p-4 text-center hover:bg-[#edf5ef] transition-colors'
-													// >
-													// 	<FileText className='w-10 h-10 text-[#48715B]' />
-													// 	<p className='text-xs text-[#48715B] break-all'>
-													// 		{getFileNameFromUrl(item.image_url, 'Document')}
-													// 	</p>
-													// </a>
-                                                    <div
+													<a
+														href={getDocumentPreviewUrl(item.image_url)}
+														target='_blank'
+														rel='noreferrer'
 														className='flex h-56 w-full flex-col items-center justify-center gap-2 rounded-xl border border-[#48715B]/20 bg-[#f6fbf8] p-4 text-center hover:bg-[#edf5ef] transition-colors'
 													>
 														<FileText className='w-10 h-10 text-[#48715B]' />
 														<p className='text-xs text-[#48715B] break-all'>
 															{getFileNameFromUrl(item.image_url, 'Document')}
 														</p>
-													</div>
+														<p className='text-[11px] text-[#48715B]/80'>
+															{t('clickToOpenDocument', 'Click to open document')}
+														</p>
+													</a>
 												)
 											) : (
 												<div className='flex h-40 w-full items-center justify-center rounded-xl border border-dashed border-[#48715B]/25 text-sm text-[#48715B]/80 bg-[#f6fbf8]'>
