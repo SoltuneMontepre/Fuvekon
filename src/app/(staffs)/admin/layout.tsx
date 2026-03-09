@@ -2,12 +2,14 @@
 
 import React, { useEffect } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
+import Image from 'next/image'
 import SideBar from '@/components/nav/SideBar'
 import { UserCircle, Ticket, Store, LayoutDashboard } from 'lucide-react'
 import { useGetMe } from '@/hooks/services/auth/useAccount'
 import { useAuthStore } from '@/stores/authStore'
 import { logger } from '@/utils/logger'
 import Loading from '@/components/common/Loading'
+import Background from '@/components/ui/Background'
 
 const STAFF_SCAN_PATH = '/admin/scan-ticket'
 
@@ -150,17 +152,8 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
 			id='admin-layout'
 			className='admin-layout relative flex min-h-screen w-full'
 		>
-			{/* Background Image - Behind everything */}
-			<div
-				id='admin-background'
-				className='admin-background fixed inset-0 z-0'
-				style={{
-					backgroundImage: `url('/assets/bg-base.webp')`,
-					backgroundSize: 'cover',
-					backgroundPosition: 'center',
-					backgroundRepeat: 'no-repeat',
-				}}
-			/>
+			{/* Background with wolf mascot */}
+			<Background />
 
 			{/* Dark overlay for better contrast */}
 			<div className='fixed inset-0 z-[1] bg-black/40' />
@@ -173,13 +166,21 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
 				<SideBar sections={sections} />
 			</div>
 
-			{/* Main Content - Card-based layout with dark background visible */}
+			{/* Main Content - Card-based layout */}
 			<div
 				id='admin-content'
 				className='admin-content relative z-10 flex-1 flex flex-col gap-6 px-8 py-8 mr-6'
 			>
-				<div className='bg-main/95 dark:bg-dark-surface/95 backdrop-blur-md rounded-2xl shadow-2xl p-8 border border-slate-300/20 dark:border-dark-border/20'>
-					<section id='admin-main-section' className='admin-main-section'>
+				<div className='bg-main backdrop-blur-md rounded-2xl shadow-2xl overflow-hidden relative'>
+					<Image
+						src='/assets/common/drum_pattern.webp'
+						alt=''
+						width={2000}
+						height={2000}
+						className='absolute inset-0 z-0 opacity-[2%] w-full h-full object-cover pointer-events-none'
+						draggable={false}
+					/>
+					<section id='admin-main-section' className='admin-main-section relative z-10 p-8'>
 						{children}
 					</section>
 				</div>

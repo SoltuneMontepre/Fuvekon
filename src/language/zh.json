@@ -116,8 +116,6 @@
 			"passwordMismatch": "密码不匹配",
 			"invalidIdCard": "护照/身份证无效（9-12 个字母数字字符）",
 			"invalidCountry": "请输入有效的国家名称",
-			"invalidPhone": "电话号码无效",
-			"phoneTooShort": "电话号码必须至少 10 个字符",
 			"termsAccepted": "您必须接受服务条款",
 			"ageRequirement": "您必须至少 16 岁"
 		},
@@ -139,7 +137,7 @@
 		"fullName": "全名",
 		"nickname": "昵称",
 		"country": "国家",
-		"phone": "电话",
+		"dateOfBirth": "出生日期",
 		"idCard": "护照/身份证",
 		"selectCountry": "选择国家",
 		"confirmPassword": "确认密码",
@@ -150,9 +148,9 @@
 		"otpPlaceholder": "输入验证码",
 		"verifyOtpSuccess": "验证成功！正在跳转到登录页面...",
 		"verifying": "正在验证...",
-		"verify": "验证",		
+		"verify": "验证",
 		"otpExpiresIn": "验证码将在 {time} 后失效",
-		"otpExpired": "验证码已过期，请重新获取。",		
+		"otpExpired": "验证码已过期，请重新获取。",
 		"registerButton": "注册账户",
 		"termsAgreement": "我已阅读并接受 FUVE 的所有条款和条件",
 		"registering": "注册中...",
@@ -435,7 +433,8 @@
 		"firstName": "名",
 		"lastName": "姓",
 		"fursonaName": "Fursona 名称",
-		"upgradedFrom": "从 {code} 升级"
+		"upgradedFrom": "从 {code} 升级",
+		"upgradeDiff": "升级差价"
 	},
 	"account": {
 		"noAccountInfo": "暂无账户信息",
@@ -455,6 +454,7 @@
 		"country": "国家",
 		"selectCountry": "选择国家",
 		"idCard": "护照",
+		"dateOfBirth": "出生日期",
 		"fullName": "姓名",
 		"editInfo": "编辑资料",
 		"saveChanges": "保存修改",
@@ -663,7 +663,7 @@
 		},
 		"theme": {
 			"theme": "主题",
-			"title": "田野之风",
+			"title": "Gió Đồng",
 			"description_1": "灵感源自带来熟悉越南乡村气息的阵阵微风。",
 			"description_2": "在2026年，跟随Lang一起造访Gió Đồng——人间最热闹的兽人乡会！FUVE将为你呈现充满越南灵魂的空间，让你沉浸于现实与梦境交织之地。一场欢乐到忘返的盛会正在这座村亭之下等待你的到来！"
 		}

@@ -16,7 +16,6 @@ import {
 import { FORM_STYLES } from './RegisterForm.styles'
 import { FloatingLabelInput } from './FloatingLabelInput'
 import { CountrySelect } from './CountrySelect'
-import { ValidationSpeechBubble } from './ValidationSpeechBubble'
 import { sanitizeInput } from '@/utils/sanitization'
 import {
 	checkRateLimit,
@@ -40,7 +39,10 @@ const RegisterForm = (): React.ReactElement => {
 		process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID.length > 0
 
 	// Backend sends errorMessage as i18n key; we translate it
-	const getAuthErrorMessage = (errorMessage?: string, fallbackKey: string = 'registerFailed'): string => {
+	const getAuthErrorMessage = (
+		errorMessage?: string,
+		fallbackKey: string = 'registerFailed'
+	): string => {
 		if (errorMessage?.trim()) {
 			try {
 				const translated = t(errorMessage.trim())
@@ -66,10 +68,8 @@ const RegisterForm = (): React.ReactElement => {
 			fullName: '',
 			nickname: '',
 			email: '',
-			phone: '',
-			// dateOfBirth: '',
+			dateOfBirth: '',
 			country: '',
-			idCard: '',
 			password: '',
 			confirmPassword: '',
 			termsAccepted: false,
@@ -108,15 +108,16 @@ const RegisterForm = (): React.ReactElement => {
 				fullName: sanitizeInput(data.fullName),
 				nickname: sanitizeInput(data.nickname),
 				email: data.email.trim().toLowerCase(), // Email-specific handling
-				phone: data.phone.trim(),
-				// dateOfBirth: data.dateOfBirth,
+				dateOfBirth: data.dateOfBirth,
 				country: sanitizeInput(data.country),
-				idCard: sanitizeInput(data.idCard),
 				password: data.password, // NEVER sanitize password - preserve as-is
 			}
 
 			// Map form data to API request format
-			const requestData = mapRegisterFormToApiRequest(formInput, data.confirmPassword)
+			const requestData = mapRegisterFormToApiRequest(
+				formInput,
+				data.confirmPassword
+			)
 
 			const response = await axios.general.post<RegisterResponse>(
 				'/auth/register',
@@ -141,25 +142,25 @@ const RegisterForm = (): React.ReactElement => {
 			// Clear sensitive data from memory
 			reset()
 
-				// Redirect to OTP verification page after showing success message
-				setTimeout(() => {
-					// store the email temporarily in sessionStorage instead of exposing it in the URL.
-					try {
-						if (typeof window !== 'undefined') {
-							window.sessionStorage.setItem(
-								'registrationEmail',
-								formInput.email
-							)
-						}
-					} catch {
-						// storage may fail in very restricted environments; ignore silently
+			// Redirect to OTP verification page after showing success message
+			setTimeout(() => {
+				// store the email temporarily in sessionStorage instead of exposing it in the URL.
+				try {
+					if (typeof window !== 'undefined') {
+						window.sessionStorage.setItem('registrationEmail', formInput.email)
 					}
-					router.push('/register/verify-otp')
-				}, 2000) // 2 second delay to show success message
+				} catch {
+					// storage may fail in very restricted environments; ignore silently
+				}
+				router.push('/register/verify-otp')
+			}, 2000) // 2 second delay to show success message
 		} catch (error: unknown) {
 			if (error && typeof error === 'object' && 'response' in error) {
 				const axiosError = error as {
-					response?: { data?: { errorMessage?: string; message?: string }; status?: number }
+					response?: {
+						data?: { errorMessage?: string; message?: string }
+						status?: number
+					}
 					request?: unknown
 					message?: string
 				}
@@ -186,24 +187,8 @@ const RegisterForm = (): React.ReactElement => {
 		}
 	}
 
-	// Collect all field errors for speech bubble
-	const fieldErrors: Record<string, string | undefined> = {
-			fullName: errors.fullName?.message && t(errors.fullName.message as string),
-			nickname: errors.nickname?.message && t(errors.nickname.message as string),
-			email: errors.email?.message && t(errors.email.message as string),
-			phone: errors.phone?.message && t(errors.phone.message as string),
-			// dateOfBirth: errors.dateOfBirth?.message && t(errors.dateOfBirth.message as string),
-			country: errors.country?.message && t(errors.country.message as string),
-			idCard: errors.idCard?.message && t(errors.idCard.message as string),
-			password: errors.password?.message && t(errors.password.message as string),
-			confirmPassword: errors.confirmPassword?.message && t(errors.confirmPassword.message as string),
-			termsAccepted: errors.termsAccepted?.message && t(errors.termsAccepted.message as string),
-		};
-
 	return (
 		<div className={`${FORM_STYLES.container.wrapper} relative`}>
-			{/* Validation Speech Bubble - Moved here to escape stacking context */}
-			<ValidationSpeechBubble errors={fieldErrors} />
 			{/* Main Content Panel */}
 			<div className={FORM_STYLES.container.panel}>
 				{/* Left Side - Character Illustration (background tràn panel) */}
@@ -224,9 +209,9 @@ const RegisterForm = (): React.ReactElement => {
 						{/* Success Message */}
 						{isSuccess && (
 							<div className='text-green-600 text-xs sm:text-sm text-center bg-green-50 border border-green-200 rounded-lg p-2.5 sm:p-3'>
-						{t('registerSuccess')}
-					</div>
-				)}
+								{t('registerSuccess')}
+							</div>
+						)}
 						<form
 							onSubmit={handleSubmit(onSubmit)}
 							className={FORM_STYLES.form.wrapper}
@@ -240,58 +225,48 @@ const RegisterForm = (): React.ReactElement => {
 
 							{/* Full Name Input */}
 							<FloatingLabelInput
-						id='fullName'
-						name='fullName'
-						control={control}
-						type='text'
-						label={t('fullName')}
-						placeholder={t('fullName')}
-						required
-						showError={false}
-					/>
+								id='fullName'
+								name='fullName'
+								control={control}
+								type='text'
+								label={t('fullName')}
+								placeholder={t('fullName')}
+								required
+								translateError={t}
+							/>
 
 							{/* Nickname Input */}
 							<FloatingLabelInput
-					id='nickname'
-					name='nickname'
-					control={control}
-					type='text'
-					label={t('nickname')}
-					placeholder={t('nickname')}
-								showError={false}
-							/>
-
-							{/* Phone Input */}
-							<FloatingLabelInput
-					id='phone'
-					name='phone'
-					control={control}
-					type='tel'
-					label={t('phone')}
-					placeholder={t('phone')}
-								showError={false}
+								id='nickname'
+								name='nickname'
+								control={control}
+								type='text'
+								label={t('nickname')}
+								placeholder={t('nickname')}
+								translateError={t}
 							/>
 
 							{/* Email Input */}
 							<FloatingLabelInput
-					id='email'
-					name='email'
-					control={control}
-					type='email'
-					label={t('email')}
-					placeholder={t('email')}
-								showError={false}
+								id='email'
+								name='email'
+								control={control}
+								type='email'
+								label={t('email')}
+								placeholder={t('email')}
+								translateError={t}
 							/>
 
-							{/* ID Card Input */}
+							{/* Date of Birth Input */}
 							<FloatingLabelInput
-					id='idCard'
-					name='idCard'
-					control={control}
-					type='text'
-					label={t('idCard')}
-					placeholder={t('idCard')}
-								showError={false}
+								id='dateOfBirth'
+								name='dateOfBirth'
+								control={control}
+								type='date'
+								label={t('dateOfBirth')}
+								placeholder={t('dateOfBirth')}
+								required
+								translateError={t}
 							/>
 
 							{/* Nationality input — single column matching other inputs */}
@@ -303,32 +278,32 @@ const RegisterForm = (): React.ReactElement => {
 									label={t('country')}
 									placeholder={t('selectCountry')}
 									required
-									showError={false}
+									translateError={t}
 								/>
 							</div>
 
 							{/* Password Input */}
 							<FloatingLabelInput
-					id='password'
-					name='password'
-					control={control}
-					type='password'
-					label={t('password')}
-					placeholder={t('password')}
+								id='password'
+								name='password'
+								control={control}
+								type='password'
+								label={t('password')}
+								placeholder={t('password')}
 								showPasswordToggle
-								showError={false}
+								translateError={t}
 							/>
 
 							{/* Confirm Password Input */}
 							<FloatingLabelInput
-					id='confirmPassword'
-					name='confirmPassword'
-					control={control}
-					type='password'
-					label={t('confirmPassword')}
-					placeholder={t('confirmPassword')}
+								id='confirmPassword'
+								name='confirmPassword'
+								control={control}
+								type='password'
+								label={t('confirmPassword')}
+								placeholder={t('confirmPassword')}
 								showPasswordToggle
-								showError={false}
+								translateError={t}
 							/>
 
 							{/* Terms Checkbox */}
@@ -339,24 +314,39 @@ const RegisterForm = (): React.ReactElement => {
 									{...control.register('termsAccepted')}
 									className='w-5 h-5 mt-0.5 rounded border-[#8C8C8C]/30 bg-[#E2EEE2] text-[#48715B] focus:ring-[#48715B]/30 focus:ring-2 cursor-pointer'
 									aria-invalid={!!errors.termsAccepted}
-									aria-describedby={errors.termsAccepted ? 'terms-error' : undefined}
+									aria-describedby={
+										errors.termsAccepted ? 'terms-error' : undefined
+									}
 								/>
-								<label htmlFor='termsAccepted' className='underline text-xs sm:text-sm text-[#8C8C8C] cursor-pointer'>
+								<label
+									htmlFor='termsAccepted'
+									className='underline text-xs sm:text-sm text-[#8C8C8C] cursor-pointer'
+								>
 									{t('termsAgreement')}
 								</label>
 							</div>
 							{errors.termsAccepted && (
-								<p id='terms-error' className={FORM_STYLES.error.fieldError} role='alert'>
-									{errors.termsAccepted.message}
+								<p
+									id='terms-error'
+									className={FORM_STYLES.error.fieldError}
+									role='alert'
+								>
+									{t(errors.termsAccepted.message as string)}
 								</p>
 							)}
 
 							{/* Submit Button */}
 							<button
 								type='submit'
-								disabled={isSubmitting || googleLoginMutation.isPending || !termsAccepted}
+								disabled={
+									isSubmitting ||
+									googleLoginMutation.isPending ||
+									!termsAccepted
+								}
 								className={`${FORM_STYLES.button.primary} ${
-									isSubmitting || googleLoginMutation.isPending || !termsAccepted
+									isSubmitting ||
+									googleLoginMutation.isPending ||
+									!termsAccepted
 										? FORM_STYLES.button.disabled
 										: ''
 								}`}
@@ -411,9 +401,7 @@ const RegisterForm = (): React.ReactElement => {
 													message: t('googleLoginFailed'),
 												})
 											}}
-											disabled={
-												googleLoginMutation.isPending || isSubmitting
-											}
+											disabled={googleLoginMutation.isPending || isSubmitting}
 										/>
 									</div>
 								</>
@@ -441,4 +429,3 @@ const RegisterForm = (): React.ReactElement => {
 }
 
 export default RegisterForm
-

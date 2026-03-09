@@ -48,10 +48,6 @@ export const validateNickname = (nickname: string): string | undefined => {
 		return ERROR_MESSAGES.NICKNAME_TOO_LONG
 	}
 
-	if (!VALIDATION_PATTERNS.NICKNAME.test(trimmed)) {
-		return ERROR_MESSAGES.INVALID_NICKNAME
-	}
-
 	return undefined
 }
 
@@ -223,9 +219,6 @@ export const validateRegisterForm = (
 
 	const countryError = validateCountry(data.country)
 	if (countryError) errors.country = countryError
-
-	const idCardError = validateIdCard(data.idCard)
-	if (idCardError) errors.idCard = idCardError
 
 	const passwordError = validatePassword(data.password)
 	if (passwordError) errors.password = passwordError

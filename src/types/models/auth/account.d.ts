@@ -6,6 +6,7 @@ export interface Account {
 	last_name?: string
 	first_name?: string
 	country?: string
+	date_of_birth?: string // "YYYY-MM-DD"
 	email: string
 	avatar?: string // image url
 	role: Role

@@ -10,7 +10,7 @@ import { FORM_STYLES, INLINE_STYLES } from './RegisterForm.styles'
 
 interface FloatingLabelInputProps<
 	TFieldValues extends FieldValues = FieldValues,
-	TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>
+	TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
 > {
 	id: string
 	name: TName
@@ -22,6 +22,8 @@ interface FloatingLabelInputProps<
 	showPasswordToggle?: boolean
 	showError?: boolean
 	disabled?: boolean
+	/** Optional translator for error messages (e.g. i18n keys) */
+	translateError?: (message: string) => string
 }
 
 /**
@@ -30,7 +32,7 @@ interface FloatingLabelInputProps<
  */
 export const FloatingLabelInput = <
 	TFieldValues extends FieldValues = FieldValues,
-	TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>
+	TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
 >({
 	id,
 	name,
@@ -42,6 +44,7 @@ export const FloatingLabelInput = <
 	showPasswordToggle = false,
 	showError = true,
 	disabled = false,
+	translateError,
 }: FloatingLabelInputProps<TFieldValues, TName>) => {
 	const [showPassword, setShowPassword] = useState(false)
 
@@ -79,7 +82,6 @@ export const FloatingLabelInput = <
 				{...field}
 				className={inputClasses}
 				placeholder={type !== 'date' ? placeholder : undefined}
-				required={required}
 				disabled={disabled}
 				aria-invalid={!!error}
 				aria-describedby={error ? `${id}-error` : undefined}
@@ -100,10 +102,10 @@ export const FloatingLabelInput = <
 			{showError && error && (
 				<p
 					id={`${id}-error`}
-					className={FORM_STYLES.error.fieldError}
+					className={`${FORM_STYLES.error.fieldError} `}
 					role='alert'
 				>
-					{error.message}
+					{translateError ? translateError(error.message ?? '') : error.message}
 				</p>
 			)}
 		</div>

@@ -68,6 +68,17 @@ const getRoleDisplay = (
 	return roleMap[role?.toLowerCase() || 'user'] || roleMap.user
 }
 
+// Reusable info field matching the design language
+const InfoField = ({ label, value, icon: Icon }: { label: string; value: string; icon?: React.ElementType }) => (
+	<div className='space-y-0.5 px-3 py-2.5 rounded-xl bg-[#E2EEE2]/60 border border-[#8C8C8C]/15'>
+		<div className='flex items-center gap-2'>
+			{Icon && <Icon className='w-4 h-4 text-[#48715B]' />}
+			<p className='text-sm font-medium text-[#48715B]'>{label}</p>
+		</div>
+		<p className='text-lg text-text-secondary'>{value}</p>
+	</div>
+)
+
 const AdminUserDetailPage = ({
 	params,
 }: AdminUserDetailPageProps): React.ReactElement => {
@@ -90,7 +101,6 @@ const AdminUserDetailPage = ({
 		is_verified: false,
 	})
 
-	// Sync form from user when user loads or when entering edit mode
 	useEffect(() => {
 		if (!user) return
 		setForm({
@@ -130,12 +140,12 @@ const AdminUserDetailPage = ({
 			<div className='py-8'>
 				<button
 					onClick={() => router.push('/admin')}
-					className='flex items-center gap-2 text-[#48715b] dark:text-dark-text-secondary hover:underline mb-4'
+					className='flex items-center gap-2 text-[#48715B] hover:underline mb-4'
 				>
 					<ArrowLeft className='w-4 h-4' />
 					{tCommon('back') || 'Back'}
 				</button>
-				<div className='p-8 text-center text-gray-500 dark:text-dark-text-secondary rounded-lg border border-slate-300/20 dark:border-dark-border/20'>
+				<div className='p-8 text-center text-text-secondary rounded-xl bg-[#E2EEE2]/60 border border-[#8C8C8C]/15'>
 					{t('userNotFound') || 'User not found'}
 				</div>
 			</div>
@@ -149,19 +159,19 @@ const AdminUserDetailPage = ({
 			: user.fursona_name || user.email
 
 	return (
-		<div id='admin-user-detail-page' className='w-full'>
+		<div className='w-full'>
 			<button
 				onClick={() => router.push('/admin')}
-				className='flex items-center gap-2 text-[#48715b] dark:text-dark-text-secondary hover:underline mb-6'
+				className='flex items-center gap-2 text-[#48715B] hover:underline mb-6'
 			>
 				<ArrowLeft className='w-4 h-4' />
 				{tCommon('back') || 'Back'} {t('userManagement') || 'to User Management'}
 			</button>
 
-			<div className='rounded-lg border border-slate-300/20 dark:border-dark-border/20 overflow-hidden'>
+			<div className='rounded-xl border border-[#8C8C8C]/15 overflow-hidden'>
 				{/* Header */}
-				<div className='bg-gray-50 dark:bg-dark-surface/50 px-6 py-4 border-b border-slate-300/20 dark:border-dark-border/20 flex items-center justify-between'>
-					<h1 className='text-xl font-bold text-[#154c5b] dark:text-dark-text flex items-center gap-2'>
+				<div className='bg-[#E2EEE2]/60 px-6 py-4 border-b border-[#48715B]/15 flex items-center justify-between'>
+					<h1 className='text-xl font-bold text-text-primary josefin flex items-center gap-2'>
 						<UserCircle className='w-6 h-6' />
 						{t('userDetail') || 'User Detail'}
 					</h1>
@@ -169,7 +179,7 @@ const AdminUserDetailPage = ({
 						<button
 							type='button'
 							onClick={() => setIsEditing(true)}
-							className='flex items-center gap-2 px-4 py-2 rounded-lg border border-[#7cbc97] text-[#154c5b] dark:border-dark-border dark:text-dark-text hover:bg-[#7cbc97]/10 dark:hover:bg-dark-surface transition-colors'
+							className='flex items-center gap-2 px-4 py-2.5 rounded-xl border border-[#48715B] text-[#48715B] hover:bg-[#E2EEE2] transition-colors'
 						>
 							<Pencil className='w-4 h-4' />
 							{t('editUser') || 'Edit user'}
@@ -180,7 +190,7 @@ const AdminUserDetailPage = ({
 								type='button'
 								onClick={() => setIsEditing(false)}
 								disabled={updateUser.isPending}
-								className='flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-300 dark:border-dark-border text-gray-700 dark:text-dark-text hover:bg-gray-50 dark:hover:bg-dark-surface transition-colors disabled:opacity-50'
+								className='flex items-center gap-2 px-4 py-2.5 rounded-xl border border-[#8C8C8C]/40 text-text-secondary hover:bg-[#E2EEE2] transition-colors disabled:opacity-50'
 							>
 								<X className='w-4 h-4' />
 								{tCommon('cancel') || 'Cancel'}
@@ -189,7 +199,7 @@ const AdminUserDetailPage = ({
 								type='button'
 								onClick={handleSave}
 								disabled={updateUser.isPending}
-								className='flex items-center gap-2 px-4 py-2 rounded-lg bg-[#7cbc97] text-white hover:bg-[#6aab85] transition-colors disabled:opacity-50'
+								className='flex items-center gap-2 px-4 py-2.5 rounded-xl btn-primary font-medium disabled:opacity-50'
 							>
 								<Save className='w-4 h-4' />
 								{updateUser.isPending ? tCommon('saving') || 'Saving...' : tCommon('save') || 'Save'}
@@ -202,52 +212,52 @@ const AdminUserDetailPage = ({
 					{isEditing ? (
 						/* Edit form */
 						<div className='space-y-4 max-w-xl'>
-							<div>
-								<label className='block text-sm font-medium text-gray-600 dark:text-dark-text-secondary mb-1'>
+							<div className='space-y-0.5 px-3 py-2 rounded-xl bg-[#E2EEE2]/60 border border-[#8C8C8C]/15 focus-within:border-[#48715B] transition-colors'>
+								<label className='text-sm font-medium text-[#48715B]'>
 									{t('firstName') || 'First name'}
 								</label>
 								<input
 									type='text'
 									value={form.first_name}
 									onChange={e => setForm(f => ({ ...f, first_name: e.target.value }))}
-									className='w-full px-4 py-2 border rounded-lg dark:bg-dark-surface dark:border-dark-border dark:text-dark-text focus:ring-2 focus:ring-[#7cbc97] focus:border-transparent'
+									className='block w-full bg-transparent text-lg text-text-secondary placeholder-[#8C8C8C]/40 focus:outline-none'
 								/>
 							</div>
-							<div>
-								<label className='block text-sm font-medium text-gray-600 dark:text-dark-text-secondary mb-1'>
+							<div className='space-y-0.5 px-3 py-2 rounded-xl bg-[#E2EEE2]/60 border border-[#8C8C8C]/15 focus-within:border-[#48715B] transition-colors'>
+								<label className='text-sm font-medium text-[#48715B]'>
 									{t('lastName') || 'Last name'}
 								</label>
 								<input
 									type='text'
 									value={form.last_name}
 									onChange={e => setForm(f => ({ ...f, last_name: e.target.value }))}
-									className='w-full px-4 py-2 border rounded-lg dark:bg-dark-surface dark:border-dark-border dark:text-dark-text focus:ring-2 focus:ring-[#7cbc97] focus:border-transparent'
+									className='block w-full bg-transparent text-lg text-text-secondary placeholder-[#8C8C8C]/40 focus:outline-none'
 								/>
 							</div>
-							<div>
-								<label className='block text-sm font-medium text-gray-600 dark:text-dark-text-secondary mb-1'>
+							<div className='space-y-0.5 px-3 py-2 rounded-xl bg-[#E2EEE2]/60 border border-[#8C8C8C]/15 focus-within:border-[#48715B] transition-colors'>
+								<label className='text-sm font-medium text-[#48715B]'>
 									{t('fursonaName') || 'Fursona name'}
 								</label>
 								<input
 									type='text'
 									value={form.fursona_name}
 									onChange={e => setForm(f => ({ ...f, fursona_name: e.target.value }))}
-									className='w-full px-4 py-2 border rounded-lg dark:bg-dark-surface dark:border-dark-border dark:text-dark-text focus:ring-2 focus:ring-[#7cbc97] focus:border-transparent'
+									className='block w-full bg-transparent text-lg text-text-secondary placeholder-[#8C8C8C]/40 focus:outline-none'
 								/>
 							</div>
-							<div>
-								<label className='block text-sm font-medium text-gray-600 dark:text-dark-text-secondary mb-1'>
+							<div className='space-y-0.5 px-3 py-2 rounded-xl bg-[#E2EEE2]/60 border border-[#8C8C8C]/15 focus-within:border-[#48715B] transition-colors'>
+								<label className='text-sm font-medium text-[#48715B]'>
 									{tCommon('country') || 'Country'}
 								</label>
 								<input
 									type='text'
 									value={form.country}
 									onChange={e => setForm(f => ({ ...f, country: e.target.value }))}
-									className='w-full px-4 py-2 border rounded-lg dark:bg-dark-surface dark:border-dark-border dark:text-dark-text focus:ring-2 focus:ring-[#7cbc97] focus:border-transparent'
+									className='block w-full bg-transparent text-lg text-text-secondary placeholder-[#8C8C8C]/40 focus:outline-none'
 								/>
 							</div>
-							<div>
-								<label className='block text-sm font-medium text-gray-600 dark:text-dark-text-secondary mb-1'>
+							<div className='space-y-0.5 px-3 py-2 rounded-xl bg-[#E2EEE2]/60 border border-[#8C8C8C]/15 focus-within:border-[#48715B] transition-colors'>
+								<label className='text-sm font-medium text-[#48715B]'>
 									{t('role') || 'Role'}
 								</label>
 								<select
@@ -258,7 +268,7 @@ const AdminUserDetailPage = ({
 											role: e.target.value as AdminUpdateUserRequest['role'],
 										}))
 									}
-									className='w-full px-4 py-2 border rounded-lg dark:bg-dark-surface dark:border-dark-border dark:text-dark-text focus:ring-2 focus:ring-[#7cbc97] focus:border-transparent'
+									className='block w-full bg-transparent text-lg text-text-secondary focus:outline-none'
 								>
 									{ROLES.map(r => (
 										<option key={r.value} value={r.value}>
@@ -267,15 +277,15 @@ const AdminUserDetailPage = ({
 									))}
 								</select>
 							</div>
-							<div className='flex items-center gap-2'>
+							<div className='flex items-center gap-2 px-3 py-2.5'>
 								<input
 									type='checkbox'
 									id='is_verified'
 									checked={form.is_verified}
 									onChange={e => setForm(f => ({ ...f, is_verified: e.target.checked }))}
-									className='w-4 h-4 rounded border-gray-300 text-[#7cbc97] focus:ring-[#7cbc97]'
+									className='w-4 h-4 accent-[#48715B]'
 								/>
-								<label htmlFor='is_verified' className='text-sm font-medium text-gray-700 dark:text-dark-text'>
+								<label htmlFor='is_verified' className='text-sm font-medium text-text-secondary'>
 									{t('verified') || 'Verified'}
 								</label>
 							</div>
@@ -284,62 +294,41 @@ const AdminUserDetailPage = ({
 						/* View mode */
 						<>
 							{/* Identity */}
-							<div>
-								<h2 className='text-sm font-semibold text-gray-600 dark:text-dark-text-secondary mb-2'>
-									{t('user') || 'User'}
-								</h2>
-								<p className='font-medium text-gray-900 dark:text-dark-text text-lg'>
-									{displayName}
-								</p>
+							<div className='pb-6 border-b border-[#48715B]/15'>
+								<p className='font-medium text-text-primary text-xl'>{displayName}</p>
 								{user.fursona_name && (
-									<p className='text-sm text-[#48715b] dark:text-dark-text-secondary'>
+									<p className='text-sm text-[#48715B] mt-1'>
 										Fursona: {user.fursona_name}
 									</p>
 								)}
 							</div>
 
-							{/* Email (read-only) */}
-							<div className='flex items-center gap-3'>
-								<Mail className='w-5 h-5 text-gray-500 dark:text-dark-text-secondary' />
-								<div>
-									<p className='text-sm text-gray-600 dark:text-dark-text-secondary'>
-										{t('email') || 'Email'}
-									</p>
-									<p className='text-gray-900 dark:text-dark-text'>{user.email}</p>
-								</div>
-							</div>
-
-							{/* Country */}
-							<div className='flex items-center gap-3'>
-								<MapPin className='w-5 h-5 text-gray-500 dark:text-dark-text-secondary' />
-								<div>
-									<p className='text-sm text-gray-600 dark:text-dark-text-secondary'>
-										{tCommon('country') || 'Country'}
-									</p>
-									<p className='text-gray-900 dark:text-dark-text'>
-										{user.country || '–'}
-									</p>
-								</div>
+							{/* Info grid */}
+							<div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
+								<InfoField label={t('email') || 'Email'} value={user.email} icon={Mail} />
+								<InfoField label={tCommon('country') || 'Country'} value={user.country || '–'} icon={MapPin} />
 							</div>
 
 							{/* Role */}
-							<div className='flex items-center gap-3'>
-								<Shield className='w-5 h-5 text-gray-500 dark:text-dark-text-secondary' />
-								<div>
-									<p className='text-sm text-gray-600 dark:text-dark-text-secondary mb-1'>
-										{t('role') || 'Role'}
-									</p>
-									<span
-										className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${roleDisplay.bgColor} ${roleDisplay.color}`}
-									>
-										{roleDisplay.label}
-									</span>
+							<div className='pt-4 border-t border-[#48715B]/15'>
+								<div className='flex items-center gap-3'>
+									<Shield className='w-5 h-5 text-[#48715B]' />
+									<div>
+										<p className='text-sm font-medium text-[#48715B] mb-1'>
+											{t('role') || 'Role'}
+										</p>
+										<span
+											className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${roleDisplay.bgColor} ${roleDisplay.color}`}
+										>
+											{roleDisplay.label}
+										</span>
+									</div>
 								</div>
 							</div>
 
 							{/* Status */}
-							<div>
-								<p className='text-sm text-gray-600 dark:text-dark-text-secondary mb-2'>
+							<div className='pt-4 border-t border-[#48715B]/15'>
+								<p className='text-sm font-medium text-[#48715B] mb-2'>
 									{t('status') || 'Status'}
 								</p>
 								<div className='flex flex-wrap gap-2'>
@@ -347,8 +336,8 @@ const AdminUserDetailPage = ({
 										<span
 											className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${
 												user.is_verified
-													? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
-													: 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400'
+													? 'bg-green-100 text-green-700'
+													: 'bg-yellow-100 text-yellow-700'
 											}`}
 										>
 											{user.is_verified ? (
@@ -362,13 +351,13 @@ const AdminUserDetailPage = ({
 										</span>
 									)}
 									{user.is_blacklisted && (
-										<span className='inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'>
+										<span className='inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-700'>
 											<XCircle className='w-3 h-3' />
 											{t('blacklisted') || 'Blacklisted'}
 										</span>
 									)}
 									{user.denial_count !== undefined && user.denial_count > 0 && (
-										<span className='text-xs text-orange-600 dark:text-orange-400'>
+										<span className='text-xs text-orange-600'>
 											{t('denials') || 'Denials'}: {user.denial_count}
 										</span>
 									)}
@@ -376,26 +365,11 @@ const AdminUserDetailPage = ({
 							</div>
 
 							{/* Dates */}
-							<div className='flex items-center gap-3'>
-								<Calendar className='w-5 h-5 text-gray-500 dark:text-dark-text-secondary' />
+							<div className='pt-4 border-t border-[#48715B]/15'>
 								<div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
-									<div>
-										<p className='text-sm text-gray-600 dark:text-dark-text-secondary'>
-											{t('createdAt') || 'Created At'}
-										</p>
-										<p className='text-gray-900 dark:text-dark-text text-sm'>
-											{formatDateTime(user.created_at)}
-										</p>
-									</div>
+									<InfoField label={t('createdAt') || 'Created At'} value={formatDateTime(user.created_at)} icon={Calendar} />
 									{user.modified_at && (
-										<div>
-											<p className='text-sm text-gray-600 dark:text-dark-text-secondary'>
-												{tCommon('modified') || 'Modified'}
-											</p>
-											<p className='text-gray-900 dark:text-dark-text text-sm'>
-												{formatDateTime(user.modified_at)}
-											</p>
-										</div>
+										<InfoField label={tCommon('modified') || 'Modified'} value={formatDateTime(user.modified_at)} icon={Calendar} />
 									)}
 								</div>
 							</div>

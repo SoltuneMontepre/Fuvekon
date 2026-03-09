@@ -80,16 +80,19 @@ export const metadata: Metadata = {
 const inter = Inter({
 	variable: '--font-inter',
 	subsets: ['latin'],
+	display: 'swap',
 })
 
 const geistMono = Geist_Mono({
 	variable: '--font-geist-mono',
 	subsets: ['latin'],
+	display: 'swap',
 })
 
 const montserrat = Montserrat({
 	variable: '--font-montserrat',
 	subsets: ['latin'],
+	display: 'swap',
 })
 
 export default async function RootLayout({

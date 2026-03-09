@@ -14,7 +14,7 @@ import { FORM_STYLES } from './RegisterForm.styles'
 
 interface CountrySelectProps<
 	TFieldValues extends FieldValues = FieldValues,
-	TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>
+	TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
 > {
 	id: string
 	name: TName
@@ -23,11 +23,13 @@ interface CountrySelectProps<
 	placeholder: string
 	required?: boolean
 	showError?: boolean
+	/** Optional translator for error messages (e.g. i18n keys) */
+	translateError?: (message: string) => string
 }
 
 export const CountrySelect = <
 	TFieldValues extends FieldValues = FieldValues,
-	TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>
+	TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
 >({
 	id,
 	name,
@@ -36,6 +38,7 @@ export const CountrySelect = <
 	placeholder,
 	required = false,
 	showError = true,
+	translateError,
 }: CountrySelectProps<TFieldValues, TName>) => {
 	const {
 		field,
@@ -76,11 +79,7 @@ export const CountrySelect = <
 					id={id}
 					name={field.name}
 					value={(field.value as unknown as string) || ''}
-					onChange={e =>
-					field.onChange(
-						e.target.value as any
-					)
-				}
+					onChange={e => field.onChange(e.target.value as any)}
 					onBlur={field.onBlur}
 					ref={field.ref}
 					className={`${selectClasses} w-full`}
@@ -90,17 +89,16 @@ export const CountrySelect = <
 					<option value='' disabled hidden>
 						{placeholder}
 					</option>
-					{countryList.map(({name, code}) => (
+					{countryList.map(({ name, code }) => (
 						<option key={code || name} value={code}>
 							{name}
 						</option>
 					))}
-					{field.value &&
-						!countryList.some(c => c.code === field.value) && (
-							<option value={field.value}>
-								{getName(field.value) || field.value}
-							</option>
-						)}
+					{field.value && !countryList.some(c => c.code === field.value) && (
+						<option value={field.value}>
+							{getName(field.value) || field.value}
+						</option>
+					)}
 				</select>
 			</div>
 			<label
@@ -116,7 +114,7 @@ export const CountrySelect = <
 					className={FORM_STYLES.error.fieldError}
 					role='alert'
 				>
-					{error.message}
+					{translateError ? translateError(error.message ?? '') : error.message}
 				</p>
 			)}
 		</div>
