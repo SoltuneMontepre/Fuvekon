@@ -22,6 +22,7 @@ import {
 	type AdminConbookFilter,
 	type AdminConbookItem,
 	useAdminGetConbooks,
+	useAdminUnverifyConbook,
 	useAdminVerifyConbook,
 } from '@/hooks/services/artbook/useUploadFile'
 import type { PaginationMeta } from '@/types/api/ticket/ticket'
@@ -144,6 +145,7 @@ const ArtSubmitAdminPage = (): React.ReactElement => {
 	} = useAdminGetConbooks(verifiedFilter)
 	const { data: meData } = useGetMe()
 	const verifyMutation = useAdminVerifyConbook()
+	const unverifyMutation = useAdminUnverifyConbook()
 
 	const sortSubmissions = (items: AdminConbookItem[]) => {
 		const getDate = (item: AdminConbookItem) =>
@@ -242,6 +244,15 @@ const ArtSubmitAdminPage = (): React.ReactElement => {
 			toast.success(t('submissionApproveSuccess', 'Submission approved successfully'))
 		} catch {
 			toast.error(t('submissionApproveError', 'Failed to approve submission'))
+		}
+	}
+
+	const handleUnverify = async (item: AdminConbookItem) => {
+		try {
+			await unverifyMutation.mutateAsync(item.id)
+			toast.success(t('submissionUnverifySuccess', 'Submission moved back to pending'))
+		} catch {
+			toast.error(t('submissionUnverifyError', 'Failed to unverify submission'))
 		}
 	}
 
@@ -427,7 +438,7 @@ const ArtSubmitAdminPage = (): React.ReactElement => {
 									<div className='mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3'>
 										<div className='rounded-xl bg-[#f6fbf8] border border-[#48715B]/10 p-3'>
 											<p className='text-[11px] uppercase tracking-wide text-[#48715B]/80'>
-												{t('handle', 'Handle')}
+												{t('handle', 'Social Handle')}
 											</p>
 											<p className='text-sm text-text-primary break-words'>
 												{item.handle || '–'}
@@ -509,14 +520,14 @@ const ArtSubmitAdminPage = (): React.ReactElement => {
 												className='cursor-pointer'
 												props={{
 													type: 'button',
-													onClick: () => handleVerify(item),
+													onClick: () =>
+														item.is_verified ? handleUnverify(item) : handleVerify(item),
 													disabled:
-														Boolean(item.is_verified) ||
-														verifyMutation.isPending,
+														verifyMutation.isPending || unverifyMutation.isPending,
 												}}
 											>
 												{item.is_verified
-													? t('approved', 'Approved')
+													? t('unverify', 'Unverify')
 													: t('approve', 'Approve')}
 											</Button>
 										</div>

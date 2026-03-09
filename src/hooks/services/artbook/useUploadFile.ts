@@ -91,6 +91,12 @@ const ConbookApi = {
 		)
 		return data
 	},
+	unverifyByAdmin: async (id: string) => {
+		const { data } = await axios.general.patch<ApiResponse<MyConbookItem>>(
+			`/admin/conbooks/${id}/unverify`
+		)
+		return data
+	},
 	delete: async (id: string) => {
 		const { data } = await axios.general.delete<UploadArtbookResponse>(
 			`/conbooks/${id}`
@@ -169,6 +175,20 @@ export function useAdminVerifyConbook() {
 
 	return useMutation({
 		mutationFn: (id: string) => ConbookApi.verifyByAdmin(id),
+		onSuccess: () => {
+			queryClient.invalidateQueries({
+				queryKey: ['admin-conbook-submissions'],
+			})
+			queryClient.invalidateQueries({ queryKey: conbookKeys.mySubmissions })
+		},
+	})
+}
+
+export function useAdminUnverifyConbook() {
+	const queryClient = getQueryClient()
+
+	return useMutation({
+		mutationFn: (id: string) => ConbookApi.unverifyByAdmin(id),
 		onSuccess: () => {
 			queryClient.invalidateQueries({
 				queryKey: ['admin-conbook-submissions'],
