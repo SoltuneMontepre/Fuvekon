@@ -472,17 +472,25 @@ const ArtSubmitAdminPage = (): React.ReactElement => {
 														</div>
 													</div>
 												) : (
-													<a
-														href={item.image_url}
-														target='_blank'
-														rel='noreferrer'
+													// <a
+													// 	href={item.image_url}
+													// 	target='_blank'
+													// 	rel='noreferrer'
+													// 	className='flex h-56 w-full flex-col items-center justify-center gap-2 rounded-xl border border-[#48715B]/20 bg-[#f6fbf8] p-4 text-center hover:bg-[#edf5ef] transition-colors'
+													// >
+													// 	<FileText className='w-10 h-10 text-[#48715B]' />
+													// 	<p className='text-xs text-[#48715B] break-all'>
+													// 		{getFileNameFromUrl(item.image_url, 'Document')}
+													// 	</p>
+													// </a>
+                                                    <div
 														className='flex h-56 w-full flex-col items-center justify-center gap-2 rounded-xl border border-[#48715B]/20 bg-[#f6fbf8] p-4 text-center hover:bg-[#edf5ef] transition-colors'
 													>
 														<FileText className='w-10 h-10 text-[#48715B]' />
 														<p className='text-xs text-[#48715B] break-all'>
 															{getFileNameFromUrl(item.image_url, 'Document')}
 														</p>
-													</a>
+													</div>
 												)
 											) : (
 												<div className='flex h-40 w-full items-center justify-center rounded-xl border border-dashed border-[#48715B]/25 text-sm text-[#48715B]/80 bg-[#f6fbf8]'>
