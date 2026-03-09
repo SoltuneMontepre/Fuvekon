@@ -474,7 +474,7 @@
 		"documentFallback": "Tài liệu",
 		"pleaseUploadBeforeSubmitting": "Vui lòng tải tệp lên trước khi gửi.",
 		"title": "Gửi Conbook",
-		"description": "Gửi tác phẩm của bạn và quản lý các bài gửi conbook tại đây.",
+		"description": "Gửi tác phẩm của bạn và quản lý các bài gửi conbook tại đây. Bạn có thể gửi tối đa 10 tranh!",
 		"readGuidelines": "Vui lòng đọc hướng dẫn gửi bài trước khi gửi",
 		"submissionUpdated": "Cập nhật bài gửi thành công!",
 		"submissionSuccess": "Gửi bài thành công!",
@@ -504,7 +504,9 @@
 		"deleting": "Đang xóa...",
 		"confirmDelete": "Xóa \"{title}\"? Hành động này không thể hoàn tác.",
 		"deleteSuccess": "Đã xóa bài gửi thành công.",
-		"deleteError": "Xóa bài gửi thất bại. Vui lòng thử lại."
+		"deleteError": "Xóa bài gửi thất bại. Vui lòng thử lại.",
+		"submissionLimitError": "Bạn chỉ có thể gửi tối đa {max} bài.",
+		"submissionLimitReached": "Đã đạt giới hạn gửi ({max}/{max}). Hãy xóa một bài để gửi bài mới."
 	},
 	"changePassword": {
 		"title": "ĐỔI MẬT KHẨU",

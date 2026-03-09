@@ -27,6 +27,7 @@ import {
 import Image from 'next/image'
 
 const AccountConbookPage = (): React.ReactElement => {
+	const MAX_SUBMISSIONS = 10
 	const isImageUrl = (url: string) => {
 		const cleanUrl = url.split('?')[0].toLowerCase()
 		return ['.jpg', '.jpeg', '.png'].some(
@@ -174,6 +175,9 @@ const AccountConbookPage = (): React.ReactElement => {
 		return myConbooksResponse.data
 	}, [myConbooksResponse])
 
+	const hasReachedSubmissionLimit =
+		submissions.length >= MAX_SUBMISSIONS && !editingId
+
 	const prioritizedSubmissions = useMemo(() => {
 		return [...submissions].sort((a, b) => {
 			// Priority 1: approved submissions first
@@ -192,6 +196,14 @@ const AccountConbookPage = (): React.ReactElement => {
 			setIsSuccess(false)
 			clearErrors()
 			const isEditSubmission = Boolean(editingId)
+
+			if (!isEditSubmission && submissions.length >= MAX_SUBMISSIONS) {
+				setError('root', {
+					type: 'manual',
+					message: t('submissionLimitError', { max: MAX_SUBMISSIONS }),
+				})
+				return
+			}
 
 			if (!formData.image_url) {
 				setError('image_url', {
@@ -331,6 +343,7 @@ const AccountConbookPage = (): React.ReactElement => {
 						folder='artbooks'
 						accept='image/*,.doc,.docx,.pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/pdf'
 						maxSizeMB={15}
+						disabled={hasReachedSubmissionLimit}
 						// successMessageDurationMs={3000}
 						onUploadSuccess={fileUrl => {
 							setValue('image_url', fileUrl, { shouldValidate: true })
@@ -341,6 +354,12 @@ const AccountConbookPage = (): React.ReactElement => {
 							setUploaderKey(prev => prev + 1)
 						}}
 					/>
+
+					{hasReachedSubmissionLimit && (
+						<p className='-mt-1 -mb-3 text-sm font-medium text-amber-700'>
+							{t('submissionLimitReached', { max: MAX_SUBMISSIONS })}
+						</p>
+					)}
 
 					{uploadedFileUrl && (
 						isImageUrl(uploadedFileUrl) ? (
@@ -399,7 +418,13 @@ const AccountConbookPage = (): React.ReactElement => {
 					<div className='flex flex-col gap-3 pt-2 sm:flex-row'>
 						<Button
 							className='cursor-pointer !border-none w-full !bg-[#3f654f] !text-white shadow-[0_12px_24px_-14px_rgba(48,82,65,0.9)] transition-all hover:-translate-y-[1px] hover:!bg-[#355643] sm:min-w-[360px]'
-							props={{ disabled: isUploadingArtbook || isUpdatingConbook || isSubmitting }}
+							props={{
+								disabled:
+									isUploadingArtbook ||
+									isUpdatingConbook ||
+									isSubmitting ||
+									hasReachedSubmissionLimit,
+							}}
 						>
 							{isSubmitting
 								? editingId

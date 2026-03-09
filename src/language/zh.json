@@ -474,7 +474,7 @@
 		"documentFallback": "文档",
 		"pleaseUploadBeforeSubmitting": "提交前请先上传文件。",
 		"title": "提交 Conbook",
-		"description": "在这里提交您的作品并管理您的 conbook 投稿。",
+		"description": "在这里提交您的作品并管理您的 conbook 投稿。你最多可以提交十份作品！",
 		"readGuidelines": "提交前请先阅读投稿指南",
 		"submissionUpdated": "投稿更新成功！",
 		"submissionSuccess": "投稿成功！",
@@ -504,7 +504,9 @@
 		"deleting": "删除中...",
 		"confirmDelete": "确定删除\"{title}\"吗？此操作无法撤销。",
 		"deleteSuccess": "投稿删除成功。",
-		"deleteError": "删除投稿失败，请重试。"
+		"deleteError": "删除投稿失败，请重试。",
+		"submissionLimitError": "您最多只能提交 {max} 份作品。",
+		"submissionLimitReached": "已达到投稿上限（{max}/{max}）。请先删除一份再提交新作品。"
 	},
 	"changePassword": {
 		"title": "修改密码",

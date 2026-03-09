@@ -474,7 +474,7 @@
 		"documentFallback": "Document",
 		"pleaseUploadBeforeSubmitting": "Please upload a file before submitting.",
 		"title": "Submit Conbook",
-		"description": "Submit your artwork and manage your own conbook submissions here.",
+		"description": "Submit your artwork and manage your own conbook submissions here. You may have 10 submissions at most!",
 		"readGuidelines": "Please read the submission guidelines before submitting",
 		"submissionUpdated": "Submission updated successfully!",
 		"submissionSuccess": "Submission successful!",
@@ -504,7 +504,9 @@
 		"deleting": "Deleting...",
 		"confirmDelete": "Delete \"{title}\"? This action cannot be undone.",
 		"deleteSuccess": "Submission deleted successfully.",
-		"deleteError": "Failed to delete submission. Please try again."
+		"deleteError": "Failed to delete submission. Please try again.",
+		"submissionLimitError": "You can only submit up to {max} entries.",
+		"submissionLimitReached": "Submission limit reached ({max}/{max}). Delete one to add a new submission."
 	},
 	"changePassword": {
 		"title": "CHANGE PASSWORD",
