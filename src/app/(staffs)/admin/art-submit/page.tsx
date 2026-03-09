@@ -13,7 +13,7 @@ import {
 	Search,
 	// ShieldCheck,
 } from 'lucide-react'
-import { useTranslations } from 'next-intl'
+import { useLocale, useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 import Loading from '@/components/common/Loading'
 import S3Image from '@/components/common/S3Image'
@@ -61,11 +61,11 @@ const getDocumentPreviewUrl = (url: string) => {
 	return url
 }
 
-const formatDateTime = (dateString?: string) => {
+const formatDateTime = (dateString: string | undefined, locale: string) => {
 	if (!dateString) return '–'
 	const date = new Date(dateString)
 	if (Number.isNaN(date.getTime())) return '–'
-	return `${date.toLocaleDateString('vi-VN')} ${date.toLocaleTimeString('vi-VN', {
+	return `${date.toLocaleDateString(locale)} ${date.toLocaleTimeString(locale, {
 		hour: '2-digit',
 		minute: '2-digit',
 	})}`
@@ -100,6 +100,7 @@ const ArtSubmitAdminPage = (): React.ReactElement => {
 	const tRaw = useTranslations('admin')
 	const t = createTWithFallback(tRaw)
 	const tCommon = useTranslations('common')
+	const locale = useLocale()
     const [isClient, setIsClient] = useState(false)
 
     useEffect(() => {
@@ -200,6 +201,7 @@ const ArtSubmitAdminPage = (): React.ReactElement => {
 	}, [submissions, pagination])
 
 	const isPendingView = viewMode === 'pending'
+	const isVerifiedView = viewMode === 'verified'
 	const isAllView = viewMode === 'all'
 
 	const filteredSubmissions = useMemo(() => {
@@ -298,7 +300,7 @@ const ArtSubmitAdminPage = (): React.ReactElement => {
 							type='button'
 							onClick={() => handleStatusChange('verified')}
 							className={`px-3 py-2 text-sm font-medium transition-colors ${
-								!isPendingView
+								isVerifiedView
 									? 'bg-[#48715B] text-white'
 									: 'text-[#48715B] hover:bg-[#e9f2ec]'
 							}`}
@@ -456,7 +458,7 @@ const ArtSubmitAdminPage = (): React.ReactElement => {
 												{t('submittedAt', 'Submitted at')}
 											</p>
 											<p className='text-sm text-text-primary'>
-												{formatDateTime(item.created_at || item.createdAt)}
+												{formatDateTime(item.created_at || item.createdAt, locale)}
 											</p>
 										</div>
 										<div className='mt-4'>

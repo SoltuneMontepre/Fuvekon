@@ -156,6 +156,9 @@ export function useDeleteConbookSubmission() {
 			return ConbookApi.delete(id)
 		},
 		onSuccess: () => {
+			queryClient.invalidateQueries({
+				queryKey: ['admin-conbook-submissions'],
+			})
 			queryClient.invalidateQueries({ queryKey: conbookKeys.mySubmissions })
 		},
 	})
