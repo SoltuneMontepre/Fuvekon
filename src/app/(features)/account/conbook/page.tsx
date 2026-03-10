@@ -27,7 +27,7 @@ import {
 import Image from 'next/image'
 
 const AccountConbookPage = (): React.ReactElement => {
-	const MAX_SUBMISSIONS = 10
+	const MAX_SUBMISSIONS = 5
 	const isImageUrl = (url: string) => {
 		const cleanUrl = url.split('?')[0].toLowerCase()
 		return ['.jpg', '.jpeg', '.png'].some(
