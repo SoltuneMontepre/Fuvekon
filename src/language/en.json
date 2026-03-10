@@ -310,6 +310,7 @@
 		"purchaseProcessingHint": "Your ticket is being created. This usually takes a few seconds.",
 		"purchaseProcessingTimeoutHint": "If you just purchased, please wait a moment and refresh the page.",
 		"soldOut": "Sold Out",
+		"runningOut": "Running out soon!",
 		"closed": "Closed",
 		"remaining": "{count} remaining",
 		"errorOccurred": "An error occurred. Please try again.",

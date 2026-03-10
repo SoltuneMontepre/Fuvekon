@@ -310,6 +310,7 @@
 		"purchaseProcessingHint": "Vé của bạn đang được tạo. Thường chỉ mất vài giây.",
 		"purchaseProcessingTimeoutHint": "Nếu bạn vừa mua vé, vui lòng đợi một chút rồi tải lại trang.",
 		"soldOut": "Hết vé",
+		"runningOut": "Sắp hết vé!",
 		"closed": "Đã đóng",
 		"remaining": "Còn {count} vé",
 		"errorOccurred": "Có lỗi xảy ra. Vui lòng thử lại.",

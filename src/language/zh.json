@@ -306,6 +306,7 @@
 		"purchaseProcessingHint": "您的门票正在创建中，通常只需几秒钟。",
 		"purchaseProcessingTimeoutHint": "如果您刚完成购票，请稍等片刻后刷新页面。",
 		"soldOut": "已售罄",
+		"runningOut": "即将售罄！",
 		"closed": "已关闭",
 		"remaining": "剩余 {count} 张",
 		"errorOccurred": "发生错误。请重试。",

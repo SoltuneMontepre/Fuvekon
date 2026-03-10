@@ -306,6 +306,7 @@
 		"purchaseProcessingHint": "ตั๋วของคุณกำลังถูกสร้าง โดยปกติใช้เวลาเพียงไม่กี่วินาที",
 		"purchaseProcessingTimeoutHint": "หากคุณเพิ่งซื้อตั๋ว กรุณารอสักครู่แล้วรีเฟรชหน้า",
 		"soldOut": "ขายหมดแล้ว",
+		"runningOut": "ใกล้หมดแล้ว!",
 		"closed": "ปิดขาย",
 		"remaining": "เหลือ {count} ใบ",
 		"errorOccurred": "เกิดข้อผิดพลาด กรุณาลองอีกครั้ง",

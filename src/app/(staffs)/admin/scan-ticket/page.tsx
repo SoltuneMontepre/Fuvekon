@@ -270,7 +270,7 @@ export default function ScanTicketPage() {
 											type='button'
 											onClick={handleCheckIn}
 											disabled={confirmCheckIn.isPending}
-											className='min-h-[48px] inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl btn-primary font-medium disabled:opacity-60 disabled:cursor-not-allowed active:scale-[0.98]'
+											className='min-h-[48px] inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl btn-primary font-medium disabled:opacity-100 disabled:cursor-not-allowed active:scale-[0.98]'
 										>
 											{confirmCheckIn.isPending ? (
 												<Loader2 className='w-5 h-5 animate-spin shrink-0' />
