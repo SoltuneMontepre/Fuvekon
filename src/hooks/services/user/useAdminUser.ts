@@ -1,6 +1,12 @@
 'use client'
 
-import { useQuery, useMutation, useQueryClient, keepPreviousData } from '@tanstack/react-query'
+import {
+	useQuery,
+	useMutation,
+	useQueryClient,
+	keepPreviousData,
+	useQueries,
+} from '@tanstack/react-query'
 import axios from '@/common/axios'
 import type { ApiResponse } from '@/types/api/response'
 import type {
@@ -73,6 +79,38 @@ export function useAdminGetUserById(userId: string) {
 		queryFn: () => AdminUserAPI.getUserById(userId),
 		enabled: !!userId,
 	})
+}
+
+// Get multiple users by IDs and return a quick lookup map keyed by user id.
+export function useAdminGetUsersByIds(userIds: string[]) {
+	const uniqueIds = Array.from(
+		new Set(userIds.filter(id => typeof id === 'string' && id.trim().length > 0))
+	)
+
+	const queryResults = useQueries({
+		queries: uniqueIds.map(userId => ({
+			queryKey: ['admin-user', userId],
+			queryFn: () => AdminUserAPI.getUserById(userId),
+			enabled: !!userId,
+		})),
+	})
+
+	const usersById = uniqueIds.reduce<Record<string, GetUserByIdResponse>>(
+		(acc, userId, index) => {
+			const user = queryResults[index]?.data?.data
+			if (user) {
+				acc[userId] = user
+			}
+			return acc
+		},
+		{}
+	)
+
+	return {
+		usersById,
+		isLoadingAny: queryResults.some(result => result.isLoading),
+		isErrorAny: queryResults.some(result => result.isError),
+	}
 }
 
 // Update user by ID (admin)

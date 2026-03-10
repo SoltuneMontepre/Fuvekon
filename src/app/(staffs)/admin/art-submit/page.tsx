@@ -17,7 +17,6 @@ import { useLocale, useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 import Loading from '@/components/common/Loading'
 import S3Image from '@/components/common/S3Image'
-import { useGetMe } from '@/hooks/services/auth/useAccount'
 import {
 	type AdminConbookFilter,
 	type AdminConbookItem,
@@ -25,8 +24,8 @@ import {
 	useAdminUnverifyConbook,
 	useAdminVerifyConbook,
 } from '@/hooks/services/artbook/useUploadFile'
+import { useAdminGetUsersByIds } from '@/hooks/services/user/useAdminUser'
 import type { PaginationMeta } from '@/types/api/ticket/ticket'
-import type { Account } from '@/types/models/auth/account'
 import Button from '@/components/ui/Button'
 import { createPortal } from 'react-dom'
 import { getS3ProxyUrl, isS3Url } from '@/utils/s3'
@@ -72,21 +71,50 @@ const formatDateTime = (dateString: string | undefined, locale: string) => {
 	})}`
 }
 
-const getSubmitterLabel = (item: AdminConbookItem, me?: Account) => {
+const getSubmitterId = (item: AdminConbookItem) => {
+	const fromNested = item.user as
+		| (NonNullable<AdminConbookItem['user']> & Record<string, unknown>)
+		| undefined
+
+	if (typeof item.user_id === 'string' && item.user_id.trim().length > 0) {
+		return item.user_id
+	}
+	if (typeof fromNested?.id === 'string' && fromNested.id.trim().length > 0) {
+		return fromNested.id
+	}
+	return undefined
+}
+
+const getSubmitterLabel = (
+	item: AdminConbookItem,
+	usersById: Record<
+		string,
+		{
+			fursona_name?: string
+			first_name?: string
+			last_name?: string
+			email?: string
+		}
+	>
+) => {
 	const fromNested = item.user as
 		| (NonNullable<AdminConbookItem['user']> & Record<string, unknown>)
 		| undefined
 	const fromTop = item as AdminConbookItem & Record<string, unknown>
+	const submitterId = getSubmitterId(item)
+	const adminUser = submitterId ? usersById[submitterId] : undefined
+	const adminDisplayName =
+		adminUser && `${adminUser.first_name || ''} ${adminUser.last_name || ''}`.trim()
 
 	const nameCandidates = [
+		adminUser?.fursona_name,
+		adminDisplayName,
+		adminUser?.email,
 		item.fursona_name,
 		typeof fromTop.fursonaName === 'string' ? fromTop.fursonaName : undefined,
 		fromNested?.fursona_name,
 		typeof fromNested?.fursonaName === 'string'
 			? fromNested.fursonaName
-			: undefined,
-		me && (item.user_id === me.id || fromNested?.id === me.id)
-			? me.fursona_name
 			: undefined,
 	]
 
@@ -143,7 +171,6 @@ const ArtSubmitAdminPage = (): React.ReactElement => {
 		isError: isVerifiedError,
 		refetch: refetchVerified,
 	} = useAdminGetConbooks(verifiedFilter)
-	const { data: meData } = useGetMe()
 	const verifyMutation = useAdminVerifyConbook()
 	const unverifyMutation = useAdminUnverifyConbook()
 
@@ -180,6 +207,18 @@ const ArtSubmitAdminPage = (): React.ReactElement => {
 		return undefined
 	}, [viewMode, pendingData?.meta, verifiedData?.meta])
 
+	const submitterIds = useMemo(() => {
+		return Array.from(
+			new Set(
+				submissions
+					.map(item => getSubmitterId(item))
+					.filter((id): id is string => typeof id === 'string' && id.trim().length > 0)
+			)
+		)
+	}, [submissions])
+
+	const { usersById } = useAdminGetUsersByIds(submitterIds)
+
 	const isLoading = viewMode === 'all'
 		? isPendingLoading || isVerifiedLoading
 		: viewMode === 'pending'
@@ -207,7 +246,6 @@ const ArtSubmitAdminPage = (): React.ReactElement => {
 	const isAllView = viewMode === 'all'
 
 	const filteredSubmissions = useMemo(() => {
-		const currentMe = meData?.isSuccess ? meData.data : undefined
 		if (!searchInput.trim()) return submissions
 		const q = searchInput.toLowerCase().trim()
 		return submissions.filter(item => {
@@ -218,11 +256,11 @@ const ArtSubmitAdminPage = (): React.ReactElement => {
 				item.title?.toLowerCase().includes(q) ||
 				item.description?.toLowerCase().includes(q) ||
 				item.handle?.toLowerCase().includes(q) ||
-				getSubmitterLabel(item, currentMe).toLowerCase().includes(q) ||
+				getSubmitterLabel(item, usersById).toLowerCase().includes(q) ||
 				fileName.toLowerCase().includes(q)
 			)
 		})
-	}, [submissions, searchInput, meData])
+	}, [submissions, searchInput, usersById])
 
 	const handlePageChange = (page: number) => {
 		setFilter(prev => ({ ...prev, page }))
@@ -449,7 +487,7 @@ const ArtSubmitAdminPage = (): React.ReactElement => {
 												{t('submitterName', 'Submitter name')}
 											</p>
 											<p className='text-sm text-text-primary break-words'>
-												{getSubmitterLabel(item, meData?.isSuccess ? meData.data : undefined)}
+												{getSubmitterLabel(item, usersById)}
 											</p>
 										</div>
 										<div className='rounded-xl bg-[#f6fbf8] border border-[#48715B]/10 p-3 sm:col-span-2'>
