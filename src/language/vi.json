@@ -51,6 +51,45 @@
 			}
 		}
 	},
+	"about": {
+		"hero": {
+			"title": "FUVE LÀ GÌ",
+			"imagePlaceholder": "Hình recap FUVE",
+			"paragraph1": "FUVE – Furry Vietnam Eternity là một sự kiện hội nghị furry được tổ chức tại Thành phố Hồ Chí Minh, Việt Nam từ năm 2022. Sự kiện được xây dựng với mục tiêu tạo ra một không gian gặp gỡ và giao lưu dành cho cộng đồng furry trong và ngoài nước.",
+			"paragraph2": "FUVE mong muốn mang đến một môi trường thân thiện, cởi mở, nơi mọi người có thể kết nối, chia sẻ đam mê và cùng nhau tạo nên những trải nghiệm đáng nhớ.",
+			"paragraph3": "Hãy đến với FUVE để hòa mình vào bầu không khí sôi động, khám phá các hoạt động, panel, khu vực dealer và nhiều nội dung thú vị khác từ cộng đồng furry Việt Nam."
+		},
+		"video": {
+			"placeholder": "video bấm để xem"
+		},
+		"recap": {
+			"title": "FUVE RECAP 2025",
+			"description": "Khám phá bầu không khí của FUVE qua video recap những khoảnh khắc đáng nhớ từ mùa trước.",
+			"button": "Xem trên YouTube"
+		},
+		"activities": {
+			"title": "HOẠT ĐỘNG TẠI FUVE"
+		},
+		"credits": {
+			"title": "GHI CÔNG",
+			"staff": {
+				"title": "FUVE staff member:"
+			},
+			"dev": {
+				"title": "Web Developer:",
+				"lead": "Team lead"
+			},
+			"design": {
+				"title": "Web Designer:"
+			},
+			"sponsor": {
+				"title": "Sponsorship:"
+			},
+			"banner": {
+				"title": "Theme banner artist:"
+			}
+		}
+	},
 	"nav": {
 		"myConbook": "Gửi Conbook",
 		"ticket": "Vé",
@@ -150,9 +189,9 @@
 		"otpPlaceholder": "Nhập mã",
 		"verifyOtpSuccess": "Xác minh thành công! Chuyển hướng đến đăng nhập...",
 		"verifying": "Đang xác minh...",
-		"verify": "Xác minh",		
+		"verify": "Xác minh",
 		"otpExpiresIn": "Mã sẽ hết hạn sau {time}",
-		"otpExpired": "Mã đã hết hạn. Vui lòng yêu cầu mã mới.",		
+		"otpExpired": "Mã đã hết hạn. Vui lòng yêu cầu mã mới.",
 		"registerButton": "Đăng ký tài khoản",
 		"termsAgreement": "Tôi đã đọc và chấp nhận mọi điều khoản và quy định của FUVE",
 		"registering": "Đang đăng ký...",

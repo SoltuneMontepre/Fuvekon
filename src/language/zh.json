@@ -49,6 +49,45 @@
 			}
 		}
 	},
+	"about": {
+		"hero": {
+			"title": "什么是 FUVE？",
+			"imagePlaceholder": "FUVE 回顾图片",
+			"paragraph1": "FUVE – Furry Vietnam Eternity 是在越南胡志明市举办的兽迷同好会，自 2022 年起开办，旨在为越南及海外的 furry 社群打造一个温暖、开放的聚会空间。",
+			"paragraph2": "FUVE 希望营造一个友好自在的环境，让每个人都能在这里结识新朋友、分享热爱，并留下难忘的回忆。",
+			"paragraph3": "欢迎来到 FUVE，沉浸在热闹的现场氛围中，一起探索多样活动、主题座谈、商家摊位以及来自越南 furry 社群的精彩内容。"
+		},
+		"video": {
+			"placeholder": "点击观看视频"
+		},
+		"recap": {
+			"title": "FUVE RECAP 2025",
+			"description": "通过往届活动回顾视频，感受 FUVE 的现场气氛与精彩瞬间。",
+			"button": "在 YouTube 上观看"
+		},
+		"activities": {
+			"title": "FUVE 活动一览"
+		},
+		"credits": {
+			"title": "致谢",
+			"staff": {
+				"title": "FUVE staff member:"
+			},
+			"dev": {
+				"title": "Web Developer:",
+				"lead": "Team lead"
+			},
+			"design": {
+				"title": "Web Designer:"
+			},
+			"sponsor": {
+				"title": "Sponsorship:"
+			},
+			"banner": {
+				"title": "Theme banner artist:"
+			}
+		}
+	},
 	"nav": {
 		"myConbook": "我的 Conbook 投稿",
 		"ticket": "票务",

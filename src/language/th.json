@@ -49,6 +49,45 @@
 			}
 		}
 	},
+	"about": {
+		"hero": {
+			"title": "FUVE คืออะไร",
+			"imagePlaceholder": "ภาพ recap ของ FUVE",
+			"paragraph1": "FUVE – Furry Vietnam Eternity คืออีเวนต์คอนเวนชันสำหรับชุมชน furry ที่จัดขึ้น ณ นครโฮจิมินห์ ประเทศเวียดนาม ตั้งแต่ปี 2022 โดยมีเป้าหมายเพื่อสร้างพื้นที่ให้ทุกคนได้มาพบปะและทำความรู้จักกันในบรรยากาศที่เป็นกันเอง",
+			"paragraph2": "FUVE ตั้งใจเป็นพื้นที่ที่เป็นมิตร เปิดกว้าง ให้ทุกคนได้เชื่อมต่อ แลกเปลี่ยนความชอบ และสร้างช่วงเวลาน่าประทับใจร่วมกัน",
+			"paragraph3": "มาร่วมสนุกไปกับ FUVE ดื่มด่ำกับบรรยากาศคึกคัก สำรวจโซนกิจกรรมต่าง ๆ เวทีเสวนา Dealer Den และอีกหลากหลายเนื้อหาสุดพิเศษจากคอมมูนิตี้ furry เวียดนาม"
+		},
+		"video": {
+			"placeholder": "กดเพื่อชมวิดีโอ"
+		},
+		"recap": {
+			"title": "FUVE RECAP 2025",
+			"description": "สัมผัสบรรยากาศของ FUVE ผ่านวิดีโอ recap ที่รวบรวมโมเมนต์น่าจดจำจากปีที่ผ่านมา",
+			"button": "ดูบน YouTube"
+		},
+		"activities": {
+			"title": "กิจกรรมในงาน FUVE"
+		},
+		"credits": {
+			"title": "รายชื่อขอบคุณ",
+			"staff": {
+				"title": "FUVE staff member:"
+			},
+			"dev": {
+				"title": "Web Developer:",
+				"lead": "Team lead"
+			},
+			"design": {
+				"title": "Web Designer:"
+			},
+			"sponsor": {
+				"title": "Sponsorship:"
+			},
+			"banner": {
+				"title": "Theme banner artist:"
+			}
+		}
+	},
 	"nav": {
 		"myConbook": "การส่งผลงาน Conbook",
 		"ticket": "บัตร",

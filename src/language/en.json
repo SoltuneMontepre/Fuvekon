@@ -51,6 +51,45 @@
 			}
 		}
 	},
+	"about": {
+		"hero": {
+			"title": "WHAT IS FUVE?",
+			"imagePlaceholder": "FUVE recap image",
+			"paragraph1": "FUVE – Furry Vietnam Eternity is a furry convention held in Ho Chi Minh City, Vietnam, starting from 2022. The event is built with the goal of creating a welcoming space for the furry community to meet, connect, and celebrate together.",
+			"paragraph2": "FUVE aims to foster a friendly, open environment where everyone can connect, share their passions, and create unforgettable memories side by side.",
+			"paragraph3": "Join FUVE to immerse yourself in vibrant experiences, explore exciting activities, panels, the dealer’s den, and many other highlights from the Vietnamese furry community."
+		},
+		"video": {
+			"placeholder": "click to watch video"
+		},
+		"recap": {
+			"title": "FUVE RECAP 2025",
+			"description": "Discover the atmosphere of FUVE through the recap video highlighting unforgettable moments from the previous year.",
+			"button": "Watch on YouTube"
+		},
+		"activities": {
+			"title": "ACTIVITIES AT FUVE"
+		},
+		"credits": {
+			"title": "CREDITS",
+			"staff": {
+				"title": "FUVE staff member:"
+			},
+			"dev": {
+				"title": "Web Developer:",
+				"lead": "Team lead"
+			},
+			"design": {
+				"title": "Web Designer:"
+			},
+			"sponsor": {
+				"title": "Sponsorship:"
+			},
+			"banner": {
+				"title": "Theme banner artist:"
+			}
+		}
+	},
 	"nav": {
 		"myConbook": "Conbook Submissions",
 		"ticket": "Ticket",
