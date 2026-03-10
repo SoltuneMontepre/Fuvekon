@@ -7,6 +7,7 @@ import type {
 	AdminGetDealersResponse,
 	GetDealerByIdResponse,
 	VerifyDealerResponse,
+	DenyDealerResponse,
 } from '@/types/api/dealer/dealer'
 import type { PaginationMeta } from '@/types/api/ticket/ticket'
 import { getQueryClient } from '@/utils/getQueryClient'
@@ -56,6 +57,14 @@ const AdminDealerAPI = {
 		)
 		return data
 	},
+
+	// Deny dealer (reject registration)
+	denyDealer: async (dealerId: string) => {
+		const { data } = await axios.general.patch<ApiResponse<DenyDealerResponse>>(
+			`/admin/dealers/${dealerId}/deny`
+		)
+		return data
+	},
 }
 
 // ========== Hooks ==========
@@ -86,6 +95,19 @@ export function useAdminVerifyDealer() {
 		mutationFn: (dealerId: string) => AdminDealerAPI.verifyDealer(dealerId),
 		onSuccess: () => {
 			// Invalidate dealer-related queries
+			queryClient.invalidateQueries({ queryKey: ['admin-dealers'] })
+			queryClient.invalidateQueries({ queryKey: ['admin-dealer'] })
+		},
+	})
+}
+
+// Deny dealer mutation
+export function useAdminDenyDealer() {
+	const queryClient = getQueryClient()
+
+	return useMutation({
+		mutationFn: (dealerId: string) => AdminDealerAPI.denyDealer(dealerId),
+		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ['admin-dealers'] })
 			queryClient.invalidateQueries({ queryKey: ['admin-dealer'] })
 		},

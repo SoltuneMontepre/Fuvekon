@@ -1,8 +1,8 @@
 'use client'
 
-import React, { useState, use, useEffect } from 'react'
+import React, { useState, use, useEffect, useRef } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { Copy, Check, AlertCircle, ArrowUpCircle } from 'lucide-react'
+import { Copy, Check, AlertCircle, ArrowUpCircle, Loader2 } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 import Image from 'next/image'
@@ -83,11 +83,32 @@ const TicketPurchasePage = ({ params }: TicketPurchasePageProps): React.ReactEle
 
 	const isUpgrade = searchParams?.get('upgrade') === 'true'
 	const upgradeDiff = searchParams?.get('diff') ?? null
+	const isQueued = searchParams?.get('queued') === '1'
 
-	const { data: ticketData, isLoading, error } = useGetMyTicket()
+	const { data: ticketData, isLoading, error, refetch } = useGetMyTicket()
 	const confirmMutation = useConfirmPayment()
+	const [giveUpPolling, setGiveUpPolling] = useState(false)
+	const pollingEndRef = useRef(false)
 
 	const ticket = ticketData?.data
+
+	// When landing after a queued purchase (202), poll for ticket until it appears or timeout (e.g. Lambda cold start)
+	useEffect(() => {
+		if (!isQueued || ticket || giveUpPolling || pollingEndRef.current) return
+		refetch() // immediate check in case worker already finished
+		const POLL_INTERVAL_MS = 2000
+		const MAX_POLL_MS = 30000
+		let elapsed = 0
+		const t = setInterval(() => {
+			elapsed += POLL_INTERVAL_MS
+			refetch()
+			if (elapsed >= MAX_POLL_MS) {
+				pollingEndRef.current = true
+				setGiveUpPolling(true)
+			}
+		}, POLL_INTERVAL_MS)
+		return () => clearInterval(t)
+	}, [isQueued, ticket, giveUpPolling, refetch])
 
 	useEffect(() => {
 		if (isUpgrade) return
@@ -136,12 +157,30 @@ const TicketPurchasePage = ({ params }: TicketPurchasePageProps): React.ReactEle
 		return <Loading />
 	}
 
+	// After a queued purchase (202), worker may still be processing; poll and show "Processing..." until ticket appears or timeout
+	if (isQueued && !ticket && !giveUpPolling) {
+		return (
+			<div className='min-h-screen flex items-center justify-center'>
+				<Background />
+				<div className='fixed inset-0 z-[1] bg-black/40' />
+				<div className='relative z-10 text-center'>
+					<Loader2 className='w-12 h-12 text-[#48715b] mx-auto mb-4 animate-spin' />
+					<p className='text-text-secondary text-lg mb-4'>{t('purchaseProcessing')}</p>
+					<p className='text-text-secondary/80 text-sm'>{t('purchaseProcessingHint')}</p>
+				</div>
+			</div>
+		)
+	}
+
 	if (error || !ticket) {
 		return (
 			<div className='min-h-screen flex items-center justify-center'>
 				<div className='text-center'>
 					<AlertCircle className='w-12 h-12 text-[#48715b] mx-auto mb-4' />
 					<p className='text-text-secondary text-lg mb-4'>{t('ticketNotFound')}</p>
+					{isQueued && giveUpPolling && (
+						<p className='text-text-secondary/80 text-sm mb-4'>{t('purchaseProcessingTimeoutHint')}</p>
+					)}
 					<button
 						onClick={() => router.push('/ticket')}
 						className='px-6 py-2.5 rounded-xl btn-primary font-medium'
