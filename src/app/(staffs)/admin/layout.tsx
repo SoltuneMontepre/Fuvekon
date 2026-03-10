@@ -75,7 +75,7 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
 							icon: Ticket,
 						},
 						{
-							label: 'Art submit',
+							label: 'Duyệt Conbook',
 							href: '/admin/art-submit',
 							icon: Ticket,
 						},

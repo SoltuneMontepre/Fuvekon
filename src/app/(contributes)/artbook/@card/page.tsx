@@ -209,10 +209,10 @@ const ArtBookCardSection = () => {
 					? 'Submitting...'
 					: t('artbook.card.button')}
 				</Button> */}
-				<div className='text-center text-nowrap mt-2 text-[#6f7873]'>
-						<Link href='/account/conbook'>{t('artbook.card.conbookLink')}</Link>
+				<div className='text-center text-nowrap mt-2 text-[#8C8C8C] transition-colors duration-200'>
+						<Link href='/account/conbook' className='hover:!text-[#48715B]/80 font-medium transition-colors duration-200'>{t('artbook.card.conbookLink')}</Link>
 						<span> | </span>
-						<Link href='/ticket'>{t('artbook.card.buyticket')}</Link>
+						<Link href='/ticket' className='hover:!text-[#48715B]/80 font-medium transition-colors duration-200'>{t('artbook.card.buyticket')}</Link>
 					</div>
 			</form>
 			)}
