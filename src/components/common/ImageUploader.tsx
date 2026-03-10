@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useRef, useState, useCallback } from 'react'
+import React, { useRef, useState, useCallback, useEffect } from 'react'
 import Image from 'next/image'
 import { useTranslations } from 'next-intl'
 import { Upload, X, CheckCircle2, AlertCircle, Loader2, FileText } from 'lucide-react'
@@ -41,6 +41,8 @@ export interface ImageUploaderProps {
 	buttonText?: string
 	/** Compress image before upload (e.g. for avatars). Default false (e.g. price sheets stay full quality). */
 	compressImage?: boolean
+	/** Auto-hide success message after this duration (ms). Set to 0 to keep it visible. Default 3000. */
+	successMessageDurationMs?: number
 }
 
 const ImageUploader: React.FC<ImageUploaderProps> = props => {
@@ -59,6 +61,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = props => {
 		label,
 		buttonText,
 		compressImage: compressImageBeforeUpload = false,
+		successMessageDurationMs = 3000,
 	} = props
 
 	const tCommon = useTranslations('common')
@@ -79,10 +82,21 @@ const ImageUploader: React.FC<ImageUploaderProps> = props => {
 	)
 	const [selectedFile, setSelectedFile] = useState<File | null>(null)
 	const [uploadError, setUploadError] = useState<string | null>(null)
+	const [showSuccessMessage, setShowSuccessMessage] = useState(false)
+
+	useEffect(() => {
+		if (!showSuccessMessage || successMessageDurationMs <= 0) return
+		const timer = setTimeout(() => {
+			setShowSuccessMessage(false)
+		}, successMessageDurationMs)
+
+		return () => clearTimeout(timer)
+	}, [showSuccessMessage, successMessageDurationMs])
 
 	const uploadOptions: UploadToS3Options = {
 		onSuccess: (fileUrl, fileKey) => {
 			setUploadError(null)
+			setShowSuccessMessage(true)
 			// Convert S3 URL to proxy URL for Next.js Image optimization
 			const displayUrl = isS3Url(fileUrl) ? getS3ProxyUrl(fileUrl) : fileUrl
 			setPreviewUrl(displayUrl)
@@ -90,6 +104,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = props => {
 		},
 		onError: error => {
 			setUploadError(error.message)
+			setShowSuccessMessage(false)
 			onUploadError?.(error)
 		},
 	}
@@ -170,6 +185,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = props => {
 
 			setSelectedFile(file)
 			setUploadError(null)
+			setShowSuccessMessage(false)
 
 			// Create preview
 			if (showPreview && file.type.startsWith('image/')) {
@@ -225,6 +241,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = props => {
 		setPreviewUrl(null)
 		setSelectedFile(null)
 		setUploadError(null)
+		setShowSuccessMessage(false)
 		if (fileInputRef.current) {
 			fileInputRef.current.value = ''
 		}
@@ -456,7 +473,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = props => {
 				)}
 
 				{/* Success Message */}
-				{!isUploading && !error && previewUrl && selectedFile && (
+				{showSuccessMessage && !isUploading && !error && previewUrl && (
 					<div className='mt-2 flex items-center gap-2 text-sm text-green-600 bg-green-50 border border-green-200 rounded-lg p-2.5'>
 						<CheckCircle2 className='w-4 h-4 flex-shrink-0' />
 						<span>{tCommon('imageUploader.status.uploadSuccessful')}</span>
