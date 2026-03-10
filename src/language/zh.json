@@ -411,7 +411,8 @@
 		"scanNextKeyboardHint": "按 Esc 或 N 继续扫描。",
 		"ticketNotFound": "未找到门票",
 		"ticketNotFoundHint": "ID或代码可能有误，或门票不存在。",
-		"fursona": "Fursona",
+		"fursona": "昵称",
+		"nickname": "昵称",
 		"ticketApproved": "门票审批通过",
 		"approveError": "审批门票失败。请重试。",
 		"denyError": "拒绝门票失败。请重试。",
@@ -432,7 +433,7 @@
 		"editUser": "编辑用户",
 		"firstName": "名",
 		"lastName": "姓",
-		"fursonaName": "Fursona 名称",
+		"fursonaName": "昵称",
 		"upgradedFrom": "从 {code} 升级",
 		"upgradeDiff": "升级差价"
 	},

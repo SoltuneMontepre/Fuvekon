@@ -419,7 +419,8 @@
 		"scanNextKeyboardHint": "Nhấn Esc hoặc N để quét tiếp.",
 		"ticketNotFound": "Không tìm thấy vé",
 		"ticketNotFoundHint": "Mã có thể sai hoặc vé không tồn tại.",
-		"fursona": "Fursona",
+		"fursona": "Biệt danh",
+		"nickname": "Biệt danh",
 		"ticketApproved": "Duyệt vé thành công",
 		"approveError": "Không thể duyệt vé. Vui lòng thử lại.",
 		"denyError": "Không thể từ chối vé. Vui lòng thử lại.",
@@ -440,7 +441,7 @@
 		"editUser": "Sửa người dùng",
 		"firstName": "Tên",
 		"lastName": "Họ",
-		"fursonaName": "Tên Fursona",
+		"fursonaName": "Biệt danh",
 		"upgradedFrom": "Nâng cấp từ {code}",
 		"upgradeDiff": "Chênh lệch"
 	},

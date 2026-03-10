@@ -411,7 +411,8 @@
 		"scanNextKeyboardHint": "กด Esc หรือ N เพื่อสแกนต่อ",
 		"ticketNotFound": "ไม่พบตั๋ว",
 		"ticketNotFoundHint": "รหัสอาจผิดหรือตั๋วไม่มีอยู่",
-		"fursona": "Fursona",
+		"fursona": "ชื่อเล่น",
+		"nickname": "ชื่อเล่น",
 		"ticketApproved": "อนุมัติตั๋วสำเร็จ",
 		"approveError": "ไม่สามารถอนุมัติตั๋ว กรุณาลองอีกครั้ง",
 		"denyError": "ไม่สามารถปฏิเสธตั๋ว กรุณาลองอีกครั้ง",
@@ -432,7 +433,7 @@
 		"editUser": "แก้ไขผู้ใช้",
 		"firstName": "ชื่อ",
 		"lastName": "นามสกุล",
-		"fursonaName": "ชื่อ Fursona",
+		"fursonaName": "ชื่อเล่น",
 		"upgradedFrom": "อัปเกรดจาก {code}",
 		"upgradeDiff": "ส่วนต่าง"
 	},

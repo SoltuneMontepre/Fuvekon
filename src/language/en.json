@@ -419,7 +419,8 @@
 		"scanNextKeyboardHint": "Press Esc or N to scan next.",
 		"ticketNotFound": "Ticket not found",
 		"ticketNotFoundHint": "The ID or code may be wrong, or the ticket does not exist.",
-		"fursona": "Fursona",
+		"fursona": "Nickname",
+		"nickname": "Nickname",
 		"ticketApproved": "Ticket approved successfully",
 		"approveError": "Failed to approve ticket. Please try again.",
 		"denyError": "Failed to deny ticket. Please try again.",
@@ -440,7 +441,7 @@
 		"editUser": "Edit User",
 		"firstName": "First Name",
 		"lastName": "Last Name",
-		"fursonaName": "Fursona Name",
+		"fursonaName": "Nickname",
 		"upgradedFrom": "Upgraded from {code}",
 		"upgradeDiff": "Upgrade Diff"
 	},

@@ -72,6 +72,10 @@ export function useAdminGetUserById(userId: string) {
 		queryKey: ['admin-user', userId],
 		queryFn: () => AdminUserAPI.getUserById(userId),
 		enabled: !!userId,
+		// Admin user details should be "live"—avoid stale/cached UI.
+		staleTime: 0,
+		refetchOnMount: 'always',
+		refetchOnWindowFocus: true,
 	})
 }
 
