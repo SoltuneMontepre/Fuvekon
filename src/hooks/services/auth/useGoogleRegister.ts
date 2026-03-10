@@ -52,12 +52,7 @@ export function useGoogleRegister() {
 
 				if (meData?.isSuccess && meData.data) {
 					setAccount(meData.data)
-					const userRole = meData.data.role?.toLowerCase()
-					if (userRole === 'admin' || userRole === 'staff') {
-						router.push('/admin/tickets')
-					} else {
-						router.push('/account')
-					}
+					router.push('/account')
 					return
 				}
 
