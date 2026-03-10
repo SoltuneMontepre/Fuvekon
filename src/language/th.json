@@ -264,6 +264,7 @@
 		"ticketNotFound": "ไม่พบข้อมูลตั๋ว",
 		"backToTicket": "กลับไปหน้าซื้อตั๋ว",
 		"soldOut": "ขายหมดแล้ว",
+		"runningOut": "ใกล้หมดแล้ว!",
 		"closed": "ปิดขาย",
 		"remaining": "เหลือ {count} ใบ",
 		"errorOccurred": "เกิดข้อผิดพลาด กรุณาลองอีกครั้ง",

@@ -264,6 +264,7 @@
 		"ticketNotFound": "未找到门票信息",
 		"backToTicket": "返回购票页面",
 		"soldOut": "已售罄",
+		"runningOut": "即将售罄！",
 		"closed": "已关闭",
 		"remaining": "剩余 {count} 张",
 		"errorOccurred": "发生错误。请重试。",

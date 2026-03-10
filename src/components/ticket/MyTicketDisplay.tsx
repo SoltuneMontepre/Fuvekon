@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import Image from 'next/image'
 import {
 	Clock,
 	CheckCircle,
@@ -15,7 +14,6 @@ import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 import {
 	useGetMyTicket,
-	useUpdateBadgeDetails,
 	useCancelTicket,
 } from '@/hooks/services/ticket/useTicket'
 import UpgradeTicketModal from '@/components/ticket/UpgradeTicketModal'
@@ -69,15 +67,10 @@ const MyTicketDisplay = (): React.ReactElement => {
 	const router = useRouter()
 	const t = useTranslations('ticket')
 	const tCommon = useTranslations('common')
-	const [showBadgeForm, setShowBadgeForm] = useState(false)
 	const [showCancelDialog, setShowCancelDialog] = useState(false)
 	const [showUpgradeModal, setShowUpgradeModal] = useState(false)
-	const [badgeName, setBadgeName] = useState('')
-	const [isFursuiter, setIsFursuiter] = useState(false)
-	const [isFursuitStaff, setIsFursuitStaff] = useState(false)
 
 	const { data: ticketData, isLoading, error, refetch } = useGetMyTicket()
-	const updateBadgeMutation = useUpdateBadgeDetails()
 	const cancelTicketMutation = useCancelTicket()
 
 	const ticket = ticketData?.data
@@ -90,21 +83,6 @@ const MyTicketDisplay = (): React.ReactElement => {
 			denied: t('status.denied'),
 		}
 		return statusLabels[status]
-	}
-
-	const handleUpdateBadge = async () => {
-		if (!badgeName.trim()) return
-		try {
-			await updateBadgeMutation.mutateAsync({
-				con_badge_name: badgeName.trim(),
-				is_fursuiter: isFursuiter,
-				is_fursuit_staff: isFursuitStaff,
-			})
-			setShowBadgeForm(false)
-			toast.success(t('badgeUpdatedSuccess') || 'Badge details updated successfully!')
-		} catch {
-			toast.error(t('badgeUpdateError') || 'Failed to update badge details. Please try again.')
-		}
 	}
 
 	const handleCancelTicket = async () => {
@@ -268,113 +246,6 @@ const MyTicketDisplay = (): React.ReactElement => {
 							</p>
 						</div>
 					</div>
-				</div>
-			)}
-
-			{/* Badge Details for Approved Tickets */}
-			{ticket.status === 'approved' && (
-				<div className='mt-6 pt-6 border-t border-[#48715B]/15'>
-					<h4 className='text-lg font-semibold text-text-primary mb-4'>
-						{t('badgeInfo')}
-					</h4>
-
-					{ticket.con_badge_name ? (
-						<div className='flex gap-4'>
-							{ticket.badge_image && (
-								<div className='w-24 h-24 relative rounded-xl overflow-hidden border border-[#8C8C8C]/15'>
-									<Image
-										src={ticket.badge_image}
-										alt='Badge'
-										fill
-										className='object-cover'
-									/>
-								</div>
-							)}
-							<div className='flex-1 grid grid-cols-1 sm:grid-cols-2 gap-3'>
-								<InfoField label={t('badgeName')} value={ticket.con_badge_name} />
-								<InfoField
-									label={t('fursuiter')}
-									value={ticket.is_fursuiter ? tCommon('yes') : tCommon('no')}
-								/>
-								<InfoField
-									label={t('fursuitStaff')}
-									value={ticket.is_fursuit_staff ? tCommon('yes') : tCommon('no')}
-								/>
-							</div>
-						</div>
-					) : (
-						<>
-							{!showBadgeForm ? (
-								<div className='rounded-xl bg-[#E2EEE2]/60 border border-[#8C8C8C]/15 p-4'>
-									<p className='text-sm text-text-secondary mb-3'>
-										{t('noBadgeYet')}
-									</p>
-									<button
-										onClick={() => setShowBadgeForm(true)}
-										className='py-2.5 px-4 rounded-xl btn-primary font-medium'
-									>
-										{t('updateBadge')}
-									</button>
-								</div>
-							) : (
-								<div className='rounded-xl bg-[#E2EEE2]/60 border border-[#8C8C8C]/15 p-4'>
-									<div className='space-y-4'>
-										<div className='space-y-0.5 px-3 py-2 rounded-xl bg-[#E2EEE2] border border-[#8C8C8C]/30 focus-within:border-[#48715B] transition-colors duration-200'>
-											<label className='text-sm font-medium text-[#48715B]'>
-												{t('badgeName')} <span className='text-red-500'>*</span>
-											</label>
-											<input
-												type='text'
-												value={badgeName}
-												onChange={e => setBadgeName(e.target.value)}
-												placeholder={t('enterFursonaName')}
-												className='block w-full bg-transparent text-lg text-text-secondary font-normal placeholder-[#8C8C8C]/40 focus:outline-none'
-											/>
-										</div>
-										<div className='flex gap-6'>
-											<label className='flex items-center gap-2 cursor-pointer'>
-												<input
-													type='checkbox'
-													checked={isFursuiter}
-													onChange={e => setIsFursuiter(e.target.checked)}
-													className='w-4 h-4 accent-[#48715B]'
-												/>
-												<span className='text-text-secondary'>
-													{t('iAmFursuiter')}
-												</span>
-											</label>
-											<label className='flex items-center gap-2 cursor-pointer'>
-												<input
-													type='checkbox'
-													checked={isFursuitStaff}
-													onChange={e => setIsFursuitStaff(e.target.checked)}
-													className='w-4 h-4 accent-[#48715B]'
-												/>
-												<span className='text-text-secondary'>
-													{t('fursuitStaff')}
-												</span>
-											</label>
-										</div>
-										<div className='flex gap-3'>
-											<button
-												onClick={() => setShowBadgeForm(false)}
-												className='py-2.5 px-4 rounded-xl border border-[#8C8C8C]/40 font-medium hover:bg-[#E2EEE2]'
-											>
-												{tCommon('cancel')}
-											</button>
-											<button
-												onClick={handleUpdateBadge}
-												disabled={!badgeName.trim() || updateBadgeMutation.isPending}
-												className='py-2.5 px-4 rounded-xl btn-primary font-medium disabled:opacity-50 disabled:cursor-not-allowed'
-											>
-												{updateBadgeMutation.isPending ? tCommon('saving') : tCommon('save')}
-											</button>
-										</div>
-									</div>
-								</div>
-							)}
-						</>
-					)}
 				</div>
 			)}
 
