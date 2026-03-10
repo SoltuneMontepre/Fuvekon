@@ -1,5 +1,6 @@
 'use client'
 
+import { useMemo } from 'react'
 import {
 	useQuery,
 	useMutation,
@@ -83,27 +84,31 @@ export function useAdminGetUserById(userId: string) {
 
 // Get multiple users by IDs and return a quick lookup map keyed by user id.
 export function useAdminGetUsersByIds(userIds: string[]) {
-	const uniqueIds = Array.from(
-		new Set(userIds.filter(id => typeof id === 'string' && id.trim().length > 0))
+	const uniqueIds = useMemo(
+		() =>
+			Array.from(
+				new Set(userIds.filter(id => typeof id === 'string' && id.trim().length > 0))
+			),
+		[userIds]
 	)
 
 	const queryResults = useQueries({
 		queries: uniqueIds.map(userId => ({
 			queryKey: ['admin-user', userId],
 			queryFn: () => AdminUserAPI.getUserById(userId),
-			enabled: !!userId,
 		})),
 	})
 
-	const usersById = uniqueIds.reduce<Record<string, GetUserByIdResponse>>(
-		(acc, userId, index) => {
-			const user = queryResults[index]?.data?.data
-			if (user) {
-				acc[userId] = user
-			}
-			return acc
-		},
-		{}
+	const usersById = useMemo(
+		() =>
+			uniqueIds.reduce<Record<string, GetUserByIdResponse>>((acc, userId, index) => {
+				const user = queryResults[index]?.data?.data
+				if (user) {
+					acc[userId] = user
+				}
+				return acc
+			}, {}),
+		[uniqueIds, queryResults]
 	)
 
 	return {

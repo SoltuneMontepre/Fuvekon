@@ -185,8 +185,8 @@ const AccountConbookPage = (): React.ReactElement => {
 			if (verificationPriority !== 0) return verificationPriority
 
 			// Priority 2: newest submissions first
-			const dateA = new Date(a.created_at || a.createdAt || 0).getTime()
-			const dateB = new Date(b.created_at || b.createdAt || 0).getTime()
+			const dateA = new Date(a.created_at ?? a.createdAt ?? 0).getTime() || 0
+			const dateB = new Date(b.created_at ?? b.createdAt ?? 0).getTime() || 0
 			return dateB - dateA
 		})
 	}, [submissions])
