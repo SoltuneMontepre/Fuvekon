@@ -32,3 +32,5 @@ export type AdminGetDealersResponse = DealerBoothDetail[]
 export type GetDealerByIdResponse = DealerBoothDetail
 
 export type VerifyDealerResponse = DealerBoothDetail
+
+export type DenyDealerResponse = DealerBoothDetail

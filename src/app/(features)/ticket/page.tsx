@@ -60,7 +60,9 @@ const TicketPage = (): React.ReactElement => {
 		try {
 			const result = await purchaseMutation.mutateAsync(tierId)
 			if (result?.isSuccess) {
-				router.push(`/ticket/purchase/${tierId}`)
+				// When queued (202), worker may still be processing; pass queued=1 so purchase page polls for ticket
+				const queued = result?.statusCode === 202
+				router.push(queued ? `/ticket/purchase/${tierId}?queued=1` : `/ticket/purchase/${tierId}`)
 			}
 		} catch (err) {
 			const message =

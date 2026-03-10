@@ -46,7 +46,7 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
 						},
 					],
 				},
-		  ]
+			]
 		: [
 				{
 					items: [
@@ -67,7 +67,7 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
 										href: '/admin/tickets',
 										icon: Ticket,
 									},
-							  ]
+								]
 							: []),
 						{
 							label: 'Quét vé',
@@ -75,7 +75,7 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
 							icon: Ticket,
 						},
 						{
-							label: 'Art submit',
+							label: 'Duyệt Conbook',
 							href: '/admin/art-submit',
 							icon: Ticket,
 						},
@@ -86,7 +86,7 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
 						},
 					],
 				},
-		  ]
+			]
 
 	// Save account data to Zustand store when fetched
 	useEffect(() => {
@@ -180,7 +180,10 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
 						className='absolute inset-0 z-0 opacity-[2%] w-full h-full object-cover pointer-events-none'
 						draggable={false}
 					/>
-					<section id='admin-main-section' className='admin-main-section relative z-10 p-8'>
+					<section
+						id='admin-main-section'
+						className='admin-main-section relative z-10 p-8'
+					>
 						{children}
 					</section>
 				</div>

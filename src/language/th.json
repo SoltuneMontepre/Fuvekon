@@ -49,6 +49,45 @@
 			}
 		}
 	},
+	"about": {
+		"hero": {
+			"title": "FUVE คืออะไร",
+			"imagePlaceholder": "ภาพ recap ของ FUVE",
+			"paragraph1": "FUVE – Furry Vietnam Eternity คืออีเวนต์คอนเวนชันสำหรับชุมชน furry ที่จัดขึ้น ณ นครโฮจิมินห์ ประเทศเวียดนาม ตั้งแต่ปี 2022 โดยมีเป้าหมายเพื่อสร้างพื้นที่ให้ทุกคนได้มาพบปะและทำความรู้จักกันในบรรยากาศที่เป็นกันเอง",
+			"paragraph2": "FUVE ตั้งใจเป็นพื้นที่ที่เป็นมิตร เปิดกว้าง ให้ทุกคนได้เชื่อมต่อ แลกเปลี่ยนความชอบ และสร้างช่วงเวลาน่าประทับใจร่วมกัน",
+			"paragraph3": "มาร่วมสนุกไปกับ FUVE ดื่มด่ำกับบรรยากาศคึกคัก สำรวจโซนกิจกรรมต่าง ๆ เวทีเสวนา Dealer Den และอีกหลากหลายเนื้อหาสุดพิเศษจากคอมมูนิตี้ furry เวียดนาม"
+		},
+		"video": {
+			"placeholder": "กดเพื่อชมวิดีโอ"
+		},
+		"recap": {
+			"title": "FUVE RECAP 2025",
+			"description": "สัมผัสบรรยากาศของ FUVE ผ่านวิดีโอ recap ที่รวบรวมโมเมนต์น่าจดจำจากปีที่ผ่านมา",
+			"button": "ดูบน YouTube"
+		},
+		"activities": {
+			"title": "กิจกรรมในงาน FUVE"
+		},
+		"credits": {
+			"title": "รายชื่อขอบคุณ",
+			"staff": {
+				"title": "FUVE staff member:"
+			},
+			"dev": {
+				"title": "Web Developer:",
+				"lead": "Team lead"
+			},
+			"design": {
+				"title": "Web Designer:"
+			},
+			"sponsor": {
+				"title": "Sponsorship:"
+			},
+			"banner": {
+				"title": "Theme banner artist:"
+			}
+		}
+	},
 	"nav": {
 		"myConbook": "การส่งผลงาน Conbook",
 		"ticket": "บัตร",
@@ -263,6 +302,9 @@
 		"couldNotLoadTicket": "ไม่สามารถโหลดข้อมูลตั๋วได้",
 		"ticketNotFound": "ไม่พบข้อมูลตั๋ว",
 		"backToTicket": "กลับไปหน้าซื้อตั๋ว",
+		"purchaseProcessing": "กำลังดำเนินการซื้อตั๋ว…",
+		"purchaseProcessingHint": "ตั๋วของคุณกำลังถูกสร้าง โดยปกติใช้เวลาเพียงไม่กี่วินาที",
+		"purchaseProcessingTimeoutHint": "หากคุณเพิ่งซื้อตั๋ว กรุณารอสักครู่แล้วรีเฟรชหน้า",
 		"soldOut": "ขายหมดแล้ว",
 		"runningOut": "ใกล้หมดแล้ว!",
 		"closed": "ปิดขาย",
@@ -392,6 +434,10 @@
 		"verify": "ยืนยัน",
 		"dealerVerified": "ยืนยัน Dealer สำเร็จ",
 		"verifyError": "ไม่สามารถยืนยัน Dealer ได้ กรุณาลองอีกครั้ง",
+		"denyDealer": "ปฏิเสธ",
+		"denyDealerConfirm": "ปฏิเสธการสมัคร Dealer สำหรับ \"{name}\" หรือไม่?",
+		"dealerDenied": "ปฏิเสธการสมัคร Dealer แล้ว",
+		"denyDealerError": "ไม่สามารถปฏิเสธ Dealer ได้ กรุณาลองอีกครั้ง",
 		"scanTicket": "สแกนตั๋ว",
 		"scanTicketDesc": "สแกน QR Code บนตั๋วหรือกรอกรหัสตั๋ว / รหัสอ้างอิงเพื่อตรวจสอบ",
 		"startScanner": "เปิดกล้อง",
@@ -412,7 +458,8 @@
 		"scanNextKeyboardHint": "กด Esc หรือ N เพื่อสแกนต่อ",
 		"ticketNotFound": "ไม่พบตั๋ว",
 		"ticketNotFoundHint": "รหัสอาจผิดหรือตั๋วไม่มีอยู่",
-		"fursona": "Fursona",
+		"fursona": "ชื่อเล่น",
+		"nickname": "ชื่อเล่น",
 		"ticketApproved": "อนุมัติตั๋วสำเร็จ",
 		"approveError": "ไม่สามารถอนุมัติตั๋ว กรุณาลองอีกครั้ง",
 		"denyError": "ไม่สามารถปฏิเสธตั๋ว กรุณาลองอีกครั้ง",
@@ -433,7 +480,7 @@
 		"editUser": "แก้ไขผู้ใช้",
 		"firstName": "ชื่อ",
 		"lastName": "นามสกุล",
-		"fursonaName": "ชื่อ Fursona",
+		"fursonaName": "ชื่อเล่น",
 		"upgradedFrom": "อัปเกรดจาก {code}",
 		"upgradeDiff": "ส่วนต่าง"
 	},
@@ -468,6 +515,46 @@
 		"verify": "ยืนยัน",
 		"verificationCodeSent": "ส่งรหัสยืนยันไปยังอีเมลของคุณแล้ว",
 		"emailVerifiedSuccess": "ยืนยันอีเมลสำเร็จแล้ว"
+	},
+	"accountConbook": {
+		"drumPatternAlt": "ลายกลอง",
+		"zoomedPreviewAlt": "พรีวิวแบบซูม",
+		"documentFallback": "เอกสาร",
+		"pleaseUploadBeforeSubmitting": "กรุณาอัปโหลดไฟล์ก่อนส่ง",
+		"title": "ส่ง Conbook",
+		"description": "ส่งผลงานและจัดการรายชื่อผลงานที่จะส่งเข้าร่วมประกวดได้ที่นี่ คุณสามารถส่งผลงานได้สูงสุดห้าชิ้น!",
+		"readGuidelines": "กรุณาอ่านแนวทางการส่งผลงานก่อนส่ง",
+		"submissionUpdated": "อัปเดตรายการส่งสำเร็จ!",
+		"submissionSuccess": "ส่งผลงานสำเร็จ!",
+		"labelTitle": "ชื่อผลงาน",
+		"placeholderTitle": "กรอกชื่อผลงานของคุณ",
+		"labelDescription": "คำอธิบาย",
+		"placeholderDescription": "กรอกคำอธิบายผลงานของคุณ",
+		"labelHandle": "แฮนเดิลโซเชียล",
+		"placeholderHandle": "แฮนเดิลโซเชียลของคุณ (เช่น name - Twitter)",
+		"previewAlt": "ตัวอย่าง",
+		"clickToZoom": "คลิกเพื่อซูม",
+		"removeFile": "ลบไฟล์",
+		"saving": "กำลังบันทึก...",
+		"submitting": "กำลังส่ง...",
+		"saveChanges": "บันทึกการเปลี่ยนแปลง",
+		"submitButton": "ส่ง Conbook",
+		"cancelEdit": "ยกเลิกการแก้ไข",
+		"mySubmissions": "ผลงานที่ส่งของฉัน ({count})",
+		"unableToLoadSubmissions": "ไม่สามารถโหลดผลงานที่ส่งของคุณได้ในขณะนี้",
+		"noSubmissions": "คุณยังไม่ได้ส่ง conbook",
+		"handleLabel": "แฮนเดิล",
+		"verified": "อนุมัติแล้ว",
+		"pendingVerification": "รอการอนุมัติ",
+		"verifiedByStaff": "อนุมัติโดยทีมงานแล้ว",
+		"editSubmission": "แก้ไขผลงานที่ส่ง",
+		"deleteSubmission": "ลบ",
+		"deleting": "กำลังลบ...",
+		"confirmDelete": "ลบ \"{title}\" ใช่หรือไม่? การดำเนินการนี้ไม่สามารถย้อนกลับได้",
+		"deleteSuccess": "ลบผลงานที่ส่งสำเร็จแล้ว",
+		"deleteError": "ลบผลงานที่ส่งไม่สำเร็จ กรุณาลองอีกครั้ง",
+		"submissionLimitError": "คุณสามารถส่งผลงานได้สูงสุด {max} รายการเท่านั้น",
+		"submissionLimitReached": "ถึงขีดจำกัดการส่งแล้ว ({max}/{max}) ลบ 1 รายการเพื่อส่งผลงานใหม่"
 	},
 	"changePassword": {
 		"title": "เปลี่ยนรหัสผ่าน",

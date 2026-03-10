@@ -51,6 +51,45 @@
 			}
 		}
 	},
+	"about": {
+		"hero": {
+			"title": "FUVE LÀ GÌ",
+			"imagePlaceholder": "Hình recap FUVE",
+			"paragraph1": "FUVE – Furry Vietnam Eternity là một sự kiện hội nghị furry được tổ chức tại Thành phố Hồ Chí Minh, Việt Nam từ năm 2022. Sự kiện được xây dựng với mục tiêu tạo ra một không gian gặp gỡ và giao lưu dành cho cộng đồng furry trong và ngoài nước.",
+			"paragraph2": "FUVE mong muốn mang đến một môi trường thân thiện, cởi mở, nơi mọi người có thể kết nối, chia sẻ đam mê và cùng nhau tạo nên những trải nghiệm đáng nhớ.",
+			"paragraph3": "Hãy đến với FUVE để hòa mình vào bầu không khí sôi động, khám phá các hoạt động, panel, khu vực dealer và nhiều nội dung thú vị khác từ cộng đồng furry Việt Nam."
+		},
+		"video": {
+			"placeholder": "video bấm để xem"
+		},
+		"recap": {
+			"title": "FUVE RECAP 2025",
+			"description": "Khám phá bầu không khí của FUVE qua video recap những khoảnh khắc đáng nhớ từ mùa trước.",
+			"button": "Xem trên YouTube"
+		},
+		"activities": {
+			"title": "HOẠT ĐỘNG TẠI FUVE"
+		},
+		"credits": {
+			"title": "GHI CÔNG",
+			"staff": {
+				"title": "FUVE staff member:"
+			},
+			"dev": {
+				"title": "Web Developer:",
+				"lead": "Team lead"
+			},
+			"design": {
+				"title": "Web Designer:"
+			},
+			"sponsor": {
+				"title": "Sponsorship:"
+			},
+			"banner": {
+				"title": "Theme banner artist:"
+			}
+		}
+	},
 	"nav": {
 		"myConbook": "Gửi Conbook",
 		"ticket": "Vé",
@@ -150,9 +189,9 @@
 		"otpPlaceholder": "Nhập mã",
 		"verifyOtpSuccess": "Xác minh thành công! Chuyển hướng đến đăng nhập...",
 		"verifying": "Đang xác minh...",
-		"verify": "Xác minh",		
+		"verify": "Xác minh",
 		"otpExpiresIn": "Mã sẽ hết hạn sau {time}",
-		"otpExpired": "Mã đã hết hạn. Vui lòng yêu cầu mã mới.",		
+		"otpExpired": "Mã đã hết hạn. Vui lòng yêu cầu mã mới.",
 		"registerButton": "Đăng ký tài khoản",
 		"termsAgreement": "Tôi đã đọc và chấp nhận mọi điều khoản và quy định của FUVE",
 		"registering": "Đang đăng ký...",
@@ -267,6 +306,9 @@
 		"couldNotLoadTicket": "Không thể tải thông tin vé",
 		"ticketNotFound": "Không tìm thấy thông tin vé",
 		"backToTicket": "Quay lại trang mua vé",
+		"purchaseProcessing": "Đang xử lý giao dịch…",
+		"purchaseProcessingHint": "Vé của bạn đang được tạo. Thường chỉ mất vài giây.",
+		"purchaseProcessingTimeoutHint": "Nếu bạn vừa mua vé, vui lòng đợi một chút rồi tải lại trang.",
 		"soldOut": "Hết vé",
 		"runningOut": "Sắp hết vé!",
 		"closed": "Đã đóng",
@@ -389,17 +431,53 @@
 		"confirmDeleteTier": "Xóa loại vé này? Không thể hoàn tác.",
 		"dealerManagement": "Quản lý Dealer",
 		"dealerManagementDesc": "Quản lý và xác minh các dealer booth",
+		"artSubmitManagement": "Duyệt Conbook Đã Gửi",
+		"artSubmitManagementDesc": "Xem các bài gửi đang chờ duyệt, kiểm tra đầy đủ thông tin và duyệt tác phẩm.",
 		"totalDealers": "Tổng số Dealer",
+		"totalSubmissions": "Tổng bài gửi",
+		"pendingSubmissions": "Đang chờ",
+		"pendingOnly": "Chỉ bài chờ duyệt",
+		"verifiedOnly": "Chỉ bài đã duyệt",
+		"approvedOnly": "Chỉ bài đã duyệt",
+		"viewAll": "Xem tất cả",
+		"sortNewest": "Mới nhất",
+		"sortOldest": "Cũ nhất",
+		"sortPendingFirst": "Chờ duyệt trước",
+		"sortVerifiedFirst": "Đã duyệt trước",
+		"sortApprovedFirst": "Duyệt trước",
 		"verifiedDealers": "Đã xác minh",
 		"unverifiedDealers": "Chưa xác minh",
 		"noDealers": "Không có dealer nào",
+		"searchArtSubmit": "Tìm theo tiêu đề, handle, tên Fursona...",
+		"unableToLoadArtSubmissions": "Không thể tải danh sách bài gửi",
+		"noArtSubmissionsFound": "Không tìm thấy bài gửi nào",
 		"boothName": "Tên Booth",
 		"boothNumber": "Số Booth",
+		"pendingVerification": "Đang chờ xác minh",
+		"pendingApproval": "Đang chờ duyệt",
+		"clickToZoom": "Nhấn để phóng to",
+		"clickToOpenDocument": "Nhấn để mở tài liệu",
+		"handle": "Tên Mạng Xã Hội",
+		"submitterName": "Tên Fursona",
+		"submittedAt": "Thời gian gửi",
+		"noAttachment": "Không có tệp đính kèm",
+		"approved": "Đã duyệt",
+		"approvedSubmissions": "Đã duyệt",
 		"description": "Mô tả",
 		"staff": "Nhân viên",
 		"verify": "Xác minh",
+		"unverify": "Bỏ duyệt",
+		"verifySuccess": "Xác minh bài gửi thành công",
+		"submissionApproveSuccess": "Duyệt bài gửi thành công",
+		"submissionUnverifySuccess": "Đã chuyển bài gửi về trạng thái chờ duyệt",
 		"dealerVerified": "Xác minh dealer thành công",
 		"verifyError": "Không thể xác minh dealer. Vui lòng thử lại.",
+		"denyDealer": "Từ chối",
+		"denyDealerConfirm": "Từ chối đăng ký dealer cho \"{name}\"?",
+		"dealerDenied": "Đã từ chối đăng ký dealer",
+		"denyDealerError": "Không thể từ chối dealer. Vui lòng thử lại.",
+		"submissionApproveError": "Không thể duyệt bài gửi",
+		"submissionUnverifyError": "Không thể bỏ duyệt bài gửi",
 		"scanTicket": "Quét vé",
 		"scanTicketDesc": "Quét mã QR trên vé hoặc nhập mã vé / mã tham chiếu để tra cứu và xác minh.",
 		"startScanner": "Bật camera",
@@ -420,7 +498,8 @@
 		"scanNextKeyboardHint": "Nhấn Esc hoặc N để quét tiếp.",
 		"ticketNotFound": "Không tìm thấy vé",
 		"ticketNotFoundHint": "Mã có thể sai hoặc vé không tồn tại.",
-		"fursona": "Fursona",
+		"fursona": "Biệt danh",
+		"nickname": "Biệt danh",
 		"ticketApproved": "Duyệt vé thành công",
 		"approveError": "Không thể duyệt vé. Vui lòng thử lại.",
 		"denyError": "Không thể từ chối vé. Vui lòng thử lại.",
@@ -441,7 +520,7 @@
 		"editUser": "Sửa người dùng",
 		"firstName": "Tên",
 		"lastName": "Họ",
-		"fursonaName": "Tên Fursona",
+		"fursonaName": "Biệt danh",
 		"upgradedFrom": "Nâng cấp từ {code}",
 		"upgradeDiff": "Chênh lệch"
 	},
@@ -476,6 +555,46 @@
 		"verify": "Xác minh",
 		"verificationCodeSent": "Mã xác minh đã được gửi đến email của bạn.",
 		"emailVerifiedSuccess": "Xác minh email thành công."
+	},
+	"accountConbook": {
+		"drumPatternAlt": "Hoa văn trống",
+		"zoomedPreviewAlt": "Bản xem phóng to",
+		"documentFallback": "Tài liệu",
+		"pleaseUploadBeforeSubmitting": "Vui lòng tải tệp lên trước khi gửi.",
+		"title": "Gửi Conbook",
+		"description": "Gửi tác phẩm của bạn và quản lý các bài gửi conbook tại đây. Bạn có thể gửi tối đa 5 tranh!",
+		"readGuidelines": "Vui lòng đọc hướng dẫn gửi bài trước khi gửi",
+		"submissionUpdated": "Cập nhật bài gửi thành công!",
+		"submissionSuccess": "Gửi bài thành công!",
+		"labelTitle": "Tên tác phẩm",
+		"placeholderTitle": "Nhập tên tác phẩm của bạn",
+		"labelDescription": "Mô tả",
+		"placeholderDescription": "Nhập mô tả tác phẩm của bạn",
+		"labelHandle": "Mạng xã hội",
+		"placeholderHandle": "Mạng xã hội của bạn (ví dụ: Tên - Twitter)",
+		"previewAlt": "Xem trước",
+		"clickToZoom": "Nhấn để phóng to",
+		"removeFile": "Xóa tệp",
+		"saving": "Đang lưu...",
+		"submitting": "Đang gửi...",
+		"saveChanges": "Lưu thay đổi",
+		"submitButton": "Gửi Conbook",
+		"cancelEdit": "Hủy chỉnh sửa",
+		"mySubmissions": "Tranh đã gửi ({count})",
+		"unableToLoadSubmissions": "Hiện không thể tải bài gửi của bạn.",
+		"noSubmissions": "Bạn chưa gửi conbook nào.",
+		"handleLabel": "Mạng xã hội",
+		"verified": "Đã duyệt",
+		"pendingVerification": "Đang chờ duyệt",
+		"verifiedByStaff": "Đã được staff duyệt",
+		"editSubmission": "Chỉnh sửa bài gửi",
+		"deleteSubmission": "Xóa",
+		"deleting": "Đang xóa...",
+		"confirmDelete": "Xóa \"{title}\"? Hành động này không thể hoàn tác.",
+		"deleteSuccess": "Đã xóa bài gửi thành công.",
+		"deleteError": "Xóa bài gửi thất bại. Vui lòng thử lại.",
+		"submissionLimitError": "Bạn chỉ có thể gửi tối đa {max} bài.",
+		"submissionLimitReached": "Đã đạt giới hạn gửi ({max}/{max}). Hãy xóa một bài để gửi bài mới."
 	},
 	"changePassword": {
 		"title": "ĐỔI MẬT KHẨU",

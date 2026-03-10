@@ -12,12 +12,14 @@ import {
 	Users,
 	Store,
 	AlertCircle,
+	XCircle,
 } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 import {
 	useAdminGetDealers,
 	useAdminVerifyDealer,
+	useAdminDenyDealer,
 	type AdminDealerFilter,
 } from '@/hooks/services/dealer/useAdminDealer'
 import type { DealerBoothDetail } from '@/types/models/dealer/dealer'
@@ -49,6 +51,7 @@ const DealerManagementPage = (): React.ReactElement => {
 
 	const { data: dealersData, isLoading: dealersLoading, refetch: refetchDealers } = useAdminGetDealers(filter)
 	const verifyMutation = useAdminVerifyDealer()
+	const denyMutation = useAdminDenyDealer()
 
 	const dealers = useMemo(() => dealersData?.data || [], [dealersData?.data])
 	const pagination = dealersData?.meta
@@ -94,6 +97,31 @@ const DealerManagementPage = (): React.ReactElement => {
 		} catch (error) {
 			logger.error('Failed to verify dealer', error, { dealerId: dealer.id })
 			toast.error(t('verifyError', 'Failed to verify dealer. Please try again.'))
+		}
+	}
+
+	const handleDeny = async (dealer: DealerBoothDetail) => {
+		const dealerName = dealer.booth_name || dealer.id
+		const translatedConfirm = tRaw('denyDealerConfirm', { name: dealerName })
+		const confirmMessage =
+			translatedConfirm && translatedConfirm !== 'denyDealerConfirm'
+				? translatedConfirm
+				: `Deny dealer registration for "${dealerName}"?`
+
+		if (
+			!window.confirm(
+				confirmMessage
+			)
+		) {
+			return
+		}
+
+		try {
+			await denyMutation.mutateAsync(dealer.id)
+			toast.success(t('dealerDenied', 'Dealer registration denied'))
+		} catch (error) {
+			logger.error('Failed to deny dealer', error, { dealerId: dealer.id })
+			toast.error(t('denyDealerError', 'Failed to deny dealer. Please try again.'))
 		}
 	}
 
@@ -276,14 +304,24 @@ const DealerManagementPage = (): React.ReactElement => {
 											<td className='px-4 py-3'>
 												<div className='flex justify-center gap-2'>
 													{!dealer.is_verified ? (
-														<button
-															onClick={() => handleVerify(dealer)}
-															disabled={verifyMutation.isPending}
-															className='inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-emerald-50 border border-emerald-400 text-emerald-700 text-sm font-medium hover:bg-emerald-100 disabled:opacity-50 disabled:cursor-not-allowed'
-														>
-															<Shield className='w-4 h-4' />
-															{t('verify', 'Xác minh')}
-														</button>
+														<>
+															<button
+																onClick={() => handleVerify(dealer)}
+																disabled={verifyMutation.isPending || denyMutation.isPending}
+																className='inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-emerald-50 border border-emerald-400 text-emerald-700 text-sm font-medium hover:bg-emerald-100 disabled:opacity-50 disabled:cursor-not-allowed'
+															>
+																<Shield className='w-4 h-4' />
+																{t('verify', 'Xác minh')}
+															</button>
+															<button
+																onClick={() => handleDeny(dealer)}
+																disabled={denyMutation.isPending || verifyMutation.isPending}
+																className='inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-red-50 border border-red-400 text-red-700 text-sm font-medium hover:bg-red-100 disabled:opacity-50 disabled:cursor-not-allowed'
+															>
+																<XCircle className='w-4 h-4' />
+																{t('denyDealer', 'Deny')}
+															</button>
+														</>
 													) : (
 														<span className='text-xs text-emerald-600 flex items-center gap-1'>
 															<CheckCircle className='w-4 h-4' />
