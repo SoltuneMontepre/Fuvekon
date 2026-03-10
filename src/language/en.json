@@ -514,7 +514,7 @@
 		"documentFallback": "Document",
 		"pleaseUploadBeforeSubmitting": "Please upload a file before submitting.",
 		"title": "Submit Conbook",
-		"description": "Submit your artwork and manage your own conbook submissions here. You may have 10 submissions at most!",
+		"description": "Submit your artwork and manage your own conbook submissions here. You may have 5 submissions at most!",
 		"readGuidelines": "Please read the submission guidelines before submitting",
 		"submissionUpdated": "Submission updated successfully!",
 		"submissionSuccess": "Submission successful!",
