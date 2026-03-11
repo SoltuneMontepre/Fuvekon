@@ -420,7 +420,7 @@ const DealerRegisterPage = () => {
 							type='button'
 							onClick={addPriceSheetSlot}
 							disabled={isSubmitting || registerDealerMutation.isPending}
-							className='bg-white mt-3 flex items-center gap-1.5 text-sm font-medium text-[#48715B] hover:text-[#3a5a4a] dark:text-[#7fba9c] dark:hover:text-[#9dd4b4] disabled:opacity-50 disabled:cursor-not-allowed transition-colors'
+							className='cursor-pointer !border-none mt-3 inline-flex items-center gap-1.5 rounded-xl border border-[#48715B]/25 bg-white px-3 py-2 text-sm text-[#3a5a4a] transition-colors hover:!bg-[#48715B] hover:!text-[#f0f8f3] font-bold disabled:opacity-50'
 						>
 							<Plus className='w-4 h-4' />
 							{t('addPriceSheet')}

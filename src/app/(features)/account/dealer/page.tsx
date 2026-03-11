@@ -1,12 +1,13 @@
 'use client'
 
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useTranslations } from 'next-intl'
 import { useGetMyDealer } from '@/hooks/services/dealer/useDealer'
 import { useAuthStore } from '@/stores/authStore'
-import { Store, CheckCircle, XCircle, UserCheck, Users } from 'lucide-react'
+import { Store, CheckCircle, XCircle, UserCheck, Users, Camera } from 'lucide-react'
 import S3Image from '@/components/common/S3Image'
 import Loading from '@/components/common/Loading'
+import { createPortal } from 'react-dom'
 import type { DealerStaff } from '@/types/models/dealer/dealer'
 
 const DealerPage = () => {
@@ -17,6 +18,23 @@ const DealerPage = () => {
 		useGetMyDealer(isDealer)
 
 	const myDealer = myDealerData?.data
+	const [zoomedImageUrl, setZoomedImageUrl] = useState<string | null>(null)
+	const [isClient, setIsClient] = useState(false)
+
+	useEffect(() => {
+		setIsClient(true)
+	}, [])
+
+	const isImageUrl = (url: string) => {
+		const cleanUrl = url.split('?')[0].toLowerCase()
+		return ['.jpg', '.jpeg', '.png'].some(ext => cleanUrl.endsWith(ext))
+	}
+
+	const priceSheets = (myDealer?.price_sheets && myDealer.price_sheets.length > 0)
+		? myDealer.price_sheets
+		: myDealer?.price_sheet
+		? [myDealer.price_sheet]
+		: []
 
 	// If user is not a dealer, show message immediately
 	if (!isDealer) {
@@ -74,6 +92,24 @@ const DealerPage = () => {
 
 	return (
 		<div className='rounded-2xl sm:rounded-[30px] bg-[#E9F5E7] p-4 sm:p-6 md:p-8 shadow-sm text-text-secondary max-w-full overflow-hidden'>
+			{isClient &&
+				zoomedImageUrl &&
+				createPortal(
+					<div
+						className='fixed inset-0 z-[1000] bg-black/85 backdrop-blur-[2px] flex items-center justify-center cursor-zoom-out'
+						onClick={() => setZoomedImageUrl(null)}
+					>
+						<div className='relative w-full h-full max-w-[1200px] max-h-[1200px]'>
+							<S3Image
+								src={zoomedImageUrl}
+								alt={t('priceSheetAlt')}
+								fill
+								className='object-contain'
+							/>
+						</div>
+					</div>,
+					document.body
+				)}
 			<div className='flex flex-col sm:flex-row items-center gap-3 mb-6 sm:mb-8'>
 				<Store className='w-7 h-7 sm:w-8 sm:h-8 text-[#48715B] shrink-0' />
 				<h1 className='text-xl sm:text-2xl md:text-3xl font-bold text-center'>{t('myBoothTitle')}</h1>
@@ -139,22 +175,48 @@ const DealerPage = () => {
 						</p>
 					</div>
 
-					{/* Price Sheet */}
-					<div className='mb-4'>
-						<label className='block text-sm font-medium text-[#48715B] mb-2'>
-							{t('priceSheet')}
-						</label>
-						{myDealer.price_sheet && (
-							<div className='relative h-48 sm:h-64 rounded-lg overflow-hidden min-w-0'>
-								<S3Image
-									src={myDealer.price_sheet}
-									alt={t('priceSheetAlt')}
-									fill
-									className='object-contain'
-								/>
+					{/* Price Sheets */}
+					{priceSheets.length > 0 && (
+						<div className='mb-4'>
+							<label className='block text-sm font-medium text-[#48715B] mb-3'>
+								{t('priceSheetLabel')}
+							</label>
+							<div className='grid grid-cols-1 sm:grid-cols-2 gap-3'>
+								{priceSheets.map((url: string, index: number) => (
+									<div key={`${url}-${index}`}>
+										{priceSheets.length > 1 && (
+											<p className='text-xs font-medium text-[#48715B] mb-2'>
+												{t('priceSheetN', { n: index + 1 })}
+											</p>
+										)}
+										{isImageUrl(url) ? (
+											<div
+												className='group/preview relative h-48 w-full cursor-zoom-in overflow-hidden rounded-lg border border-[#48715B]/20 bg-white shadow-md'
+												onClick={() => setZoomedImageUrl(url)}
+											>
+												<S3Image
+													src={url}
+													alt={t('priceSheetAlt')}
+													fill
+													className='z-0 object-cover'
+												/>
+												<div className='pointer-events-none absolute inset-0 z-10 flex flex-col items-center justify-center transition-all duration-200 bg-black/0 opacity-0 group-hover/preview:bg-black/40 group-hover/preview:opacity-100'>
+													<Camera className='text-white drop-shadow' size={28} />
+													<span className='mt-2 text-xs font-semibold text-white/95'>
+														{t('clickToZoom')}
+													</span>
+												</div>
+											</div>
+										) : (
+											<div className='h-48 w-full rounded-lg border border-[#48715B]/20 bg-gray-100 flex items-center justify-center'>
+												<p className='text-sm text-gray-500'>{t('priceSheetAlt')}</p>
+											</div>
+										)}
+									</div>
+								))}
 							</div>
-						)}
-					</div>
+						</div>
+					)}
 
 					{/* Staff Members */}
 					{staffs.length > 0 && (

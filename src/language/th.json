@@ -629,6 +629,7 @@
 		"priceSheetUploadLabel": "อัปโหลดรูปใบราคา (JPG, PNG สูงสุด 10MB)",
 		"priceSheetHint": "กรุณาอัปโหลดใบราคาของบูธ จะแสดงให้ผู้ใช้ดู",
 		"priceSheetN": "ใบราคา {n}",
+		"priceSheetLabel": "เอกสารราคาสินค้าจากดีลเลอร์ของคุณ",
 		"addPriceSheet": "เพิ่มใบราคาอีกใบ",
 		"removePriceSheet": "ลบ",
 		"clickToZoom": "คลิกเพื่อขยาย",

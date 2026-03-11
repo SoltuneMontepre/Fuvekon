@@ -673,6 +673,7 @@
 		"priceSheetUploadLabel": "Upload ảnh bảng giá của bạn (JPG, PNG, max 10MB)",
 		"priceSheetHint": "Vui lòng upload ảnh bảng giá của gian hàng. Ảnh sẽ được hiển thị cho người dùng xem.",
 		"priceSheetN": "Bảng giá {n}",
+		"priceSheetLabel": "Bảng giá Dealer Den của bạn",
 		"addPriceSheet": "Thêm bảng giá khác",
 		"removePriceSheet": "Xóa",
 		"clickToZoom": "Nhấn để phóng to",

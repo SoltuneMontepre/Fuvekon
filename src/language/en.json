@@ -674,6 +674,7 @@
 		"priceSheetUploadLabel": "Upload your price sheet image (JPG, PNG, max 10MB)",
 		"priceSheetHint": "Please upload your booth price sheet. It will be shown to users.",
 		"priceSheetN": "Price sheet {n}",
+		"priceSheetLabel": "Your Dealer Den Price Sheets",
 		"addPriceSheet": "Add another price sheet",
 		"removePriceSheet": "Remove",
 		"clickToZoom": "Click to zoom",

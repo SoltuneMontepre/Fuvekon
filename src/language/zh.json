@@ -629,6 +629,7 @@
 		"priceSheetUploadLabel": "上传价目表图片（JPG、PNG，最大10MB）",
 		"priceSheetHint": "请上传展位价目表，将向用户展示。",
 		"priceSheetN": "价目表 {n}",
+		"priceSheetLabel": "您的经销商价格表",
 		"addPriceSheet": "添加另一张价目表",
 		"removePriceSheet": "删除",
 		"clickToZoom": "点击放大",
