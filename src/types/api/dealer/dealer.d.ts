@@ -5,7 +5,7 @@ import type { DealerBooth, DealerBoothDetail } from '../../../models/dealer/deal
 export interface RegisterDealerRequest {
 	booth_name: string
 	description: string
-	price_sheet: string
+	price_sheets: string[]
 }
 
 export interface JoinDealerRequest {
