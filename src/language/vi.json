@@ -341,7 +341,7 @@
 		"pendingPayment": "Chờ thanh toán",
 		"verifying": "Đang xác minh",
 		"confirmed": "Đã xác nhận",
-		"denied": "Từ chối",
+		"denied": "Đã từ chối",
 		"over24Hours": "Quá 24h",
 		"ticketsByType": "Tình trạng vé theo loại",
 		"sold": "Đã bán",
