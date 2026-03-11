@@ -496,7 +496,7 @@ const ArtSubmitAdminPage = (): React.ReactElement => {
 								>
 									<div className='flex items-start justify-between gap-3'>
 										<div>
-											<h3 className='text-lg font-bold text-text-primary break-words'>
+											<h3 className='ml-2 text-lg font-bold text-text-primary break-words'>
 												{item.title || '–'}
 											</h3>
 											{/* <p className='text-xs text-[#48715B] mt-1 break-all'>
@@ -528,20 +528,21 @@ const ArtSubmitAdminPage = (): React.ReactElement => {
 									<div className='mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3'>
 										<div className='rounded-xl bg-[#f6fbf8] border border-[#48715B]/10 p-3'>
 											<p className='text-[11px] uppercase tracking-wide text-[#48715B]/80'>
+												{t('submitterName', 'Submitter name')}
+											</p>
+											<p className='text-sm text-text-primary break-words font-bold'>
+												{getSubmitterLabel(item, usersById)}
+											</p>
+										</div>
+										<div className='rounded-xl bg-[#f6fbf8] border border-[#48715B]/10 p-3'>
+											<p className='text-[11px] uppercase tracking-wide text-[#48715B]/80'>
 												{t('handle', 'Social Handle')}
 											</p>
 											<p className='text-sm text-text-primary break-words'>
 												{item.handle || '–'}
 											</p>
 										</div>
-										<div className='rounded-xl bg-[#f6fbf8] border border-[#48715B]/10 p-3'>
-											<p className='text-[11px] uppercase tracking-wide text-[#48715B]/80'>
-												{t('submitterName', 'Submitter name')}
-											</p>
-											<p className='text-sm text-text-primary break-words'>
-												{getSubmitterLabel(item, usersById)}
-											</p>
-										</div>
+										
 										<div className='rounded-xl bg-[#f6fbf8] border border-[#48715B]/10 p-3 sm:col-span-2'>
 											<p className='text-[11px] uppercase tracking-wide text-[#48715B]/80'>
 												{t('description', 'Description')}
