@@ -20,9 +20,9 @@ import S3Image from '@/components/common/S3Image'
 import {
 	type AdminConbookFilter,
 	type AdminConbookItem,
+	useAdminApproveConbook,
+	useAdminDenyConbook,
 	useAdminGetConbooks,
-	useAdminUnverifyConbook,
-	useAdminVerifyConbook,
 } from '@/hooks/services/artbook/useUploadFile'
 import { useAdminGetUsersByIds } from '@/hooks/services/user/useAdminUser'
 import type { PaginationMeta } from '@/types/api/ticket/ticket'
@@ -30,8 +30,8 @@ import Button from '@/components/ui/Button'
 import { createPortal } from 'react-dom'
 import { getS3ProxyUrl, isS3Url } from '@/utils/s3'
 
-type ViewMode = 'pending' | 'verified' | 'all'
-type SortMode = 'newest' | 'oldest' | 'pending-first' | 'verified-first'
+type ViewMode = 'pending' | 'approved' | 'denied' | 'all'
+type SortMode = 'newest' | 'oldest' | 'pending-first' | 'approved-first'
 
 const createTWithFallback = (t: (key: string) => string) => {
 	return (key: string, fallback: string) => {
@@ -138,7 +138,7 @@ const ArtSubmitAdminPage = (): React.ReactElement => {
 
 	const [searchInput, setSearchInput] = useState('')
 	const [zoomedImageUrl, setZoomedImageUrl] = useState<string | null>(null)
-	const [viewMode, setViewMode] = useState<ViewMode>('pending')
+	const [viewMode, setViewMode] = useState<ViewMode>('all')
 	const [sortMode, setSortMode] = useState<SortMode>('newest')
 	const [filter, setFilter] = useState<AdminConbookFilter>({
 		page: 1,
@@ -152,9 +152,15 @@ const ArtSubmitAdminPage = (): React.ReactElement => {
 		page: viewMode === 'all' ? 1 : filter.page,
 		page_size: viewMode === 'all' ? 200 : filter.page_size,
 	}
-	const verifiedFilter: AdminConbookFilter = {
+	const approvedFilter: AdminConbookFilter = {
 		...filter,
-		status: 'verified',
+		status: 'approved',
+		page: viewMode === 'all' ? 1 : filter.page,
+		page_size: viewMode === 'all' ? 200 : filter.page_size,
+	}
+	const deniedFilter: AdminConbookFilter = {
+		...filter,
+		status: 'denied',
 		page: viewMode === 'all' ? 1 : filter.page,
 		page_size: viewMode === 'all' ? 200 : filter.page_size,
 	}
@@ -166,46 +172,60 @@ const ArtSubmitAdminPage = (): React.ReactElement => {
 		refetch: refetchPending,
 	} = useAdminGetConbooks(pendingFilter)
 	const {
-		data: verifiedData,
-		isLoading: isVerifiedLoading,
-		isError: isVerifiedError,
-		refetch: refetchVerified,
-	} = useAdminGetConbooks(verifiedFilter)
-	const verifyMutation = useAdminVerifyConbook()
-	const unverifyMutation = useAdminUnverifyConbook()
+		data: approvedData,
+		isLoading: isApprovedLoading,
+		isError: isApprovedError,
+		refetch: refetchApproved,
+	} = useAdminGetConbooks(approvedFilter)
+	const {
+		data: deniedData,
+		isLoading: isDeniedLoading,
+		isError: isDeniedError,
+		refetch: refetchDenied,
+	} = useAdminGetConbooks(deniedFilter)
+	const approveMutation = useAdminApproveConbook()
+	const denyMutation = useAdminDenyConbook()
 
 	const sortSubmissions = (items: AdminConbookItem[]) => {
 		const getDate = (item: AdminConbookItem) =>
 			new Date(item.created_at || item.createdAt || 0).getTime()
+		const statusOrder = { pending: 0, approved: 1, denied: 2 }
 
 		return [...items].sort((a, b) => {
 			if (sortMode === 'newest') return getDate(b) - getDate(a)
 			if (sortMode === 'oldest') return getDate(a) - getDate(b)
+			const sa = statusOrder[a.status ?? 'pending']
+			const sb = statusOrder[b.status ?? 'pending']
 			if (sortMode === 'pending-first') {
-				const statusDiff = Number(Boolean(a.is_verified)) - Number(Boolean(b.is_verified))
-				if (statusDiff !== 0) return statusDiff
+				if (sa !== sb) return sa - sb
 				return getDate(b) - getDate(a)
 			}
-			const statusDiff = Number(Boolean(b.is_verified)) - Number(Boolean(a.is_verified))
-			if (statusDiff !== 0) return statusDiff
+			// approved-first
+			if (sa !== sb) return sb - sa
 			return getDate(b) - getDate(a)
 		})
 	}
 
 	const submissions = useMemo(() => {
 		if (viewMode === 'pending') return pendingData?.data || []
-		if (viewMode === 'verified') return verifiedData?.data || []
+		if (viewMode === 'approved') return approvedData?.data || []
+		if (viewMode === 'denied') return deniedData?.data || []
 
-		const combined = [...(pendingData?.data || []), ...(verifiedData?.data || [])]
+		const combined = [
+			...(pendingData?.data || []),
+			...(approvedData?.data || []),
+			...(deniedData?.data || []),
+		]
 		const deduped = Array.from(new Map(combined.map(item => [item.id, item])).values())
 		return sortSubmissions(deduped)
-	}, [viewMode, pendingData?.data, verifiedData?.data, sortMode])
+	}, [viewMode, pendingData?.data, approvedData?.data, deniedData?.data, sortMode])
 
 	const pagination = useMemo(() => {
 		if (viewMode === 'pending') return pendingData?.meta as PaginationMeta | undefined
-		if (viewMode === 'verified') return verifiedData?.meta as PaginationMeta | undefined
+		if (viewMode === 'approved') return approvedData?.meta as PaginationMeta | undefined
+		if (viewMode === 'denied') return deniedData?.meta as PaginationMeta | undefined
 		return undefined
-	}, [viewMode, pendingData?.meta, verifiedData?.meta])
+	}, [viewMode, pendingData?.meta, approvedData?.meta, deniedData?.meta])
 
 	const submitterIds = useMemo(() => {
 		return Array.from(
@@ -220,29 +240,35 @@ const ArtSubmitAdminPage = (): React.ReactElement => {
 	const { usersById } = useAdminGetUsersByIds(submitterIds)
 
 	const isLoading = viewMode === 'all'
-		? isPendingLoading || isVerifiedLoading
+		? isPendingLoading || isApprovedLoading || isDeniedLoading
 		: viewMode === 'pending'
 			? isPendingLoading
-			: isVerifiedLoading
+			: viewMode === 'approved'
+				? isApprovedLoading
+				: isDeniedLoading
 
 	const isError = viewMode === 'all'
-		? isPendingError || isVerifiedError
+		? isPendingError || isApprovedError || isDeniedError
 		: viewMode === 'pending'
 			? isPendingError
-			: isVerifiedError
+			: viewMode === 'approved'
+				? isApprovedError
+				: isDeniedError
 
 	const stats = useMemo(() => {
-		const pending = submissions.filter(item => !item.is_verified).length
-		const verified = submissions.filter(item => item.is_verified).length
+		const pending = submissions.filter(item => item.status === 'pending').length
+		const approved = submissions.filter(item => item.status === 'approved').length
+		const denied = submissions.filter(item => item.status === 'denied').length
 		return {
-			total: pagination?.totalItems || submissions.length,
+			total: pending + approved + denied,
 			pending,
-			verified,
+			approved,
+			denied,
 		}
 	}, [submissions, pagination])
 
 	const isPendingView = viewMode === 'pending'
-	const isVerifiedView = viewMode === 'verified'
+	const isApprovedView = viewMode === 'approved'
 	const isAllView = viewMode === 'all'
 
 	const filteredSubmissions = useMemo(() => {
@@ -266,7 +292,7 @@ const ArtSubmitAdminPage = (): React.ReactElement => {
 		setFilter(prev => ({ ...prev, page }))
 	}
 
-	const handleStatusChange = (status: 'pending' | 'verified') => {
+	const handleStatusChange = (status: 'pending' | 'approved' | 'denied') => {
 		setViewMode(status)
 		setFilter(prev => ({ ...prev, page: 1, status }))
 	}
@@ -276,21 +302,21 @@ const ArtSubmitAdminPage = (): React.ReactElement => {
 		setFilter(prev => ({ ...prev, page: 1 }))
 	}
 
-	const handleVerify = async (item: AdminConbookItem) => {
+	const handleApprove = async (item: AdminConbookItem) => {
 		try {
-			await verifyMutation.mutateAsync(item.id)
+			await approveMutation.mutateAsync(item.id)
 			toast.success(t('submissionApproveSuccess', 'Submission approved successfully'))
 		} catch {
 			toast.error(t('submissionApproveError', 'Failed to approve submission'))
 		}
 	}
 
-	const handleUnverify = async (item: AdminConbookItem) => {
+	const handleDeny = async (item: AdminConbookItem) => {
 		try {
-			await unverifyMutation.mutateAsync(item.id)
-			toast.success(t('submissionUnverifySuccess', 'Submission moved back to pending'))
+			await denyMutation.mutateAsync(item.id)
+			toast.success(t('submissionDenySuccess', 'Submission denied'))
 		} catch {
-			toast.error(t('submissionUnverifyError', 'Failed to unverify submission'))
+			toast.error(t('submissionDenyError', 'Failed to deny submission'))
 		}
 	}
 
@@ -309,53 +335,36 @@ const ArtSubmitAdminPage = (): React.ReactElement => {
 				</p>
 			</div>
 
-			<div className='grid grid-cols-1 md:grid-cols-3 gap-4 mt-6'>
-				<div className='rounded-xl bg-[#E2EEE2]/60 border border-[#8C8C8C]/15 p-4'>
-					<p className='text-sm font-medium text-[#48715B]'>
-						{t('totalSubmissions', 'Total submissions')}
-					</p>
-					<p className='text-2xl font-bold text-text-primary'>{stats.total}</p>
-				</div>
-				<div className='rounded-xl bg-amber-50/80 border border-amber-200 p-4'>
+			<div className='grid grid-cols-2 md:grid-cols-4 gap-4 mt-6'>
+		<div className='rounded-xl bg-[#E2EEE2]/60 border border-[#8C8C8C]/15 p-4'>
+				<p className='text-sm font-medium text-[#48715B]'>
+					{t('totalSubmissions', 'All Submissions')}
+				</p>
+				<p className='text-2xl font-bold text-text-primary'>{stats.total}</p>
+			</div>	
+			<div className='rounded-xl bg-amber-50/80 border border-amber-200 p-4'>
 					<p className='text-sm font-medium text-amber-700'>
 						{t('pendingSubmissions', 'Pending')}
 					</p>
 					<p className='text-2xl font-bold text-amber-800'>{stats.pending}</p>
-				</div>
-				<div className='rounded-xl bg-emerald-50/80 border border-emerald-200 p-4'>
+			</div>
+			<div className='rounded-xl bg-emerald-50/80 border border-emerald-200 p-4'>
 					<p className='text-sm font-medium text-emerald-700'>
 						{t('approvedSubmissions', 'Approved')}
 					</p>
-					<p className='text-2xl font-bold text-emerald-800'>{stats.verified}</p>
+			<p className='text-2xl font-bold text-emerald-800'>{stats.approved}</p>
+			</div>
+			<div className='rounded-xl bg-rose-50/80 border border-rose-200 p-4'>
+				<p className='text-sm font-medium text-rose-700'>
+					{t('deniedSubmissions', 'Denied')}
+				</p>
+				<p className='text-2xl font-bold text-rose-800'>{stats.denied}</p>
 				</div>
 			</div>
 
 			<div className='mt-6 rounded-xl bg-[#E2EEE2]/60 border border-[#8C8C8C]/15 p-4'>
 				<div className='flex flex-wrap gap-4 items-center'>
 					<div className='inline-flex rounded-xl border border-[#8C8C8C]/20 overflow-hidden bg-white'>
-						<button
-							type='button'
-							onClick={() => handleStatusChange('pending')}
-							className={`px-3 py-2 text-sm font-medium transition-colors ${
-								isPendingView
-									? 'bg-[#48715B] text-white'
-									: 'text-[#48715B] hover:bg-[#e9f2ec]'
-							}`}
-						>
-							{/* <Filter className='w-4 h-4 inline mr-1' /> */}
-							{t('pendingOnly', 'Pending Only')}
-						</button>
-						<button
-							type='button'
-							onClick={() => handleStatusChange('verified')}
-							className={`px-3 py-2 text-sm font-medium transition-colors ${
-								isVerifiedView
-									? 'bg-[#48715B] text-white'
-									: 'text-[#48715B] hover:bg-[#e9f2ec]'
-							}`}
-						>
-							{t('verifiedOnly', 'Verified Only')}
-						</button>
 						<button
 							type='button'
 							onClick={handleViewAll}
@@ -366,6 +375,40 @@ const ArtSubmitAdminPage = (): React.ReactElement => {
 							}`}
 						>
 							{t('viewAll', 'View All')}
+						</button>
+						<button
+							type='button'
+							onClick={() => handleStatusChange('pending')}
+							className={`px-3 py-2 text-sm font-medium transition-colors ${
+								isPendingView
+									? 'bg-amber-700 text-white'
+									: 'text-amber-700 hover:bg-amber-50'
+							}`}
+						>
+							{/* <Filter className='w-4 h-4 inline mr-1' /> */}
+							{t('pendingOnly', 'Pending Only')}
+						</button>
+						<button
+							type='button'
+							onClick={() => handleStatusChange('approved')}
+							className={`px-3 py-2 text-sm font-medium transition-colors ${
+								isApprovedView
+									? 'bg-emerald-600 text-white'
+									: 'text-emerald-700 hover:bg-emerald-50'
+							}`}
+						>
+							{t('approvedOnly', 'Approved Only')}
+						</button>
+						<button
+							type='button'
+							onClick={() => handleStatusChange('denied')}
+							className={`px-3 py-2 text-sm font-medium transition-colors ${
+								viewMode === 'denied'
+									? 'bg-rose-600 text-white'
+									: 'text-rose-700 hover:bg-rose-50'
+							}`}
+						>
+							{t('deniedOnly', 'Denied Only')}
 						</button>
 					</div>
 
@@ -378,7 +421,7 @@ const ArtSubmitAdminPage = (): React.ReactElement => {
 							<option value='newest'>{t('sortNewest', 'Newest')}</option>
 							<option value='oldest'>{t('sortOldest', 'Oldest')}</option>
 							<option value='pending-first'>{t('sortPendingFirst', 'Pending first')}</option>
-							<option value='verified-first'>{t('sortApprovedFirst', 'Approved first')}</option>
+							<option value='approved-first'>{t('sortApprovedFirst', 'Approved first')}</option>
 						</select>
 					)}
 
@@ -400,14 +443,19 @@ const ArtSubmitAdminPage = (): React.ReactElement => {
 						onClick={() => {
 							if (isAllView) {
 								refetchPending()
-								refetchVerified()
+								refetchApproved()
+								refetchDenied()
 								return
 							}
 							if (isPendingView) {
 								refetchPending()
 								return
 							}
-							refetchVerified()
+							if (isApprovedView) {
+								refetchApproved()
+								return
+							}
+							refetchDenied()
 						}}
 						className='p-2.5 rounded-xl bg-white border border-[#8C8C8C]/15 hover:bg-[#E2EEE2] transition-colors'
 						title={t('refresh', 'Refresh')}
@@ -457,19 +505,23 @@ const ArtSubmitAdminPage = (): React.ReactElement => {
 										</div>
 										<span
 											className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${
-												item.is_verified
-													? 'bg-emerald-100 text-emerald-700'
+											item.status === 'approved'
+												? 'bg-emerald-100 text-emerald-700'
+												: item.status === 'denied'
+													? 'bg-rose-100 text-rose-700'
 													: 'bg-amber-100 text-amber-700'
-											}`}
-										>
-											{item.is_verified ? (
-												<CheckCircle className='w-4 h-4' />
-											) : (
-												<AlertCircle className='w-4 h-4' />
-											)}
-											{item.is_verified
-												? t('approved', 'Approved')
-												: t('pendingApproval', 'Pending approval')}
+										}`}
+									>
+										{item.status === 'approved' ? (
+											<CheckCircle className='w-4 h-4' />
+										) : (
+											<AlertCircle className='w-4 h-4' />
+										)}
+										{item.status === 'approved'
+											? t('approved', 'Approved')
+											: item.status === 'denied'
+												? t('denied', 'Denied')
+													: t('pendingApproval', 'Pending approval')}
 										</span>
 									</div>
 
@@ -553,20 +605,32 @@ const ArtSubmitAdminPage = (): React.ReactElement => {
 											)}
 										</div>
 
-										<div className='pt-4 flex justify-end'>
+										<div className='pt-4 flex justify-end gap-2'>
 											<Button
-												className='cursor-pointer'
+												className='cursor-pointer border-[#547A65] !text-[#1b2d23] hover:bg-emerald-50'
 												props={{
 													type: 'button',
-													onClick: () =>
-														item.is_verified ? handleUnverify(item) : handleVerify(item),
+													onClick: () => handleApprove(item),
 													disabled:
-														verifyMutation.isPending || unverifyMutation.isPending,
+														approveMutation.isPending ||
+														denyMutation.isPending ||
+														item.status === 'approved',
 												}}
 											>
-												{item.is_verified
-													? t('unverify', 'Unverify')
-													: t('approve', 'Approve')}
+												{t('approve', 'Approve')}
+											</Button>
+											<Button
+												className='cursor-pointer border-rose-300 !text-rose-700 hover:bg-rose-50'
+												props={{
+													type: 'button',
+													onClick: () => handleDeny(item),
+													disabled:
+														approveMutation.isPending ||
+														denyMutation.isPending ||
+														item.status === 'denied',
+												}}
+											>
+												{t('deny', 'Deny')}
 											</Button>
 										</div>
 									</div>

@@ -25,6 +25,7 @@ import {
 	useUploadArtbook,
 } from '@/hooks/services/artbook/useUploadFile'
 import Image from 'next/image'
+import { getS3ProxyUrl, isS3Url } from '@/utils/s3'
 
 const AccountConbookPage = (): React.ReactElement => {
 	const MAX_SUBMISSIONS = 5
@@ -43,6 +44,13 @@ const AccountConbookPage = (): React.ReactElement => {
 		} catch {
 			return t('documentFallback')
 		}
+	}
+
+	const getDocumentPreviewUrl = (url: string) => {
+		if (isS3Url(url)) {
+			return getS3ProxyUrl(url)
+		}
+		return url
 	}
 
 	const [isSuccess, setIsSuccess] = useState(false)
@@ -110,7 +118,9 @@ const AccountConbookPage = (): React.ReactElement => {
 		setUploaderKey(prev => prev + 1)
 	}
 
-	const isSubmissionVerified = (isVerified?: boolean) => Boolean(isVerified)
+	const isSubmissionVerified = (status?: string) => status === 'approved'
+	const isSubmissionEditLocked = (status?: string) =>
+		status === 'approved' || status === 'denied'
 
 	const startEdit = (item: {
 		id: string
@@ -118,9 +128,9 @@ const AccountConbookPage = (): React.ReactElement => {
 		description: string
 		handle: string
 		image_url: string | null
-		is_verified?: boolean
+		status?: string
 	}) => {
-		if (isSubmissionVerified(item.is_verified)) return
+		if (isSubmissionEditLocked(item.status)) return
 		setEditingId(item.id)
 		setIsSuccess(false)
 		reset({
@@ -146,9 +156,9 @@ const AccountConbookPage = (): React.ReactElement => {
 	const handleDelete = async (item: {
 		id: string
 		title: string
-		is_verified?: boolean
+		status?: string
 	}) => {
-		if (isSubmissionVerified(item.is_verified)) return
+		if (isSubmissionVerified(item.status)) return
 
 		try {
 			setIsSuccess(false)
@@ -181,7 +191,7 @@ const AccountConbookPage = (): React.ReactElement => {
 	const prioritizedSubmissions = useMemo(() => {
 		return [...submissions].sort((a, b) => {
 			// Priority 1: approved submissions first
-			const verificationPriority = Number(isSubmissionVerified(b.is_verified)) - Number(isSubmissionVerified(a.is_verified))
+			const verificationPriority = Number(isSubmissionVerified(b.status)) - Number(isSubmissionVerified(a.status))
 			if (verificationPriority !== 0) return verificationPriority
 
 			// Priority 2: newest submissions first
@@ -394,11 +404,20 @@ const AccountConbookPage = (): React.ReactElement => {
 								</div>
 							</div>
 						) : (
-							<div className='relative mt-2 flex h-56 w-full flex-col items-center justify-center gap-2 rounded-2xl border border-[#48715B]/20 bg-white p-4 text-center shadow-[0_14px_28px_-18px_rgba(48,82,65,0.65)] ring-1 ring-white/60'>
+							<a
+								href={getDocumentPreviewUrl(uploadedFileUrl)}
+								target='_blank'
+								rel='noreferrer'
+								className='relative mt-2 flex h-56 w-full flex-col items-center justify-center gap-2 rounded-2xl border border-[#48715B]/20 bg-white p-4 text-center shadow-[0_14px_28px_-18px_rgba(48,82,65,0.65)] ring-1 ring-white/60 hover:bg-[#edf5ef] transition-colors'
+							>
 								<button
 									type='button'
 									className='absolute right-2 top-2 z-20 inline-flex items-center gap-1 rounded-full border border-[#48715B]/20 bg-[#f4faf6] px-2 py-1 text-[11px] font-semibold text-[#355643] transition-colors hover:bg-[#e8f2eb]'
-									onClick={clearSelectedFile}
+									onClick={event => {
+										event.preventDefault()
+										event.stopPropagation()
+										clearSelectedFile()
+									}}
 								>
 									<X size={12} />
 									{t('removeFile')}
@@ -407,7 +426,10 @@ const AccountConbookPage = (): React.ReactElement => {
 								<p className='text-sm text-[#48715B] break-all'>
 									{getFileNameFromUrl(uploadedFileUrl)}
 								</p>
-							</div>
+								<p className='text-[11px] text-[#48715B]/80'>
+									{t('clickToOpenDocument')}
+								</p>
+							</a>
 						)
 					)}
 
@@ -494,12 +516,18 @@ const AccountConbookPage = (): React.ReactElement => {
 								<div className='mt-auto space-y-3'>
 									<p
 										className={`mt-2 inline-flex items-center rounded-full border px-2 py-1 text-xs font-medium ${
-											item.is_verified
+											item.status === 'approved'
 												? 'border-emerald-300/70 bg-emerald-100 text-emerald-800'
-												: 'border-amber-300/70 bg-amber-100 text-amber-800'
+												: item.status === 'denied'
+													? 'border-rose-300/70 bg-rose-100 text-rose-800'
+													: 'border-amber-300/70 bg-amber-100 text-amber-800'
 										}`}
 									>
-										{item.is_verified ? t('verified') : t('pendingVerification')}
+										{item.status === 'approved'
+											? t('verified')
+											: item.status === 'denied'
+												? t('denied')
+												: t('pendingVerification')}
 									</p>
 									{item.image_url &&
 									(isImageUrl(item.image_url) ? (
@@ -521,39 +549,49 @@ const AccountConbookPage = (): React.ReactElement => {
 											</div>
 										</div>
 									) : (
-										<div className='flex h-40 w-full flex-col items-center justify-center gap-2 rounded-xl border border-[#48715B]/20 bg-[#e2eee2] p-4 text-center'>
+										<a
+											href={getDocumentPreviewUrl(item.image_url)}
+											target='_blank'
+											rel='noreferrer'
+											className='flex h-40 w-full flex-col items-center justify-center gap-2 rounded-xl border border-[#48715B]/20 bg-[#e2eee2] p-4 text-center hover:bg-[#edf5ef] transition-colors'
+										>
 											<FileText className='w-10 h-10 text-[#48715B]' />
 											<p className='text-xs text-[#48715B] break-all'>
 												{getFileNameFromUrl(item.image_url)}
 											</p>
-										</div>
+											<p className='text-[11px] text-[#48715B]/80'>
+												{t('clickToOpenDocument')}
+											</p>
+										</a>
 									))}
 								</div>
-								<div className='pt-1 flex gap-2 justify-between'>
+								<div className='pt-1 px-auto flex gap-2 justify-between'>
 									<Button
 										// className='cursor-pointer border border-[#48715B]/25 !bg-[#3f654f] !text-[#f0f8f3] transition-colors hover:!bg-[#335241] hover:!text-[#f0f8f3]'
-										className='cursor-pointer'
+										className='cursor-pointer h-20 items-center justify-center w-72'
 										props={{
 											type: 'button',
 											onClick: () => startEdit(item),
 											disabled:
-												isSubmissionVerified(item.is_verified) ||
-												isDeletingConbook ||
-												isUpdatingConbook ||
-												isUploadingArtbook,
-										}}
-									>
-											{isSubmissionVerified(item.is_verified)
+											isSubmissionEditLocked(item.status) ||
+											isDeletingConbook ||
+											isUpdatingConbook ||
+											isUploadingArtbook,
+									}}
+								>
+										{isSubmissionVerified(item.status)
 												? t('verifiedByStaff')
-												: t('editSubmission')}
+												: item.status === 'denied'
+													? t('denied')
+													: t('editSubmission')}
 									</Button>
 									<Button
-										className='cursor-pointer border border-rose-300/70 bg-white !text-rose-700 transition-colors hover:bg-rose-50'
+										className='cursor-pointer h-20 inline-flex items-center justify-center whitespace-nowrap border border-rose-300/70 bg-white !text-rose-700 transition-colors hover:bg-rose-50'
 										props={{
 											type: 'button',
 											onClick: () => handleDelete(item),
 											disabled:
-												isSubmissionVerified(item.is_verified) ||
+											isSubmissionVerified(item.status) ||
 												isDeletingConbook ||
 												isUpdatingConbook ||
 												isUploadingArtbook,

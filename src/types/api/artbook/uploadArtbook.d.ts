@@ -12,5 +12,6 @@ export type UploadArtbookResponse = {
   description: string
   handle: string
   image_url: string | null
+  con_book_art_status?: 'pending' | 'approved' | 'denied'
 //   createdAt: string
 }

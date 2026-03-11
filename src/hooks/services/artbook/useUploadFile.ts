@@ -11,10 +11,12 @@ import type { PaginationMeta } from '@/types/api/ticket/ticket'
 import { getQueryClient } from '@/utils/getQueryClient'
 // import { logger } from '@/utils/logger'
 
+export type ConbookArtStatus = 'pending' | 'approved' | 'denied'
+
 export type MyConbookItem = UploadArtbookResponse & {
 	created_at?: string
 	createdAt?: string
-	is_verified?: boolean
+	status?: ConbookArtStatus
 }
 
 export type AdminConbookItem = MyConbookItem & {
@@ -34,7 +36,7 @@ export interface AdminConbookFilter {
 	page?: number
 	page_size?: number
 	search?: string
-	status?: 'pending' | 'verified'
+	status?: 'pending' | 'approved' | 'denied'
 }
 
 export interface AdminGetConbooksResponseWithMeta
@@ -85,15 +87,21 @@ const ConbookApi = {
 			await axios.general.get<AdminGetConbooksResponseWithMeta>(url)
 		return data
 	},
-	verifyByAdmin: async (id: string) => {
+	approveByAdmin: async (id: string) => {
 		const { data } = await axios.general.patch<ApiResponse<MyConbookItem>>(
-			`/admin/conbooks/${id}/verify`
+			`/admin/conbooks/${id}/approve`
 		)
 		return data
 	},
-	unverifyByAdmin: async (id: string) => {
+	denyByAdmin: async (id: string) => {
 		const { data } = await axios.general.patch<ApiResponse<MyConbookItem>>(
-			`/admin/conbooks/${id}/unverify`
+			`/admin/conbooks/${id}/deny`
+		)
+		return data
+	},
+	setPendingByAdmin: async (id: string) => {
+		const { data } = await axios.general.patch<ApiResponse<MyConbookItem>>(
+			`/admin/conbooks/${id}/pending`
 		)
 		return data
 	},
@@ -170,11 +178,11 @@ export function useDeleteConbookSubmission() {
 	})
 }
 
-export function useAdminVerifyConbook() {
+export function useAdminApproveConbook() {
 	const queryClient = getQueryClient()
 
 	return useMutation({
-		mutationFn: (id: string) => ConbookApi.verifyByAdmin(id),
+		mutationFn: (id: string) => ConbookApi.approveByAdmin(id),
 		onSuccess: () => {
 			queryClient.invalidateQueries({
 				queryKey: ['admin-conbook-submissions'],
@@ -184,11 +192,25 @@ export function useAdminVerifyConbook() {
 	})
 }
 
-export function useAdminUnverifyConbook() {
+export function useAdminDenyConbook() {
 	const queryClient = getQueryClient()
 
 	return useMutation({
-		mutationFn: (id: string) => ConbookApi.unverifyByAdmin(id),
+		mutationFn: (id: string) => ConbookApi.denyByAdmin(id),
+		onSuccess: () => {
+			queryClient.invalidateQueries({
+				queryKey: ['admin-conbook-submissions'],
+			})
+			queryClient.invalidateQueries({ queryKey: conbookKeys.mySubmissions })
+		},
+	})
+}
+
+export function useAdminSetConbookPending() {
+	const queryClient = getQueryClient()
+
+	return useMutation({
+		mutationFn: (id: string) => ConbookApi.setPendingByAdmin(id),
 		onSuccess: () => {
 			queryClient.invalidateQueries({
 				queryKey: ['admin-conbook-submissions'],

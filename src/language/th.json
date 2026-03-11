@@ -546,6 +546,8 @@
 		"handleLabel": "แฮนเดิล",
 		"verified": "อนุมัติแล้ว",
 		"pendingVerification": "รอการอนุมัติ",
+		"denied": "ถูกปฏิเสธ",
+		"clickToOpenDocument" : "คลิกเพื่อเปิดเอกสาร",
 		"verifiedByStaff": "อนุมัติโดยทีมงานแล้ว",
 		"editSubmission": "แก้ไขผลงานที่ส่ง",
 		"deleteSubmission": "ลบ",
