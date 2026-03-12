@@ -51,8 +51,8 @@ const UpgradeTicketModal = ({ currentTier, onClose }: UpgradeTicketModalProps) =
 	}
 
 	return (
-		<div className='fixed inset-0 z-50 flex items-center justify-center bg-black/50'>
-			<div className='bg-white rounded-xl p-6 max-w-lg mx-4 shadow-2xl w-full max-h-[90vh] overflow-y-auto'>
+		<div className='fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4'>
+			<div className='bg-white rounded-xl p-6 sm:p-8 max-w-2xl shadow-2xl w-full'>
 				{/* Header */}
 				<div className='flex items-center justify-between mb-6'>
 					<div className='flex items-center gap-2'>
