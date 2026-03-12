@@ -7,7 +7,7 @@ import GOHSection from '@/components/landing/GOHSection'
 import HeroSection from '@/components/landing/HeroSection'
 import InfoSection from '@/components/landing/InfoSection'
 import ThemeSection from '@/components/landing/ThemeSection'
-import { GOH_ENABLED } from '@/config/app'
+import { GOH_ENABLED, INFO_ENABLED } from '@/config/app'
 import { useThemeStore } from '@/config/Providers/ThemeProvider'
 import { useGSAP } from '@gsap/react'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
@@ -352,7 +352,9 @@ const LandingPage = (): React.JSX.Element => {
 			<HeroSection reducedMotion={prefersReducedMotion} />
 
 			{/* Infomation Section */}
-			<InfoSection prefersReducedMotion={prefersReducedMotion} />
+			{INFO_ENABLED && (
+				<InfoSection prefersReducedMotion={prefersReducedMotion} />
+			)}
 
 			{/* Introduction + Theme */}
 			<ThemeSection prefersReducedMotion={prefersReducedMotion} />
