@@ -122,6 +122,7 @@
 		"invalidEmailOrPassword": "邮箱或密码错误。",
 		"accountLocked": "登录失败次数过多，请稍后再试。",
 		"userNotVerified": "您的账户尚未验证，请先验证邮箱。",
+		"accountBanned": "您的账户已被封禁，无法登录。如认为有误，请联系客服。",
 		"showPassword": "显示密码",
 		"hidePassword": "隐藏密码",
 		"validationFailed": "输入无效，请检查后重试。",

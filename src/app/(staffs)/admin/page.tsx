@@ -23,6 +23,7 @@ import {
 import { useBlacklistUser, useUnblacklistUser } from '@/hooks/services/ticket/useAdminTicket'
 import type { Account } from '@/types/models/auth/account'
 import Loading from '@/components/common/Loading'
+import BanUserModal from '@/components/admin/BanUserModal'
 
 const SEARCH_DEBOUNCE_MS = 400
 
@@ -65,6 +66,7 @@ const UserManagementPage = (): React.ReactElement => {
 	})
 	const [searchInput, setSearchInput] = useState('')
 	const [appliedSearch, setAppliedSearch] = useState('')
+	const [banTargetUser, setBanTargetUser] = useState<Account | null>(null)
 	const searchDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
 	useEffect(() => {
@@ -94,18 +96,22 @@ const UserManagementPage = (): React.ReactElement => {
 
 	const users: Account[] = usersData?.data ?? []
 
-	const handleBan = async (e: React.MouseEvent, user: Account) => {
+	const handleBanClick = (e: React.MouseEvent, user: Account) => {
 		e.stopPropagation()
 		const role = user.role?.toLowerCase()
 		if (role === 'admin' || role === 'staff') {
 			toast.error(t('cannotBanStaffOrAdmin') || 'Cannot ban admin or staff.')
 			return
 		}
-		const reason = window.prompt(t('banReasonPrompt') || 'Reason for banning this user (optional):')
-		if (reason === null) return
+		setBanTargetUser(user)
+	}
+
+	const handleBanConfirm = async (reason: string) => {
+		if (!banTargetUser) return
 		try {
-			await blacklistMutation.mutateAsync({ userId: user.id, reason: reason || '' })
+			await blacklistMutation.mutateAsync({ userId: banTargetUser.id, reason: reason.trim() })
 			toast.success(t('userBanned') || 'User banned.')
+			setBanTargetUser(null)
 		} catch {
 			toast.error(t('banFailed') || 'Failed to ban user.')
 		}
@@ -333,7 +339,7 @@ const UserManagementPage = (): React.ReactElement => {
 													) : (
 														<button
 															type='button'
-															onClick={e => handleBan(e, user)}
+															onClick={e => handleBanClick(e, user)}
 															disabled={
 																blacklistMutation.isPending ||
 																user.role?.toLowerCase() === 'admin' ||
@@ -406,6 +412,13 @@ const UserManagementPage = (): React.ReactElement => {
 					</>
 				)}
 			</div>
+
+			<BanUserModal
+				user={banTargetUser}
+				onClose={() => setBanTargetUser(null)}
+				onConfirm={handleBanConfirm}
+				isPending={blacklistMutation.isPending}
+			/>
 		</div>
 	)
 }

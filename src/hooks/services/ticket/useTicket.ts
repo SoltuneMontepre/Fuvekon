@@ -13,30 +13,37 @@ import type {
 	UpgradeTicketResponse,
 } from '@/types/api/ticket/ticket'
 import { getQueryClient } from '@/utils/getQueryClient'
+import { useAuthStore } from '@/stores/authStore'
 
 // API Functions
 const TicketAPI = {
 	// Get all active tiers (public)
 	getTiers: async () => {
-		const { data } = await axios.general.get<ApiResponse<GetTiersResponse>>('/tickets/tiers')
+		const { data } =
+			await axios.general.get<ApiResponse<GetTiersResponse>>('/tickets/tiers')
 		return data
 	},
 
 	// Get tier by ID (public)
 	getTierById: async (tierId: string) => {
-		const { data } = await axios.general.get<ApiResponse<GetTierByIdResponse>>(`/tickets/tiers/${tierId}`)
+		const { data } = await axios.general.get<ApiResponse<GetTierByIdResponse>>(
+			`/tickets/tiers/${tierId}`
+		)
 		return data
 	},
 
 	// Get current user's ticket (protected)
 	getMyTicket: async () => {
-		const { data } = await axios.general.get<ApiResponse<GetMyTicketResponse>>('/tickets/me')
+		const { data } =
+			await axios.general.get<ApiResponse<GetMyTicketResponse>>('/tickets/me')
 		return data
 	},
 
 	// Purchase a ticket (protected)
 	purchaseTicket: async (tierId: string) => {
-		const { data } = await axios.general.post<ApiResponse<PurchaseTicketResponse>>('/tickets/purchase', {
+		const { data } = await axios.general.post<
+			ApiResponse<PurchaseTicketResponse>
+		>('/tickets/purchase', {
 			tier_id: tierId,
 		})
 		return data
@@ -44,7 +51,9 @@ const TicketAPI = {
 
 	// Confirm payment (protected)
 	confirmPayment: async () => {
-		const { data } = await axios.general.patch<ApiResponse<ConfirmPaymentResponse>>('/tickets/me/confirm')
+		const { data } = await axios.general.patch<
+			ApiResponse<ConfirmPaymentResponse>
+		>('/tickets/me/confirm')
 		return data
 	},
 
@@ -55,13 +64,17 @@ const TicketAPI = {
 		is_fursuiter: boolean
 		is_fursuit_staff: boolean
 	}) => {
-		const { data } = await axios.general.patch<ApiResponse<UpdateBadgeDetailsResponse>>('/tickets/me/badge', payload)
+		const { data } = await axios.general.patch<
+			ApiResponse<UpdateBadgeDetailsResponse>
+		>('/tickets/me/badge', payload)
 		return data
 	},
 
 	// Upgrade ticket to a higher tier (protected)
 	upgradeTicket: async (newTierId: string) => {
-		const { data } = await axios.general.patch<ApiResponse<UpgradeTicketResponse>>('/tickets/me/upgrade', {
+		const { data } = await axios.general.patch<
+			ApiResponse<UpgradeTicketResponse>
+		>('/tickets/me/upgrade', {
 			new_tier_id: newTierId,
 		})
 		return data
@@ -69,7 +82,10 @@ const TicketAPI = {
 
 	// Cancel ticket (protected)
 	cancelTicket: async () => {
-		const { data } = await axios.general.delete<ApiResponse<Record<string, never>>>('/tickets/me/cancel')
+		const { data } =
+			await axios.general.delete<ApiResponse<Record<string, never>>>(
+				'/tickets/me/cancel'
+			)
 		return data
 	},
 }
@@ -97,9 +113,11 @@ export function useGetTierById(tierId: string) {
 
 // Get current user's ticket
 export function useGetMyTicket() {
+	const account = useAuthStore(state => state.account)
 	return useQuery({
 		queryKey: ['my-ticket'],
 		queryFn: () => TicketAPI.getMyTicket(),
+		enabled: !!account,
 		retry: false,
 		staleTime: 1000 * 30, // 30s — prevents excessive refetches while keeping data fresh on navigation
 	})
@@ -125,7 +143,7 @@ export function useConfirmPayment() {
 
 	return useMutation({
 		mutationFn: () => TicketAPI.confirmPayment(),
-		onSuccess: (data) => {
+		onSuccess: data => {
 			// Synchronous path returns updated ticket — update cache directly to avoid race condition
 			if (data.data) {
 				queryClient.setQueryData(['my-ticket'], data)
