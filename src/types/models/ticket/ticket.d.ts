@@ -1,5 +1,5 @@
 // Ticket Status enum matching backend
-export type TicketStatus = 'pending' | 'self_confirmed' | 'approved' | 'denied'
+export type TicketStatus = 'pending' | 'self_confirmed' | 'approved' | 'denied' | 'admin_granted'
 
 // Ticket Tier - available ticket types
 export interface TicketTier {

@@ -21,6 +21,7 @@ import {
 	ArrowUpCircle,
 	Eye,
 	EyeOff,
+	ShieldCheck,
 } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
@@ -89,6 +90,11 @@ const STATUS_ICONS: Record<
 		bgColor: 'bg-red-100 dark:bg-red-900/30',
 		textColor: 'text-red-700 dark:text-red-400',
 	},
+	admin_granted: {
+		icon: <ShieldCheck className='w-4 h-4' />,
+		bgColor: 'bg-purple-100 dark:bg-purple-900/30',
+		textColor: 'text-purple-700 dark:text-purple-400',
+	},
 }
 
 const TicketManagementPage = (): React.ReactElement => {
@@ -116,6 +122,7 @@ const TicketManagementPage = (): React.ReactElement => {
 			self_confirmed: tTicket('status.selfConfirmed'),
 			approved: tTicket('status.approved'),
 			denied: tTicket('status.denied'),
+			admin_granted: tTicket('status.adminGranted'),
 		}
 		return statusLabels[status]
 	}
@@ -907,7 +914,7 @@ const TicketManagementPage = (): React.ReactElement => {
 											<td className='px-4 py-3 text-sm'>
 												{formatPrice(tier.price)} VND
 											</td>
-											<td className='px-4 py-3 text-sm'>{tier.stock}</td>
+											<td className='px-4 py-3 text-sm'>{tierStat ? tierStat.total_stock : tier.stock}</td>
 											<td className='px-4 py-3'>
 												{tierStat ? (
 													<div className='min-w-[120px]'>

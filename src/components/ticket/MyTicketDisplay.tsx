@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import {
 	Clock,
@@ -9,6 +9,7 @@ import {
 	AlertCircle,
 	RefreshCw,
 	ArrowUpCircle,
+	ShieldCheck,
 } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
@@ -17,6 +18,7 @@ import {
 	useCancelTicket,
 } from '@/hooks/services/ticket/useTicket'
 import UpgradeTicketModal from '@/components/ticket/UpgradeTicketModal'
+import Loading from '@/components/common/Loading'
 import type { TicketStatus } from '@/types/models/ticket/ticket'
 
 // Format price in VND
@@ -53,6 +55,11 @@ const STATUS_CONFIG: Record<
 		textColor: 'text-red-700',
 		pillBg: 'bg-red-100',
 	},
+	admin_granted: {
+		icon: <ShieldCheck className='w-4 h-4' />,
+		textColor: 'text-purple-700',
+		pillBg: 'bg-purple-100',
+	},
 }
 
 // Reusable info field matching account page style
@@ -69,11 +76,22 @@ const MyTicketDisplay = (): React.ReactElement => {
 	const tCommon = useTranslations('common')
 	const [showCancelDialog, setShowCancelDialog] = useState(false)
 	const [showUpgradeModal, setShowUpgradeModal] = useState(false)
+	const [isCancelling, setIsCancelling] = useState(false)
+	const cancelDialogRef = useRef<HTMLDialogElement>(null)
 
 	const { data: ticketData, isLoading, error, refetch } = useGetMyTicket()
 	const cancelTicketMutation = useCancelTicket()
 
 	const ticket = ticketData?.data
+
+	// Sync native dialog open/close state
+	useEffect(() => {
+		if (showCancelDialog) {
+			cancelDialogRef.current?.showModal()
+		} else {
+			cancelDialogRef.current?.close()
+		}
+	}, [showCancelDialog])
 
 	const getStatusLabel = (status: TicketStatus): string => {
 		const statusLabels: Record<TicketStatus, string> = {
@@ -81,18 +99,21 @@ const MyTicketDisplay = (): React.ReactElement => {
 			self_confirmed: t('status.selfConfirmed'),
 			approved: t('status.approved'),
 			denied: t('status.denied'),
+			admin_granted: t('status.adminGranted'),
 		}
 		return statusLabels[status]
 	}
 
 	const handleCancelTicket = async () => {
-		setShowCancelDialog(false)
+		setIsCancelling(true)
 		try {
 			await cancelTicketMutation.mutateAsync()
 			toast.success(t('ticketCancelledSuccess') || 'Ticket cancelled successfully!')
-			router.push('/ticket')
+			setShowCancelDialog(false)
+			setIsCancelling(false)
 		} catch {
 			toast.error(t('ticketCancelError') || 'Failed to cancel ticket. Please try again.')
+			setIsCancelling(false)
 		}
 	}
 
@@ -103,11 +124,7 @@ const MyTicketDisplay = (): React.ReactElement => {
 	}, [error, t])
 
 	if (isLoading) {
-		return (
-			<div className='rounded-[30px] p-6 sm:p-10'>
-				<div className='text-center text-[#48715b]'>{tCommon('loading')}</div>
-			</div>
-		)
+		return <Loading />
 	}
 
 	if (error) {
@@ -147,9 +164,12 @@ const MyTicketDisplay = (): React.ReactElement => {
 
 	const statusConfig = STATUS_CONFIG[ticket.status]
 	const tier = ticket.tier
+	const isUpgradedTicket = !!ticket.upgraded_from_tier_id
 
 	return (
 		<div className='rounded-[30px] p-6 sm:p-10 text-text-secondary'>
+			{isCancelling && <Loading />}
+
 			{/* Title + Status pill */}
 			<div className='flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-6 border-b border-[#48715B]/15'>
 				<h2 className='text-xl font-semibold text-text-primary'>
@@ -189,10 +209,9 @@ const MyTicketDisplay = (): React.ReactElement => {
 						</button>
 						<button
 							onClick={() => setShowCancelDialog(true)}
-							disabled={cancelTicketMutation.isPending}
-							className='py-2.5 px-4 rounded-xl border border-red-400 text-red-600 font-medium hover:bg-red-50 disabled:opacity-50 disabled:cursor-not-allowed'
+							className='py-2.5 px-4 rounded-xl border border-red-400 text-red-600 font-medium hover:bg-red-50'
 						>
-							{cancelTicketMutation.isPending ? tCommon('processing') : tCommon('cancel')}
+							{tCommon('cancel')}
 						</button>
 					</div>
 				</div>
@@ -204,10 +223,9 @@ const MyTicketDisplay = (): React.ReactElement => {
 					<p className='text-xs text-blue-600 mt-1'>{t('verificationTime')}</p>
 					<button
 						onClick={() => setShowCancelDialog(true)}
-						disabled={cancelTicketMutation.isPending}
-						className='mt-3 w-full py-2.5 px-4 rounded-xl border border-red-400 text-red-600 font-medium hover:bg-red-50 disabled:opacity-50 disabled:cursor-not-allowed'
+						className='mt-3 w-full py-2.5 px-4 rounded-xl border border-red-400 text-red-600 font-medium hover:bg-red-50'
 					>
-						{cancelTicketMutation.isPending ? tCommon('processing') : tCommon('cancel')}
+						{tCommon('cancel')}
 					</button>
 				</div>
 			)}
@@ -225,6 +243,18 @@ const MyTicketDisplay = (): React.ReactElement => {
 						className='mt-3 py-2.5 px-4 rounded-xl btn-primary font-medium'
 					>
 						{t('tryAnotherTicket')}
+					</button>
+				</div>
+			)}
+
+			{ticket.status === 'admin_granted' && (
+				<div className='mt-6 rounded-xl border border-purple-200 bg-purple-50/50 px-4 py-4'>
+					<p className='text-sm text-purple-800'>{t('adminGrantedDesc')}</p>
+					<button
+						onClick={() => setShowCancelDialog(true)}
+						className='mt-3 w-full py-2.5 px-4 rounded-xl border border-red-400 text-red-600 font-medium hover:bg-red-50'
+					>
+						{tCommon('cancel')}
 					</button>
 				</div>
 			)}
@@ -270,38 +300,39 @@ const MyTicketDisplay = (): React.ReactElement => {
 				/>
 			)}
 
-			{/* Cancel Confirmation Dialog */}
-			{showCancelDialog && (
-				<div className='fixed inset-0 z-50 flex items-center justify-center bg-black/50'>
-					<div className='bg-white rounded-2xl p-6 max-w-md mx-4 shadow-2xl'>
-						<h3 className='text-xl font-semibold text-text-primary mb-4'>
-							{t('confirmCancelTicket')}
-						</h3>
-						<p className='text-text-secondary mb-6'>
-							{t('confirmCancelTicketDesc') ||
-								'Bạn có chắc chắn muốn hủy vé này không? Số lượng vé sẽ được hoàn lại và bạn có thể mua vé mới.'}
-						</p>
-						<div className='flex gap-3'>
-							<button
-								onClick={() => setShowCancelDialog(false)}
-								disabled={cancelTicketMutation.isPending}
-								className='flex-1 py-2.5 px-4 rounded-xl border border-[#8C8C8C]/40 font-medium hover:bg-[#E2EEE2] disabled:opacity-50'
-							>
-								{tCommon('cancel')}
-							</button>
-							<button
-								onClick={handleCancelTicket}
-								disabled={cancelTicketMutation.isPending}
-								className='flex-1 py-2.5 px-4 rounded-xl bg-red-500 text-white font-medium hover:bg-red-600 disabled:opacity-50'
-							>
-								{cancelTicketMutation.isPending
-									? tCommon('processing')
-									: t('confirmCancel') || 'Xác nhận hủy'}
-							</button>
-						</div>
-					</div>
+			{/* Cancel Confirmation Dialog — native dialog to avoid parent height clipping */}
+			<dialog
+				ref={cancelDialogRef}
+				onCancel={() => setShowCancelDialog(false)}
+				className='bg-white rounded-2xl p-6 w-full max-w-md shadow-2xl backdrop:bg-black/50 m-auto'
+			>
+				<h3 className='text-xl font-semibold text-text-primary mb-4'>
+					{t('confirmCancelTicket')}
+				</h3>
+				<p className='text-text-secondary mb-2'>
+					{t('confirmCancelTicketDesc') ||
+						'Are you sure you want to cancel this ticket? Your slot will be released and you can purchase a new ticket.'}
+				</p>
+				{isUpgradedTicket && (
+					<p className='text-sm text-blue-700 bg-blue-50 border border-blue-200 rounded-lg px-3 py-2 mb-4'>
+						{t('cancelUpgradeWarning')}
+					</p>
+				)}
+				<div className='flex gap-3 mt-6'>
+					<button
+						onClick={() => setShowCancelDialog(false)}
+						className='flex-1 py-2.5 px-4 rounded-xl border border-[#8C8C8C]/40 font-medium hover:bg-[#E2EEE2]'
+					>
+						{tCommon('cancel')}
+					</button>
+					<button
+						onClick={handleCancelTicket}
+						className='flex-1 py-2.5 px-4 rounded-xl bg-red-500 text-white font-medium hover:bg-red-600'
+					>
+						{t('confirmCancel') || 'Confirm Cancel'}
+					</button>
 				</div>
-			)}
+			</dialog>
 		</div>
 	)
 }

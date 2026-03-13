@@ -95,11 +95,12 @@ export function useGetTierById(tierId: string) {
 	})
 }
 
-// Get current user's ticket
-export function useGetMyTicket() {
+// Get current user's ticket — pass enabled=false to skip the call when unauthenticated
+export function useGetMyTicket(enabled = true) {
 	return useQuery({
 		queryKey: ['my-ticket'],
 		queryFn: () => TicketAPI.getMyTicket(),
+		enabled,
 		retry: false,
 		staleTime: 1000 * 30, // 30s — prevents excessive refetches while keeping data fresh on navigation
 	})

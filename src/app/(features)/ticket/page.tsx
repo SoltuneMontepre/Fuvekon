@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useTranslations } from 'next-intl'
 import { Check } from 'lucide-react'
@@ -36,7 +36,6 @@ const TIER_IMAGES = [
 const TicketPage = (): React.ReactElement => {
 	const router = useRouter()
 	const t = useTranslations('ticket')
-	const tCommon = useTranslations('common')
 	const account = useAuthStore(state => state.account)
 
 	const {
@@ -44,8 +43,9 @@ const TicketPage = (): React.ReactElement => {
 		isLoading: tiersLoading,
 		error: tiersError,
 	} = useGetTiers()
-	const { data: myTicketData, isLoading: ticketLoading } = useGetMyTicket()
+	const { data: myTicketData, isLoading: ticketLoading } = useGetMyTicket(!!account)
 	const purchaseMutation = usePurchaseTicket()
+	const [isPurchasing, setIsPurchasing] = useState(false)
 
 	const hasActiveTicket =
 		myTicketData?.data && myTicketData.data.status !== 'denied'
@@ -57,23 +57,27 @@ const TicketPage = (): React.ReactElement => {
 			return
 		}
 
+		setIsPurchasing(true)
 		try {
 			const result = await purchaseMutation.mutateAsync(tierId)
 			if (result?.isSuccess) {
-				// When queued (202), worker may still be processing; pass queued=1 so purchase page polls for ticket
 				const queued = result?.statusCode === 202
+				// Keep loading up — it will stay until the new page mounts
 				router.push(queued ? `/ticket/purchase/${tierId}?queued=1` : `/ticket/purchase/${tierId}`)
+				return
 			}
+			setIsPurchasing(false)
 		} catch (err) {
 			const message =
 				(err as AxiosError<{ message?: string }>)?.response?.data?.message ||
 				(err as Error).message ||
 				t('errorOccurred')
 			toast.error(message)
+			setIsPurchasing(false)
 		}
 	}
 
-	const isDisabled = !account || !!isBlacklisted || !!hasActiveTicket
+	const isDisabled = !!isBlacklisted || !!hasActiveTicket
 	const isTierClosed = (tier: TicketTier) => tier.is_active === false
 	const isTierSoldOut = (tier: TicketTier) => tier.stock <= 0
 
@@ -100,8 +104,27 @@ const TicketPage = (): React.ReactElement => {
 
 	const tiers: TicketTier[] = tiersData?.data ?? []
 
+	// Map tier id → visual rank (0 = cheapest … n-1 = most expensive)
+	const tierRankMap = new Map(
+		[...tiers].sort((a, b) => Number(a.price) - Number(b.price)).map((t, i) => [t.id, i])
+	)
+	// Imperial Vietnamese palette — same white titles + saffron prices across all tiers;
+	// overlay depth and shadow color provide the Wood→Bronze→Silver→Gold differentiation.
+	const TIER_COLORS = [
+		// Wood
+		{ title: '#FFFFFF', price: '#EB9F4F', overlayOpacity: 0.78, shadow: '#8B5E3C' },
+		// Bronze
+		{ title: '#FFFFFF', price: '#EB9F4F', overlayOpacity: 0.82, shadow: '#CD7F32' },
+		// Silver
+		{ title: '#FFFFFF', price: '#EB9F4F', overlayOpacity: 0.85, shadow: '#A8A8A8' },
+		// Gold
+		{ title: '#FFFFFF', price: '#EB9F4F', overlayOpacity: 0.88, shadow: '#D4AF37' },
+	]
+	const SERIF = '"Times New Roman", Times, Baskerville, Georgia, serif'
+
 	return (
 		<>
+			{isPurchasing && <Loading />}
 			<Background />
 			<div className='fixed inset-0 z-[1] bg-black/40' />
 			<div className='min-h-screen relative z-10 py-12 px-4'>
@@ -113,7 +136,7 @@ const TicketPage = (): React.ReactElement => {
 								{t('loginToBuy')}{' '}
 								<button
 									onClick={() => router.push('/login')}
-									className='text-[#7cbc97] underline hover:no-underline font-medium'
+									className='text-white underline hover:no-underline font-medium'
 								>
 									{t('loginNow')}
 								</button>
@@ -146,31 +169,45 @@ const TicketPage = (): React.ReactElement => {
 					{/* Tier Cards — 4 columns */}
 					<div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4'>
 						{tiers.map((tier, index) => {
+							const rank = Math.min(tierRankMap.get(tier.id) ?? 0, TIER_COLORS.length - 1)
+							const colors = TIER_COLORS[rank]
+							const isTop = rank === TIER_COLORS.length - 1
 							const closed = isTierClosed(tier)
 							const soldOut = isTierSoldOut(tier)
 							const unavailable = closed || soldOut
 							const tierImage = TIER_IMAGES[index % TIER_IMAGES.length]
 
 							return (
-								<CollapsibleScroll key={tier.id} initialOpen>
-									<div className={unavailable ? 'opacity-100' : ''}>
+								<CollapsibleScroll
+								key={tier.id}
+								initialOpen
+							>
+									<div className='flex flex-col'>
 										{/* Header — tier image as background */}
 										<div
 											className='-mx-9 relative overflow-hidden'
 											style={{
-												opacity: `100%`,
 												backgroundImage: `url(${tierImage})`,
 												backgroundSize: 'cover',
 												backgroundPosition: 'center',
 											}}
 										>
-											{/* Dark overlay for text readability */}
-											<div className='absolute inset-0 bg-secondary/70' />
-											<div className='relative z-[1] px-3 py-3 text-center'>
-												<h3 className='text-lg sm:text-xl lg:text-2xl font-bold text-[#e2eee2] josefin uppercase tracking-wide'>
+											{/* Dark overlay — opacity scales with tier rank */}
+											<div
+												className='absolute inset-0'
+												style={{ background: 'linear-gradient(180deg, #004D54 0%, #00363A 100%)', opacity: colors.overlayOpacity }}
+											/>
+											<div className='relative z-[1] px-3 py-4 text-center'>
+												<h3
+													className={`font-bold uppercase tracking-wide ${isTop ? 'text-2xl drop-shadow-sm' : 'text-xl'}`}
+													style={{ color: colors.title, fontFamily: SERIF }}
+												>
 													{tier.ticket_name}
 												</h3>
-												<p className='text-sm sm:text-base font-semibold text-[#e2eee2]/90 josefin mt-0.5 tracking-wide'>
+												<p
+													className='font-semibold mt-1 tracking-wide text-[18px]'
+													style={{ color: colors.price, fontFamily: SERIF, fontSize: '18px' }}
+												>
 													{formatPrice(tier.price)} VN{'\u0110'}
 												</p>
 											</div>
@@ -178,7 +215,7 @@ const TicketPage = (): React.ReactElement => {
 
 										{/* Description */}
 										{tier.description && (
-											<p className='text-xs text-text-secondary italic text-center mt-3 mb-1'>
+											<p className='text-sm italic text-center mt-3 mb-1 text-[#5A5A5A]' style={{ fontFamily: SERIF }}>
 												{tier.description}
 											</p>
 										)}
@@ -188,8 +225,12 @@ const TicketPage = (): React.ReactElement => {
 											<ul className='space-y-2 px-1 py-2'>
 												{tier.benefits.map((benefit, i) => (
 													<li key={i} className='flex items-start gap-2 min-w-0'>
-														<Check className='w-3.5 h-3.5 text-secondary flex-shrink-0 mt-0.5' strokeWidth={3} />
-														<span className='text-xs text-text-primary leading-relaxed break-words min-w-0'>
+														<Check
+															className='w-3.5 h-3.5 flex-shrink-0 mt-0.5'
+															style={{ color: '#EB9F4F' }}
+															strokeWidth={3}
+														/>
+														<span className='text-[15px] leading-relaxed break-words min-w-0 text-[#2B2B2B]' style={{ fontFamily: SERIF }}>
 															{benefit}
 														</span>
 													</li>
@@ -207,27 +248,27 @@ const TicketPage = (): React.ReactElement => {
 										)}
 
 										{/* Buy button */}
-										<div className='py-3 px-1'>
+										<div className='mt-auto py-3 px-1'>
 											<button
 												onClick={() => !unavailable && handlePurchase(tier.id)}
-												disabled={isDisabled || unavailable || purchaseMutation.isPending}
-												className={`w-full py-2.5 px-4 rounded-xl font-bold text-sm uppercase tracking-widest transition-all duration-200 josefin ${
+												disabled={isDisabled || unavailable || isPurchasing}
+												className={`w-full py-2.5 px-4 rounded-xl font-bold text-base uppercase tracking-widest transition-all duration-200 ${
 													soldOut
 														? 'bg-[#d4738a]/20 text-[#c25670] cursor-not-allowed'
-														: isDisabled || unavailable || purchaseMutation.isPending
+														: isDisabled || unavailable || isPurchasing
 															? 'bg-secondary/15 text-[#8C8C8C] cursor-not-allowed'
-															: 'bg-secondary text-[#e2eee2] hover:bg-[#3d6d65] active:scale-[0.97] shadow-lg shadow-secondary/30'
+															: 'btn-primary active:scale-[0.97]'
 												}`}
 											>
-												{purchaseMutation.isPending
-													? tCommon('processing')
-													: soldOut
-														? t('soldOut') + '!!!'
-														: closed
-															? t('closed')
-															: isDisabled && hasActiveTicket
-																? t('alreadyHaveTicket')
-																: t('buyNow')}
+												{soldOut
+													? t('soldOut') + '!!!'
+													: closed
+													? t('closed')
+													: !account
+													? t('loginNow')
+													: isDisabled && hasActiveTicket
+													? t('alreadyHaveTicket')
+													: t('buyNow')}
 											</button>
 										</div>
 									</div>
@@ -245,8 +286,8 @@ const TicketPage = (): React.ReactElement => {
 					)}
 
 					{/* Purchase Notices */}
-					<div className='mt-8 max-w-3xl mx-auto'>
-						<CollapsibleScroll initialOpen>
+					<div className='mt-8 max-w-2xl mx-auto'>
+						<CollapsibleScroll initialOpen className='drop-shadow-xl'>
 							{/* Header with image background */}
 							<div
 								className='-mx-9 relative overflow-hidden'
@@ -258,16 +299,20 @@ const TicketPage = (): React.ReactElement => {
 							>
 								<div className='absolute inset-0 bg-secondary/70' />
 								<div className='relative z-[1] px-4 py-3 text-center'>
-									<h3 className='text-lg sm:text-xl font-bold text-[#e2eee2] josefin uppercase tracking-wide'>
+									<h3 className='text-[22px] font-bold uppercase tracking-wide text-[#D4AF37]' style={{ fontFamily: SERIF }}>
 										{t('purchaseNoticesTitle')}
 									</h3>
 								</div>
 							</div>
 
-							<div className='px-2 py-3'>
-								<p className='text-text-secondary leading-relaxed text-xs sm:text-[13px]'>
-									{purchaseNotices.join(' ')}
-								</p>
+							<div className='px-2 py-4'>
+								<ol className='space-y-2 list-decimal list-inside'>
+									{purchaseNotices.map((notice, i) => (
+										<li key={i} className='text-base leading-relaxed text-[#2B2B2B]' style={{ fontFamily: SERIF }}>
+											{notice}
+										</li>
+									))}
+								</ol>
 							</div>
 							<div className='pb-1' />
 						</CollapsibleScroll>
