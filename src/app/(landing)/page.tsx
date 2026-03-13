@@ -23,6 +23,9 @@ const LandingPage = (): React.JSX.Element => {
 	const [showBackToTop, setShowBackToTop] = useState(false)
 	const [gohActiveCharacter, setGohActiveCharacter] = useState<0 | 1 | 2>(0)
 	const gohStepRef = useRef<0 | 1 | 2>(0)
+	const isSnappingRef = useRef(false)
+	const lastEventTimeRef = useRef(0)
+	const touchStartYRef = useRef(0)
 	const t = useTranslations('landing')
 
 	const prefersReducedMotion = useThemeStore(
@@ -67,9 +70,6 @@ const LandingPage = (): React.JSX.Element => {
 	useGSAP(() => {
 		const sections = gsap.utils.toArray<HTMLElement>('.section')
 
-		let isSnapping = false
-		let lastEventTime = 0
-		let touchStartY = 0
 		const COOLDOWN = 700 // ms — matches the snap timeout
 
 		const getCurrentIndex = () => {
@@ -91,21 +91,21 @@ const LandingPage = (): React.JSX.Element => {
 		const scrollToIndex = (index: number, direction: number) => {
 			const target = sections[index]
 			if (!target) return
-			isSnapping = true
+			isSnappingRef.current = true
 			gsap.to(window, {
 				scrollTo: { y: target.offsetTop, autoKill: false },
 				duration: 0.7,
 				ease: 'power2.inOut',
 				overwrite: 'auto',
 				onComplete: () => {
-					isSnapping = false
+					isSnappingRef.current = false
 				},
 			})
 			if (target.id === 'goh-section') {
 				const step = direction < 0 ? 2 : 1
 				gohStepRef.current = step as 1 | 2
 				setGohActiveCharacter(step as 1 | 2)
-			} else {
+			} else if (gohStepRef.current !== 0) {
 				gohStepRef.current = 0
 				setGohActiveCharacter(0)
 			}
@@ -119,13 +119,13 @@ const LandingPage = (): React.JSX.Element => {
 				if (direction > 0 && gohStepRef.current === 1) {
 					gohStepRef.current = 2
 					setGohActiveCharacter(2)
-					lastEventTime = now
+					lastEventTimeRef.current = now
 					return
 				}
 				if (direction < 0 && gohStepRef.current === 2) {
 					gohStepRef.current = 1
 					setGohActiveCharacter(1)
-					lastEventTime = now
+					lastEventTimeRef.current = now
 					return
 				}
 			}
@@ -145,15 +145,16 @@ const LandingPage = (): React.JSX.Element => {
 			event.preventDefault()
 
 			const now = Date.now()
-			if (isSnapping || now - lastEventTime < COOLDOWN) return
-			lastEventTime = now
+			if (isSnappingRef.current || now - lastEventTimeRef.current < COOLDOWN)
+				return
+			lastEventTimeRef.current = now
 
 			const direction = event.deltaY > 0 ? 1 : -1
 			snapByDirection(direction, now)
 		}
 
 		const handleTouchStart = (event: TouchEvent) => {
-			touchStartY = event.touches[0].clientY
+			touchStartYRef.current = event.touches[0].clientY
 		}
 
 		// Prevent native scroll so we own the vertical movement
@@ -164,14 +165,15 @@ const LandingPage = (): React.JSX.Element => {
 		const handleTouchEnd = (event: TouchEvent) => {
 			if (!sections.length) return
 			const touchEndY = event.changedTouches[0].clientY
-			const deltaY = touchStartY - touchEndY // positive → swipe up → scroll down
+			const deltaY = touchStartYRef.current - touchEndY // positive → swipe up → scroll down
 
 			// Ignore taps or very short drags
 			if (Math.abs(deltaY) < 30) return
 
 			const now = Date.now()
-			if (isSnapping || now - lastEventTime < COOLDOWN) return
-			lastEventTime = now
+			if (isSnappingRef.current || now - lastEventTimeRef.current < COOLDOWN)
+				return
+			lastEventTimeRef.current = now
 
 			const direction = deltaY > 0 ? 1 : -1
 			snapByDirection(direction, now)
