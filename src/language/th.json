@@ -312,6 +312,7 @@
 		"slotsAvailable": "ที่นั่งว่าง",
 		"ticketsAbundant": "มีตั๋วเพียงพอ",
 		"closed": "ปิดขาย",
+		"finest": "ชั้นสูงสุด",
 		"remaining": "เหลือ {count} ใบ",
 		"errorOccurred": "เกิดข้อผิดพลาด กรุณาลองอีกครั้ง",
 		"ticketIncludes": "ตั๋วนี้รวมถึง",
