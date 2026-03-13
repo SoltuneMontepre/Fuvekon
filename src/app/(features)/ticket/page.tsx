@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useTranslations } from 'next-intl'
 import { AxiosError } from 'axios'
@@ -29,12 +29,14 @@ const TicketPage = (): React.ReactElement => {
 	const purchaseMutation = usePurchaseTicket()
 
 	const isBlacklisted = account?.is_blacklisted
+	const [showTicketNotAvailable, setShowTicketNotAvailable] = useState(false)
 
 	const handlePurchase = async (tierId: string) => {
 		if (!account) {
 			router.push('/login')
 			return
 		}
+		setShowTicketNotAvailable(false)
 
 		try {
 			const result = await purchaseMutation.mutateAsync(tierId)
