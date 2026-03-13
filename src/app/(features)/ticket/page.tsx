@@ -1,9 +1,9 @@
 'use client'
 
-import React from 'react'
+import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useTranslations } from 'next-intl'
-import { Check } from 'lucide-react'
+import { Check, AlertCircle } from 'lucide-react'
 import { AxiosError } from 'axios'
 import { toast } from 'sonner'
 import CollapsibleScroll from '@/components/animated/CollapsibleScroll'
@@ -50,12 +50,14 @@ const TicketPage = (): React.ReactElement => {
 	const hasActiveTicket =
 		myTicketData?.data && myTicketData.data.status !== 'denied'
 	const isBlacklisted = account?.is_blacklisted
+	const [showTicketNotAvailable, setShowTicketNotAvailable] = useState(false)
 
 	const handlePurchase = async (tierId: string) => {
 		if (!account) {
 			router.push('/login')
 			return
 		}
+		setShowTicketNotAvailable(false)
 
 		try {
 			const result = await purchaseMutation.mutateAsync(tierId)
@@ -65,11 +67,18 @@ const TicketPage = (): React.ReactElement => {
 				router.push(queued ? `/ticket/purchase/${tierId}?queued=1` : `/ticket/purchase/${tierId}`)
 			}
 		} catch (err) {
-			const message =
-				(err as AxiosError<{ message?: string }>)?.response?.data?.message ||
-				(err as Error).message ||
-				t('errorOccurred')
-			toast.error(message)
+			const axiosErr = err as AxiosError<{ message?: string; errorCode?: string }>
+			const status = axiosErr?.response?.status
+			const errorCode = axiosErr?.response?.data?.errorCode
+			if (status === 409 && errorCode === 'OUT_OF_STOCK') {
+				setShowTicketNotAvailable(true)
+			} else {
+				const message =
+					axiosErr?.response?.data?.message ||
+					(err as Error).message ||
+					t('errorOccurred')
+				toast.error(message)
+			}
 		}
 	}
 
@@ -95,6 +104,29 @@ const TicketPage = (): React.ReactElement => {
 			<div className='min-h-screen flex items-center justify-center'>
 				<div className='text-red-600 text-xl'>{t('errorOccurred')}</div>
 			</div>
+		)
+	}
+
+	// Full-page "ticket not available" when purchase failed due to out of stock (e.g. race with another buyer)
+	if (showTicketNotAvailable) {
+		return (
+			<>
+				<Background />
+				<div className='fixed inset-0 z-[1] bg-black/40' />
+				<div className='min-h-screen flex items-center justify-center relative z-10'>
+					<div className='text-center'>
+						<AlertCircle className='w-12 h-12 text-[#48715b] mx-auto mb-4' />
+						<p className='text-text-secondary text-lg mb-2'>{t('ticketNotAvailable')}</p>
+						<p className='text-text-secondary/80 text-sm mb-4'>{t('ticketNotAvailableHint')}</p>
+						<button
+							onClick={() => setShowTicketNotAvailable(false)}
+							className='px-6 py-2.5 rounded-xl btn-primary font-medium'
+						>
+							{t('backToTicket')}
+						</button>
+					</div>
+				</div>
+			</>
 		)
 	}
 
