@@ -54,7 +54,7 @@ const DealerAPI = {
 		return data
 	},
 	editDealer: async (id: string, payload: EditDealerRequest) => {
-		const { data } = await axios.general.put<ApiResponse<GetDealerByIdResponse>>(
+		const { data } = await axios.general.patch<ApiResponse<GetDealerByIdResponse>>(
 			`/dealer/${id}`,
 			payload
 		)
