@@ -11,6 +11,7 @@ import type {
 	RemoveStaffRequest,
 	RemoveStaffResponse,
 	GetDealerByIdResponse,
+	EditDealerRequest,
 } from '@/types/api/dealer/dealer'
 import { getQueryClient } from '@/utils/getQueryClient'
 
@@ -49,6 +50,13 @@ const DealerAPI = {
 	getMyDealer: async () => {
 		const { data } = await axios.general.get<ApiResponse<GetDealerByIdResponse>>(
 			'/dealer/me'
+		)
+		return data
+	},
+	editDealer: async (id: string, payload: EditDealerRequest) => {
+		const { data } = await axios.general.put<ApiResponse<GetDealerByIdResponse>>(
+			`/dealer/${id}`,
+			payload
 		)
 		return data
 	},
@@ -109,5 +117,19 @@ export function useGetMyDealer(enabled: boolean = true) {
 		queryFn: () => DealerAPI.getMyDealer(),
 		retry: false, // Don't retry if user is not a dealer
 		enabled, // Only enable query when user is a dealer
+	})
+}
+
+export function useEditDealer() {
+	const queryClient = getQueryClient()
+
+	return useMutation({
+		mutationFn: ({ id, payload }: { id: string; payload: EditDealerRequest }) =>
+			DealerAPI.editDealer(id, payload),
+		onSuccess: () => {
+			// Invalidate dealer-related queries
+			queryClient.invalidateQueries({ queryKey: ['dealer'] })
+			queryClient.invalidateQueries({ queryKey: ['admin-dealers'] })
+		},
 	})
 }
