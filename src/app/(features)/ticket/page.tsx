@@ -15,6 +15,7 @@ import { useAuthStore } from '@/stores/authStore'
 import Background from '@/components/ui/Background'
 import type { TicketTier } from '@/types/models/ticket/ticket'
 import Loading from '@/components/common/Loading'
+import { AlertCircle } from 'lucide-react'
 
 const TicketPage = (): React.ReactElement => {
 	const router = useRouter()
@@ -76,6 +77,33 @@ const TicketPage = (): React.ReactElement => {
 			<div className='min-h-screen flex items-center justify-center'>
 				<div className='text-red-600 text-xl'>{t('errorOccurred')}</div>
 			</div>
+		)
+	}
+
+	// Full-page "ticket not available" when purchase failed due to out of stock (e.g. race with another buyer)
+	if (showTicketNotAvailable) {
+		return (
+			<>
+				<Background />
+				<div className='fixed inset-0 z-[1] bg-black/40' />
+				<div className='min-h-screen flex items-center justify-center relative z-10'>
+					<div className='text-center'>
+						<AlertCircle className='w-12 h-12 text-[#48715b] mx-auto mb-4' />
+						<p className='text-text-secondary text-lg mb-2'>
+							{t('ticketNotAvailable')}
+						</p>
+						<p className='text-text-secondary/80 text-sm mb-4'>
+							{t('ticketNotAvailableHint')}
+						</p>
+						<button
+							onClick={() => setShowTicketNotAvailable(false)}
+							className='px-6 py-2.5 rounded-xl btn-primary font-medium'
+						>
+							{t('backToTicket')}
+						</button>
+					</div>
+				</div>
+			</>
 		)
 	}
 
