@@ -25,7 +25,7 @@ const NavBar = (): React.ReactElement => {
 	const hideLogo = HIDE_LOGO_PREFIXES.some(p => pathname?.startsWith(p))
 	const path = usePathname()
 
-	const visiblePaths = ['/ticket', '/']
+	const visiblePaths = ['/ticket', '/', '/about']
 
 	useEffect(() => {
 		setMobileMenuOpen(false)

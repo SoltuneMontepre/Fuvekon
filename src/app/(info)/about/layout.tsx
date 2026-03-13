@@ -5,12 +5,7 @@ const MainLayout = ({
 }: {
 	children: React.ReactNode
 }): React.ReactElement => {
-	return (
-		<>
-			hello2
-			<div>{children}</div>
-		</>
-	)
+	return <div>{children}</div>
 }
 
 export default MainLayout

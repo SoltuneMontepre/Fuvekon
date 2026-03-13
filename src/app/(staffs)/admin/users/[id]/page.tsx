@@ -23,6 +23,7 @@ import {
 } from '@/hooks/services/user/useAdminUser'
 import type { AdminUpdateUserRequest } from '@/types/api/user/user'
 import Loading from '@/components/common/Loading'
+import UserAvatar from '@/components/common/UserAvatar'
 
 interface AdminUserDetailPageProps {
 	params: Promise<{ id: string }>
@@ -36,6 +37,13 @@ const formatDateTime = (dateString?: string): string => {
 		' ' +
 		date.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })
 	)
+}
+
+const formatDateOnly = (dateString?: string): string => {
+	if (!dateString) return '–'
+	const date = new Date(dateString)
+	if (Number.isNaN(date.getTime())) return dateString
+	return date.toLocaleDateString('vi-VN')
 }
 
 const ROLES = [
@@ -236,7 +244,7 @@ const AdminUserDetailPage = ({
 							</div>
 							<div className='space-y-0.5 px-3 py-2 rounded-xl bg-[#E2EEE2]/60 border border-[#8C8C8C]/15 focus-within:border-[#48715B] transition-colors'>
 								<label className='text-sm font-medium text-[#48715B]'>
-									{t('fursonaName') || 'Fursona name'}
+									{t('nickname') || 'Nickname'}
 								</label>
 								<input
 									type='text'
@@ -293,20 +301,35 @@ const AdminUserDetailPage = ({
 					) : (
 						/* View mode */
 						<>
-							{/* Identity */}
+							{/* Identity + Avatar */}
 							<div className='pb-6 border-b border-[#48715B]/15'>
-								<p className='font-medium text-text-primary text-xl'>{displayName}</p>
-								{user.fursona_name && (
-									<p className='text-sm text-[#48715B] mt-1'>
-										Fursona: {user.fursona_name}
-									</p>
-								)}
+								<div className='flex items-start gap-4'>
+									<UserAvatar account={user} size={96} />
+									<div className='min-w-0 flex-1'>
+										<p className='font-medium text-text-primary text-xl truncate'>{displayName}</p>
+										{user.fursona_name && (
+											<p className='text-sm text-[#48715B] mt-1 truncate'>
+												{t('nickname') || 'Nickname'}: {user.fursona_name}
+											</p>
+										)}
+										<p className='text-sm text-text-secondary mt-1 truncate'>ID: {user.id}</p>
+									</div>
+								</div>
 							</div>
 
 							{/* Info grid */}
 							<div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
 								<InfoField label={t('email') || 'Email'} value={user.email} icon={Mail} />
 								<InfoField label={tCommon('country') || 'Country'} value={user.country || '–'} icon={MapPin} />
+								<InfoField
+									label={t('dateOfBirth') || 'Date of birth'}
+									value={formatDateOnly(user.date_of_birth)}
+									icon={Calendar}
+								/>
+								<InfoField
+									label={t('idCard') || 'ID card'}
+									value={user.id_card ? user.id_card : '–'}
+								/>
 							</div>
 
 							{/* Role */}
@@ -361,6 +384,32 @@ const AdminUserDetailPage = ({
 											{t('denials') || 'Denials'}: {user.denial_count}
 										</span>
 									)}
+									{user.is_dealer !== undefined && (
+										<span
+											className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${
+												user.is_dealer ? 'bg-amber-100 text-amber-800' : 'bg-gray-100 text-gray-700'
+											}`}
+										>
+											{t('dealer') || 'Dealer'}: {user.is_dealer ? tCommon('yes') || 'Yes' : tCommon('no') || 'No'}
+										</span>
+									)}
+									{user.is_has_ticket !== undefined && (
+										<span
+											className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${
+												user.is_has_ticket
+													? 'bg-emerald-100 text-emerald-800'
+													: 'bg-gray-100 text-gray-700'
+											}`}
+										>
+											{t('hasTicket') || 'Has ticket'}:{' '}
+											{user.is_has_ticket ? tCommon('yes') || 'Yes' : tCommon('no') || 'No'}
+										</span>
+									)}
+									{user.is_deleted && (
+										<span className='inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-700'>
+											{tCommon('deleted') || 'Deleted'}
+										</span>
+									)}
 								</div>
 							</div>
 
@@ -370,6 +419,13 @@ const AdminUserDetailPage = ({
 									<InfoField label={t('createdAt') || 'Created At'} value={formatDateTime(user.created_at)} icon={Calendar} />
 									{user.modified_at && (
 										<InfoField label={tCommon('modified') || 'Modified'} value={formatDateTime(user.modified_at)} icon={Calendar} />
+									)}
+									{user.deleted_at && (
+										<InfoField
+											label={tCommon('deleted') || 'Deleted'}
+											value={formatDateTime(user.deleted_at ?? undefined)}
+											icon={Calendar}
+										/>
 									)}
 								</div>
 							</div>
