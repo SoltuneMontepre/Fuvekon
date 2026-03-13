@@ -8,13 +8,14 @@ import CollapsibleScroll from '@/components/animated/CollapsibleScroll'
 import { useGetMyTicket } from '@/hooks/services/ticket/useTicket'
 import { useAuthStore } from '@/stores/authStore'
 import type { TicketTier } from '@/types/models/ticket/ticket'
+import Image from 'next/image'
 
-const TIER_IMAGES = [
-	'/assets/hac.webp',
-	'/assets/fg-flower.webp',
-	'/assets/bg-dragon.webp',
-	'/assets/mascot.webp',
-]
+// const TIER_IMAGES = [
+// 	'/assets/hac.webp',
+// 	'/assets/fg-flower.webp',
+// 	'/assets/bg-dragon.webp',
+// 	'/assets/mascot.webp',
+// ]
 
 const formatPrice = (price: number): string => {
 	return new Intl.NumberFormat('vi-VN', {
@@ -48,6 +49,20 @@ const TicketDisplay = ({
 
 	const isTierClosed = (tier: TicketTier) => tier.is_active === false
 	const isTierSoldOut = (tier: TicketTier) => tier.stock <= 0
+	const getTierColor = (index: number) => {
+		switch (index) {
+			case 0:
+				return 'bg-tier-1'
+			case 1:
+				return 'bg-tier-2'
+			case 2:
+				return 'bg-tier-3'
+			case 3:
+				return 'bg-tier-4'
+			default:
+				return 'bg-tier-1'
+		}
+	}
 
 	return (
 		<>
@@ -70,7 +85,6 @@ const TicketDisplay = ({
 					const closed = isTierClosed(tier)
 					const soldOut = isTierSoldOut(tier)
 					const unavailable = closed || soldOut
-					const tierImage = TIER_IMAGES[index % TIER_IMAGES.length]
 
 					return (
 						<CollapsibleScroll key={tier.id} initialOpen>
@@ -79,19 +93,20 @@ const TicketDisplay = ({
 							>
 								{/* Header — tier image as background */}
 								<div
-									className='-mx-9 relative overflow-hidden'
-									style={{
-										backgroundImage: `url(${tierImage})`,
-										backgroundSize: 'cover',
-										backgroundPosition: 'center',
-									}}
+									className={`-mx-9 relative overflow-hidden ${getTierColor(index)}`}
 								>
-									<div className='absolute inset-0 bg-secondary/70' />
+									<Image
+										fill
+										src='/textures/cloud.png'
+										className='absolute inset-0 w-full h-full object-cover mix-blend-multiply grayscale opacity-[36%] scale-200'
+										alt='Cloud texture background'
+									/>
+									<div className='absolute inset-0' />
 									<div className='relative z-[1] px-3 py-3 text-center'>
-										<h3 className='text-lg sm:text-xl lg:text-2xl font-bold text-[#e2eee2] josefin uppercase tracking-wide'>
-											{tier.ticket_name}
+										<h3 className='text-lg sm:text-xl font-bold lg:text-3xl text-text capitalize tracking-wide'>
+											{tier.ticket_name.toLocaleLowerCase()}
 										</h3>
-										<p className='text-sm sm:text-base font-semibold text-[#e2eee2]/90 josefin mt-0.5 tracking-wide'>
+										<p className='text-sm sm:text-base font-semibold text-text/90 josefin mt-0.5 tracking-wide'>
 											{formatPrice(tier.price)} VN{'\u0110'}
 										</p>
 									</div>

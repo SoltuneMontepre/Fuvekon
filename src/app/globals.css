@@ -16,6 +16,11 @@
 	--color-text-secondary: #48715b;
 	--color-bg: #e2eee2;
 	--color-button: #48715b;
+
+	--color-tier-1: #2d3c3f;
+	--color-tier-2: #979591;
+	--color-tier-3: #b99b59;
+	--color-tier-4: #a26dbd;
 }
 
 @layer components {
@@ -128,6 +133,11 @@ html {
 	overflow-x: clip;
 }
 
+*::selection {
+	background-color: #48715b;
+	color: #e2eee2;
+}
+
 body {
 	overflow-x: hidden;
 	@apply bg-black;
@@ -193,3 +203,9 @@ body {
 		box-shadow: 0 0 0 3px rgba(211, 153, 240, 0.18);
 	}
 }
+
+/* * {
+	cursor:
+		url('/textures/cursor.webp') 16 16,
+		auto;
+} */

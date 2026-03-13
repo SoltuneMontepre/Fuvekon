@@ -43,7 +43,7 @@ const Background = ({ mascot = false, animated = false }: BackgroundProps) => {
 						{/* Background Layer - Sky and Base */}
 						<div
 							ref={backgroundLayerRef}
-							className='absolute inset-0 overflow-visible'
+							className='absolute inset-0 overflow-visible pointer-events-none'
 						>
 							<BaseBackground />
 							<Moon className='overflow-visible' />
@@ -51,21 +51,21 @@ const Background = ({ mascot = false, animated = false }: BackgroundProps) => {
 						{/* Further Mountain Layer */}
 						<div
 							ref={furtherMountainRef}
-							className='absolute inset-0 overflow-visible'
+							className='absolute inset-0 overflow-visible pointer-events-none'
 						>
 							<FurtherMountain className='overflow-visible' />
 						</div>
 						{/* Left Rock Layer */}
 						<div
 							ref={leftRockRef}
-							className='absolute inset-0 overflow-visible'
+							className='absolute inset-0 overflow-visible pointer-events-none'
 						>
 							<LeftRockSection className='left-0 top-0 overflow-visible' />
 						</div>
 						{/* Right Rock Layer */}
 						<div
 							ref={rightRockRef}
-							className='absolute inset-0 overflow-visible'
+							className='absolute inset-0 overflow-visible pointer-events-none'
 						>
 							<RightRockSection className='overflow-visible' />
 						</div>
@@ -73,7 +73,7 @@ const Background = ({ mascot = false, animated = false }: BackgroundProps) => {
 						{/* Middle Layer - Characters */}
 						<div
 							ref={middleLayerRef}
-							className='absolute inset-0 overflow-visible'
+							className='absolute inset-0 overflow-visible pointer-events-none'
 						>
 							<StaticBirds className='z-0 overflow-visible scale-[0.5] -translate-y-[30%] -translate-x-[3%]' />
 							{mascot && (
