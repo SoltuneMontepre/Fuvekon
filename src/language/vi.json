@@ -610,7 +610,7 @@
 		"verified": "Đã duyệt",
 		"pendingVerification": "Đang chờ duyệt",
 		"denied": "Đã từ chối",
-		"clickToOpenDocument" : "Nhấn để mở tài liệu",
+		"clickToOpenDocument": "Nhấn để mở tài liệu",
 		"verifiedByStaff": "Đã được staff duyệt",
 		"editSubmission": "Chỉnh sửa bài gửi",
 		"deleteSubmission": "Xóa",
@@ -710,6 +710,80 @@
 		"joinButton": "Tham gia",
 		"joining": "Đang tham gia...",
 		"noteText": "Lưu ý: Bạn cần có vé đã được duyệt để đăng ký gian hàng. Gian hàng của bạn sẽ cần được quản trị viên xác minh trước khi được hiển thị công khai."
+	},
+	"talent": {
+		"talent": {
+			"form": {
+				"intro1": "Talent Show là chương trình sân khấu nơi bạn có thể tự do thể hiện tài năng và cá tính của mình từ ca hát, nhảy múa, biểu diễn nhạc cụ, diễn xuất cho đến những tiết mục sáng tạo độc đáo khác.",
+				"intro2": "FUVE luôn ủng hộ cho tất cả mọi người tỏa sáng, chia sẻ đam mê và lan tỏa năng lượng tích cực đến cộng đồng."
+			},
+			"rules": {
+				"title": "QUY ĐỊNH TALENT SHOW",
+				"item1": "QUY ĐỊNH KHI ĐĂNG KÝ TALENT SHOW:",
+				"item2": "● Tiết mục biểu diễn phải phù hợp với tất cả mọi người.",
+				"item3": "● Nếu bạn biểu diễn theo nhóm nhiều người, thì tất cả thành viên nhóm đều phải có vé mới có thể tham gia biểu diễn.",
+				"item4": "● Trang phục biểu diễn không được quá hở hang, phải phù hợp với thuần phong mỹ tục.",
+				"item5": "● Không được đăng ký các tiết mục có nội dung phản cảm, mang yếu tố khiêu dâm, bạo lực, vi phạm pháp luật và không phù hợp với thuần phong mỹ tục.",
+				"item6": "● Sau các bước kiểm duyệt, nếu BTC FUVE thấy tiết mục của bạn không phù hợp, chẳng hạn như vi phạm trật tự công cộng hoặc vi phạm đạo đức, bạn có thể bị từ chối biểu diễn.",
+				"item7": "● Các tiết mục trình diễn bắt buộc diễn ra trong diện tích sân khấu chính, không được lấn xuống khu vực sảnh vì lý do an toàn.",
+				"item8": "● Tất cả các ứng viên đăng ký biểu diễn bắt buộc phải tham gia ngày tuyển chọn tập trung. FUVE sẽ thông báo trước về thời gian tổng duyệt và sắp xếp thứ tự biểu diễn trong chương trình.",
+				"item9": "● Sau buổi tổng duyệt, các ứng viên biểu diễn cần phải có mặt 30 phút trước khi buổi biểu diễn bắt đầu. Vui lòng đến đúng giờ và chuẩn bị sẵn sàng cho phần trình diễn của mình.",
+				"item10": "● FUVE sử dụng Email và Discord cho việc trao đổi, chia sẻ tệp tin âm thanh, màn chiếu, v.v…",
+				"item11": "● Xin lưu ý rằng FUVE có thể buộc phải yêu cầu bạn thay đổi nội dung buổi biểu diễn hoặc bố cục sân khấu.",
+				"item12": "● Quyết định của thành viên BTC là quyết định cuối cùng.",
+				"item13": "",
+				"item14": "LƯU Ý QUAN TRỌNG:",
+				"item15": "Bạn phải có vé đã mua và đã được duyệt mới có thể đăng ký. Nếu bạn chưa có vé, vui lòng tạo tài khoản, mua vé và quay trở lại đây sau khi đã hoàn thành các bước trên."
+			}
+		}
+	},
+	"dealer": {
+		"dealer": {
+			"form": {
+				"intro1": "Lộ trình đăng ký gian hàng tại FUVE",
+				"intro2": "Để có thể đăng ký gian hàng tại sự kiện tổ chức bởi FUVE, người tham gia cần phải mua vé và đã được duyệt vé mua trước khi được cho phép đăng ký một gian hàng tại sự kiện được nêu trên vé đã mua.",
+				"processTitle": "Quy trình đăng ký gian hàng như sau:",
+				"process1": "Đăng nhập tài khoản. Kiểm tra vé bạn mua đã được xác nhận chưa.",
+				"process2": "Nếu đã có vé, bên trong mục tài khoản của bạn sẽ hiện menu của dealer. Ấn vào \"Gian hàng\".",
+				"process3": "Nhập đầy đủ thông tin đăng ký và ấn \"đăng ký gian hàng\".",
+				"process4": "Đợi duyệt gian hàng.",
+				"process5": "Khi đơn dealer được phê duyệt bạn sẽ nhận được mã Dealer.",
+				"joinTitle": "Quy trình yêu cầu tham gia chung gian hàng:",
+				"join1": "Đăng nhập tài khoản và vào mục \"Quản lý tài khoản\" > \"Gian hàng\".",
+				"join2": "Nhập \"Mã Dealer\" của người chủ trì gian hàng mà bạn muốn làm chung vào ô \"Gộp gian hàng\".",
+				"join3": "Chờ chủ gian hàng đó xác nhận đơn xin gia nhập gian hàng của bạn.",
+				"join4": "Khi chủ gian hàng xác nhận và gia nhập thành công, bạn sẽ được thêm vào mã của gian hàng đó.",
+				"noteNoNewRegistration": "Lưu ý: Bạn không cần phải đăng ký gian hàng mới nếu muốn làm chung trong gian hàng của chủ gian khác.",
+				"notesTitle": "Lưu ý",
+				"note1": "Một gian hàng sẽ có một người đứng tên, gọi là \"Dealer\". Gian hàng có thể được đăng kí thêm người để hỗ trợ bán, gọi là \"Dealer Staff\".",
+				"note2": "Mỗi gian hàng sẽ có một người đại diện chính (Dealer) và được đăng ký thêm tối đa 2 Dealer Staff.",
+				"note3": "Mỗi tài khoản chỉ được mua MỘT VÉ DUY NHẤT. Tài khoản bắt buộc phải mua vé (đã xác nhận) trước khi đăng ký gian hàng.",
+				"note4": "Ghi nhớ, lưu trữ mã Dealer để phục vụ các quy trình liên quan tới hoạt động gian hàng tại sự kiện của FUVE."
+			},
+			"rules": {
+				"title": "QUY ĐỊNH KHI ĐĂNG KÝ GIAN HÀNG",
+				"item1": "QUY ĐỊNH VỀ MẶT HÀNG:",
+				"item2": "● Ban tổ chức sẽ yêu cầu bạn khai kê những sản phẩm bạn bán bất cứ lúc nào.",
+				"item3": "● Những sản phẩm phải do chính bạn làm ra hoặc có đóng góp 1 phần trong quá trình làm nên sản phẩm. Những sản phẩm bán lại của người khác mà chưa xin quyền tác giả là không được phép.",
+				"item4": "● Những mặt không được phép bán tại sự kiện: ○ Vật phẩm có nội dung nhạy cảm, 16+. ○ Đồ ăn thức uống. ○ Vật có khả năng gây sát thương. ○ Rượu bia, chất kích thích.",
+				"item5": "● Hạn chế ổ điện và những vật dụng có nguy cơ cháy nổ tại khu vực gian hàng của bạn.",
+				"item6": "● Ban tổ chức có quyền tịch thu hay yêu cầu bạn cất những mặt hàng vi phạm quy định và yêu cầu gian hàng dừng hoạt động nếu vi phạm nhiều lần.",
+				"item7": "● Vui lòng tự bảo quản cẩn thận vật tư của bạn. Ban tổ chức không thể đền bù cho bạn khi có tổn thất hay mất mát nào.",
+				"item8": "● Người bán hàng cần phải đến lấy vé và nhận bàn đúng khung giờ quy định.",
+				"item9": "● Không lấn chiếm không gian của các gian hàng khác. Bao gồm việc để vật tư hay người vượt ra khỏi khu vực gian hàng của bạn.",
+				"item10": "",
+				"item11": "VỀ KHU VỰC BÁN HÀNG:",
+				"item12": "● Người bán hàng phải giữ cho khu vực gian hàng sạch sẽ.",
+				"item13": "● Không được phép làm tổn thất về tài sản của tòa nhà và của ban tổ chức sự kiện.",
+				"item14": "● Người bán hàng có quyền trang trí gian hàng của mình nhưng phải đảm bảo an toàn và không được gây bất kỳ tổn hại nào về tài sản của sự kiện.",
+				"item15": "● Người bán hàng cần nhận thức rõ việc khách đứng xem gian hàng của mình có thể gây ảnh hưởng đến lối đi chung và ảnh hưởng đến gian hàng khác.",
+				"item16": "",
+				"item17": "QUYẾT ĐỊNH CỦA BAN TỔ CHỨC:",
+				"item18": "● Ban tổ chức có quyền yêu cầu bạn tạm dừng bán hàng và rời khỏi khu vực sự kiện nếu bạn vi phạm quy định.",
+				"item19": "● Ban tổ chức sẽ quyết định vị trí gian hàng của bạn.",
+				"item20": "● Ban tổ chức sẽ có quyền kiểm tra những mặt hàng bạn bán bất cứ lúc nào."
+			}
+		}
 	},
 	"artbook": {
 		"artbook": {

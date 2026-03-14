@@ -398,7 +398,7 @@ const LandingPage = (): React.JSX.Element => {
 					title={t('talent.title')}
 					description={t('talent.description')}
 					buttonLabel={t('talent.buttonLabel')}
-					buttonHref='/talent'
+					buttonHref='/contributes/talent'
 					images={[
 						'/images/artbook/badges.png',
 						'/images/artbook/badges.png',

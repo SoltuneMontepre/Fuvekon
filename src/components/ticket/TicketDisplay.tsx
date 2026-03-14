@@ -9,8 +9,6 @@ import { useGetMyTicket } from '@/hooks/services/ticket/useTicket'
 import { useAuthStore } from '@/stores/authStore'
 import type { TicketTier } from '@/types/models/ticket/ticket'
 
-const SERIF = '"Times New Roman", Times, Baskerville, Georgia, serif'
-
 const formatPrice = (price: number): string => {
 	return new Intl.NumberFormat('vi-VN', {
 		style: 'decimal',
@@ -70,7 +68,7 @@ const TIER_COLORS: TierColor[] = [
 	},
 	{
 		// Tier 4 — purple
-		bannerBg: '#a26dbd',
+		bannerBg: '#673095',
 		titleColor: '#f5d060',
 		titleShadow: '0 0 20px rgba(240,200,80,0.5)',
 		priceColor: '#f5d060',
@@ -111,14 +109,16 @@ const TicketDisplay = ({
 
 	// Map tier id → visual rank by price (0 = cheapest … n-1 = most expensive)
 	const tierRankMap = new Map(
-		[...tiers].sort((a, b) => Number(a.price) - Number(b.price)).map((t, i) => [t.id, i])
+		[...tiers]
+			.sort((a, b) => Number(a.price) - Number(b.price))
+			.map((t, i) => [t.id, i])
 	)
 
 	return (
 		<>
 			{account && hasActiveTicket && (
 				<div className='mb-6 text-center'>
-					<p className='text-sm text-[#e2eee2] bg-black/40 backdrop-blur-sm inline-block px-5 py-2.5 rounded-xl'>
+					<p className='text-sm text-[#ea42c0] bg-black/40 backdrop-blur-sm inline-block px-5 py-2.5 rounded-xl'>
 						{t('alreadyHaveTicket')}{' '}
 						<button
 							onClick={() => router.push('/account/ticket')}
@@ -131,8 +131,11 @@ const TicketDisplay = ({
 			)}
 
 			<div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-stretch'>
-				{tiers.map((tier) => {
-					const rank = Math.min(tierRankMap.get(tier.id) ?? 0, TIER_COLORS.length - 1)
+				{tiers.map(tier => {
+					const rank = Math.min(
+						tierRankMap.get(tier.id) ?? 0,
+						TIER_COLORS.length - 1
+					)
 					const colors = TIER_COLORS[rank]
 					const isTop = rank === TIER_COLORS.length - 1
 					const closed = isTierClosed(tier)
@@ -163,13 +166,14 @@ const TicketDisplay = ({
 											<div
 												className='absolute top-0 right-4 z-10 font-bold'
 												style={{
-													fontFamily: SERIF,
-													background: 'linear-gradient(160deg, #c9a030 0%, #f0c840 60%, #c9a030 100%)',
-													color: '#1a0800',
+													background:
+														'linear-gradient(160deg, #c9a030 0%, #f0c840 60%, #c9a030 100%)',
+													color: '#673095',
 													fontSize: '0.48rem',
 													letterSpacing: '0.12em',
 													padding: '5px 12px 8px',
-													clipPath: 'polygon(0 0, 100% 0, 100% 78%, 50% 100%, 0 78%)',
+													clipPath:
+														'polygon(0 0, 100% 0, 100% 78%, 50% 100%, 0 78%)',
 													boxShadow: '0 2px 8px rgba(0,0,0,0.4)',
 													lineHeight: 1,
 												}}
@@ -178,22 +182,20 @@ const TicketDisplay = ({
 											</div>
 										)}
 
-										<div className='relative z-[1] px-3 py-5 text-center'>
+										<div className='relative z-[1] px-3 pt-5 pb-3 text-center'>
 											<h3
-												className={`font-bold uppercase tracking-[0.15em] ${isTop ? 'text-2xl drop-shadow-sm' : 'text-xl'}`}
+												className={`font-bold uppercase ${isTop ? 'text-3xl drop-shadow-sm' : 'text-3xl'}`}
 												style={{
-													fontFamily: SERIF,
 													color: colors.titleColor,
-													textShadow: colors.titleShadow || '0 1px 6px rgba(0,0,0,0.4)',
+													textShadow:
+														colors.titleShadow || '0 1px 6px rgba(0,0,0,0.4)',
 												}}
 											>
 												{tier.ticket_name}
 											</h3>
 											<p
-												className='font-semibold mt-1.5 tracking-wide'
+												className='font-semibold tracking-wide'
 												style={{
-													fontFamily: SERIF,
-													fontSize: '18px',
 													color: colors.priceColor,
 													textShadow: colors.priceShadow,
 												}}
@@ -207,7 +209,9 @@ const TicketDisplay = ({
 									{tier.description && (
 										<p
 											className='text-sm italic text-center mt-3 mb-1'
-											style={{ fontFamily: SERIF, color: 'rgba(80,55,25,0.65)' }}
+											style={{
+												color: 'rgba(80,55,25,0.65)',
+											}}
 										>
 											— {tier.description} —
 										</p>
@@ -219,11 +223,12 @@ const TicketDisplay = ({
 											{tier.benefits.map((benefit, i) => (
 												<li
 													key={i}
-													className='flex items-start gap-2 min-w-0 py-1.5'
+													className='flex items-start gap-2 min-w-0 py-0.5'
 													style={{
-														borderBottom: i < tier.benefits.length - 1
-															? '1px solid rgba(0,0,0,0.055)'
-															: 'none',
+														borderBottom:
+															i < tier.benefits.length - 1
+																? '1px solid rgba(0,0,0,0.055)'
+																: 'none',
 													}}
 												>
 													<span
@@ -234,7 +239,7 @@ const TicketDisplay = ({
 													</span>
 													<span
 														className='text-[15px] leading-relaxed break-words min-w-0'
-														style={{ fontFamily: SERIF, color: '#2e1e08' }}
+														style={{ color: '#2e1e08' }}
 													>
 														{benefit}
 													</span>
@@ -244,10 +249,13 @@ const TicketDisplay = ({
 									)}
 
 									{/* Stock warning */}
-									{(soldOut || (!closed && tier.stock > 0 && tier.stock < 10)) && (
-										<p className={`text-center text-xs font-semibold tracking-wide uppercase py-1 ${
-											soldOut ? 'text-red-500' : 'text-[#c97b2a]'
-										}`}>
+									{(soldOut ||
+										(!closed && tier.stock > 0 && tier.stock < 10)) && (
+										<p
+											className={`text-center text-xs font-semibold tracking-wide uppercase py-1 ${
+												soldOut ? 'text-red-500' : 'text-[#c97b2a]'
+											}`}
+										>
 											{soldOut ? t('soldOut') : t('runningOut')}
 										</p>
 									)}
@@ -265,7 +273,6 @@ const TicketDisplay = ({
 											disabled={isDisabled || unavailable || isPurchasing}
 											className='w-full py-2.5 px-4 rounded-[6px] font-bold text-sm uppercase tracking-[0.18em] transition-all duration-200 relative overflow-hidden'
 											style={{
-												fontFamily: SERIF,
 												background: soldOut
 													? 'rgba(212,115,138,0.2)'
 													: isDisabled || unavailable || isPurchasing
@@ -276,21 +283,27 @@ const TicketDisplay = ({
 													: isDisabled || unavailable || isPurchasing
 														? '#8C8C8C'
 														: colors.btnColor,
-												border: soldOut || isDisabled || unavailable || isPurchasing
-													? 'none'
-													: colors.btnBorder || 'none',
-												boxShadow: soldOut || isDisabled || unavailable || isPurchasing
-													? 'none'
-													: colors.btnShadow,
-												cursor: isDisabled || unavailable || isPurchasing
-													? 'not-allowed'
-													: 'pointer',
+												border:
+													soldOut || isDisabled || unavailable || isPurchasing
+														? 'none'
+														: colors.btnBorder || 'none',
+												boxShadow:
+													soldOut || isDisabled || unavailable || isPurchasing
+														? 'none'
+														: colors.btnShadow,
+												cursor:
+													isDisabled || unavailable || isPurchasing
+														? 'not-allowed'
+														: 'pointer',
 											}}
 										>
 											{/* Glass highlight */}
 											<span
 												className='absolute inset-0 pointer-events-none'
-												style={{ background: 'linear-gradient(180deg, rgba(255,255,255,0.12) 0%, transparent 55%)' }}
+												style={{
+													background:
+														'linear-gradient(180deg, rgba(255,255,255,0.12) 0%, transparent 55%)',
+												}}
 											/>
 											<span className='relative z-[1]'>
 												{isPurchasing
@@ -319,11 +332,12 @@ const TicketDisplay = ({
 			{/* Hover glow effect */}
 			<style jsx global>{`
 				.tier-card-hover {
-					filter: drop-shadow(0 8px 24px rgba(0,0,0,0.45));
+					filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.45));
 				}
 				.tier-card-hover:hover {
 					transform: translateY(-6px);
-					filter: drop-shadow(0 16px 36px rgba(0,0,0,0.6)) drop-shadow(0 0 20px rgba(201,168,76,0.15));
+					filter: drop-shadow(0 16px 36px rgba(0, 0, 0, 0.6))
+						drop-shadow(0 0 20px rgba(201, 168, 76, 0.15));
 				}
 			`}</style>
 		</>

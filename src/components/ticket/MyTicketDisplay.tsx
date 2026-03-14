@@ -22,8 +22,6 @@ import UpgradeTicketModal from '@/components/ticket/UpgradeTicketModal'
 import Loading from '@/components/common/Loading'
 import type { TicketStatus } from '@/types/models/ticket/ticket'
 
-const SERIF = '"Times New Roman", Times, Baskerville, Georgia, serif'
-
 // Format price in VND
 const formatPrice = (price: number): string => {
 	return new Intl.NumberFormat('vi-VN', {
@@ -85,7 +83,8 @@ interface TierTheme {
 const TIER_THEMES: TierTheme[] = [
 	{
 		// Bronze
-		bannerGradient: 'linear-gradient(160deg, #558a72 0%, #3d6e5a 50%, #336055 100%)',
+		bannerGradient:
+			'linear-gradient(160deg, #558a72 0%, #3d6e5a 50%, #336055 100%)',
 		bannerBorder: 'rgba(130,180,120,0.35)',
 		accentColor: '#8B6E3A',
 		titleColor: '#FFFFFF',
@@ -99,7 +98,8 @@ const TIER_THEMES: TierTheme[] = [
 	},
 	{
 		// Jade
-		bannerGradient: 'linear-gradient(160deg, #3e9890 0%, #2e8080 50%, #246e6a 100%)',
+		bannerGradient:
+			'linear-gradient(160deg, #3e9890 0%, #2e8080 50%, #246e6a 100%)',
 		bannerBorder: 'rgba(100,210,190,0.3)',
 		accentColor: '#2c7a60',
 		titleColor: '#FFFFFF',
@@ -113,7 +113,8 @@ const TIER_THEMES: TierTheme[] = [
 	},
 	{
 		// Phoenix
-		bannerGradient: 'linear-gradient(160deg, #1a4a5a 0%, #153d4d 40%, #0e2e3a 100%)',
+		bannerGradient:
+			'linear-gradient(160deg, #1a4a5a 0%, #153d4d 40%, #0e2e3a 100%)',
 		bannerBorder: 'rgba(220,170,60,0.45)',
 		accentColor: '#c9a030',
 		titleColor: '#FFFFFF',
@@ -127,7 +128,8 @@ const TIER_THEMES: TierTheme[] = [
 	},
 	{
 		// Imperial
-		bannerGradient: 'linear-gradient(160deg, #2e1e10 0%, #3a2a14 40%, #2a1a0a 100%)',
+		bannerGradient:
+			'linear-gradient(160deg, #2e1e10 0%, #3a2a14 40%, #2a1a0a 100%)',
 		bannerBorder: 'rgba(220,180,60,0.65)',
 		accentColor: '#c9a030',
 		titleColor: '#f5d060',
@@ -161,7 +163,9 @@ const MyTicketDisplay = (): React.ReactElement => {
 	// Compute tier rank from full tier list
 	const tierTheme = useMemo(() => {
 		if (!ticket?.tier || !tiersData?.data) return TIER_THEMES[0]
-		const sorted = [...tiersData.data].sort((a, b) => Number(a.price) - Number(b.price))
+		const sorted = [...tiersData.data].sort(
+			(a, b) => Number(a.price) - Number(b.price)
+		)
 		const rankIndex = sorted.findIndex(t => t.id === ticket.tier?.id)
 		const rank = Math.min(Math.max(rankIndex, 0), TIER_THEMES.length - 1)
 		return TIER_THEMES[rank]
@@ -191,18 +195,24 @@ const MyTicketDisplay = (): React.ReactElement => {
 		setIsCancelling(true)
 		try {
 			await cancelTicketMutation.mutateAsync()
-			toast.success(t('ticketCancelledSuccess') || 'Ticket cancelled successfully!')
+			toast.success(
+				t('ticketCancelledSuccess') || 'Ticket cancelled successfully!'
+			)
 			setShowCancelDialog(false)
 			setIsCancelling(false)
 		} catch {
-			toast.error(t('ticketCancelError') || 'Failed to cancel ticket. Please try again.')
+			toast.error(
+				t('ticketCancelError') || 'Failed to cancel ticket. Please try again.'
+			)
 			setIsCancelling(false)
 		}
 	}
 
 	useEffect(() => {
 		if (error) {
-			toast.error(t('couldNotLoadTicket') || 'Could not load ticket information')
+			toast.error(
+				t('couldNotLoadTicket') || 'Could not load ticket information'
+			)
 		}
 	}, [error, t])
 
@@ -259,7 +269,12 @@ const MyTicketDisplay = (): React.ReactElement => {
 				border: `1px solid ${theme.fieldBorder}`,
 			}}
 		>
-			<p className='text-sm font-medium' style={{ color: theme.fieldLabelColor }}>{label}</p>
+			<p
+				className='text-sm font-medium'
+				style={{ color: theme.fieldLabelColor }}
+			>
+				{label}
+			</p>
 			<p className='text-lg text-text-secondary'>{value}</p>
 		</div>
 	)
@@ -276,7 +291,10 @@ const MyTicketDisplay = (): React.ReactElement => {
 				{/* Diagonal light sweep */}
 				<div
 					className='absolute inset-0 pointer-events-none'
-					style={{ background: 'linear-gradient(125deg, rgba(255,255,255,0.07) 0%, transparent 55%)' }}
+					style={{
+						background:
+							'linear-gradient(125deg, rgba(255,255,255,0.07) 0%, transparent 55%)',
+					}}
 				/>
 
 				<div className='relative z-[1] flex flex-col sm:flex-row sm:items-center justify-between gap-3'>
@@ -284,7 +302,6 @@ const MyTicketDisplay = (): React.ReactElement => {
 						<h2
 							className='text-xl font-bold uppercase tracking-[0.12em]'
 							style={{
-								fontFamily: SERIF,
 								color: theme.titleColor,
 								textShadow: theme.titleShadow || '0 1px 6px rgba(0,0,0,0.3)',
 							}}
@@ -295,7 +312,6 @@ const MyTicketDisplay = (): React.ReactElement => {
 							<p
 								className='font-semibold mt-1 tracking-wide'
 								style={{
-									fontFamily: SERIF,
 									color: theme.priceColor,
 									fontSize: '16px',
 								}}
@@ -318,9 +334,15 @@ const MyTicketDisplay = (): React.ReactElement => {
 				{/* Ticket Details — grid */}
 				<div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
 					<InfoField label={t('referenceCode')} value={ticket.reference_code} />
-					<InfoField label={t('ticketType')} value={tier?.ticket_name || 'N/A'} />
+					<InfoField
+						label={t('ticketType')}
+						value={tier?.ticket_name || 'N/A'}
+					/>
 					{tier && (
-						<InfoField label={t('ticketPrice')} value={`${formatPrice(tier.price)} VND`} />
+						<InfoField
+							label={t('ticketPrice')}
+							value={`${formatPrice(tier.price)} VND`}
+						/>
 					)}
 					<InfoField
 						label={t('purchaseDate')}
@@ -345,7 +367,10 @@ const MyTicketDisplay = (): React.ReactElement => {
 							>
 								<span
 									className='absolute inset-0 pointer-events-none'
-									style={{ background: 'linear-gradient(180deg, rgba(255,255,255,0.12) 0%, transparent 55%)' }}
+									style={{
+										background:
+											'linear-gradient(180deg, rgba(255,255,255,0.12) 0%, transparent 55%)',
+									}}
 								/>
 								<span className='relative z-[1]'>{t('payNow')}</span>
 							</button>
@@ -362,7 +387,9 @@ const MyTicketDisplay = (): React.ReactElement => {
 				{ticket.status === 'self_confirmed' && (
 					<div className='mt-6 rounded-xl border border-blue-200 bg-blue-50/50 px-4 py-4'>
 						<p className='text-sm text-blue-800'>{t('paymentReceived')}</p>
-						<p className='text-xs text-blue-600 mt-1'>{t('verificationTime')}</p>
+						<p className='text-xs text-blue-600 mt-1'>
+							{t('verificationTime')}
+						</p>
 						<button
 							onClick={() => setShowCancelDialog(true)}
 							className='mt-3 w-full py-2.5 px-4 rounded-xl border border-red-400 text-red-600 font-medium hover:bg-red-50'
@@ -392,7 +419,10 @@ const MyTicketDisplay = (): React.ReactElement => {
 						>
 							<span
 								className='absolute inset-0 pointer-events-none'
-								style={{ background: 'linear-gradient(180deg, rgba(255,255,255,0.12) 0%, transparent 55%)' }}
+								style={{
+									background:
+										'linear-gradient(180deg, rgba(255,255,255,0.12) 0%, transparent 55%)',
+								}}
 							/>
 							<span className='relative z-[1]'>{t('tryAnotherTicket')}</span>
 						</button>
@@ -424,7 +454,8 @@ const MyTicketDisplay = (): React.ReactElement => {
 									{ticket.upgrade_denial_reason}
 								</p>
 								<p className='text-xs text-orange-600 mt-2'>
-									{t('upgradeRejectedKeepTicket') || 'Your original ticket has been restored. You can try upgrading again.'}
+									{t('upgradeRejectedKeepTicket') ||
+										'Your original ticket has been restored. You can try upgrading again.'}
 								</p>
 							</div>
 						</div>
@@ -433,7 +464,10 @@ const MyTicketDisplay = (): React.ReactElement => {
 
 				{/* Upgrade Button */}
 				{ticket.status === 'approved' && tier && (
-					<div className='mt-6 pt-5 border-t' style={{ borderColor: `${theme.fieldBorder}` }}>
+					<div
+						className='mt-6 pt-5 border-t'
+						style={{ borderColor: `${theme.fieldBorder}` }}
+					>
 						<button
 							onClick={() => setShowUpgradeModal(true)}
 							className='w-full py-2.5 px-4 text-xl rounded-xl font-medium transition-all duration-200 flex items-center justify-center gap-2 relative overflow-hidden'
@@ -446,7 +480,10 @@ const MyTicketDisplay = (): React.ReactElement => {
 						>
 							<span
 								className='absolute inset-0 pointer-events-none'
-								style={{ background: 'linear-gradient(180deg, rgba(255,255,255,0.12) 0%, transparent 55%)' }}
+								style={{
+									background:
+										'linear-gradient(180deg, rgba(255,255,255,0.12) 0%, transparent 55%)',
+								}}
 							/>
 							<ArrowUpCircle className='w-5 h-5 relative z-[1]' />
 							<span className='relative z-[1]'>{t('upgradeTicket')}</span>

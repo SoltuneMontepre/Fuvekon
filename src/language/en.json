@@ -611,7 +611,7 @@
 		"verified": "Approved",
 		"pendingVerification": "Pending approval",
 		"denied": "Denied",
-		"clickToOpenDocument" : "Click to open document",
+		"clickToOpenDocument": "Click to open document",
 		"verifiedByStaff": "Approved by staff",
 		"editSubmission": "Edit submission",
 		"deleteSubmission": "Delete",
@@ -711,6 +711,80 @@
 		"joinButton": "Join",
 		"joining": "Joining...",
 		"noteText": "Note: You need an approved ticket to register a booth. Your booth will need to be verified by an administrator before it is shown publicly."
+	},
+	"talent": {
+		"talent": {
+			"form": {
+				"intro1": "Talent Show is the stage program where you can freely display your talents and personality—from singing, dancing, instrument performances, to acting and other creative acts.",
+				"intro2": "FUVE supports everyone shining, sharing passion, and spreading positive energy to the community."
+			},
+			"rules": {
+				"title": "TALENT SHOW REGULATIONS",
+				"item1": "REGULATIONS WHEN REGISTERING FOR TALENT SHOW:",
+				"item2": "● Performances must be appropriate for all audiences.",
+				"item3": "● If you perform as a group, all group members must have a valid ticket to participate in the performance.",
+				"item4": "● Performance attire must not be overly revealing and must align with public decency.",
+				"item5": "● Do not register performances with offensive content, including pornography, violence, illegal content, or anything that violates public decency.",
+				"item6": "● After review, if the FUVE organizing committee finds your performance unsuitable (e.g., disturbing public order or violating ethics), your performance may be refused.",
+				"item7": "● All performances must take place within the main stage area; do not extend into the lobby area for safety reasons.",
+				"item8": "● All registered performers must attend the centralized audition day. FUVE will announce the rehearsal time in advance and arrange the performance order for the show.",
+				"item9": "● After the rehearsal, performers must be present 30 minutes before the show starts. Please arrive on time and be ready for your performance.",
+				"item10": "● FUVE uses Email and Discord for communication, sharing audio files, slides, etc.",
+				"item11": "● Please note that FUVE may require you to change the content of your performance or the stage layout.",
+				"item12": "● The organizing committee’s decision is final.",
+				"item13": "",
+				"item14": "IMPORTANT NOTE:",
+				"item15": "You must have a purchased and approved ticket to register. If you do not have a ticket yet, please create an account, purchase a ticket, and return here after completing the above steps."
+			}
+		}
+	},
+	"dealer": {
+		"dealer": {
+			"form": {
+				"intro1": "How to register a booth at FUVE",
+				"intro2": "To register a booth at an event organized by FUVE, participants must have purchased a ticket and had it approved before they are allowed to register a booth for the event stated on the purchased ticket.",
+				"processTitle": "Booth registration process:",
+				"process1": "Log in to your account. Check whether your purchased ticket has been confirmed.",
+				"process2": "If you have a ticket, the dealer menu will appear in your account section. Click on \"Gian hàng\" (Booth).",
+				"process3": "Enter all registration details and click \"Register booth\".",
+				"process4": "Wait for booth approval.",
+				"process5": "When your dealer application is approved, you will receive your Dealer code.",
+				"joinTitle": "Process to request joining a booth:",
+				"join1": "Log in and go to \"Account management\" > \"Gian hàng\" (Booth).",
+				"join2": "Enter the \"Dealer code\" of the booth owner you want to join in the \"Merge booth\" field.",
+				"join3": "Wait for that booth owner to confirm your join request.",
+				"join4": "When the booth owner confirms and you join successfully, you will be added to that booth’s code.",
+				"noteNoNewRegistration": "Note: You do not need to register a new booth if you only want to share someone else’s booth.",
+				"notesTitle": "Notes",
+				"note1": "Each booth has one named holder, called \"Dealer\". A booth may register additional people to help sell, called \"Dealer Staff\".",
+				"note2": "Each booth has one main representative (Dealer) and may register up to 2 Dealer Staff.",
+				"note3": "Each account may purchase ONE TICKET ONLY. The account must have a (confirmed) ticket before registering a booth.",
+				"note4": "Remember to keep your Dealer code for any booth-related procedures at FUVE events."
+			},
+			"rules": {
+				"title": "BOOTH REGISTRATION REGULATIONS",
+				"item1": "PRODUCT REGULATIONS:",
+				"item2": "● The organizing committee may require you to declare the products you sell at any time.",
+				"item3": "● Products must be made by you or involve your contribution in the making. Reselling others’ products without author permission is not allowed.",
+				"item4": "● Items not allowed for sale at the event: ○ Items with sensitive content, 16+. ○ Food and beverages. ○ Items that may cause injury. ○ Alcohol, stimulants.",
+				"item5": "● Limit power outlets and flammable items in your booth area.",
+				"item6": "● The organizing committee may confiscate or require you to remove items that violate regulations and may require the booth to stop operating if violations are repeated.",
+				"item7": "● Please take care of your own materials. The organizing committee cannot compensate you for any loss or damage.",
+				"item8": "● Sellers must collect their ticket and receive their table during the designated time slot.",
+				"item9": "● Do not encroach on other booths’ space, including placing materials or people outside your booth area.",
+				"item10": "",
+				"item11": "SELLING AREA:",
+				"item12": "● Sellers must keep the booth area clean.",
+				"item13": "● Do not cause damage to the venue’s or the event’s property.",
+				"item14": "● Sellers may decorate their booth but must ensure safety and must not damage any event property.",
+				"item15": "● Sellers should be aware that visitors viewing their booth may affect common walkways and other booths.",
+				"item16": "",
+				"item17": "ORGANIZING COMMITTEE DECISIONS:",
+				"item18": "● The organizing committee may require you to stop selling and leave the event area if you violate regulations.",
+				"item19": "● The organizing committee will assign your booth position.",
+				"item20": "● The organizing committee may inspect the items you sell at any time."
+			}
+		}
 	},
 	"artbook": {
 		"artbook": {

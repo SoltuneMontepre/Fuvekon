@@ -7,7 +7,7 @@ type TalentLayoutProps = {
 
 const TalentLayout = ({ form, rules }: TalentLayoutProps) => {
 	return (
-		<div>
+		<div className='space-y-12'>
 			<section>{rules}</section>
 			<section>{form}</section>
 		</div>

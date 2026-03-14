@@ -17,9 +17,6 @@ import Loading from '@/components/common/Loading'
 import { AlertCircle } from 'lucide-react'
 import type { TicketTier } from '@/types/models/ticket/ticket'
 
-const SERIF = '"Times New Roman", Times, Baskerville, Georgia, serif'
-
-
 const TicketPage = (): React.ReactElement => {
 	const router = useRouter()
 	const t = useTranslations('ticket')
@@ -122,31 +119,45 @@ const TicketPage = (): React.ReactElement => {
 			<div className='fixed inset-0 z-[1] bg-black/40' />
 			<div className='min-h-screen relative z-10 py-12 px-4'>
 				<div className='max-w-7xl mx-auto relative z-20'>
-
 					{/* ── Page Header with ornamental divider ── */}
 					<div className='text-center mb-10'>
 						<div className='flex items-center justify-center gap-3 mb-3'>
-							<div className='w-[60px] h-px' style={{ background: 'linear-gradient(to left, transparent, #c9a84c)' }} />
+							<div
+								className='w-[60px] h-px'
+								style={{
+									background: 'linear-gradient(to left, transparent, #c9a84c)',
+								}}
+							/>
 							<svg width='28' height='14' viewBox='0 0 28 14'>
-								<path d='M14 1 L27 7 L14 13 L1 7 Z' stroke='#c9a84c' strokeWidth='1' fill='rgba(201,168,76,0.15)' />
+								<path
+									d='M14 1 L27 7 L14 13 L1 7 Z'
+									stroke='#c9a84c'
+									strokeWidth='1'
+									fill='rgba(201,168,76,0.15)'
+								/>
 								<circle cx='14' cy='7' r='2.5' fill='#c9a84c' />
 							</svg>
-							<div className='w-[60px] h-px' style={{ background: 'linear-gradient(to right, transparent, #c9a84c)' }} />
+							<div
+								className='w-[60px] h-px'
+								style={{
+									background: 'linear-gradient(to right, transparent, #c9a84c)',
+								}}
+							/>
 						</div>
 						<h1
 							className='font-bold uppercase tracking-[0.18em] mb-1.5'
 							style={{
-								fontFamily: SERIF,
 								fontSize: 'clamp(1.3rem, 2.5vw, 2rem)',
 								color: '#f0d080',
-								textShadow: '0 2px 20px rgba(201,168,76,0.45), 0 0 60px rgba(201,168,76,0.2)',
+								textShadow:
+									'0 2px 20px rgba(201,168,76,0.45), 0 0 60px rgba(201,168,76,0.2)',
 							}}
 						>
 							{t('purchaseTitle')}
 						</h1>
 						<p
 							className='italic text-base tracking-[0.15em]'
-							style={{ fontFamily: SERIF, color: 'rgba(220,200,140,0.6)' }}
+							style={{ color: 'rgba(220,200,140,0.6)' }}
 						>
 							{t('selectTier')}
 						</p>
@@ -207,9 +218,9 @@ const TicketPage = (): React.ReactElement => {
 									<h3
 										className='text-[22px] font-bold uppercase tracking-[0.15em]'
 										style={{
-											fontFamily: SERIF,
 											color: '#F0C060',
-											textShadow: '0 1px 8px rgba(0,0,0,0.5), 0 0 20px rgba(201,146,42,0.3)',
+											textShadow:
+												'0 1px 8px rgba(0,0,0,0.5), 0 0 20px rgba(201,146,42,0.3)',
 										}}
 									>
 										{t('purchaseNoticesTitle')}
@@ -220,7 +231,11 @@ const TicketPage = (): React.ReactElement => {
 							<div className='px-2 py-4'>
 								<ol className='space-y-2 list-decimal list-inside'>
 									{purchaseNotices.map((notice, i) => (
-										<li key={i} className='text-base leading-relaxed text-[#2B2B2B]' style={{ fontFamily: SERIF }}>
+										<li
+											key={i}
+											className='text-base leading-relaxed text-[#2B2B2B]'
+											style={{}}
+										>
 											{notice}
 										</li>
 									))}
