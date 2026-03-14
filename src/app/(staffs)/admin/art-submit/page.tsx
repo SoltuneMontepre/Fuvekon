@@ -218,7 +218,7 @@ const ArtSubmitAdminPage = (): React.ReactElement => {
 		]
 		const deduped = Array.from(new Map(combined.map(item => [item.id, item])).values())
 		return sortSubmissions(deduped)
-	}, [viewMode, pendingData?.data, approvedData?.data, deniedData?.data, sortMode])
+	}, [viewMode, pendingData?.data, approvedData?.data, deniedData?.data, sortMode, sortSubmissions])
 
 	const pagination = useMemo(() => {
 		if (viewMode === 'pending') return pendingData?.meta as PaginationMeta | undefined
@@ -265,7 +265,7 @@ const ArtSubmitAdminPage = (): React.ReactElement => {
 			approved,
 			denied,
 		}
-	}, [submissions, pagination])
+	}, [submissions])
 
 	const isPendingView = viewMode === 'pending'
 	const isApprovedView = viewMode === 'approved'

@@ -29,8 +29,9 @@ const UpgradeTicketModal = ({ currentTier, onClose }: UpgradeTicketModalProps) =
 	const dialogRef = useRef<HTMLDialogElement>(null)
 
 	useEffect(() => {
-		dialogRef.current?.showModal()
-		return () => dialogRef.current?.close()
+		const dialog = dialogRef.current
+		dialog?.showModal()
+		return () => dialog?.close()
 	}, [])
 
 	const { data: tiersData, isLoading: tiersLoading } = useGetTiers()
