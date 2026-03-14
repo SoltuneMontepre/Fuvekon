@@ -166,6 +166,7 @@ export default function ScanTicketPage() {
 			self_confirmed: tTicket('status.selfConfirmed'),
 			approved: tTicket('status.approved'),
 			denied: tTicket('status.denied'),
+			admin_granted: tTicket('status.adminGranted'),
 		}
 		return labels[status]
 	}
