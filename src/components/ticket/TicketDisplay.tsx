@@ -42,8 +42,8 @@ const TIER_COLORS: TierColor[] = [
 		priceColor: '#FFFFFF',
 		checkColor: '#8B6E3A',
 		checkMark: '◈',
-		btnBg: 'linear-gradient(160deg, #558a72 0%, #3d6e5a 100%)',
-		btnColor: '#d4f0e0',
+		btnBg: 'linear-gradient(160deg, #3d5558 0%, #2d3c3f 100%)',
+		btnColor: '#c8e0e4',
 		btnShadow: '0 3px 14px rgba(0,0,0,0.3)',
 	},
 	{
@@ -53,8 +53,8 @@ const TIER_COLORS: TierColor[] = [
 		priceColor: '#FFFFFF',
 		checkColor: '#2c7a60',
 		checkMark: '✦',
-		btnBg: 'linear-gradient(160deg, #3e9890 0%, #2a7878 100%)',
-		btnColor: '#b0ede0',
+		btnBg: 'linear-gradient(160deg, #aaa8a4 0%, #797673 100%)',
+		btnColor: '#ffffff',
 		btnShadow: '0 3px 14px rgba(0,0,0,0.3)',
 	},
 	{
@@ -64,9 +64,9 @@ const TIER_COLORS: TierColor[] = [
 		priceColor: '#FFFFFF',
 		checkColor: '#c9a030',
 		checkMark: '❖',
-		btnBg: 'linear-gradient(160deg, #1a4a5a 0%, #153d4d 100%)',
-		btnColor: '#f0dca0',
-		btnShadow: '0 3px 16px rgba(0,0,0,0.35)',
+		btnBg: 'linear-gradient(160deg, #c9aa65 0%, #9e7e3f 100%)',
+		btnColor: '#ffffff',
+		btnShadow: '0 3px 16px rgba(0,0,0,0.3)',
 	},
 	{
 		// Tier 4 — purple
@@ -77,10 +77,10 @@ const TIER_COLORS: TierColor[] = [
 		priceShadow: '0 0 12px rgba(240,200,80,0.4)',
 		checkColor: '#c9a030',
 		checkMark: '♛',
-		btnBg: 'linear-gradient(160deg, #5a4a20 0%, #7a5e28 50%, #5a4a20 100%)',
-		btnColor: '#f5e6b8',
-		btnBorder: '1px solid rgba(201,168,76,0.6)',
-		btnShadow: '0 3px 18px rgba(0,0,0,0.4), 0 0 14px rgba(201,168,76,0.25)',
+		btnBg: 'linear-gradient(160deg, #b87fd4 0%, #8a4fa8 50%, #7a3d99 100%)',
+		btnColor: '#f5e6ff',
+		btnBorder: '1px solid rgba(200,150,230,0.5)',
+		btnShadow: '0 3px 18px rgba(0,0,0,0.4), 0 0 14px rgba(162,109,189,0.35)',
 	},
 ]
 
