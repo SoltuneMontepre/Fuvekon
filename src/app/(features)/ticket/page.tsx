@@ -230,17 +230,6 @@ const TicketPage = (): React.ReactElement => {
 					</div>
 				</div>
 			</div>
-
-			{/* Hover glow effect */}
-			<style jsx global>{`
-				.tier-card-hover {
-					filter: drop-shadow(0 8px 24px rgba(0,0,0,0.45));
-				}
-				.tier-card-hover:hover {
-					transform: translateY(-6px);
-					filter: drop-shadow(0 16px 36px rgba(0,0,0,0.6)) drop-shadow(0 0 20px rgba(201,168,76,0.15));
-				}
-			`}</style>
 		</>
 	)
 }
