@@ -101,6 +101,8 @@ const TicketPurchasePage = ({
 	const tCommon = useTranslations('common')
 	const [copied, setCopied] = useState<string | null>(null)
 	const [showConfirmDialog, setShowConfirmDialog] = useState(false)
+	const [isConfirming, setIsConfirming] = useState(false)
+	const confirmDialogRef = useRef<HTMLDialogElement>(null)
 
 	const isUpgrade = searchParams?.get('upgrade') === 'true'
 	const upgradeDiff = searchParams?.get('diff') ?? null
@@ -113,14 +115,23 @@ const TicketPurchasePage = ({
 
 	const ticket = ticketData?.data
 
+	// Sync native dialog
+	useEffect(() => {
+		if (showConfirmDialog) {
+			confirmDialogRef.current?.showModal()
+		} else {
+			confirmDialogRef.current?.close()
+		}
+	}, [showConfirmDialog])
+
 	// When landing after a queued purchase (202), poll for ticket until it appears or timeout (e.g. Lambda cold start)
 	useEffect(() => {
 		if (!isQueued || ticket || giveUpPolling || pollingEndRef.current) return
-		refetch() // immediate check in case worker already finished
+		refetch()
 		const POLL_INTERVAL_MS = 2000
 		const MAX_POLL_MS = 30000
 		let elapsed = 0
-		const t = setInterval(() => {
+		const interval = setInterval(() => {
 			elapsed += POLL_INTERVAL_MS
 			refetch()
 			if (elapsed >= MAX_POLL_MS) {
@@ -128,7 +139,7 @@ const TicketPurchasePage = ({
 				setGiveUpPolling(true)
 			}
 		}, POLL_INTERVAL_MS)
-		return () => clearInterval(t)
+		return () => clearInterval(interval)
 	}, [isQueued, ticket, giveUpPolling, refetch])
 
 	useEffect(() => {
@@ -166,6 +177,7 @@ const TicketPurchasePage = ({
 
 	const handleConfirmPayment = async () => {
 		setShowConfirmDialog(false)
+		setIsConfirming(true)
 		try {
 			const result = await confirmMutation.mutateAsync()
 			if (result.isSuccess) {
@@ -173,12 +185,15 @@ const TicketPurchasePage = ({
 					t('paymentConfirmed') || 'Payment confirmed successfully!'
 				)
 				router.push('/account/ticket')
+				return // keep loading up through navigation
 			}
+			setIsConfirming(false)
 		} catch {
 			toast.error(
 				t('paymentConfirmError') ||
 					'Failed to confirm payment. Please try again.'
 			)
+			setIsConfirming(false)
 		}
 	}
 
@@ -262,6 +277,7 @@ const TicketPurchasePage = ({
 
 	return (
 		<>
+			{isConfirming && <Loading />}
 			<Background />
 			<div className='fixed inset-0 z-[1] bg-black/40' />
 			<div className='min-h-screen relative z-10 py-12 px-4'>
@@ -377,8 +393,7 @@ const TicketPurchasePage = ({
 							<div className='mt-6 pt-5 border-t border-[#48715B]/15 space-y-3'>
 								<button
 									onClick={() => setShowConfirmDialog(true)}
-									disabled={confirmMutation.isPending}
-									className='shadow-md w-full py-2.5 px-4 text-xl rounded-xl btn-primary font-medium transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed'
+									className='shadow-md w-full py-2.5 px-4 text-xl rounded-xl btn-primary font-medium transition-colors duration-200'
 								>
 									{confirmMutation.isPending
 										? tCommon('processing')
@@ -387,8 +402,7 @@ const TicketPurchasePage = ({
 
 								<button
 									onClick={() => router.push('/account')}
-									disabled={confirmMutation.isPending}
-									className='w-full py-2.5 px-4 rounded-xl border border-[#8C8C8C]/40 font-medium hover:bg-[#E2EEE2] transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed'
+									className='w-full py-2.5 px-4 rounded-xl border border-[#8C8C8C]/40 font-medium hover:bg-[#E2EEE2] transition-colors duration-200'
 								>
 									{tCommon('cancel')}
 								</button>
@@ -402,36 +416,31 @@ const TicketPurchasePage = ({
 				</div>
 			</div>
 
-			{/* Confirmation Dialog */}
-			{showConfirmDialog && (
-				<div className='fixed inset-0 z-50 flex items-center justify-center bg-black/50'>
-					<div className='bg-white rounded-2xl p-6 max-w-md mx-4 shadow-2xl'>
-						<h3 className='text-xl font-semibold text-text-primary mb-4'>
-							{t('confirmPaymentTitle')}
-						</h3>
-						<p className='text-text-secondary mb-6'>
-							{t('confirmPaymentDesc', {
-								amount: formatPrice(price),
-								code: ticket.reference_code,
-							})}
-						</p>
-						<div className='flex gap-3'>
-							<button
-								onClick={() => setShowConfirmDialog(false)}
-								className='flex-1 py-2.5 px-4 rounded-xl border border-[#8C8C8C]/40 font-medium hover:bg-[#E2EEE2]'
-							>
-								{tCommon('cancel')}
-							</button>
-							<button
-								onClick={handleConfirmPayment}
-								className='flex-1 py-2.5 px-4 rounded-xl btn-primary font-medium'
-							>
-								{tCommon('confirm')}
-							</button>
-						</div>
-					</div>
+			{/* Confirmation Dialog — native dialog for proper stacking */}
+			<dialog
+				ref={confirmDialogRef}
+				onCancel={() => setShowConfirmDialog(false)}
+				className='bg-white rounded-2xl p-6 w-full max-w-md shadow-2xl backdrop:bg-black/50 m-auto'
+			>
+				<h3 className='text-xl font-semibold text-text-primary mb-4'>{t('confirmPaymentTitle')}</h3>
+				<p className='text-text-secondary mb-6'>
+					{t('confirmPaymentDesc', { amount: formatPrice(price), code: ticket.reference_code })}
+				</p>
+				<div className='flex gap-3'>
+					<button
+						onClick={() => setShowConfirmDialog(false)}
+						className='flex-1 py-2.5 px-4 rounded-xl border border-[#8C8C8C]/40 font-medium hover:bg-[#E2EEE2]'
+					>
+						{tCommon('cancel')}
+					</button>
+					<button
+						onClick={handleConfirmPayment}
+						className='flex-1 py-2.5 px-4 rounded-xl btn-primary font-medium'
+					>
+						{tCommon('confirm')}
+					</button>
 				</div>
-			)}
+			</dialog>
 		</>
 	)
 }

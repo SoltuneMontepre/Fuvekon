@@ -85,7 +85,7 @@ const VerifyOtpForm = (): React.ReactElement => {
 			// nothing to verify, send user back to registration
 			router.replace('/register')
 		}
-	}, [safeSearchParams, control, router])
+	}, [safeSearchParams, control, router, setValue])
 
 	// countdown timer for OTP expiry
 	useEffect(() => {

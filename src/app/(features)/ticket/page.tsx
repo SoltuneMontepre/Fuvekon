@@ -13,9 +13,12 @@ import {
 } from '@/hooks/services/ticket/useTicket'
 import { useAuthStore } from '@/stores/authStore'
 import Background from '@/components/ui/Background'
-import type { TicketTier } from '@/types/models/ticket/ticket'
 import Loading from '@/components/common/Loading'
 import { AlertCircle } from 'lucide-react'
+import type { TicketTier } from '@/types/models/ticket/ticket'
+
+const SERIF = '"Times New Roman", Times, Baskerville, Georgia, serif'
+
 
 const TicketPage = (): React.ReactElement => {
 	const router = useRouter()
@@ -28,6 +31,7 @@ const TicketPage = (): React.ReactElement => {
 		error: tiersError,
 	} = useGetTiers()
 	const purchaseMutation = usePurchaseTicket()
+	const [isPurchasing, setIsPurchasing] = useState(false)
 
 	const isBlacklisted = account?.is_blacklisted
 	const [showTicketNotAvailable, setShowTicketNotAvailable] = useState(false)
@@ -39,10 +43,10 @@ const TicketPage = (): React.ReactElement => {
 		}
 		setShowTicketNotAvailable(false)
 
+		setIsPurchasing(true)
 		try {
 			const result = await purchaseMutation.mutateAsync(tierId)
 			if (result?.isSuccess) {
-				// When queued (202), worker may still be processing; pass queued=1 so purchase page polls for ticket
 				const queued = result?.statusCode === 202
 				router.push(
 					queued
@@ -50,12 +54,14 @@ const TicketPage = (): React.ReactElement => {
 						: `/ticket/purchase/${tierId}`
 				)
 			}
+			setIsPurchasing(false)
 		} catch (err) {
 			const message =
 				(err as AxiosError<{ message?: string }>)?.response?.data?.message ||
 				(err as Error).message ||
 				t('errorOccurred')
 			toast.error(message)
+			setIsPurchasing(false)
 		}
 	}
 
@@ -111,10 +117,41 @@ const TicketPage = (): React.ReactElement => {
 
 	return (
 		<>
+			{isPurchasing && <Loading />}
 			<Background />
 			<div className='fixed inset-0 z-[1] bg-black/40' />
 			<div className='min-h-screen relative z-10 py-12 px-4'>
 				<div className='max-w-7xl mx-auto relative z-20'>
+
+					{/* ── Page Header with ornamental divider ── */}
+					<div className='text-center mb-10'>
+						<div className='flex items-center justify-center gap-3 mb-3'>
+							<div className='w-[60px] h-px' style={{ background: 'linear-gradient(to left, transparent, #c9a84c)' }} />
+							<svg width='28' height='14' viewBox='0 0 28 14'>
+								<path d='M14 1 L27 7 L14 13 L1 7 Z' stroke='#c9a84c' strokeWidth='1' fill='rgba(201,168,76,0.15)' />
+								<circle cx='14' cy='7' r='2.5' fill='#c9a84c' />
+							</svg>
+							<div className='w-[60px] h-px' style={{ background: 'linear-gradient(to right, transparent, #c9a84c)' }} />
+						</div>
+						<h1
+							className='font-bold uppercase tracking-[0.18em] mb-1.5'
+							style={{
+								fontFamily: SERIF,
+								fontSize: 'clamp(1.3rem, 2.5vw, 2rem)',
+								color: '#f0d080',
+								textShadow: '0 2px 20px rgba(201,168,76,0.45), 0 0 60px rgba(201,168,76,0.2)',
+							}}
+						>
+							{t('purchaseTitle')}
+						</h1>
+						<p
+							className='italic text-base tracking-[0.15em]'
+							style={{ fontFamily: SERIF, color: 'rgba(220,200,140,0.6)' }}
+						>
+							{t('selectTier')}
+						</p>
+					</div>
+
 					{/* Status messages */}
 					{!account && (
 						<div className='mb-6 text-center'>
@@ -122,7 +159,7 @@ const TicketPage = (): React.ReactElement => {
 								{t('loginToBuy')}{' '}
 								<button
 									onClick={() => router.push('/login')}
-									className='text-[#7cbc97] underline hover:no-underline font-medium'
+									className='text-white underline hover:no-underline font-medium'
 								>
 									{t('loginNow')}
 								</button>
@@ -138,7 +175,7 @@ const TicketPage = (): React.ReactElement => {
 						</div>
 					)}
 
-					{/* Tier Cards — 4 columns */}
+					{/* Tier Cards */}
 					<TicketDisplay
 						tiers={tiers}
 						onPurchase={handlePurchase}
@@ -154,8 +191,8 @@ const TicketPage = (): React.ReactElement => {
 					)}
 
 					{/* Purchase Notices */}
-					<div className='mt-8 max-w-3xl mx-auto'>
-						<CollapsibleScroll initialOpen>
+					<div className='mt-8 max-w-2xl mx-auto'>
+						<CollapsibleScroll initialOpen className='drop-shadow-xl'>
 							{/* Header with image background */}
 							<div
 								className='-mx-9 relative overflow-hidden'
@@ -165,18 +202,29 @@ const TicketPage = (): React.ReactElement => {
 									backgroundPosition: 'center',
 								}}
 							>
-								<div className='absolute inset-0 bg-secondary/70' />
-								<div className='relative z-[1] px-4 py-3 text-center'>
-									<h3 className='text-lg sm:text-xl font-bold text-[#e2eee2] josefin uppercase tracking-wide'>
+								<div className='absolute inset-0 bg-secondary/90' />
+								<div className='relative z-[1] px-4 py-4 text-center'>
+									<h3
+										className='text-[22px] font-bold uppercase tracking-[0.15em]'
+										style={{
+											fontFamily: SERIF,
+											color: '#F0C060',
+											textShadow: '0 1px 8px rgba(0,0,0,0.5), 0 0 20px rgba(201,146,42,0.3)',
+										}}
+									>
 										{t('purchaseNoticesTitle')}
 									</h3>
 								</div>
 							</div>
 
-							<div className='px-2 py-3'>
-								<p className='text-text-secondary leading-relaxed text-xs sm:text-[13px]'>
-									{purchaseNotices.join(' ')}
-								</p>
+							<div className='px-2 py-4'>
+								<ol className='space-y-2 list-decimal list-inside'>
+									{purchaseNotices.map((notice, i) => (
+										<li key={i} className='text-base leading-relaxed text-[#2B2B2B]' style={{ fontFamily: SERIF }}>
+											{notice}
+										</li>
+									))}
+								</ol>
 							</div>
 							<div className='pb-1' />
 						</CollapsibleScroll>

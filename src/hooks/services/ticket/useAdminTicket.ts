@@ -19,7 +19,7 @@ import { getQueryClient } from '@/utils/getQueryClient'
 
 // Admin filter params
 export interface AdminTicketFilter {
-	status?: 'pending' | 'self_confirmed' | 'approved' | 'denied'
+	status?: 'pending' | 'self_confirmed' | 'approved' | 'denied' | 'admin_granted'
 	tier_id?: string
 	search?: string
 	pending_over_24?: boolean

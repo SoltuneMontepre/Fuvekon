@@ -136,7 +136,7 @@ const AccountLayout = ({ children }: AccountLayoutProps) => {
 			{/* Main Content - Card-based layout with dark background visible */}
 			<div id='account-content' className='relative z-10 gap-6 p-8 w-full '>
 				<div className='bg-main backdrop-blur-md rounded-2xl shadow-2xl max-w-3xl mx-auto overflow-hidden '>
-					<section id='account-main-section' className='relative z-[60]'>
+					<section id='account-main-section' className='relative z-[60] h-full'>
 						{children}
 					</section>
 					<Image

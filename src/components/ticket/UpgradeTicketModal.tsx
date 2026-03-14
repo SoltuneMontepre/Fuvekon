@@ -1,11 +1,12 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
-import { ArrowUpCircle, Check, X, Loader2 } from 'lucide-react'
+import { ArrowUpCircle, Check, X } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 import { useGetTiers, useUpgradeTicket } from '@/hooks/services/ticket/useTicket'
+import Loading from '@/components/common/Loading'
 import type { TicketTier } from '@/types/models/ticket/ticket'
 
 const formatPrice = (price: number): string => {
@@ -25,10 +26,19 @@ const UpgradeTicketModal = ({ currentTier, onClose }: UpgradeTicketModalProps) =
 	const t = useTranslations('ticket')
 	const tCommon = useTranslations('common')
 	const router = useRouter()
+	const dialogRef = useRef<HTMLDialogElement>(null)
+
+	useEffect(() => {
+		const dialog = dialogRef.current
+		dialog?.showModal()
+		return () => dialog?.close()
+	}, [])
+
 	const { data: tiersData, isLoading: tiersLoading } = useGetTiers()
 	const upgradeMutation = useUpgradeTicket()
 	const [selectedTier, setSelectedTier] = useState<TicketTier | null>(null)
 	const [showConfirm, setShowConfirm] = useState(false)
+	const [isUpgrading, setIsUpgrading] = useState(false)
 
 	const currentPrice = Number(currentTier?.price) || 0
 	const eligibleTiers = (tiersData?.data ?? []).filter(
@@ -43,21 +53,30 @@ const UpgradeTicketModal = ({ currentTier, onClose }: UpgradeTicketModalProps) =
 
 	const handleUpgrade = async () => {
 		if (!selectedTier) return
+		setIsUpgrading(true)
 		try {
 			const result = await upgradeMutation.mutateAsync(selectedTier.id)
 			if (result.isSuccess) {
 				toast.success(t('upgradeSuccess'))
 				const diff = selectedTier.price - currentTier.price
 				router.push(`/ticket/purchase/${selectedTier.id}?upgrade=true&diff=${diff}`)
+				return // keep loading up through navigation
 			}
+			setIsUpgrading(false)
 		} catch {
 			toast.error(t('upgradeError'))
+			setIsUpgrading(false)
 		}
 	}
 
 	return (
-		<div className='fixed inset-0 z-50 flex items-center justify-center bg-black/50'>
-			<div className='bg-white rounded-xl p-6 max-w-lg mx-4 shadow-2xl w-full max-h-[90vh] overflow-y-auto'>
+		<dialog
+			ref={dialogRef}
+			onCancel={onClose}
+			className='bg-white rounded-xl p-6 sm:p-8 w-full max-w-2xl shadow-2xl backdrop:bg-black/50 m-auto'
+		>
+			{isUpgrading && <Loading />}
+			<div>
 				{/* Header */}
 				<div className='flex items-center justify-between mb-6'>
 					<div className='flex items-center gap-2'>
@@ -66,7 +85,6 @@ const UpgradeTicketModal = ({ currentTier, onClose }: UpgradeTicketModalProps) =
 					</div>
 					<button
 						onClick={onClose}
-						disabled={upgradeMutation.isPending}
 						className='p-1 hover:bg-gray-100 rounded-lg transition-colors'
 					>
 						<X className='w-5 h-5 text-gray-500' />
@@ -85,9 +103,7 @@ const UpgradeTicketModal = ({ currentTier, onClose }: UpgradeTicketModalProps) =
 				{!showConfirm ? (
 					<>
 						{tiersLoading ? (
-							<div className='flex items-center justify-center py-8'>
-								<Loader2 className='w-6 h-6 animate-spin text-[#48715b]' />
-							</div>
+							<Loading />
 						) : eligibleTiers.length === 0 ? (
 							<div className='text-center py-8'>
 								<p className='text-[#48715b]'>{t('noUpgradesAvailable')}</p>
@@ -114,8 +130,8 @@ const UpgradeTicketModal = ({ currentTier, onClose }: UpgradeTicketModalProps) =
 													<p className='text-sm text-[#48715b]'>
 														{formatPrice(tier.price)} VND
 													</p>
-													<p className='text-xs text-gray-500'>
-														{t('remaining', { count: tier.stock })}
+													<p className='text-xs font-medium text-[#c97b2a]'>
+														{tier.stock < 10 ? t('runningOut') : t('ticketsAbundant')}
 													</p>
 												</div>
 												<div className='text-right'>
@@ -175,23 +191,21 @@ const UpgradeTicketModal = ({ currentTier, onClose }: UpgradeTicketModalProps) =
 						<div className='flex gap-3'>
 							<button
 								onClick={() => setShowConfirm(false)}
-								disabled={upgradeMutation.isPending}
-								className='flex-1 py-2 px-4 rounded-lg border border-[#48715b] text-[#48715b] hover:bg-[#e9f5e7] disabled:opacity-50'
+								className='flex-1 py-2 px-4 rounded-lg border border-[#48715b] text-[#48715b] hover:bg-[#e9f5e7]'
 							>
 								{tCommon('back')}
 							</button>
 							<button
 								onClick={handleUpgrade}
-								disabled={upgradeMutation.isPending}
-								className='flex-1 py-2 px-4 rounded-lg bg-[#48715b] text-white hover:bg-[#3a5a4a] disabled:opacity-50'
+								className='flex-1 py-2 px-4 rounded-lg bg-[#48715b] text-white hover:bg-[#3a5a4a]'
 							>
-								{upgradeMutation.isPending ? tCommon('processing') : t('upgradeConfirm')}
+								{t('upgradeConfirm')}
 							</button>
 						</div>
 					</div>
 				)}
 			</div>
-		</div>
+		</dialog>
 	)
 }
 
