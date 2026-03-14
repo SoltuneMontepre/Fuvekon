@@ -15,6 +15,7 @@ import { useAuthStore } from '@/stores/authStore'
 import Background from '@/components/ui/Background'
 import Loading from '@/components/common/Loading'
 import { AlertCircle } from 'lucide-react'
+import type { TicketTier } from '@/types/models/ticket/ticket'
 
 const SERIF = '"Times New Roman", Times, Baskerville, Georgia, serif'
 
