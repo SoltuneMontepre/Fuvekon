@@ -1,9 +1,13 @@
 'use client'
 
 import React, { useRef, useState, useCallback, useEffect } from 'react'
-import Image from 'next/image'
+// import Image from 'next/image'
 import { useTranslations } from 'next-intl'
-import { Upload, X, CheckCircle2, AlertCircle, Loader2, FileText } from 'lucide-react'
+import { Upload, X,
+	//  CheckCircle2,
+	 AlertCircle, Loader2, 
+	// FileText 
+} from 'lucide-react'
 import {
 	useUploadToS3,
 	type UploadToS3Options,
@@ -93,6 +97,19 @@ const ImageUploader: React.FC<ImageUploaderProps> = props => {
 		return () => clearTimeout(timer)
 	}, [showSuccessMessage, successMessageDurationMs])
 
+	useEffect(() => {
+		setPreviewUrl(getInitialDisplayUrl(initialImageUrl))
+		setSelectedFile(null)
+
+		if (!initialImageUrl) {
+			setUploadError(null)
+			setShowSuccessMessage(false)
+			if (fileInputRef.current) {
+				fileInputRef.current.value = ''
+			}
+		}
+	}, [initialImageUrl])
+
 	const uploadOptions: UploadToS3Options = {
 		onSuccess: (fileUrl, fileKey) => {
 			setUploadError(null)
@@ -119,15 +136,15 @@ const ImageUploader: React.FC<ImageUploaderProps> = props => {
 		)
 	}
 
-	const getFileNameFromUrl = (url: string) => {
-		try {
-			const parsed = new URL(url, typeof window !== 'undefined' ? window.location.origin : 'http://localhost')
-			const lastPart = parsed.pathname.split('/').pop() || ''
-			return decodeURIComponent(lastPart)
-		} catch {
-			return tCommon('imageUploader.status.uploadSuccessful')
-		}
-	}
+	// const getFileNameFromUrl = (url: string) => {
+	// 	try {
+	// 		const parsed = new URL(url, typeof window !== 'undefined' ? window.location.origin : 'http://localhost')
+	// 		const lastPart = parsed.pathname.split('/').pop() || ''
+	// 		return decodeURIComponent(lastPart)
+	// 	} catch {
+	// 		return tCommon('imageUploader.status.uploadSuccessful')
+	// 	}
+	// }
 
 	const isImagePreview = selectedFile
 		? selectedFile.type.startsWith('image/')
@@ -138,7 +155,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = props => {
 	const isDocumentPreview =
 		showPreview && (Boolean(selectedFile) || Boolean(previewUrl)) && !isImagePreview
 
-	const previewFileName = selectedFile?.name ?? (previewUrl ? getFileNameFromUrl(previewUrl) : '')
+	// const previewFileName = selectedFile?.name ?? (previewUrl ? getFileNameFromUrl(previewUrl) : '')
 
 	const isAcceptedFileType = (file: File, acceptPattern: string) => {
 		const patterns = acceptPattern
@@ -279,16 +296,16 @@ const ImageUploader: React.FC<ImageUploaderProps> = props => {
 				{showPreview && previewUrl && isImagePreview ? (
 					<div className='relative group'>
 						<div className='relative rounded-xl overflow-hidden border-2 border-[#48715B]/30 bg-[#E2EEE2]'>
-							<Image
+							{/* <Image
 								src={previewUrl}
 								alt='Preview'
 								fill
 								className='object-contain'
 								sizes=''
 								unoptimized={previewUrl?.startsWith('/api/s3/image')}
-							/>
+							/> */}
 							{/* Overlay with actions */}
-							<div className='absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-200 flex items-center justify-center opacity-0 group-hover:opacity-100'>
+							{/* <div className='absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-200 flex items-center justify-center opacity-0 group-hover:opacity-100'>
 								<div className='flex gap-2'>
 									{!disabled && !isUploading && (
 										<>
@@ -313,7 +330,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = props => {
 										</>
 									)}
 								</div>
-							</div>
+							</div> */}
 						</div>
 
 						{/* Upload Status */}
@@ -337,13 +354,13 @@ const ImageUploader: React.FC<ImageUploaderProps> = props => {
 					</div>
 				) : isDocumentPreview ? (
 					<div className='relative group'>
-						<div className='rounded-xl border-2 border-[#48715B]/30 bg-[#E2EEE2] p-6 flex flex-col items-center justify-center gap-3 text-center'>
+						{/* <div className='rounded-xl border-2 border-[#48715B]/30 bg-[#E2EEE2] p-6 flex flex-col items-center justify-center gap-3 text-center'>
 							<FileText className='w-12 h-12 text-[#48715B]' />
 							<p className='text-sm font-medium text-[#48715B] break-all max-w-full'>
 								{previewFileName || 'Document uploaded'}
 							</p>
-						</div>
-						<div className='absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-200 flex items-center justify-center opacity-0 group-hover:opacity-100'>
+						</div> */}
+						{/* <div className='absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-200 flex items-center justify-center opacity-0 group-hover:opacity-100'>
 							<div className='flex gap-2'>
 								{!disabled && !isUploading && (
 									<>
@@ -368,7 +385,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = props => {
 									</>
 								)}
 							</div>
-						</div>
+						</div> */}
 					</div>
 				) : !showPreview && (previewUrl || initialImageUrl) ? (
 					/* Action Buttons when preview is hidden but image exists */
@@ -473,12 +490,12 @@ const ImageUploader: React.FC<ImageUploaderProps> = props => {
 				)}
 
 				{/* Success Message */}
-				{showSuccessMessage && !isUploading && !error && previewUrl && (
+				{/* {showSuccessMessage && !isUploading && !error && previewUrl && (
 					<div className='mt-2 flex items-center gap-2 text-sm text-green-600 bg-green-50 border border-green-200 rounded-lg p-2.5'>
 						<CheckCircle2 className='w-4 h-4 flex-shrink-0' />
 						<span>{tCommon('imageUploader.status.uploadSuccessful')}</span>
 					</div>
-				)}
+				)} */}
 			</div>
 		</div>
 	)

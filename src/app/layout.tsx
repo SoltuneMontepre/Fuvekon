@@ -3,6 +3,7 @@ import { Geist_Mono, Inter, Montserrat } from 'next/font/google'
 import { getLocale, getMessages } from 'next-intl/server'
 import { NextIntlClientProvider } from 'next-intl'
 import NavBar from '@/components/nav/NavBar'
+import ScrollProgressBar from '@/components/common/ScrollProgressBar'
 import TanstackProvider from '@/config/Providers/TanstackProvider'
 
 import ThemeProvider from '@/config/Providers/ThemeProvider'
@@ -135,6 +136,7 @@ export default async function RootLayout({
 				<ThemeProvider>
 					<TanstackProvider>
 						<NextIntlClientProvider locale={locale} messages={messages}>
+							<ScrollProgressBar />
 							<ToastProvider />
 							<NavBar />
 							<main>{children}</main>

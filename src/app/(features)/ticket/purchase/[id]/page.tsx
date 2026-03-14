@@ -6,7 +6,10 @@ import { Copy, Check, AlertCircle, ArrowUpCircle, Loader2 } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 import Image from 'next/image'
-import { useGetMyTicket, useConfirmPayment } from '@/hooks/services/ticket/useTicket'
+import {
+	useGetMyTicket,
+	useConfirmPayment,
+} from '@/hooks/services/ticket/useTicket'
 import Background from '@/components/ui/Background'
 import Loading from '@/components/common/Loading'
 
@@ -31,10 +34,22 @@ const BANK_DETAILS = {
 }
 
 // Reusable info field matching account page style
-const InfoField = ({ label, value, mono }: { label: string; value: string; mono?: boolean }) => (
+const InfoField = ({
+	label,
+	value,
+	mono,
+}: {
+	label: string
+	value: string
+	mono?: boolean
+}) => (
 	<div className='space-y-0.5 px-3 py-2.5 rounded-xl bg-[#E2EEE2]/60 border border-[#8C8C8C]/15'>
 		<p className='text-sm font-medium text-[#48715B]'>{label}</p>
-		<p className={`text-lg text-text-secondary ${mono ? 'font-mono font-bold' : ''}`}>{value}</p>
+		<p
+			className={`text-lg text-text-secondary ${mono ? 'font-mono font-bold' : ''}`}
+		>
+			{value}
+		</p>
 	</div>
 )
 
@@ -57,7 +72,11 @@ const CopyableField = ({
 	<div className='space-y-0.5 px-3 py-2.5 rounded-xl bg-[#E2EEE2]/60 border border-[#8C8C8C]/15'>
 		<p className='text-sm font-medium text-[#48715B]'>{label}</p>
 		<div className='flex items-center gap-2'>
-			<p className={`text-lg text-text-secondary ${mono ? 'font-mono font-bold' : ''}`}>{value}</p>
+			<p
+				className={`text-lg text-text-secondary ${mono ? 'font-mono font-bold' : ''}`}
+			>
+				{value}
+			</p>
 			<button
 				onClick={() => onCopy(value, field)}
 				className='p-1 hover:bg-[#E2EEE2] rounded-lg transition-colors'
@@ -72,7 +91,9 @@ const CopyableField = ({
 	</div>
 )
 
-const TicketPurchasePage = ({ params }: TicketPurchasePageProps): React.ReactElement => {
+const TicketPurchasePage = ({
+	params,
+}: TicketPurchasePageProps): React.ReactElement => {
 	use(params)
 	const router = useRouter()
 	const searchParams = useSearchParams()
@@ -123,7 +144,10 @@ const TicketPurchasePage = ({ params }: TicketPurchasePageProps): React.ReactEle
 
 	useEffect(() => {
 		if (isUpgrade) return
-		if (ticket && (ticket.status === 'self_confirmed' || ticket.status === 'approved')) {
+		if (
+			ticket &&
+			(ticket.status === 'self_confirmed' || ticket.status === 'approved')
+		) {
 			router.push('/account/ticket')
 		}
 	}, [ticket, router, isUpgrade])
@@ -157,13 +181,18 @@ const TicketPurchasePage = ({ params }: TicketPurchasePageProps): React.ReactEle
 		try {
 			const result = await confirmMutation.mutateAsync()
 			if (result.isSuccess) {
-				toast.success(t('paymentConfirmed') || 'Payment confirmed successfully!')
+				toast.success(
+					t('paymentConfirmed') || 'Payment confirmed successfully!'
+				)
 				router.push('/account/ticket')
 				return // keep loading up through navigation
 			}
 			setIsConfirming(false)
 		} catch {
-			toast.error(t('paymentConfirmError') || 'Failed to confirm payment. Please try again.')
+			toast.error(
+				t('paymentConfirmError') ||
+					'Failed to confirm payment. Please try again.'
+			)
 			setIsConfirming(false)
 		}
 	}
@@ -180,21 +209,34 @@ const TicketPurchasePage = ({ params }: TicketPurchasePageProps): React.ReactEle
 				<div className='fixed inset-0 z-[1] bg-black/40' />
 				<div className='relative z-10 text-center'>
 					<Loader2 className='w-12 h-12 text-[#48715b] mx-auto mb-4 animate-spin' />
-					<p className='text-text-secondary text-lg mb-4'>{t('purchaseProcessing')}</p>
-					<p className='text-text-secondary/80 text-sm'>{t('purchaseProcessingHint')}</p>
+					<p className='text-white text-lg mb-4'>{t('purchaseProcessing')}</p>
+					<p className='text-white/80 text-sm'>{t('purchaseProcessingHint')}</p>
 				</div>
 			</div>
 		)
 	}
 
 	if (error || !ticket) {
+		// When user arrived from a queued purchase (e.g. two people bought, only one in stock), show ticket not available
+		const isNotAvailable = isQueued
 		return (
 			<div className='min-h-screen flex items-center justify-center'>
 				<div className='text-center'>
 					<AlertCircle className='w-12 h-12 text-[#48715b] mx-auto mb-4' />
-					<p className='text-text-secondary text-lg mb-4'>{t('ticketNotFound')}</p>
-					{isQueued && giveUpPolling && (
-						<p className='text-text-secondary/80 text-sm mb-4'>{t('purchaseProcessingTimeoutHint')}</p>
+					<p className='text-text-secondary text-lg mb-4'>
+						{isNotAvailable ? t('ticketNotAvailable') : t('ticketNotFound')}
+					</p>
+					{isNotAvailable ? (
+						<p className='text-text-secondary/80 text-sm mb-4'>
+							{t('ticketNotAvailableHint')}
+						</p>
+					) : (
+						isQueued &&
+						giveUpPolling && (
+							<p className='text-text-secondary/80 text-sm mb-4'>
+								{t('purchaseProcessingTimeoutHint')}
+							</p>
+						)
 					)}
 					<button
 						onClick={() => router.push('/ticket')}
@@ -264,15 +306,22 @@ const TicketPurchasePage = ({ params }: TicketPurchasePageProps): React.ReactEle
 								<div className='mt-6 rounded-xl border border-blue-200 bg-blue-50/50 px-4 py-4 flex items-center gap-3'>
 									<ArrowUpCircle className='w-5 h-5 text-blue-600 flex-shrink-0' />
 									<div>
-										<p className='text-blue-800 font-medium'>{t('upgradeFrom')} {ticket.previous_reference_code}</p>
-										<p className='text-blue-600 text-sm'>{t('upgradePayDifference')}</p>
+										<p className='text-blue-800 font-medium'>
+											{t('upgradeFrom')} {ticket.previous_reference_code}
+										</p>
+										<p className='text-blue-600 text-sm'>
+											{t('upgradePayDifference')}
+										</p>
 									</div>
 								</div>
 							)}
 
 							{/* Ticket Info Summary */}
 							<div className='grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6'>
-								<InfoField label={t('ticketType')} value={tier?.ticket_name || 'N/A'} />
+								<InfoField
+									label={t('ticketType')}
+									value={tier?.ticket_name || 'N/A'}
+								/>
 								<InfoField
 									label={isUpgrade ? t('upgradePriceDifference') : t('amount')}
 									value={`${isUpgrade ? '+' : ''}${formatPrice(price)} VND`}
@@ -306,7 +355,10 @@ const TicketPurchasePage = ({ params }: TicketPurchasePageProps): React.ReactEle
 										<h4 className='text-lg font-semibold text-text-primary'>
 											{t('bankDetails')}
 										</h4>
-										<InfoField label={t('bankName')} value={BANK_DETAILS.bankName} />
+										<InfoField
+											label={t('bankName')}
+											value={BANK_DETAILS.bankName}
+										/>
 										<CopyableField
 											label={t('accountNumber')}
 											value={BANK_DETAILS.accountNumber}
@@ -315,14 +367,19 @@ const TicketPurchasePage = ({ params }: TicketPurchasePageProps): React.ReactEle
 											onCopy={copyToClipboard}
 											mono
 										/>
-										<InfoField label={t('accountHolder')} value={BANK_DETAILS.accountHolder} />
+										<InfoField
+											label={t('accountHolder')}
+											value={BANK_DETAILS.accountHolder}
+										/>
 									</div>
 								</div>
 							</div>
 
 							{/* Instructions */}
 							<div className='mt-6 rounded-xl border border-amber-200 bg-amber-50/50 px-4 py-4'>
-								<h4 className='font-semibold text-amber-800 mb-2'>{t('instructions')}</h4>
+								<h4 className='font-semibold text-amber-800 mb-2'>
+									{t('instructions')}
+								</h4>
 								<ol className='list-decimal list-inside space-y-1 text-sm text-amber-800'>
 									<li>{t('instruction1')}</li>
 									<li>{t('instruction2', { amount: formatPrice(price) })}</li>
@@ -338,7 +395,9 @@ const TicketPurchasePage = ({ params }: TicketPurchasePageProps): React.ReactEle
 									onClick={() => setShowConfirmDialog(true)}
 									className='shadow-md w-full py-2.5 px-4 text-xl rounded-xl btn-primary font-medium transition-colors duration-200'
 								>
-									{t('iHavePaid')}
+									{confirmMutation.isPending
+										? tCommon('processing')
+										: t('iHavePaid')}
 								</button>
 
 								<button
@@ -348,7 +407,9 @@ const TicketPurchasePage = ({ params }: TicketPurchasePageProps): React.ReactEle
 									{tCommon('cancel')}
 								</button>
 
-								<p className='text-center text-sm text-[#8C8C8C] pt-1'>{t('clickAfterPayment')}</p>
+								<p className='text-center text-sm text-[#8C8C8C] pt-1'>
+									{t('clickAfterPayment')}
+								</p>
 							</div>
 						</div>
 					</div>

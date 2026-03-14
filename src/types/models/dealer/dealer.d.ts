@@ -15,7 +15,8 @@ export interface DealerBooth {
 	booth_name: string
 	description: string
 	booth_number: string
-	price_sheet: string
+	price_sheet?: string
+	price_sheets?: string[]
 	is_verified: boolean
 	created_at: string
 	modified_at: string

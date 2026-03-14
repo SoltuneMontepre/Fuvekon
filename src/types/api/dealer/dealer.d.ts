@@ -5,7 +5,7 @@ import type { DealerBooth, DealerBoothDetail } from '../../../models/dealer/deal
 export interface RegisterDealerRequest {
 	booth_name: string
 	description: string
-	price_sheet: string
+	price_sheets: string[]
 }
 
 export interface JoinDealerRequest {
@@ -16,6 +16,12 @@ export interface RemoveStaffRequest {
 	staff_user_id: string
 }
 
+export interface EditDealerRequest {
+	booth_name?: string
+	description?: string
+	price_sheets?: string[]
+}
+
 // ========== Response Types ==========
 
 export type RegisterDealerResponse = DealerBooth
@@ -23,6 +29,8 @@ export type RegisterDealerResponse = DealerBooth
 export type JoinDealerResponse = DealerBoothDetail
 
 export type RemoveStaffResponse = DealerBoothDetail
+
+export type EditDealerResponse = DealerBoothDetail
 
 // Admin responses
 // Backend returns: { data: DealerBoothDetail[], meta: PaginationMeta }

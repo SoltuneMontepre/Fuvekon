@@ -1,6 +1,7 @@
+import Lightbox from '@/components/common/Lightbox'
 import Image from 'next/image'
-import React from 'react'
 import Link from 'next/link'
+import React, { useState } from 'react'
 
 interface FeatSectionProps {
 	title: string
@@ -23,21 +24,23 @@ const FeatSection = ({
 		throw new Error('Images array must contain between 1 and 3 items.')
 	}
 
+	const [lightboxSrc, setLightboxSrc] = useState<string | null>(null)
+
 	return (
 		<div
 			id={id}
-			className='relative section h-dvh w-full grid grid-cols-[30%_70%] z-auto pointer-events-none'
+			className='relative section h-dvh w-full flex flex-col md:grid md:grid-cols-[30%_70%] z-auto'
 		>
 			{/* <div className='absolute h-screen w-screen inset-0 bg-gradient-to-l from-slate-900 to-transparent opacity-80 z-0 pointer-events-none' /> */}
-			<div className='h-full w-full flex items-center justify-end overflow-visible pointer-events-none'>
+			<div className='hidden md:flex h-full w-full items-center justify-end overflow-visible pointer-events-none'>
 				{/* drum here */}
 			</div>
-			<div className='h-screen w-full flex flex-col items-start select-text justify-center z-10 pointer-events-none'>
-				<div className='flex flex-col w-full items-end justify-end pr-28 gap-8'>
-					<h2 className='text-6xl font-bold text-white tracking-wider'>
+			<div className='h-full w-full flex flex-col items-center md:items-start select-text justify-center z-10 pointer-events-none'>
+				<div className='flex flex-col w-full items-center md:items-end justify-center md:justify-end px-6 md:pr-28 gap-6 md:gap-8'>
+					<h2 className='text-4xl md:text-6xl font-bold text-white tracking-wider text-center md:text-right'>
 						{title}
 					</h2>
-					<p className='text-white/90 text-lg max-w-3xl text-right text-wrap'>
+					<p className='text-white/90 text-base md:text-lg max-w-xl md:max-w-3xl text-center md:text-right text-wrap'>
 						{description}
 					</p>
 					<Link
@@ -47,15 +50,22 @@ const FeatSection = ({
 						{buttonLabel}
 					</Link>
 				</div>
-				<div className='relative self-end justify-center items-center flex w-10/12'>
-					<div className='absolute flex max-w-[80%] gap-6 mt-1 h-full w-full max-h-[60%]'>
+				<div className='relative self-center md:self-end justify-center items-center flex w-full md:w-10/12'>
+					<div className='absolute flex max-w-[80%] gap-3 md:gap-6 mt-1 h-full w-full max-h-[60%]'>
 						{images.map((image, index) => (
-							<div
+							<button
 								key={index}
-								className='relative h-full w-full rounded-xl overflow-hidden'
+								type='button'
+								onClick={() => setLightboxSrc(image)}
+								className='relative h-full w-full rounded-xl overflow-hidden cursor-pointer pointer-events-auto'
 							>
-								<Image src={image} alt='' fill className='object-cover' />
-							</div>
+								<Image
+									src={image}
+									alt=''
+									fill
+									className='object-cover transition-transform duration-300 hover:scale-105'
+								/>
+							</button>
 						))}
 					</div>
 					<svg
@@ -346,6 +356,7 @@ const FeatSection = ({
 					</svg>
 				</div>
 			</div>
+			<Lightbox src={lightboxSrc} onClose={() => setLightboxSrc(null)} />
 		</div>
 	)
 }

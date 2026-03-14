@@ -914,7 +914,9 @@ const TicketManagementPage = (): React.ReactElement => {
 											<td className='px-4 py-3 text-sm'>
 												{formatPrice(tier.price)} VND
 											</td>
-											<td className='px-4 py-3 text-sm'>{tierStat ? tierStat.total_stock : tier.stock}</td>
+											<td className='px-4 py-3 text-sm'>
+												{tierStat != null ? tierStat.total_stock : tier.stock}
+											</td>
 											<td className='px-4 py-3'>
 												{tierStat ? (
 													<div className='min-w-[120px]'>

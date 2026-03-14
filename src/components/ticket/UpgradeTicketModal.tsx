@@ -39,11 +39,12 @@ const UpgradeTicketModal = ({ currentTier, onClose }: UpgradeTicketModalProps) =
 	const [showConfirm, setShowConfirm] = useState(false)
 	const [isUpgrading, setIsUpgrading] = useState(false)
 
+	const currentPrice = Number(currentTier?.price) || 0
 	const eligibleTiers = (tiersData?.data ?? []).filter(
 		(tier) =>
-			Number(tier.price) > Number(currentTier.price) &&
+			Number(tier.price) > currentPrice &&
 			tier.stock > 0 &&
-			tier.is_active !== false &&
+			tier.is_active &&
 			tier.id !== currentTier.id
 	)
 
