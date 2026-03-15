@@ -234,6 +234,7 @@ const LandingPage = (): React.JSX.Element => {
 
 		const mascotTrigger = GOH_ENABLED ? '#goh-section' : '#feat-start'
 		const mascotDuration = 0.3
+
 		ScrollTrigger.create({
 			trigger: mascotTrigger,
 			start: 'top 70%',
@@ -399,7 +400,7 @@ const LandingPage = (): React.JSX.Element => {
 
 			{TICKET_ENABLED && <TicketSection id='ticket-section' />}
 
-			<div className='fixed inset-0 flex items-center justify-center pointer-events-none overflow-visible'>
+			<div className='fixed inset-0 hidden md:flex items-center justify-center pointer-events-none overflow-visible'>
 				<DrumImage id='feat-drum' className='' />
 			</div>
 		</div>
