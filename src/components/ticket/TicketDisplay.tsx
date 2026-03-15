@@ -101,7 +101,7 @@ const TicketDisplay = ({
 
 	const hasActiveTicket =
 		myTicketData?.data && myTicketData.data.status !== 'denied'
-	const isBlacklisted = account?.is_blacklisted
+	const isBlacklisted = account?.is_banned ?? account?.is_blacklisted
 	const isDisabled = !!isBlacklisted || !!hasActiveTicket
 
 	const isTierClosed = (tier: TicketTier) => !tier.is_active

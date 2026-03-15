@@ -14,6 +14,8 @@ import {
 	Pencil,
 	Save,
 	X,
+	Ban,
+	CircleCheck,
 } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
@@ -21,9 +23,12 @@ import {
 	useAdminGetUserById,
 	useAdminUpdateUser,
 } from '@/hooks/services/user/useAdminUser'
+import { useBlacklistUser, useUnblacklistUser } from '@/hooks/services/ticket/useAdminTicket'
 import type { AdminUpdateUserRequest } from '@/types/api/user/user'
+import type { Account } from '@/types/models/auth/account'
 import Loading from '@/components/common/Loading'
 import UserAvatar from '@/components/common/UserAvatar'
+import BanUserModal from '@/components/admin/BanUserModal'
 
 interface AdminUserDetailPageProps {
 	params: Promise<{ id: string }>
@@ -97,9 +102,12 @@ const AdminUserDetailPage = ({
 
 	const { data, isLoading, isError } = useAdminGetUserById(id)
 	const updateUser = useAdminUpdateUser(id)
+	const blacklistMutation = useBlacklistUser()
+	const unblacklistMutation = useUnblacklistUser()
 	const user = data?.data
 
 	const [isEditing, setIsEditing] = useState(false)
+	const [banTargetUser, setBanTargetUser] = useState<Account | null>(null)
 	const [form, setForm] = useState({
 		first_name: '',
 		last_name: '',
@@ -139,6 +147,39 @@ const AdminUserDetailPage = ({
 		}
 	}
 
+	const handleBanClick = (e: React.MouseEvent) => {
+		e.preventDefault()
+		const role = user?.role?.toLowerCase()
+		if (role === 'admin' || role === 'staff') {
+			toast.error(t('cannotBanStaffOrAdmin') || 'Cannot ban admin or staff.')
+			return
+		}
+		setBanTargetUser(user ?? null)
+	}
+
+	const handleBanConfirm = async (reason: string) => {
+		if (!user) return
+		try {
+			await blacklistMutation.mutateAsync({ userId: user.id, reason: reason.trim() })
+			toast.success(t('userBanned') || 'User banned.')
+			setBanTargetUser(null)
+		} catch {
+			toast.error(t('banFailed') || 'Failed to ban user.')
+		}
+	}
+
+	const handleUnban = async (e: React.MouseEvent) => {
+		e.preventDefault()
+		if (!user) return
+		if (!window.confirm(t('unbanConfirm') || `Unban ${user.email || user.id}?`)) return
+		try {
+			await unblacklistMutation.mutateAsync(user.id)
+			toast.success(t('userUnbanned') || 'User unbanned.')
+		} catch {
+			toast.error(t('unbanFailed') || 'Failed to unban user.')
+		}
+	}
+
 	if (isLoading) {
 		return <Loading />
 	}
@@ -160,6 +201,7 @@ const AdminUserDetailPage = ({
 		)
 	}
 
+	const isBanned = user.is_banned ?? user.is_blacklisted ?? false
 	const roleDisplay = getRoleDisplay(user.role)
 	const displayName =
 		user.first_name || user.last_name
@@ -184,14 +226,45 @@ const AdminUserDetailPage = ({
 						{t('userDetail') || 'User Detail'}
 					</h1>
 					{!isEditing ? (
-						<button
-							type='button'
-							onClick={() => setIsEditing(true)}
-							className='flex items-center gap-2 px-4 py-2.5 rounded-xl border border-[#48715B] text-[#48715B] hover:bg-[#E2EEE2] transition-colors'
-						>
-							<Pencil className='w-4 h-4' />
-							{t('editUser') || 'Edit user'}
-						</button>
+						<div className='flex items-center gap-2'>
+							{isBanned ? (
+								<button
+									type='button'
+									onClick={handleUnban}
+									disabled={unblacklistMutation.isPending}
+									className='inline-flex items-center gap-1.5 rounded-xl border border-emerald-400 bg-emerald-50 px-4 py-2.5 text-sm font-medium text-emerald-700 hover:bg-emerald-100 disabled:opacity-50'
+									title={t('unban') || 'Unban'}
+								>
+									<CircleCheck className='h-4 w-4' />
+									{t('unban') || 'Unban'}
+								</button>
+							) : (
+								<button
+									type='button'
+									onClick={handleBanClick}
+									disabled={
+										user.role?.toLowerCase() === 'admin' || user.role?.toLowerCase() === 'staff'
+									}
+									className='inline-flex items-center gap-1.5 rounded-xl border border-red-400 bg-red-50 px-4 py-2.5 text-sm font-medium text-red-700 hover:bg-red-100 disabled:opacity-50 disabled:cursor-not-allowed'
+									title={
+										user.role?.toLowerCase() === 'admin' || user.role?.toLowerCase() === 'staff'
+											? t('cannotBanStaffOrAdmin') || 'Cannot ban admin or staff'
+											: t('ban') || 'Ban'
+									}
+								>
+									<Ban className='h-4 w-4' />
+									{t('ban') || 'Ban'}
+								</button>
+							)}
+							<button
+								type='button'
+								onClick={() => setIsEditing(true)}
+								className='flex items-center gap-2 px-4 py-2.5 rounded-xl border border-[#48715B] text-[#48715B] hover:bg-[#E2EEE2] transition-colors'
+							>
+								<Pencil className='w-4 h-4' />
+								{t('editUser') || 'Edit user'}
+							</button>
+						</div>
 					) : (
 						<div className='flex items-center gap-2'>
 							<button
@@ -373,7 +446,7 @@ const AdminUserDetailPage = ({
 												: t('unverified') || 'Unverified'}
 										</span>
 									)}
-									{user.is_blacklisted && (
+									{isBanned && (
 										<span className='inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-700'>
 											<XCircle className='w-3 h-3' />
 											{t('blacklisted') || 'Blacklisted'}
@@ -433,6 +506,13 @@ const AdminUserDetailPage = ({
 					)}
 				</div>
 			</div>
+
+			<BanUserModal
+				user={banTargetUser ?? null}
+				onClose={() => setBanTargetUser(null)}
+				onConfirm={handleBanConfirm}
+				isPending={blacklistMutation.isPending}
+			/>
 		</div>
 	)
 }

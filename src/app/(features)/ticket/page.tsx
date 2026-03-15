@@ -30,7 +30,7 @@ const TicketPage = (): React.ReactElement => {
 	const purchaseMutation = usePurchaseTicket()
 	const [isPurchasing, setIsPurchasing] = useState(false)
 
-	const isBlacklisted = account?.is_blacklisted
+	const isBlacklisted = account?.is_banned ?? account?.is_blacklisted
 	const [showTicketNotAvailable, setShowTicketNotAvailable] = useState(false)
 
 	const handlePurchase = async (tierId: string) => {

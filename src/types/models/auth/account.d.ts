@@ -14,6 +14,8 @@ export interface Account {
 	is_verified?: boolean
 	is_dealer?: boolean
 	is_blacklisted?: boolean
+	/** Alias for is_blacklisted so FE can detect ban status from API */
+	is_banned?: boolean
 	is_has_ticket?: boolean
 	denial_count?: number
 	created_at?: string // ISO date string

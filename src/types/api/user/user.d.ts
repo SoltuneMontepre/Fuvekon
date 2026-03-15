@@ -3,7 +3,7 @@ import type { Role } from '../../models/auth/role'
 
 // Admin user responses
 // Backend returns: { data: Account[], meta: PaginationMeta }
-// So AdminGetUsersResponse is just Account[] (the data field)
+// So AdminGetUsersResponse is just Account[] (the data field). Each item includes is_banned and is_blacklisted.
 export type AdminGetUsersResponse = Account[]
 
 export type GetUserByIdResponse = Account

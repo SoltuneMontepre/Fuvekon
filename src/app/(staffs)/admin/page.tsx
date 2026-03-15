@@ -306,7 +306,7 @@ const UserManagementPage = (): React.ReactElement => {
 																	: t('unverified') || 'Unverified'}
 															</span>
 														)}
-														{user.is_blacklisted && (
+														{(user.is_banned ?? user.is_blacklisted) && (
 															<span className='inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium w-fit bg-red-100 text-red-700'>
 																<XCircle className='w-3 h-3' />
 																{t('blacklisted') || 'Blacklisted'}
@@ -325,7 +325,7 @@ const UserManagementPage = (): React.ReactElement => {
 													{formatDateTime(user.created_at)}
 												</td>
 												<td className='px-4 py-3 text-right' onClick={e => e.stopPropagation()}>
-													{user.is_blacklisted ? (
+													{(user.is_banned ?? user.is_blacklisted) ? (
 														<button
 															type='button'
 															onClick={e => handleUnban(e, user)}
