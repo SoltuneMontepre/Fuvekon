@@ -360,6 +360,8 @@ const FeatSection = ({
 					</div>
 				)}
 			</div>
+			<div className='fixed inset-0 z-[1] bg-black/40' />
+
 			<Lightbox src={lightboxSrc} onClose={() => setLightboxSrc(null)} />
 		</div>
 	)

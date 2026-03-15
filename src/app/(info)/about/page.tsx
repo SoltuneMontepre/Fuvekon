@@ -7,11 +7,11 @@ const AboutPage = (): React.ReactElement => {
 
 	const heroImage = '/images/about/_DSC3836-Enhanced-NR.jpg'
 	const galleryImages = [
-		'/images/about/_DSC3598.jpg',
-		'/images/about/_DSC3614.jpg',
-		'/images/about/Screenshot%202026-02-05%20150326.png',
-		'/images/about/TUS09176.jpg',
-		'/images/about/Screenshot%202026-02-05%20150429.png',
+		'/images/about/a1.webp',
+		'/images/about/a2.webp',
+		'/images/about/a3.webp',
+		'/images/about/a4.webp',
+		'/images/about/a5.webp',
 	]
 
 	return (
