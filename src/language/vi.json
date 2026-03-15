@@ -642,6 +642,32 @@
 			"newPasswordDifferent": "Mật khẩu mới phải khác mật khẩu hiện tại"
 		}
 	},
+	"talent": {
+		"talent": {
+			"form": {
+				"intro1": "Talent Show là chương trình sân khấu nơi bạn có thể tự do thể hiện tài năng và cá tính của mình từ ca hát, nhảy múa, biểu diễn nhạc cụ, diễn xuất cho đến những tiết mục sáng tạo độc đáo khác.",
+				"intro2": "FUVE luôn ủng hộ cho tất cả mọi người tỏa sáng, chia sẻ đam mê và lan tỏa năng lượng tích cực đến cộng đồng."
+			},
+			"rules": {
+				"title": "QUY ĐỊNH TALENT SHOW",
+				"item1": "QUY ĐỊNH KHI ĐĂNG KÝ TALENT SHOW:",
+				"item2": "● Tiết mục biểu diễn phải phù hợp với tất cả mọi người.",
+				"item3": "● Nếu bạn biểu diễn theo nhóm nhiều người, thì tất cả thành viên nhóm đều phải có vé mới có thể tham gia biểu diễn.",
+				"item4": "● Trang phục biểu diễn không được quá hở hang, phải phù hợp với thuần phong mỹ tục.",
+				"item5": "● Không được đăng ký các tiết mục có nội dung phản cảm, mang yếu tố khiêu dâm, bạo lực, vi phạm pháp luật và không phù hợp với thuần phong mỹ tục.",
+				"item6": "● Sau các bước kiểm duyệt, nếu BTC FUVE thấy tiết mục của bạn không phù hợp, chẳng hạn như vi phạm trật tự công cộng hoặc vi phạm đạo đức, bạn có thể bị từ chối biểu diễn.",
+				"item7": "● Các tiết mục trình diễn bắt buộc diễn ra trong diện tích sân khấu chính, không được lấn xuống khu vực sảnh vì lý do an toàn.",
+				"item8": "● Tất cả các ứng viên đăng ký biểu diễn bắt buộc phải tham gia ngày tuyển chọn tập trung. FUVE sẽ thông báo trước về thời gian tổng duyệt và sắp xếp thứ tự biểu diễn trong chương trình.",
+				"item9": "● Sau buổi tổng duyệt, các ứng viên biểu diễn cần phải có mặt 30 phút trước khi buổi biểu diễn bắt đầu. Vui lòng đến đúng giờ và chuẩn bị sẵn sàng cho phần trình diễn của mình.",
+				"item10": "● FUVE sử dụng Email và Discord cho việc trao đổi, chia sẻ tệp tin âm thanh, màn chiếu, v.v…",
+				"item11": "● Xin lưu ý rằng FUVE có thể buộc phải yêu cầu bạn thay đổi nội dung buổi biểu diễn hoặc bố cục sân khấu.",
+				"item12": "● Quyết định của thành viên BTC là quyết định cuối cùng.",
+				"item13": "",
+				"item14": "LƯU Ý QUAN TRỌNG:",
+				"item15": "Bạn phải có vé đã mua và đã được duyệt mới có thể đăng ký. Nếu bạn chưa có vé, vui lòng tạo tài khoản, mua vé và quay trở lại đây sau khi đã hoàn thành các bước trên."
+			}
+		}
+	},
 	"dealer": {
 		"title": "GIAN HÀNG",
 		"noBooth": "Bạn chưa có gian hàng",
@@ -709,35 +735,7 @@
 		"boothCodeHint": "Mã gian hàng gồm 6 ký tự (chữ và số)",
 		"joinButton": "Tham gia",
 		"joining": "Đang tham gia...",
-		"noteText": "Lưu ý: Bạn cần có vé đã được duyệt để đăng ký gian hàng. Gian hàng của bạn sẽ cần được quản trị viên xác minh trước khi được hiển thị công khai."
-	},
-	"talent": {
-		"talent": {
-			"form": {
-				"intro1": "Talent Show là chương trình sân khấu nơi bạn có thể tự do thể hiện tài năng và cá tính của mình từ ca hát, nhảy múa, biểu diễn nhạc cụ, diễn xuất cho đến những tiết mục sáng tạo độc đáo khác.",
-				"intro2": "FUVE luôn ủng hộ cho tất cả mọi người tỏa sáng, chia sẻ đam mê và lan tỏa năng lượng tích cực đến cộng đồng."
-			},
-			"rules": {
-				"title": "QUY ĐỊNH TALENT SHOW",
-				"item1": "QUY ĐỊNH KHI ĐĂNG KÝ TALENT SHOW:",
-				"item2": "● Tiết mục biểu diễn phải phù hợp với tất cả mọi người.",
-				"item3": "● Nếu bạn biểu diễn theo nhóm nhiều người, thì tất cả thành viên nhóm đều phải có vé mới có thể tham gia biểu diễn.",
-				"item4": "● Trang phục biểu diễn không được quá hở hang, phải phù hợp với thuần phong mỹ tục.",
-				"item5": "● Không được đăng ký các tiết mục có nội dung phản cảm, mang yếu tố khiêu dâm, bạo lực, vi phạm pháp luật và không phù hợp với thuần phong mỹ tục.",
-				"item6": "● Sau các bước kiểm duyệt, nếu BTC FUVE thấy tiết mục của bạn không phù hợp, chẳng hạn như vi phạm trật tự công cộng hoặc vi phạm đạo đức, bạn có thể bị từ chối biểu diễn.",
-				"item7": "● Các tiết mục trình diễn bắt buộc diễn ra trong diện tích sân khấu chính, không được lấn xuống khu vực sảnh vì lý do an toàn.",
-				"item8": "● Tất cả các ứng viên đăng ký biểu diễn bắt buộc phải tham gia ngày tuyển chọn tập trung. FUVE sẽ thông báo trước về thời gian tổng duyệt và sắp xếp thứ tự biểu diễn trong chương trình.",
-				"item9": "● Sau buổi tổng duyệt, các ứng viên biểu diễn cần phải có mặt 30 phút trước khi buổi biểu diễn bắt đầu. Vui lòng đến đúng giờ và chuẩn bị sẵn sàng cho phần trình diễn của mình.",
-				"item10": "● FUVE sử dụng Email và Discord cho việc trao đổi, chia sẻ tệp tin âm thanh, màn chiếu, v.v…",
-				"item11": "● Xin lưu ý rằng FUVE có thể buộc phải yêu cầu bạn thay đổi nội dung buổi biểu diễn hoặc bố cục sân khấu.",
-				"item12": "● Quyết định của thành viên BTC là quyết định cuối cùng.",
-				"item13": "",
-				"item14": "LƯU Ý QUAN TRỌNG:",
-				"item15": "Bạn phải có vé đã mua và đã được duyệt mới có thể đăng ký. Nếu bạn chưa có vé, vui lòng tạo tài khoản, mua vé và quay trở lại đây sau khi đã hoàn thành các bước trên."
-			}
-		}
-	},
-	"dealer": {
+		"noteText": "Lưu ý: Bạn cần có vé đã được duyệt để đăng ký gian hàng. Gian hàng của bạn sẽ cần được quản trị viên xác minh trước khi được hiển thị công khai.",
 		"dealer": {
 			"form": {
 				"intro1": "Lộ trình đăng ký gian hàng tại FUVE",

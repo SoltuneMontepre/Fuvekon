@@ -643,6 +643,32 @@
 			"newPasswordDifferent": "New password must be different from current password"
 		}
 	},
+	"talent": {
+		"talent": {
+			"form": {
+				"intro1": "Talent Show is the stage program where you can freely display your talents and personality—from singing, dancing, instrument performances, to acting and other creative acts.",
+				"intro2": "FUVE supports everyone shining, sharing passion, and spreading positive energy to the community."
+			},
+			"rules": {
+				"title": "TALENT SHOW REGULATIONS",
+				"item1": "REGULATIONS WHEN REGISTERING FOR TALENT SHOW:",
+				"item2": "● Performances must be appropriate for all audiences.",
+				"item3": "● If you perform as a group, all group members must have a valid ticket to participate in the performance.",
+				"item4": "● Performance attire must not be overly revealing and must align with public decency.",
+				"item5": "● Do not register performances with offensive content, including pornography, violence, illegal content, or anything that violates public decency.",
+				"item6": "● After review, if the FUVE organizing committee finds your performance unsuitable (e.g., disturbing public order or violating ethics), your performance may be refused.",
+				"item7": "● All performances must take place within the main stage area; do not extend into the lobby area for safety reasons.",
+				"item8": "● All registered performers must attend the centralized audition day. FUVE will announce the rehearsal time in advance and arrange the performance order for the show.",
+				"item9": "● After the rehearsal, performers must be present 30 minutes before the show starts. Please arrive on time and be ready for your performance.",
+				"item10": "● FUVE uses Email and Discord for communication, sharing audio files, slides, etc.",
+				"item11": "● Please note that FUVE may require you to change the content of your performance or the stage layout.",
+				"item12": "● The organizing committee’s decision is final.",
+				"item13": "",
+				"item14": "IMPORTANT NOTE:",
+				"item15": "You must have a purchased and approved ticket to register. If you do not have a ticket yet, please create an account, purchase a ticket, and return here after completing the above steps."
+			}
+		}
+	},
 	"dealer": {
 		"title": "BOOTH",
 		"noBooth": "You don't have a booth yet",
@@ -710,35 +736,7 @@
 		"boothCodeHint": "Booth code is 6 characters (letters and numbers)",
 		"joinButton": "Join",
 		"joining": "Joining...",
-		"noteText": "Note: You need an approved ticket to register a booth. Your booth will need to be verified by an administrator before it is shown publicly."
-	},
-	"talent": {
-		"talent": {
-			"form": {
-				"intro1": "Talent Show is the stage program where you can freely display your talents and personality—from singing, dancing, instrument performances, to acting and other creative acts.",
-				"intro2": "FUVE supports everyone shining, sharing passion, and spreading positive energy to the community."
-			},
-			"rules": {
-				"title": "TALENT SHOW REGULATIONS",
-				"item1": "REGULATIONS WHEN REGISTERING FOR TALENT SHOW:",
-				"item2": "● Performances must be appropriate for all audiences.",
-				"item3": "● If you perform as a group, all group members must have a valid ticket to participate in the performance.",
-				"item4": "● Performance attire must not be overly revealing and must align with public decency.",
-				"item5": "● Do not register performances with offensive content, including pornography, violence, illegal content, or anything that violates public decency.",
-				"item6": "● After review, if the FUVE organizing committee finds your performance unsuitable (e.g., disturbing public order or violating ethics), your performance may be refused.",
-				"item7": "● All performances must take place within the main stage area; do not extend into the lobby area for safety reasons.",
-				"item8": "● All registered performers must attend the centralized audition day. FUVE will announce the rehearsal time in advance and arrange the performance order for the show.",
-				"item9": "● After the rehearsal, performers must be present 30 minutes before the show starts. Please arrive on time and be ready for your performance.",
-				"item10": "● FUVE uses Email and Discord for communication, sharing audio files, slides, etc.",
-				"item11": "● Please note that FUVE may require you to change the content of your performance or the stage layout.",
-				"item12": "● The organizing committee’s decision is final.",
-				"item13": "",
-				"item14": "IMPORTANT NOTE:",
-				"item15": "You must have a purchased and approved ticket to register. If you do not have a ticket yet, please create an account, purchase a ticket, and return here after completing the above steps."
-			}
-		}
-	},
-	"dealer": {
+		"noteText": "Note: You need an approved ticket to register a booth. Your booth will need to be verified by an administrator before it is shown publicly.",
 		"dealer": {
 			"form": {
 				"intro1": "How to register a booth at FUVE",

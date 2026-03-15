@@ -49,7 +49,7 @@ const LanguageSelector = ({ className }: LanguageSelectorProps) => {
 
 	// Language labels with flags
 	const languageLabels: Record<Language, string> = {
-		en: '🇬🇧 EN',
+		en: '🇬🇧 English',
 		zh: '🇨🇳 中文',
 		th: '🇹🇭 ไทย',
 		vi: '🇻🇳 Tiếng Việt',
