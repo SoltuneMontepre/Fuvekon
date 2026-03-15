@@ -1,7 +1,7 @@
-import React from 'react'
+import ComingSoon from '@/components/common/ComingSoon'
 
-const TicketPurchasePage = (): React.ReactElement => {
-	return <div>Ticket Purchase Page</div>
+const TicketPurchasePage = () => {
+	return <ComingSoon />
 }
 
 export default TicketPurchasePage

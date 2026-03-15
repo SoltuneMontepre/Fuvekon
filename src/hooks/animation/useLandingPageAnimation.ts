@@ -1,6 +1,7 @@
 import { useRef } from 'react'
 import gsap from '@/common/gsap'
 import { useGSAP } from '@gsap/react'
+import { useThemeStore } from '@/config/Providers/ThemeProvider'
 
 interface UseLandingPageAnimationReturn {
 	containerRef: React.RefObject<HTMLDivElement | null>
@@ -16,6 +17,9 @@ interface UseLandingPageAnimationReturn {
 export const useLandingPageAnimation = (
 	animated: boolean
 ): UseLandingPageAnimationReturn => {
+	const prefersReducedMotion = useThemeStore(
+		state => state.prefersReducedMotion
+	)
 	const containerRef = useRef<HTMLDivElement>(null)
 	const backgroundLayerRef = useRef<HTMLDivElement>(null)
 	const furtherMountainRef = useRef<HTMLDivElement>(null)
@@ -28,7 +32,7 @@ export const useLandingPageAnimation = (
 
 	useGSAP(
 		() => {
-			animatedRef.current = animated
+			animatedRef.current = animated && !prefersReducedMotion
 
 			const isMobile = window.matchMedia(
 				'(hover: none) and (pointer: coarse)'
@@ -39,7 +43,7 @@ export const useLandingPageAnimation = (
 				force3D: true,
 			})
 
-			if (!animated || isMobile) {
+			if (!animated || prefersReducedMotion || isMobile) {
 				gsap.set(containerRef.current, {
 					clearProps: 'perspective,transformStyle',
 				})
@@ -355,7 +359,7 @@ export const useLandingPageAnimation = (
 				container?.removeEventListener('mouseleave', handleMouseLeave)
 			}
 		},
-		{ scope: containerRef, dependencies: [animated] }
+		{ scope: containerRef, dependencies: [animated, prefersReducedMotion] }
 	)
 
 	return {

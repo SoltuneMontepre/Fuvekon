@@ -1,5 +1,7 @@
+import ComingSoon from '@/components/common/ComingSoon'
+
 const DealerPage = () => {
-	return null
+	return <ComingSoon />
 }
 
 export default DealerPage

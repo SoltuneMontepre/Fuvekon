@@ -1,7 +1,7 @@
-import React from 'react'
+import ComingSoon from '@/components/common/ComingSoon'
 
 const PanelPage = () => {
-	return <div></div>
+	return <ComingSoon />
 }
 
 export default PanelPage

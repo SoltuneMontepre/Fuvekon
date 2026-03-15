@@ -1,12 +1,7 @@
-import React from 'react'
+import ComingSoon from '@/components/common/ComingSoon'
 
-const ContributesPage = (): React.ReactElement => {
-	return (
-		<div>
-			<h1>Contributes</h1>
-			<p>This is the contributes page.</p>
-		</div>
-	)
+const VolunteerPage = () => {
+	return <ComingSoon />
 }
 
-export default ContributesPage
+export default VolunteerPage

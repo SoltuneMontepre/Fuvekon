@@ -1,7 +1,7 @@
-import React from 'react'
+import ComingSoon from '@/components/common/ComingSoon'
 
 const RecapPage = () => {
-	return <div>Recap</div>
+	return <ComingSoon />
 }
 
 export default RecapPage

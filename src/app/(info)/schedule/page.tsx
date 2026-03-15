@@ -1,7 +1,7 @@
-import React from 'react'
+import ComingSoon from '@/components/common/ComingSoon'
 
 const SchedulePage = () => {
-	return <div>Coming Soon</div>
+	return <ComingSoon />
 }
 
 export default SchedulePage
