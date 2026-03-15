@@ -20,10 +20,14 @@ import {
 	useAdminGetUsers,
 	type AdminUserFilter,
 } from '@/hooks/services/user/useAdminUser'
-import { useBlacklistUser, useUnblacklistUser } from '@/hooks/services/ticket/useAdminTicket'
+import {
+	useBlacklistUser,
+	useUnblacklistUser,
+} from '@/hooks/services/ticket/useAdminTicket'
 import type { Account } from '@/types/models/auth/account'
 import Loading from '@/components/common/Loading'
 import BanUserModal from '@/components/admin/BanUserModal'
+import UserAvatar from '@/components/common/UserAvatar'
 
 const SEARCH_DEBOUNCE_MS = 400
 
@@ -109,7 +113,10 @@ const UserManagementPage = (): React.ReactElement => {
 	const handleBanConfirm = async (reason: string) => {
 		if (!banTargetUser) return
 		try {
-			await blacklistMutation.mutateAsync({ userId: banTargetUser.id, reason: reason.trim() })
+			await blacklistMutation.mutateAsync({
+				userId: banTargetUser.id,
+				reason: reason.trim(),
+			})
 			toast.success(t('userBanned') || 'User banned.')
 			setBanTargetUser(null)
 		} catch {
@@ -119,7 +126,8 @@ const UserManagementPage = (): React.ReactElement => {
 
 	const handleUnban = async (e: React.MouseEvent, user: Account) => {
 		e.stopPropagation()
-		if (!window.confirm(t('unbanConfirm') || `Unban ${user.email || user.id}?`)) return
+		if (!window.confirm(t('unbanConfirm') || `Unban ${user.email || user.id}?`))
+			return
 		try {
 			await unblacklistMutation.mutateAsync(user.id)
 			toast.success(t('userUnbanned') || 'User unbanned.')
@@ -169,7 +177,10 @@ const UserManagementPage = (): React.ReactElement => {
 							<Search className='absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[#8C8C8C]' />
 							<input
 								type='text'
-								placeholder={t('searchPlaceholder') || 'Search by email, name, fursona name...'}
+								placeholder={
+									t('searchPlaceholder') ||
+									'Search by email, name, fursona name...'
+								}
 								value={searchInput}
 								onChange={e => setSearchInput(e.target.value)}
 								className='w-full pl-10 pr-4 py-2.5 rounded-xl bg-white border border-[#8C8C8C]/15 text-text-secondary placeholder-[#8C8C8C]/40 focus:outline-none focus:border-[#48715B] transition-colors'
@@ -255,22 +266,25 @@ const UserManagementPage = (): React.ReactElement => {
 												className='hover:bg-[#E2EEE2]/40 transition-colors cursor-pointer'
 											>
 												<td className='px-4 py-3'>
-													<div>
-														<p className='font-medium text-text-primary'>
-															{user.first_name || user.last_name
-																? `${user.first_name || ''} ${user.last_name || ''}`.trim()
-																: user.fursona_name || user.email}
-														</p>
-														{user.fursona_name && (
-															<p className='text-xs text-[#48715B]'>
-																({user.fursona_name})
+													<div className='flex items-center gap-3'>
+														<UserAvatar account={user} size={36} />
+														<div>
+															<p className='font-medium text-text-primary'>
+																{user.first_name || user.last_name
+																	? `${user.first_name || ''} ${user.last_name || ''}`.trim()
+																	: user.fursona_name || user.email}
 															</p>
-														)}
-														{user.country && (
-															<p className='text-xs text-[#8C8C8C]'>
-																{user.country}
-															</p>
-														)}
+															{user.fursona_name && (
+																<p className='text-xs text-[#48715B]'>
+																	({user.fursona_name})
+																</p>
+															)}
+															{user.country && (
+																<p className='text-xs text-[#8C8C8C]'>
+																	{user.country}
+																</p>
+															)}
+														</div>
 													</div>
 												</td>
 												<td className='px-4 py-3'>
@@ -324,7 +338,10 @@ const UserManagementPage = (): React.ReactElement => {
 												<td className='px-4 py-3 text-sm text-text-secondary'>
 													{formatDateTime(user.created_at)}
 												</td>
-												<td className='px-4 py-3 text-right' onClick={e => e.stopPropagation()}>
+												<td
+													className='px-4 py-3 text-right'
+													onClick={e => e.stopPropagation()}
+												>
 													{(user.is_banned ?? user.is_blacklisted) ? (
 														<button
 															type='button'
@@ -347,8 +364,10 @@ const UserManagementPage = (): React.ReactElement => {
 															}
 															className='inline-flex items-center gap-1.5 rounded-xl border border-red-400 bg-red-50 px-2.5 py-1.5 text-xs font-medium text-red-700 hover:bg-red-100 disabled:opacity-50 disabled:cursor-not-allowed'
 															title={
-																user.role?.toLowerCase() === 'admin' || user.role?.toLowerCase() === 'staff'
-																	? t('cannotBanStaffOrAdmin') || 'Cannot ban admin or staff'
+																user.role?.toLowerCase() === 'admin' ||
+																user.role?.toLowerCase() === 'staff'
+																	? t('cannotBanStaffOrAdmin') ||
+																		'Cannot ban admin or staff'
 																	: t('ban') || 'Ban'
 															}
 														>
