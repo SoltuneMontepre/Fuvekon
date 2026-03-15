@@ -5,7 +5,7 @@ import { useTranslations } from 'next-intl'
 const AboutPage = (): React.ReactElement => {
 	const t = useTranslations('about')
 
-	const heroImage = '/images/about/_DSC3836-Enhanced-NR.jpg'
+	const heroImage = '/images/about/a5.webp'
 	const galleryImages = [
 		'/images/about/a1.webp',
 		'/images/about/a2.webp',
