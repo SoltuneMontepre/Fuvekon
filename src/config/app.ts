@@ -18,6 +18,7 @@ export const CACHE_MAX_AGE = 31536000
 
 export const GOH_ENABLED = false
 export const INFO_ENABLED = false
+export const TICKET_ENABLED = false
 
 export const GOH_DETAILS = {
 	first: {

@@ -7,7 +7,7 @@ import GOHSection from '@/components/landing/GOHSection'
 import HeroSection from '@/components/landing/HeroSection'
 import InfoSection from '@/components/landing/InfoSection'
 import ThemeSection from '@/components/landing/ThemeSection'
-import { GOH_ENABLED, INFO_ENABLED } from '@/config/app'
+import { GOH_ENABLED, INFO_ENABLED, TICKET_ENABLED } from '@/config/app'
 import { useThemeStore } from '@/config/Providers/ThemeProvider'
 import { useGSAP } from '@gsap/react'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
@@ -32,7 +32,14 @@ const LandingPage = (): React.JSX.Element => {
 		state => state.prefersReducedMotion
 	)
 
+	useGSAP(() => {
+		gsap.set('#feat-drum', { x: '-110vw', scale: 0, autoAlpha: 0 })
+		gsap.set('#feat-drum-spinner', { rotation: -360 })
+		gsap.set('#feat-drum-line', { rotation: 360 })
+	}, [])
+
 	useEffect(() => {
+		window.scrollTo(0, 0)
 		setIsLoaded(true)
 	}, [])
 
@@ -287,10 +294,6 @@ const LandingPage = (): React.JSX.Element => {
 	}, [])
 
 	useGSAP(() => {
-		gsap.set('#feat-drum', { x: '-110vw', scale: 0, autoAlpha: 0 })
-		gsap.set('#feat-drum-spinner', { rotation: -360 })
-		gsap.set('#feat-drum-line', { rotation: 360 })
-
 		gsap
 			.timeline({
 				scrollTrigger: {
@@ -331,10 +334,14 @@ const LandingPage = (): React.JSX.Element => {
 			.to('#feat-drum', { x: '0vw', ease: 'none' }, 0)
 			.to(
 				'#feat-drum-spinner',
-				{ rotation: '+=720', scale: 1.5, autoAlpha: 0.7, ease: 'none' },
+				{ rotation: '+=720', scale: 1.5, autoAlpha: 0.9, ease: 'none' },
 				0
 			)
-			.to('#feat-drum-line', { rotation: '-=720', ease: 'none' }, 0)
+			.to(
+				'#feat-drum-line',
+				{ rotation: '-=720', autoAlpha: 0.9, ease: 'none', scale: 1.5 },
+				0
+			)
 	}, [])
 
 	return (
@@ -367,16 +374,18 @@ const LandingPage = (): React.JSX.Element => {
 			{GOH_ENABLED && <GOHSection activeCharacter={gohActiveCharacter} />}
 
 			<div id='feat-sections'>
+				{/* Artbook */}
 				<FeatSection
 					id='feat-start'
 					title={t('artbook.title')}
 					description={t('artbook.description')}
 					buttonLabel={t('artbook.buttonLabel')}
 					buttonHref='/artbook'
+					disableScroll
 					images={[
-						'/images/artbook/badges.png',
-						'/images/artbook/badges.png',
-						'/images/artbook/badges.png',
+						'/images/landing/artbook/artbook_1.webp',
+						'/images/landing/artbook/artbook_2.webp',
+						'/images/landing/artbook/artbook_3.webp',
 					]}
 				/>
 
@@ -387,9 +396,9 @@ const LandingPage = (): React.JSX.Element => {
 					buttonLabel={t('dealer.buttonLabel')}
 					buttonHref='/dealer'
 					images={[
-						'/images/artbook/badges.png',
-						'/images/artbook/badges.png',
-						'/images/artbook/badges.png',
+						'/images/landing/dealer/dealer_1.webp',
+						'/images/landing/dealer/dealer_2.webp',
+						'/images/landing/dealer/dealer_3.webp',
 					]}
 				/>
 
@@ -400,14 +409,14 @@ const LandingPage = (): React.JSX.Element => {
 					buttonLabel={t('talent.buttonLabel')}
 					buttonHref='/contributes/talent'
 					images={[
-						'/images/artbook/badges.png',
-						'/images/artbook/badges.png',
-						'/images/artbook/badges.png',
+						'/images/landing/talent/talent_1.webp',
+						'/images/landing/talent/talent_2.webp',
+						'/images/landing/talent/talent_3.webp',
 					]}
 				/>
 			</div>
 
-			<TicketSection id='ticket-section' />
+			{TICKET_ENABLED && <TicketSection id='ticket-section' />}
 
 			<div className='fixed inset-0 flex items-center justify-center pointer-events-none overflow-visible'>
 				<DrumImage id='feat-drum' className='' />
