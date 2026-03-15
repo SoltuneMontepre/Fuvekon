@@ -32,12 +32,6 @@ const LandingPage = (): React.JSX.Element => {
 		state => state.prefersReducedMotion
 	)
 
-	useGSAP(() => {
-		gsap.set('#feat-drum', { x: '-110vw', scale: 0, autoAlpha: 0 })
-		gsap.set('#feat-drum-spinner', { rotation: -360 })
-		gsap.set('#feat-drum-line', { rotation: 360 })
-	}, [])
-
 	useEffect(() => {
 		window.scrollTo(0, 0)
 		setIsLoaded(true)
@@ -294,6 +288,10 @@ const LandingPage = (): React.JSX.Element => {
 	}, [])
 
 	useGSAP(() => {
+		gsap.set('#feat-drum', { x: '-100vw', scale: 0, autoAlpha: 0 })
+		gsap.set('#feat-drum-spinner', { rotation: -360 })
+		gsap.set('#feat-drum-line', { rotation: 360 })
+
 		gsap
 			.timeline({
 				scrollTrigger: {
@@ -318,6 +316,7 @@ const LandingPage = (): React.JSX.Element => {
 					invalidateOnRefresh: true,
 				},
 			})
+
 			.to('#feat-drum-spinner', { rotation: 720, ease: 'none' }, 0)
 			.to('#feat-drum-line', { rotation: -720, ease: 'none' }, 0)
 

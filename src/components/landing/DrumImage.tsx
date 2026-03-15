@@ -74,6 +74,7 @@ const DrumImage = ({
 					height={400}
 					className='h-dvh w-dvh scale-90 bg-[#3d5f41] rounded-full'
 				/>
+
 				<div className='absolute bg-[#3d5f41] scale-90 rounded-full' />
 			</div>
 		</div>
