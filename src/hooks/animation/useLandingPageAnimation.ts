@@ -30,12 +30,16 @@ export const useLandingPageAnimation = (
 		() => {
 			animatedRef.current = animated
 
+			const isMobile = window.matchMedia(
+				'(hover: none) and (pointer: coarse)'
+			).matches
+
 			gsap.set('#mascot', {
 				scale: 0.7,
 				force3D: true,
 			})
 
-			if (!animated) {
+			if (!animated || isMobile) {
 				gsap.set(containerRef.current, {
 					clearProps: 'perspective,transformStyle',
 				})

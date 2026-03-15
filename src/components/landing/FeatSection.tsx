@@ -359,8 +359,8 @@ const FeatSection = ({
 						</svg>
 					</div>
 				)}
+				<div className='md:hidden absolute inset-0 z-[1] bg-black/40' />
 			</div>
-
 			<Lightbox src={lightboxSrc} onClose={() => setLightboxSrc(null)} />
 		</div>
 	)
