@@ -196,7 +196,6 @@ const LandingPage = (): React.JSX.Element => {
 	useGSAP(() => {
 		if (prefersReducedMotion) {
 			gsap.set('#background-container', { clearProps: 'all' })
-			gsap.set('#theme-title', { clearProps: 'all' })
 		} else {
 			if (GOH_ENABLED) {
 				const tl = gsap.timeline({
@@ -231,23 +230,6 @@ const LandingPage = (): React.JSX.Element => {
 					overwrite: 'auto',
 				})
 			}
-
-			gsap
-				.timeline({
-					scrollTrigger: {
-						trigger: '#info-section',
-						start: 'top 80%',
-						end: 'bottom top',
-						scrub: true,
-						invalidateOnRefresh: true,
-					},
-				})
-				.to('#theme-title', {
-					autoAlpha: 0,
-					scale: 3,
-					ease: 'linear',
-					force3D: true,
-				})
 		}
 
 		const mascotTrigger = GOH_ENABLED ? '#goh-section' : '#feat-start'
