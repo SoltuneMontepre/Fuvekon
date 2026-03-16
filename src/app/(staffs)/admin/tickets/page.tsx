@@ -139,6 +139,7 @@ const TicketManagementPage = (): React.ReactElement => {
 	const [createUserId, setCreateUserId] = useState('')
 	const [createTierId, setCreateTierId] = useState('')
 	const [userSearchText, setUserSearchText] = useState('')
+	const [userSearchQuery, setUserSearchQuery] = useState('') // debounced, sent to API
 	const [showUserDropdown, setShowUserDropdown] = useState(false)
 	const userSearchRef = useRef<HTMLDivElement>(null)
 	const [showCreateForm, setShowCreateForm] = useState(false)
@@ -212,23 +213,31 @@ const TicketManagementPage = (): React.ReactElement => {
 	const updateTicketMutation = useUpdateTicketForAdmin()
 	const deleteTicketMutation = useDeleteTicketForAdmin()
 
-	// Fetch users for user search dropdown (large page to have a good pool)
-	const { data: usersData } = useAdminGetUsers({ page: 1, pageSize: 100 })
-	const allUsers: Account[] = useMemo(() => usersData?.data || [], [usersData])
+	// Debounce user search for create-ticket dropdown (API search)
+	useEffect(() => {
+		if (!showCreateForm) return
+		const t = setTimeout(() => {
+			setUserSearchQuery(userSearchText.trim())
+		}, 350)
+		return () => clearTimeout(t)
+	}, [showCreateForm, userSearchText])
 
-	const filteredUsers = useMemo(() => {
-		if (!userSearchText.trim()) return []
-		const q = userSearchText.toLowerCase()
-		return allUsers
-			.filter(
-				u =>
-					u.email?.toLowerCase().includes(q) ||
-					u.fursona_name?.toLowerCase().includes(q) ||
-					u.first_name?.toLowerCase().includes(q) ||
-					u.last_name?.toLowerCase().includes(q)
-			)
-			.slice(0, 8) // cap at 8 suggestions
-	}, [userSearchText, allUsers])
+	// Fetch users from API when searching in create-ticket form (only when form is open)
+	const {
+		data: createTicketUsersData,
+		isLoading: createTicketUsersLoading,
+	} = useAdminGetUsers(
+		{
+			page: 1,
+			pageSize: 25,
+			search: userSearchQuery || undefined,
+		},
+		{ enabled: showCreateForm }
+	)
+	const searchResultUsers: Account[] = useMemo(
+		() => createTicketUsersData?.data ?? [],
+		[createTicketUsersData]
+	)
 
 	// Close user dropdown on outside click
 	useEffect(() => {
@@ -674,39 +683,49 @@ const TicketManagementPage = (): React.ReactElement => {
 									setShowUserDropdown(true)
 									if (createUserId) setCreateUserId('')
 								}}
-								onFocus={() =>
-									userSearchText.trim() && setShowUserDropdown(true)
-								}
+								onFocus={() => setShowUserDropdown(true)}
 								placeholder={t('searchPlaceholder')}
 								className='w-full px-3 py-2 border border-[#8C8C8C]/15 rounded-xl focus:outline-none focus:border-[#48715B]'
 							/>
-							{showUserDropdown && filteredUsers.length > 0 && (
+							{showUserDropdown && (
 								<ul className='absolute z-50 mt-1 w-full bg-white border border-[#8C8C8C]/15 rounded-lg shadow-lg max-h-60 overflow-y-auto'>
-									{filteredUsers.map(user => (
-										<li
-											key={user.id}
-											className='px-3 py-2 hover:bg-[#2d9b63]/10 cursor-pointer text-sm'
-											onClick={() => {
-												setCreateUserId(user.id)
-												setUserSearchText(
-													user.fursona_name
-														? `${user.fursona_name} (${user.email})`
-														: user.email
-												)
-												setShowUserDropdown(false)
-											}}
-										>
-											<div className='font-medium text-text-primary'>
-												{user.fursona_name || user.first_name || user.email}
-											</div>
-											<div className='text-xs text-text-secondary'>
-												{user.email}
-												{user.fursona_name && user.first_name
-													? ` · ${user.first_name} ${user.last_name || ''}`
-													: ''}
-											</div>
+									{createTicketUsersLoading ? (
+										<li className='px-3 py-4 text-center text-sm text-text-secondary'>
+											{t('searching') || 'Searching...'}
 										</li>
-									))}
+									) : searchResultUsers.length === 0 ? (
+										<li className='px-3 py-4 text-center text-sm text-text-secondary'>
+											{userSearchQuery.trim()
+												? t('noSearchResults') || 'No users found'
+												: t('typeToSearch') || 'Type to search by email or name'}
+										</li>
+									) : (
+										searchResultUsers.map(user => (
+											<li
+												key={user.id}
+												className='px-3 py-2 hover:bg-[#2d9b63]/10 cursor-pointer text-sm'
+												onClick={() => {
+													setCreateUserId(user.id)
+													setUserSearchText(
+														user.fursona_name
+															? `${user.fursona_name} (${user.email})`
+															: user.email
+													)
+													setShowUserDropdown(false)
+												}}
+											>
+												<div className='font-medium text-text-primary'>
+													{user.fursona_name || user.first_name || user.email}
+												</div>
+												<div className='text-xs text-text-secondary'>
+													{user.email}
+													{user.fursona_name && user.first_name
+														? ` · ${user.first_name} ${user.last_name || ''}`
+														: ''}
+												</div>
+											</li>
+										))
+									)}
 								</ul>
 							)}
 						</div>

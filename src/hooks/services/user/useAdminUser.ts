@@ -8,12 +8,14 @@ import {
 	keepPreviousData,
 	useQueries,
 } from '@tanstack/react-query'
+import type { UseQueryOptions } from '@tanstack/react-query'
 import axios from '@/common/axios'
 import type { ApiResponse } from '@/types/api/response'
 import type {
 	AdminGetUsersResponse,
 	GetUserByIdResponse,
 	AdminUpdateUserRequest,
+	CountByCountryResponse,
 } from '@/types/api/user/user'
 import type { PaginationMeta } from '@/types/api/ticket/ticket'
 
@@ -35,7 +37,8 @@ const AdminUserAPI = {
 	getUsers: async (filter: AdminUserFilter = {}) => {
 		const params = new URLSearchParams()
 		if (filter.page != null) params.append('page', filter.page.toString())
-		if (filter.pageSize != null) params.append('page_size', filter.pageSize.toString())
+		if (filter.pageSize != null)
+			params.append('page_size', filter.pageSize.toString())
 		if (filter.search?.trim()) params.append('search', filter.search.trim())
 
 		const queryString = params.toString()
@@ -47,7 +50,9 @@ const AdminUserAPI = {
 
 	// Get user by ID
 	getUserById: async (userId: string) => {
-		const { data } = await axios.general.get<ApiResponse<GetUserByIdResponse>>(`/admin/users/${userId}`)
+		const { data } = await axios.general.get<ApiResponse<GetUserByIdResponse>>(
+			`/admin/users/${userId}`
+		)
 		return data
 	},
 
@@ -59,17 +64,29 @@ const AdminUserAPI = {
 		)
 		return data
 	},
+
+	// Get account count grouped by country (admin stats)
+	getUserCountByCountry: async () => {
+		const { data } = await axios.general.get<
+			ApiResponse<CountByCountryResponse>
+		>('/admin/users/statistics/count-by-country')
+		return data
+	},
 }
 
 // ========== Hooks ==========
 
 // Get users for admin with pagination
-export function useAdminGetUsers(filter: AdminUserFilter = {}) {
+export function useAdminGetUsers(
+	filter: AdminUserFilter = {},
+	options?: Pick<UseQueryOptions<AdminGetUsersResponseWithMeta>, 'enabled'>
+) {
 	return useQuery({
 		queryKey: ['admin-users', filter],
 		queryFn: () => AdminUserAPI.getUsers(filter),
 		staleTime: 1000 * 30, // 30 seconds - admin needs fresh data
 		placeholderData: keepPreviousData, // keep showing current page while fetching next
+		enabled: options?.enabled ?? true,
 	})
 }
 
@@ -91,7 +108,9 @@ export function useAdminGetUsersByIds(userIds: string[]) {
 	const uniqueIds = useMemo(
 		() =>
 			Array.from(
-				new Set(userIds.filter(id => typeof id === 'string' && id.trim().length > 0))
+				new Set(
+					userIds.filter(id => typeof id === 'string' && id.trim().length > 0)
+				)
 			),
 		[userIds]
 	)
@@ -105,13 +124,16 @@ export function useAdminGetUsersByIds(userIds: string[]) {
 
 	const usersById = useMemo(
 		() =>
-			uniqueIds.reduce<Record<string, GetUserByIdResponse>>((acc, userId, index) => {
-				const user = queryResults[index]?.data?.data
-				if (user) {
-					acc[userId] = user
-				}
-				return acc
-			}, {}),
+			uniqueIds.reduce<Record<string, GetUserByIdResponse>>(
+				(acc, userId, index) => {
+					const user = queryResults[index]?.data?.data
+					if (user) {
+						acc[userId] = user
+					}
+					return acc
+				},
+				{}
+			),
 		[uniqueIds, queryResults]
 	)
 
@@ -132,5 +154,14 @@ export function useAdminUpdateUser(userId: string) {
 			queryClient.invalidateQueries({ queryKey: ['admin-user', userId] })
 			queryClient.invalidateQueries({ queryKey: ['admin-users'] })
 		},
+	})
+}
+
+// Get account count by country (admin dashboard)
+export function useAdminGetUserCountByCountry() {
+	return useQuery({
+		queryKey: ['admin-users-count-by-country'],
+		queryFn: () => AdminUserAPI.getUserCountByCountry(),
+		staleTime: 1000 * 60 * 5, // 5 minutes
 	})
 }

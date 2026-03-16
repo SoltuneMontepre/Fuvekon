@@ -8,6 +8,15 @@ export type AdminGetUsersResponse = Account[]
 
 export type GetUserByIdResponse = Account
 
+// GET /admin/users/statistics/count-by-country response
+export interface CountByCountryItem {
+	country: string
+	count: number
+}
+export interface CountByCountryResponse {
+	by_country: CountByCountryItem[]
+}
+
 // Admin update user request (PUT /admin/users/:id) - all fields optional
 // Backend accepts role: User, Admin, Dealer (case-insensitive)
 export interface AdminUpdateUserRequest {

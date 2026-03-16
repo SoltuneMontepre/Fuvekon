@@ -179,7 +179,7 @@ const UserManagementPage = (): React.ReactElement => {
 								type='text'
 								placeholder={
 									t('searchPlaceholder') ||
-									'Search by email, name, fursona name...'
+									'Search by email, name, nickname...'
 								}
 								value={searchInput}
 								onChange={e => setSearchInput(e.target.value)}

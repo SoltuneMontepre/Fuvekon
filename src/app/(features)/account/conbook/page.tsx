@@ -36,6 +36,9 @@ const AccountConbookPage = (): React.ReactElement => {
 		)
 	}
 	const t = useTranslations('accountConbook')
+	const tAuth = useTranslations('auth')
+	const translateError = (message: string) =>
+		message.startsWith('validation.') ? tAuth(message) : message
 
 	const getFileNameFromUrl = (url: string) => {
 		try {
@@ -327,6 +330,7 @@ const AccountConbookPage = (): React.ReactElement => {
 						type='text'
 						label={t('labelTitle')}
 						placeholder={t('placeholderTitle')}
+						translateError={translateError}
 					/>
 
 					<FloatingLabelInput
@@ -336,6 +340,7 @@ const AccountConbookPage = (): React.ReactElement => {
 						type='text'
 						label={t('labelDescription')}
 						placeholder={t('placeholderDescription')}
+						translateError={translateError}
 					/>
 
 					<FloatingLabelInput
@@ -345,6 +350,7 @@ const AccountConbookPage = (): React.ReactElement => {
 						type='text'
 						label={t('labelHandle')}
 						placeholder={t('placeholderHandle')}
+						translateError={translateError}
 					/>
 
 					<ImageUploader

@@ -17,13 +17,8 @@ import {
 	Banknote,
 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-import {
-	useGetTicketStatistics,
-	useGetTicketSalesTimeline,
-	useGetTicketRevenue,
-} from '@/hooks/services/ticket/useAdminTicket'
-import { useAdminGetUsers } from '@/hooks/services/user/useAdminUser'
-import { useAdminGetDealers } from '@/hooks/services/dealer/useAdminDealer'
+import { useDashboardAnalytics } from '@/hooks/services/analytics/useDashboardAnalytics'
+import { getName } from 'country-list'
 import Loading from '@/components/common/Loading'
 import type { TicketStatistics as TicketStatsType } from '@/types/models/ticket/ticket'
 
@@ -158,25 +153,22 @@ const AdminDashboardPage: React.FC = () => {
 	const [timelineDays, setTimelineDays] = React.useState(90)
 	const [revenueDays, setRevenueDays] = React.useState(90)
 	const {
-		data: statsData,
-		isLoading: statsLoading,
-		refetch: refetchStats,
-	} = useGetTicketStatistics()
-	const { data: timelineData, isLoading: timelineLoading } =
-		useGetTicketSalesTimeline(timelineDays)
-	const { data: revenueData, isLoading: revenueLoading } =
-		useGetTicketRevenue(revenueDays)
-	const { data: usersData } = useAdminGetUsers({ page: 1, pageSize: 1 })
-	const { data: dealersData } = useAdminGetDealers({ page: 1, page_size: 1 })
+		data: analyticsData,
+		isLoading: analyticsLoading,
+		refetch: refetchDashboard,
+	} = useDashboardAnalytics({ timelineDays, revenueDays })
 
-	const stats: TicketStatsType | undefined = statsData?.data
-	const timelineItems = timelineData?.data ?? []
-	const totalRevenue = revenueData?.data?.total_revenue ?? 0
-	const revenueByDay = revenueData?.data?.by_day ?? []
-	const totalUsers = usersData?.meta?.totalItems ?? 0
-	const totalDealers = dealersData?.meta?.totalItems ?? 0
+	const d = analyticsData?.data
+	const stats: TicketStatsType | undefined = d?.ticket_stats
+	const byCountry = d?.users_by_country ?? []
+	const totalByCountry = byCountry.reduce((sum, row) => sum + row.count, 0)
+	const timelineItems = d?.sales_timeline ?? []
+	const totalRevenue = d?.revenue?.total_revenue ?? 0
+	const revenueByDay = d?.revenue?.by_day ?? []
+	const totalUsers = d?.user_count ?? 0
+	const totalDealers = d?.dealer_count ?? 0
 
-	if (statsLoading) {
+	if (analyticsLoading) {
 		return <Loading />
 	}
 
@@ -195,7 +187,7 @@ const AdminDashboardPage: React.FC = () => {
 				</div>
 				<button
 					type='button'
-					onClick={() => refetchStats()}
+					onClick={() => refetchDashboard()}
 					className='flex items-center gap-2 rounded-xl border border-[#8C8C8C]/15 bg-[#E2EEE2]/60 px-4 py-2.5 text-sm font-medium text-[#48715B] transition-colors hover:bg-[#E2EEE2]'
 					aria-label='Làm mới'
 				>
@@ -300,15 +292,64 @@ const AdminDashboardPage: React.FC = () => {
 
 			<DashboardCharts
 				timelineItems={timelineItems}
-				timelineLoading={timelineLoading}
+				timelineLoading={false}
 				timelineDays={timelineDays}
 				setTimelineDays={setTimelineDays}
 				revenueByDay={revenueByDay}
-				revenueLoading={revenueLoading}
+				revenueLoading={false}
 				revenueDays={revenueDays}
 				setRevenueDays={setRevenueDays}
 				formatRevenue={formatRevenue}
 			/>
+
+			{/* Accounts by country */}
+			<section className='mb-8'>
+				<h2 className='mb-4 text-lg font-semibold text-text-primary'>
+					Tài khoản theo quốc gia
+				</h2>
+				<div className='overflow-hidden rounded-xl border border-[#8C8C8C]/15'>
+					{byCountry.length === 0 ? (
+						<div className='py-8 text-center text-text-secondary'>
+							Chưa có dữ liệu theo quốc gia.
+						</div>
+					) : (
+						<>
+							<div className='border-b border-[#48715B]/15 px-4 py-2 text-sm text-[#48715B]'>
+								Tổng: {totalByCountry} tài khoản
+							</div>
+							<table className='w-full'>
+								<thead>
+									<tr className='border-b border-[#48715B]/15'>
+										<th className='px-4 py-3 text-left text-sm font-semibold text-[#48715B]'>
+											Quốc gia
+										</th>
+										<th className='px-4 py-3 text-right text-sm font-semibold text-[#48715B]'>
+											Số lượng
+										</th>
+									</tr>
+								</thead>
+								<tbody className='divide-y divide-[#48715B]/10'>
+									{byCountry.map(row => (
+										<tr
+											key={row.country || '__empty__'}
+											className='transition-colors hover:bg-[#E2EEE2]/40'
+										>
+											<td className='px-4 py-3 font-medium text-text-primary'>
+												{row.country
+													? getName(row.country) || row.country
+													: '—'}
+											</td>
+											<td className='px-4 py-3 text-right tabular-nums text-text-secondary'>
+												{row.count}
+											</td>
+										</tr>
+									))}
+								</tbody>
+							</table>
+						</>
+					)}
+				</div>
+			</section>
 
 			{/* Tier breakdown */}
 			{stats?.tier_stats && stats.tier_stats.length > 0 && (
