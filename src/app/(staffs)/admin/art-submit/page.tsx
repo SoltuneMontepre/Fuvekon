@@ -675,12 +675,12 @@ const ArtSubmitAdminPage = (): React.ReactElement => {
 					className='fixed inset-0 z-[1000] bg-black/85 backdrop-blur-[2px] flex items-center justify-center cursor-zoom-out'
 					onClick={() => setZoomedImageUrl(null)}
 				>
-					<div className='relative w-full h-full max-w-[1200px] max-h-[1200px]'>
+					<div className='relative w-3/4 h-3/4'>
 						<S3Image
 							src={zoomedImageUrl}
 							alt='Zoomed preview'
 							fill
-							className='z-0 object-cover'
+							className='z-0 object-contain'
 						/>
                         </div>
 					</div>,

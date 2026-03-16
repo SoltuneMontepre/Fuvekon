@@ -14,6 +14,7 @@ import {
 	UserPlus,
 	LayoutDashboard,
 	ScanLine,
+	FolderUp,
 } from 'lucide-react'
 import { useGSAP } from '@gsap/react'
 import gsap from '@/common/gsap'
@@ -165,6 +166,7 @@ const MobileMenu = ({
 
 	const accountItems = [
 		{ label: tNav('account'), href: '/account', icon: UserCircle },
+		{ label: tNav('myConbook'), href: '/account/conbook', icon: FolderUp },
 		{ label: tNav('myTicket'), href: '/account/ticket', icon: Ticket },
 		{
 			label: tNav('changePassword'),
