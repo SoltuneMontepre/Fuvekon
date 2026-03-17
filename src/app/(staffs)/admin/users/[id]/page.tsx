@@ -23,7 +23,10 @@ import {
 	useAdminGetUserById,
 	useAdminUpdateUser,
 } from '@/hooks/services/user/useAdminUser'
-import { useBlacklistUser, useUnblacklistUser } from '@/hooks/services/ticket/useAdminTicket'
+import {
+	useBlacklistUser,
+	useUnblacklistUser,
+} from '@/hooks/services/ticket/useAdminTicket'
 import type { AdminUpdateUserRequest } from '@/types/api/user/user'
 import type { Account } from '@/types/models/auth/account'
 import Loading from '@/components/common/Loading'
@@ -82,7 +85,15 @@ const getRoleDisplay = (
 }
 
 // Reusable info field matching the design language
-const InfoField = ({ label, value, icon: Icon }: { label: string; value: string; icon?: React.ElementType }) => (
+const InfoField = ({
+	label,
+	value,
+	icon: Icon,
+}: {
+	label: string
+	value: string
+	icon?: React.ElementType
+}) => (
 	<div className='space-y-0.5 px-3 py-2.5 rounded-xl bg-[#E2EEE2]/60 border border-[#8C8C8C]/15'>
 		<div className='flex items-center gap-2'>
 			{Icon && <Icon className='w-4 h-4 text-[#48715B]' />}
@@ -124,7 +135,8 @@ const AdminUserDetailPage = ({
 			last_name: user.last_name ?? '',
 			fursona_name: user.fursona_name ?? '',
 			country: user.country ?? '',
-			role: (user.role?.toLowerCase() as AdminUpdateUserRequest['role']) || 'user',
+			role:
+				(user.role?.toLowerCase() as AdminUpdateUserRequest['role']) || 'user',
 			is_verified: user.is_verified ?? false,
 		})
 	}, [user])
@@ -160,7 +172,10 @@ const AdminUserDetailPage = ({
 	const handleBanConfirm = async (reason: string) => {
 		if (!user) return
 		try {
-			await blacklistMutation.mutateAsync({ userId: user.id, reason: reason.trim() })
+			await blacklistMutation.mutateAsync({
+				userId: user.id,
+				reason: reason.trim(),
+			})
 			toast.success(t('userBanned') || 'User banned.')
 			setBanTargetUser(null)
 		} catch {
@@ -171,7 +186,8 @@ const AdminUserDetailPage = ({
 	const handleUnban = async (e: React.MouseEvent) => {
 		e.preventDefault()
 		if (!user) return
-		if (!window.confirm(t('unbanConfirm') || `Unban ${user.email || user.id}?`)) return
+		if (!window.confirm(t('unbanConfirm') || `Unban ${user.email || user.id}?`))
+			return
 		try {
 			await unblacklistMutation.mutateAsync(user.id)
 			toast.success(t('userUnbanned') || 'User unbanned.')
@@ -211,11 +227,12 @@ const AdminUserDetailPage = ({
 	return (
 		<div className='w-full'>
 			<button
-				onClick={() => router.push('/admin')}
+				onClick={() => router.back()}
 				className='flex items-center gap-2 text-[#48715B] hover:underline mb-6'
 			>
 				<ArrowLeft className='w-4 h-4' />
-				{tCommon('back') || 'Back'} {t('userManagement') || 'to User Management'}
+				{tCommon('back') || 'Back'}{' '}
+				{t('userManagement') || 'to User Management'}
 			</button>
 
 			<div className='rounded-xl border border-[#8C8C8C]/15 overflow-hidden'>
@@ -243,12 +260,15 @@ const AdminUserDetailPage = ({
 									type='button'
 									onClick={handleBanClick}
 									disabled={
-										user.role?.toLowerCase() === 'admin' || user.role?.toLowerCase() === 'staff'
+										user.role?.toLowerCase() === 'admin' ||
+										user.role?.toLowerCase() === 'staff'
 									}
 									className='inline-flex items-center gap-1.5 rounded-xl border border-red-400 bg-red-50 px-4 py-2.5 text-sm font-medium text-red-700 hover:bg-red-100 disabled:opacity-50 disabled:cursor-not-allowed'
 									title={
-										user.role?.toLowerCase() === 'admin' || user.role?.toLowerCase() === 'staff'
-											? t('cannotBanStaffOrAdmin') || 'Cannot ban admin or staff'
+										user.role?.toLowerCase() === 'admin' ||
+										user.role?.toLowerCase() === 'staff'
+											? t('cannotBanStaffOrAdmin') ||
+												'Cannot ban admin or staff'
 											: t('ban') || 'Ban'
 									}
 								>
@@ -283,7 +303,9 @@ const AdminUserDetailPage = ({
 								className='flex items-center gap-2 px-4 py-2.5 rounded-xl btn-primary font-medium disabled:opacity-50'
 							>
 								<Save className='w-4 h-4' />
-								{updateUser.isPending ? tCommon('saving') || 'Saving...' : tCommon('save') || 'Save'}
+								{updateUser.isPending
+									? tCommon('saving') || 'Saving...'
+									: tCommon('save') || 'Save'}
 							</button>
 						</div>
 					)}
@@ -300,7 +322,9 @@ const AdminUserDetailPage = ({
 								<input
 									type='text'
 									value={form.first_name}
-									onChange={e => setForm(f => ({ ...f, first_name: e.target.value }))}
+									onChange={e =>
+										setForm(f => ({ ...f, first_name: e.target.value }))
+									}
 									className='block w-full bg-transparent text-lg text-text-secondary placeholder-[#8C8C8C]/40 focus:outline-none'
 								/>
 							</div>
@@ -311,7 +335,9 @@ const AdminUserDetailPage = ({
 								<input
 									type='text'
 									value={form.last_name}
-									onChange={e => setForm(f => ({ ...f, last_name: e.target.value }))}
+									onChange={e =>
+										setForm(f => ({ ...f, last_name: e.target.value }))
+									}
 									className='block w-full bg-transparent text-lg text-text-secondary placeholder-[#8C8C8C]/40 focus:outline-none'
 								/>
 							</div>
@@ -322,7 +348,9 @@ const AdminUserDetailPage = ({
 								<input
 									type='text'
 									value={form.fursona_name}
-									onChange={e => setForm(f => ({ ...f, fursona_name: e.target.value }))}
+									onChange={e =>
+										setForm(f => ({ ...f, fursona_name: e.target.value }))
+									}
 									className='block w-full bg-transparent text-lg text-text-secondary placeholder-[#8C8C8C]/40 focus:outline-none'
 								/>
 							</div>
@@ -333,7 +361,9 @@ const AdminUserDetailPage = ({
 								<input
 									type='text'
 									value={form.country}
-									onChange={e => setForm(f => ({ ...f, country: e.target.value }))}
+									onChange={e =>
+										setForm(f => ({ ...f, country: e.target.value }))
+									}
 									className='block w-full bg-transparent text-lg text-text-secondary placeholder-[#8C8C8C]/40 focus:outline-none'
 								/>
 							</div>
@@ -363,10 +393,15 @@ const AdminUserDetailPage = ({
 									type='checkbox'
 									id='is_verified'
 									checked={form.is_verified}
-									onChange={e => setForm(f => ({ ...f, is_verified: e.target.checked }))}
+									onChange={e =>
+										setForm(f => ({ ...f, is_verified: e.target.checked }))
+									}
 									className='w-4 h-4 accent-[#48715B]'
 								/>
-								<label htmlFor='is_verified' className='text-sm font-medium text-text-secondary'>
+								<label
+									htmlFor='is_verified'
+									className='text-sm font-medium text-text-secondary'
+								>
 									{t('verified') || 'Verified'}
 								</label>
 							</div>
@@ -379,21 +414,33 @@ const AdminUserDetailPage = ({
 								<div className='flex items-start gap-4'>
 									<UserAvatar account={user} size={96} />
 									<div className='min-w-0 flex-1'>
-										<p className='font-medium text-text-primary text-xl truncate'>{displayName}</p>
+										<p className='font-medium text-text-primary text-xl truncate'>
+											{displayName}
+										</p>
 										{user.fursona_name && (
 											<p className='text-sm text-[#48715B] mt-1 truncate'>
 												{t('nickname') || 'Nickname'}: {user.fursona_name}
 											</p>
 										)}
-										<p className='text-sm text-text-secondary mt-1 truncate'>ID: {user.id}</p>
+										<p className='text-sm text-text-secondary mt-1 truncate'>
+											ID: {user.id}
+										</p>
 									</div>
 								</div>
 							</div>
 
 							{/* Info grid */}
 							<div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
-								<InfoField label={t('email') || 'Email'} value={user.email} icon={Mail} />
-								<InfoField label={tCommon('country') || 'Country'} value={user.country || '–'} icon={MapPin} />
+								<InfoField
+									label={t('email') || 'Email'}
+									value={user.email}
+									icon={Mail}
+								/>
+								<InfoField
+									label={tCommon('country') || 'Country'}
+									value={user.country || '–'}
+									icon={MapPin}
+								/>
 								<InfoField
 									label={t('dateOfBirth') || 'Date of birth'}
 									value={formatDateOnly(user.date_of_birth)}
@@ -460,10 +507,15 @@ const AdminUserDetailPage = ({
 									{user.is_dealer !== undefined && (
 										<span
 											className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${
-												user.is_dealer ? 'bg-amber-100 text-amber-800' : 'bg-gray-100 text-gray-700'
+												user.is_dealer
+													? 'bg-amber-100 text-amber-800'
+													: 'bg-gray-100 text-gray-700'
 											}`}
 										>
-											{t('dealer') || 'Dealer'}: {user.is_dealer ? tCommon('yes') || 'Yes' : tCommon('no') || 'No'}
+											{t('dealer') || 'Dealer'}:{' '}
+											{user.is_dealer
+												? tCommon('yes') || 'Yes'
+												: tCommon('no') || 'No'}
 										</span>
 									)}
 									{user.is_has_ticket !== undefined && (
@@ -475,7 +527,9 @@ const AdminUserDetailPage = ({
 											}`}
 										>
 											{t('hasTicket') || 'Has ticket'}:{' '}
-											{user.is_has_ticket ? tCommon('yes') || 'Yes' : tCommon('no') || 'No'}
+											{user.is_has_ticket
+												? tCommon('yes') || 'Yes'
+												: tCommon('no') || 'No'}
 										</span>
 									)}
 									{user.is_deleted && (
@@ -489,9 +543,17 @@ const AdminUserDetailPage = ({
 							{/* Dates */}
 							<div className='pt-4 border-t border-[#48715B]/15'>
 								<div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
-									<InfoField label={t('createdAt') || 'Created At'} value={formatDateTime(user.created_at)} icon={Calendar} />
+									<InfoField
+										label={t('createdAt') || 'Created At'}
+										value={formatDateTime(user.created_at)}
+										icon={Calendar}
+									/>
 									{user.modified_at && (
-										<InfoField label={tCommon('modified') || 'Modified'} value={formatDateTime(user.modified_at)} icon={Calendar} />
+										<InfoField
+											label={tCommon('modified') || 'Modified'}
+											value={formatDateTime(user.modified_at)}
+											icon={Calendar}
+										/>
 									)}
 									{user.deleted_at && (
 										<InfoField
