@@ -143,7 +143,7 @@ const AboutPage = (): React.ReactElement => {
 								{t('credits.sponsor.title')}
 							</h3>
 							<p className='text-base leading-relaxed text-white/70'>
-								Funky Furs Club
+								Funky Furs Club, Bio, Michael
 							</p>
 						</div>
 					</div>
