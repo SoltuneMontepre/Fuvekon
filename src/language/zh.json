@@ -136,6 +136,7 @@
 		"resetPasswordFailed": "重置密码失败，请重试。",
 		"changePasswordFailed": "修改密码失败，请重试。",
 		"invalidOrExpiredOtp": "验证码无效或已过期。",
+		"otpTooManyAttempts": "失败次数过多，请重新获取验证码。",
 		"verifyOtpFailed": "验证失败，请重试。",
 		"resendOtpFailed": "发送验证码失败，请重试。",
 		"alreadyVerified": "您的账户已验证。",

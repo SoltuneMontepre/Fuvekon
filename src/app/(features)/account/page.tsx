@@ -188,7 +188,7 @@ const AccountPage = () => {
 					)?.response?.data?.errorMessage
 					toast.error(
 						key
-							? tAuth(key as 'invalidOrExpiredOtp' | 'verifyOtpFailed' | 'userNotFound')
+							? tAuth(key as 'invalidOrExpiredOtp' | 'verifyOtpFailed' | 'userNotFound' | 'otpTooManyAttempts')
 							: tAuth('verifyOtpFailed')
 					)
 				},

@@ -138,6 +138,7 @@
 		"resetPasswordFailed": "Đặt lại mật khẩu thất bại. Vui lòng thử lại.",
 		"changePasswordFailed": "Đổi mật khẩu thất bại. Vui lòng thử lại.",
 		"invalidOrExpiredOtp": "Mã xác minh không hợp lệ hoặc đã hết hạn.",
+		"otpTooManyAttempts": "Quá nhiều lần thử thất bại. Vui lòng yêu cầu mã xác minh mới.",
 		"verifyOtpFailed": "Xác minh thất bại. Vui lòng thử lại.",
 		"resendOtpFailed": "Gửi mã xác minh thất bại. Vui lòng thử lại.",
 		"alreadyVerified": "Tài khoản của bạn đã được xác minh.",

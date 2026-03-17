@@ -138,6 +138,7 @@
 		"resetPasswordFailed": "Failed to reset password. Please try again.",
 		"changePasswordFailed": "Failed to change password. Please try again.",
 		"invalidOrExpiredOtp": "Invalid or expired verification code.",
+		"otpTooManyAttempts": "Too many failed attempts. Please request a new verification code.",
 		"verifyOtpFailed": "Verification failed. Please try again.",
 		"resendOtpFailed": "Failed to send verification code. Please try again.",
 		"alreadyVerified": "Your account is already verified.",
