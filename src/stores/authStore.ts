@@ -26,6 +26,8 @@ export const useAuthStore = create<AuthStore>()(
 		{
 			name: 'auth-storage',
 			storage: createJSONStorage(() => localStorage),
+			// Only persist minimal auth flag, not full account details
+			partialize: state => ({ isAuthenticated: state.isAuthenticated }),
 		}
 	)
 )
