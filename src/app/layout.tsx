@@ -14,17 +14,22 @@ import './globals.css'
 
 const siteUrl = 'https://fuve.vn'
 
+const siteDescription =
+	'FUVE – Furry Vietnam Eternity is a furry convention held in Ho Chi Minh City, Vietnam, starting from 2022. The event is built with the goal of creating a welcoming space for the furry community to meet, connect, and celebrate together.\n\nFUVE aims to foster a friendly, open environment where everyone can connect, share their passions, and create unforgettable memories side by side.\n\nJoin FUVE to immerse yourself in vibrant experiences, explore exciting activities, panels, the dealer’s den, and many other highlights from the Vietnamese furry community.'
+
 export const metadata: Metadata = {
 	metadataBase: new URL(siteUrl),
 	title: {
-		default: 'Fuve | Furry Vietnam Eternity',
+		default: 'FUVE – Furry Vietnam Eternity',
 		template: '%s | Fuve',
 	},
-	description:
-		'Fuve — Furry Vietnam Eternity. Get event tickets, view the schedule, and join the community. Contribute as talent, panelist, volunteer, artbook, or dealer.',
+	description: siteDescription,
 	keywords: [
-		'Fuve',
+		'FUVE',
 		'Furry Vietnam Eternity',
+		'Furry Vietnam',
+		'Vietnam',
+		'Ho Chi Minh City',
 		'Vietnam furry',
 		'furry convention',
 		'event',
@@ -43,9 +48,8 @@ export const metadata: Metadata = {
 		locale: 'en_US',
 		url: siteUrl,
 		siteName: 'Fuve',
-		title: 'Fuve | Furry Vietnam Eternity',
-		description:
-			'Furry Vietnam Eternity. Get event tickets, view the schedule, and join the community. Talent, panel, volunteer, artbook, dealer.',
+		title: 'FUVE – Furry Vietnam Eternity',
+		description: siteDescription,
 		images: [
 			{
 				url: '/assets/theme-title.webp',
@@ -57,9 +61,8 @@ export const metadata: Metadata = {
 	},
 	twitter: {
 		card: 'summary_large_image',
-		title: 'Fuve | Furry Vietnam Eternity',
-		description:
-			'Furry Vietnam Eternity. Get event tickets, view the schedule, and join the community.',
+		title: 'FUVE – Furry Vietnam Eternity',
+		description: siteDescription,
 		images: ['/assets/theme-title.webp'],
 	},
 	robots: {
@@ -109,8 +112,7 @@ export default async function RootLayout({
 		'@type': 'WebSite',
 		name: 'Fuve',
 		url: siteUrl,
-		description:
-			'Fuve — Furry Vietnam Eternity. Get event tickets, view the schedule, and join the community.',
+		description: siteDescription,
 		potentialAction: {
 			'@type': 'SearchAction',
 			target: {

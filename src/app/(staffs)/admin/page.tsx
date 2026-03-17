@@ -171,15 +171,14 @@ const UserManagementPage = (): React.ReactElement => {
 
 			{/* Controls */}
 			<div className='mt-6 rounded-xl bg-[#E2EEE2]/60 border border-[#8C8C8C]/15 p-4'>
-				<div className='flex flex-wrap gap-4 items-center'>
+				<div className='flex flex-col sm:flex-row sm:flex-wrap gap-4 sm:items-center'>
 					<div className='flex-1 min-w-[200px]'>
 						<div className='relative'>
 							<Search className='absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[#8C8C8C]' />
 							<input
 								type='text'
 								placeholder={
-									t('searchPlaceholder') ||
-									'Search by email, name, nickname...'
+									t('searchPlaceholder') || 'Search by email, name, nickname...'
 								}
 								value={searchInput}
 								onChange={e => setSearchInput(e.target.value)}
@@ -188,7 +187,7 @@ const UserManagementPage = (): React.ReactElement => {
 						</div>
 					</div>
 
-					<div className='flex items-center gap-2'>
+					<div className='flex items-center gap-2 justify-between sm:justify-start'>
 						<span className='text-sm font-medium text-[#48715B]'>
 							{tCommon('itemsPerPage') || 'Items per page'}:
 						</span>
@@ -206,7 +205,7 @@ const UserManagementPage = (): React.ReactElement => {
 
 					<button
 						onClick={() => refetchUsers()}
-						className='p-2.5 rounded-xl bg-white border border-[#8C8C8C]/15 hover:bg-[#E2EEE2] transition-colors'
+						className='p-2.5 rounded-xl bg-white border border-[#8C8C8C]/15 hover:bg-[#E2EEE2] transition-colors self-start sm:self-auto'
 						title={t('refresh') || 'Refresh'}
 					>
 						<RefreshCw className='w-4 h-4 text-[#48715B]' />
@@ -224,7 +223,126 @@ const UserManagementPage = (): React.ReactElement => {
 					</div>
 				) : (
 					<>
-						<div className='overflow-x-auto rounded-xl border border-[#8C8C8C]/15 bg-white/50'>
+						{/* Mobile cards */}
+						<div className='grid grid-cols-1 gap-3 md:hidden'>
+							{users.map((user: Account) => {
+								const roleDisplay = getRoleDisplay(user.role)
+								const displayName =
+									user.first_name || user.last_name
+										? `${user.first_name || ''} ${user.last_name || ''}`.trim()
+										: user.fursona_name || user.email
+								const isBlacklisted =
+									user.is_banned ?? user.is_blacklisted ?? false
+
+								return (
+									<div
+										key={user.id}
+										role='button'
+										tabIndex={0}
+										onClick={() => router.push(`/admin/users/${user.id}`)}
+										onKeyDown={e => {
+											if (e.key === 'Enter' || e.key === ' ') {
+												e.preventDefault()
+												router.push(`/admin/users/${user.id}`)
+											}
+										}}
+										className='rounded-xl border border-[#8C8C8C]/15 bg-white/50 p-4 hover:bg-[#E2EEE2]/40 transition-colors cursor-pointer'
+									>
+										<div className='flex items-start gap-3 min-w-0'>
+											<UserAvatar account={user} size={40} />
+											<div className='min-w-0 flex-1'>
+												<p className='font-medium text-text-primary truncate'>
+													{displayName}
+												</p>
+												<p className='text-sm text-text-secondary truncate'>
+													{user.email}
+												</p>
+												<div className='mt-2 flex flex-wrap items-center gap-2'>
+													<span
+														className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${roleDisplay.bgColor} ${roleDisplay.color}`}
+													>
+														<Shield className='w-3 h-3' />
+														{roleDisplay.label}
+													</span>
+													{user.is_verified !== undefined && (
+														<span
+															className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${
+																user.is_verified
+																	? 'bg-green-100 text-green-700'
+																	: 'bg-yellow-100 text-yellow-700'
+															}`}
+														>
+															{user.is_verified ? (
+																<CheckCircle className='w-3 h-3' />
+															) : (
+																<XCircle className='w-3 h-3' />
+															)}
+															{user.is_verified
+																? t('verified') || 'Verified'
+																: t('unverified') || 'Unverified'}
+														</span>
+													)}
+													{isBlacklisted && (
+														<span className='inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-700'>
+															<XCircle className='w-3 h-3' />
+															{t('blacklisted') || 'Blacklisted'}
+														</span>
+													)}
+												</div>
+												<div className='mt-2 text-xs text-[#8C8C8C]'>
+													{t('createdAt') || 'Created At'}:{' '}
+													<span className='text-text-secondary'>
+														{formatDateTime(user.created_at)}
+													</span>
+												</div>
+											</div>
+										</div>
+
+										<div
+											className='mt-3 flex items-center justify-end gap-2'
+											onClick={e => e.stopPropagation()}
+										>
+											{isBlacklisted ? (
+												<button
+													type='button'
+													onClick={e => handleUnban(e, user)}
+													disabled={unblacklistMutation.isPending}
+													className='inline-flex items-center gap-1.5 rounded-xl border border-emerald-400 bg-emerald-50 px-3 py-2 text-xs font-medium text-emerald-700 hover:bg-emerald-100 disabled:opacity-50'
+													title={t('unban') || 'Unban'}
+												>
+													<CircleCheck className='h-3.5 w-3.5' />
+													{t('unban') || 'Unban'}
+												</button>
+											) : (
+												<button
+													type='button'
+													onClick={e => handleBanClick(e, user)}
+													disabled={
+														blacklistMutation.isPending ||
+														user.role?.toLowerCase() === 'admin' ||
+														user.role?.toLowerCase() === 'staff'
+													}
+													className='inline-flex items-center gap-1.5 rounded-xl border border-red-400 bg-red-50 px-3 py-2 text-xs font-medium text-red-700 hover:bg-red-100 disabled:opacity-50 disabled:cursor-not-allowed'
+													title={
+														user.role?.toLowerCase() === 'admin' ||
+														user.role?.toLowerCase() === 'staff'
+															? t('cannotBanStaffOrAdmin') ||
+																'Cannot ban admin or staff'
+															: t('ban') || 'Ban'
+													}
+												>
+													<Ban className='h-3.5 w-3.5' />
+													{t('ban') || 'Ban'}
+												</button>
+											)}
+										</div>
+									</div>
+								)
+							})}
+						</div>
+
+						{/* Desktop table */}
+						<div className='hidden md:block overflow-x-auto rounded-xl border border-[#8C8C8C]/15 bg-white/50'>
 							<table className='w-full'>
 								<thead>
 									<tr className='border-b border-[#48715B]/15 bg-[#E2EEE2]/40'>
@@ -386,7 +504,7 @@ const UserManagementPage = (): React.ReactElement => {
 						{/* Pagination */}
 						{totalItems > 0 && (
 							<div className='mt-4 px-4 py-3 rounded-xl bg-[#E2EEE2]/40 border border-[#8C8C8C]/15'>
-								<div className='flex items-center justify-between'>
+								<div className='flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between'>
 									<div className='text-sm text-text-secondary'>
 										{tCommon('showing') || 'Showing'} {startIndex}{' '}
 										{tCommon('to') || 'to'} {endIndex} {tCommon('of') || 'of'}{' '}
@@ -397,7 +515,7 @@ const UserManagementPage = (): React.ReactElement => {
 											</span>
 										)}
 									</div>
-									<div className='flex items-center gap-2'>
+									<div className='flex items-center justify-between sm:justify-start gap-2'>
 										<button
 											onClick={() => handlePageChange(currentPage - 1)}
 											disabled={currentPage <= 1 || usersFetching}

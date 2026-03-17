@@ -17,6 +17,17 @@ export interface CountByCountryResponse {
 	by_country: CountByCountryItem[]
 }
 
+// GET /admin/users/statistics/count-by-age-range response
+export interface CountByAgeRangeItem {
+	range: string // e.g. "16-20", "100+", "unknown", "other"
+	min: number
+	max: number
+	count: number
+}
+export interface CountByAgeRangeResponse {
+	by_age_range: CountByAgeRangeItem[]
+}
+
 // Admin update user request (PUT /admin/users/:id) - all fields optional
 // Backend accepts role: User, Admin, Dealer (case-insensitive)
 export interface AdminUpdateUserRequest {

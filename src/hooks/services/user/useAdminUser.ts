@@ -16,6 +16,7 @@ import type {
 	GetUserByIdResponse,
 	AdminUpdateUserRequest,
 	CountByCountryResponse,
+	CountByAgeRangeResponse,
 } from '@/types/api/user/user'
 import type { PaginationMeta } from '@/types/api/ticket/ticket'
 
@@ -70,6 +71,14 @@ const AdminUserAPI = {
 		const { data } = await axios.general.get<
 			ApiResponse<CountByCountryResponse>
 		>('/admin/users/statistics/count-by-country')
+		return data
+	},
+
+	// Get account count grouped by age ranges (admin stats)
+	getUserCountByAgeRange: async () => {
+		const { data } = await axios.general.get<
+			ApiResponse<CountByAgeRangeResponse>
+		>('/admin/users/statistics/count-by-age-range')
 		return data
 	},
 }
@@ -162,6 +171,15 @@ export function useAdminGetUserCountByCountry() {
 	return useQuery({
 		queryKey: ['admin-users-count-by-country'],
 		queryFn: () => AdminUserAPI.getUserCountByCountry(),
+		staleTime: 1000 * 60 * 5, // 5 minutes
+	})
+}
+
+// Get account count by age ranges (admin dashboard)
+export function useAdminGetUserCountByAgeRange() {
+	return useQuery({
+		queryKey: ['admin-users-count-by-age-range'],
+		queryFn: () => AdminUserAPI.getUserCountByAgeRange(),
 		staleTime: 1000 * 60 * 5, // 5 minutes
 	})
 }

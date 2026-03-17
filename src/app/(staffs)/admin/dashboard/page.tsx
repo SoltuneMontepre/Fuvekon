@@ -18,7 +18,6 @@ import {
 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useDashboardAnalytics } from '@/hooks/services/analytics/useDashboardAnalytics'
-import { getName } from 'country-list'
 import Loading from '@/components/common/Loading'
 import type { TicketStatistics as TicketStatsType } from '@/types/models/ticket/ticket'
 
@@ -160,8 +159,6 @@ const AdminDashboardPage: React.FC = () => {
 
 	const d = analyticsData?.data
 	const stats: TicketStatsType | undefined = d?.ticket_stats
-	const byCountry = d?.users_by_country ?? []
-	const totalByCountry = byCountry.reduce((sum, row) => sum + row.count, 0)
 	const timelineItems = d?.sales_timeline ?? []
 	const totalRevenue = d?.revenue?.total_revenue ?? 0
 	const revenueByDay = d?.revenue?.by_day ?? []
@@ -302,55 +299,6 @@ const AdminDashboardPage: React.FC = () => {
 				formatRevenue={formatRevenue}
 			/>
 
-			{/* Accounts by country */}
-			<section className='mb-8'>
-				<h2 className='mb-4 text-lg font-semibold text-text-primary'>
-					Tài khoản theo quốc gia
-				</h2>
-				<div className='overflow-hidden rounded-xl border border-[#8C8C8C]/15'>
-					{byCountry.length === 0 ? (
-						<div className='py-8 text-center text-text-secondary'>
-							Chưa có dữ liệu theo quốc gia.
-						</div>
-					) : (
-						<>
-							<div className='border-b border-[#48715B]/15 px-4 py-2 text-sm text-[#48715B]'>
-								Tổng: {totalByCountry} tài khoản
-							</div>
-							<table className='w-full'>
-								<thead>
-									<tr className='border-b border-[#48715B]/15'>
-										<th className='px-4 py-3 text-left text-sm font-semibold text-[#48715B]'>
-											Quốc gia
-										</th>
-										<th className='px-4 py-3 text-right text-sm font-semibold text-[#48715B]'>
-											Số lượng
-										</th>
-									</tr>
-								</thead>
-								<tbody className='divide-y divide-[#48715B]/10'>
-									{byCountry.map(row => (
-										<tr
-											key={row.country || '__empty__'}
-											className='transition-colors hover:bg-[#E2EEE2]/40'
-										>
-											<td className='px-4 py-3 font-medium text-text-primary'>
-												{row.country
-													? getName(row.country) || row.country
-													: '—'}
-											</td>
-											<td className='px-4 py-3 text-right tabular-nums text-text-secondary'>
-												{row.count}
-											</td>
-										</tr>
-									))}
-								</tbody>
-							</table>
-						</>
-					)}
-				</div>
-			</section>
-
 			{/* Tier breakdown */}
 			{stats?.tier_stats && stats.tier_stats.length > 0 && (
 				<section className='mb-8'>
@@ -414,10 +362,10 @@ const AdminDashboardPage: React.FC = () => {
 						description='Duyệt, tạo và quản lý vé'
 					/>
 					<QuickLink
-						label='Thông số người dùng'
-						href='/admin'
+						label='Dashboard người dùng'
+						href='/admin/dashboard/users'
 						icon={Users}
-						description='Xem và quản lý tài khoản'
+						description='Theo quốc gia, nhóm tuổi, thống kê nhanh'
 					/>
 					<QuickLink
 						label='Quét vé'
