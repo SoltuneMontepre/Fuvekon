@@ -1,3 +1,5 @@
+import type { ApiResponse } from '../response'
+
 export interface RegisterRequest {
 	fullName: string
 	nickname: string
@@ -8,7 +10,10 @@ export interface RegisterRequest {
 	confirmPassword: string
 }
 
-export type RegisterResponse = {
+export interface RegisterData {
 	userId: string
-	token: string
+	email: string
 }
+
+/** Standard backend envelope: success flag + message + statusCode + data */
+export type RegisterResponse = ApiResponse<RegisterData | null>

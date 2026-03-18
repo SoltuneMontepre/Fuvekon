@@ -23,7 +23,7 @@ import {
 	resetAttemptCount,
 } from '@/utils/rateLimit'
 import axios from '@/common/axios'
-import type { RegisterResponse } from '@/types/auth/register'
+import type { RegisterResponse } from '@/types/api/auth/register.d'
 import { useTranslations } from 'next-intl'
 import { useGoogleLogin } from '@/hooks/services/auth/useGoogleLogin'
 import GoogleLoginButton from '@/components/auth/login/GoogleLoginButton'
