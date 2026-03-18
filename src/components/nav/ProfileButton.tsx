@@ -7,7 +7,15 @@ import Link from 'next/link'
 import S3Image from '@/components/common/S3Image'
 import { useAuthStore } from '@/stores/authStore'
 import { useLogout } from '@/hooks/services/auth/useLogout'
-import { UserCircle, Ticket, Lock, Store, LogOut, LayoutDashboard, ScanLine } from 'lucide-react'
+import {
+	UserCircle,
+	Ticket,
+	Lock,
+	Store,
+	LogOut,
+	LayoutDashboard,
+	ScanLine,
+} from 'lucide-react'
 
 const ProfileButton = (): React.ReactElement => {
 	const t = useTranslations('auth')
@@ -88,7 +96,13 @@ const ProfileButton = (): React.ReactElement => {
 					]
 				: []),
 		...(isAdmin
-			? [{ label: tNav('admin') || 'Admin', href: '/admin', icon: LayoutDashboard }]
+			? [
+					{
+						label: tNav('admin') || 'Admin',
+						href: '/admin',
+						icon: LayoutDashboard,
+					},
+				]
 			: isStaff
 				? [
 						{
@@ -108,7 +122,7 @@ const ProfileButton = (): React.ReactElement => {
 				className='flex items-center gap-2 px-2 py-1 rounded-lg hover:bg-white/10 transition-colors duration-150'
 				aria-label='Profile menu'
 			>
-				<div className='relative size-8 rounded-full overflow-hidden bg-[#154c5b] border-2 border-white/30'>
+				<div className='relative size-12 rounded-full overflow-hidden bg-[#154c5b] border-2 border-white/30'>
 					{showAvatar && account?.avatar ? (
 						<S3Image
 							src={account.avatar}

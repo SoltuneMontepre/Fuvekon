@@ -5,6 +5,15 @@ import { Users, Globe2, UserRound } from 'lucide-react'
 import { getName } from 'country-list'
 import Loading from '@/components/common/Loading'
 import {
+	BarChart,
+	Bar,
+	XAxis,
+	YAxis,
+	CartesianGrid,
+	Tooltip,
+	ResponsiveContainer,
+} from 'recharts'
+import {
 	useAdminGetUserCountByCountry,
 	useAdminGetUserCountByAgeRange,
 } from '@/hooks/services/user/useAdminUser'
@@ -24,7 +33,7 @@ export default function AdminDashboardUsersPage(): React.ReactElement {
 
 	const totalByCountry = byCountry.reduce((sum, row) => sum + row.count, 0)
 	const topCountries = byCountry.slice(0, 12)
-	const ageBuckets = byAgeRange.filter(b => b.range !== 'other')
+	const ageBuckets = byAgeRange.filter(b => b.range !== 'unknown' && b.range !== 'other')
 	const unknownAge = byAgeRange.find(b => b.range === 'unknown')?.count ?? 0
 
 	if (analyticsLoading) return <Loading />
@@ -135,33 +144,58 @@ export default function AdminDashboardUsersPage(): React.ReactElement {
 							Chưa có dữ liệu nhóm tuổi.
 						</div>
 					) : (
-						<table className='w-full'>
-							<thead>
-								<tr className='border-b border-[#48715B]/15'>
-									<th className='px-4 py-3 text-left text-sm font-semibold text-[#48715B]'>
-										Nhóm tuổi
-									</th>
-									<th className='px-4 py-3 text-right text-sm font-semibold text-[#48715B]'>
-										Số lượng
-									</th>
-								</tr>
-							</thead>
-							<tbody className='divide-y divide-[#48715B]/10'>
-								{ageBuckets.map(b => (
-									<tr
-										key={b.range}
-										className='transition-colors hover:bg-[#E2EEE2]/40'
+						<div className='p-4'>
+							<div className='h-64 w-full sm:h-80'>
+								<ResponsiveContainer width='100%' height='100%'>
+									<BarChart
+										data={ageBuckets}
+										margin={{ top: 8, right: 8, left: 0, bottom: 0 }}
 									>
-										<td className='px-4 py-3 font-medium text-text-primary'>
-											{b.range}
-										</td>
-										<td className='px-4 py-3 text-right tabular-nums text-text-secondary'>
-											{b.count}
-										</td>
-									</tr>
-								))}
-							</tbody>
-						</table>
+										<CartesianGrid
+											strokeDasharray='3 3'
+											stroke='#8C8C8C'
+											opacity={0.15}
+											vertical={false}
+										/>
+										<XAxis
+											dataKey='range'
+											tick={{ fontSize: 11, fill: '#8C8C8C' }}
+											tickLine={false}
+											axisLine={{ stroke: '#8C8C8C', opacity: 0.2 }}
+										/>
+										<YAxis
+											dataKey='count'
+											tick={{ fontSize: 11, fill: '#8C8C8C' }}
+											tickLine={false}
+											axisLine={false}
+											allowDecimals={false}
+											width={28}
+										/>
+										<Tooltip
+											contentStyle={{
+												backgroundColor: 'rgba(255,255,255,0.95)',
+												border: '1px solid rgba(140,140,140,0.15)',
+												borderRadius: '12px',
+												boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+											}}
+											labelStyle={{ color: '#48715B', fontWeight: 600 }}
+											formatter={(value: number | undefined) => [
+												`${value ?? 0} tài khoản`,
+												'Số lượng',
+											]}
+											labelFormatter={(label: React.ReactNode) => label}
+										/>
+										<Bar
+											dataKey='count'
+											fill='#48715B'
+											radius={[10, 10, 0, 0]}
+											isAnimationActive={true}
+											animationDuration={600}
+										/>
+									</BarChart>
+								</ResponsiveContainer>
+							</div>
+						</div>
 					)}
 				</div>
 			</section>

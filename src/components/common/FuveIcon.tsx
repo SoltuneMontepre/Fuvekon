@@ -20,7 +20,7 @@ const FuveIcon = ({
 						: '/assets/common/logo_yellow.webp'
 				}
 				alt='Fuve'
-				className={`object-contain size-12 ${iconClassName}`}
+				className={`object-contain size-15 ${iconClassName}`}
 				width={48}
 				height={48}
 				priority
