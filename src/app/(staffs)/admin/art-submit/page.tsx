@@ -575,6 +575,7 @@ const ArtSubmitAdminPage = (): React.ReactElement => {
 															alt={item.title || 'preview'}
 															fill
 															className='z-0 object-cover'
+															draggable={false}
 														/>
 														<div className='pointer-events-none absolute inset-0 z-10 flex flex-col items-center justify-center transition-all duration-200 bg-black/0 opacity-0 group-hover/preview:bg-black/40 group-hover/preview:opacity-100'>
 															<Camera className='text-white drop-shadow' size={26} />
@@ -681,6 +682,7 @@ const ArtSubmitAdminPage = (): React.ReactElement => {
 							alt='Zoomed preview'
 							fill
 							className='z-0 object-contain'
+							draggable={false}
 						/>
                         </div>
 					</div>,
