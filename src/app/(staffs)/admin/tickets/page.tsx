@@ -42,7 +42,6 @@ import {
 	useDeleteTicketForAdmin,
 	type AdminTicketFilter,
 } from '@/hooks/services/ticket/useAdminTicket'
-import { useGetTiers } from '@/hooks/services/ticket/useTicket'
 import type {
 	TicketStatus,
 	UserTicket,
@@ -197,7 +196,6 @@ const TicketManagementPage = (): React.ReactElement => {
 		refetch: refetchTickets,
 	} = useAdminGetTickets(filter)
 	const { data: statsData, isLoading: statsLoading } = useGetTicketStatistics()
-	const { data: tiersData } = useGetTiers()
 
 	// Mutations
 	const approveMutation = useApproveTicket()
@@ -255,7 +253,6 @@ const TicketManagementPage = (): React.ReactElement => {
 
 	const tickets = ticketsData?.data || []
 	const stats = statsData?.data
-	const tiers = tiersData?.data || []
 	const adminTiers: TicketTier[] = adminTiersData?.data || []
 	const pagination: PaginationMeta | undefined = ticketsData?.meta as
 		| PaginationMeta
@@ -739,7 +736,7 @@ const TicketManagementPage = (): React.ReactElement => {
 								className='w-full px-3 py-2 border border-[#8C8C8C]/15 rounded-xl focus:outline-none focus:border-[#48715B]'
 							>
 								<option value=''>{t('selectTierPlaceholder')}</option>
-								{(tiers as TicketTier[]).map((tier: TicketTier) => (
+								{adminTiers.map((tier: TicketTier) => (
 									<option key={tier.id} value={tier.id}>
 										{tier.ticket_name} ({tier.tier_code})
 									</option>
@@ -1166,7 +1163,7 @@ const TicketManagementPage = (): React.ReactElement => {
 						className='border border-[#8C8C8C]/15 rounded-xl px-3 py-2 focus:outline-none focus:border-[#48715B]'
 					>
 						<option value=''>{t('allTypes')}</option>
-						{tiers.map((tier: TicketTier) => (
+						{adminTiers.map((tier: TicketTier) => (
 							<option key={tier.id} value={tier.id}>
 								{tier.ticket_name}
 							</option>
