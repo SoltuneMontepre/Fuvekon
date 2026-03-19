@@ -331,6 +331,8 @@ const LandingPage = (): React.JSX.Element => {
 			className='absolute inset-0 landing-container transition-opacity duration-500 ease-out'
 			style={{ opacity: isLoaded ? 1 : 0 }}
 		>
+			<h1 className='sr-only'>FUVE – Furry Vietnam Eternity</h1>
+
 			{/* Back to Top Button */}
 			<button
 				onClick={scrollToTop}

@@ -15,7 +15,7 @@ import './globals.css'
 const siteUrl = 'https://fuve.vn'
 
 const siteDescription =
-	'FUVE – Furry Vietnam Eternity is a furry convention held in Ho Chi Minh City, Vietnam, starting from 2022. The event is built with the goal of creating a welcoming space for the furry community to meet, connect, and celebrate together.\n\nFUVE aims to foster a friendly, open environment where everyone can connect, share their passions, and create unforgettable memories side by side.\n\nJoin FUVE to immerse yourself in vibrant experiences, explore exciting activities, panels, the dealer’s den, and many other highlights from the Vietnamese furry community.'
+	'FUVE – Furry Vietnam Eternity is a furry convention in Ho Chi Minh City, Vietnam, welcoming the community together since 2022.'
 
 export const metadata: Metadata = {
 	metadataBase: new URL(siteUrl),
@@ -49,7 +49,6 @@ export const metadata: Metadata = {
 		url: siteUrl,
 		siteName: 'Fuve',
 		title: 'FUVE – Furry Vietnam Eternity',
-		description: siteDescription,
 		images: [
 			{
 				url: '/assets/theme-title.webp',
@@ -62,7 +61,6 @@ export const metadata: Metadata = {
 	twitter: {
 		card: 'summary_large_image',
 		title: 'FUVE – Furry Vietnam Eternity',
-		description: siteDescription,
 		images: ['/assets/theme-title.webp'],
 	},
 	robots: {
@@ -72,9 +70,6 @@ export const metadata: Metadata = {
 			index: true,
 			follow: true,
 		},
-	},
-	alternates: {
-		canonical: siteUrl,
 	},
 	verification: {
 		google: 'qKdVCmJloKZISqsMlZ9Tbg_4fzawV1g8bPuh8xyt0a8',
@@ -112,7 +107,6 @@ export default async function RootLayout({
 		'@type': 'WebSite',
 		name: 'Fuve',
 		url: siteUrl,
-		description: siteDescription,
 		potentialAction: {
 			'@type': 'SearchAction',
 			target: {

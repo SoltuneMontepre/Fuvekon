@@ -24,9 +24,7 @@ const isAllowedFileUrl = (value: string): boolean => {
 }
 
 export const ArtbookFormSchema = z.object({
-	title: z
-		.string()
-		.min(1, ERROR_MESSAGES.REQUIRED_FIELD),
+	title: z.string().min(1, ERROR_MESSAGES.REQUIRED_FIELD),
 	description: z.string().min(1, ERROR_MESSAGES.REQUIRED_FIELD),
 	handle: z.string().min(1, ERROR_MESSAGES.REQUIRED_FIELD),
 	image_url: z
