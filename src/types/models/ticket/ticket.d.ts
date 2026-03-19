@@ -43,7 +43,17 @@ export interface TicketUser {
 	first_name: string
 	last_name: string
 	fursona_name: string
+	country: string
+	avatar: string
+	id_card: string
+	date_of_birth?: string
+	is_verified: boolean
 	denial_count: number
+	is_blacklisted: boolean
+	blacklisted_at?: string
+	blacklist_reason?: string
+	created_at: string
+	modified_at: string
 }
 
 // Ticket Statistics

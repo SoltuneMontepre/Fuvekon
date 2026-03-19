@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
-import { Pencil, ChevronDown, AlertCircle } from 'lucide-react'
+import { Pencil, ChevronDown, AlertCircle, Eye, EyeOff, Info } from 'lucide-react'
 import { useAuthStore } from '@/stores/authStore'
 import {
 	useUpdateMe,
@@ -16,6 +16,14 @@ import UserAvatar from '@/components/common/UserAvatar'
 
 const COUNTRY_NAMES = () => getNames()
 
+function maskIdCard(value: string | undefined): string | undefined {
+	if (!value) return value
+	const trimmed = value.trim()
+	if (!trimmed) return undefined
+	const last4 = trimmed.slice(-4)
+	return `•••• ${last4}`
+}
+
 const InfoField = ({
 	label,
 	value,
@@ -23,6 +31,7 @@ const InfoField = ({
 	editable = false,
 	onChange,
 	emptyLabel = 'N/A',
+	helpContent,
 }: {
 	label: string
 	value: string | undefined
@@ -30,16 +39,19 @@ const InfoField = ({
 	editable?: boolean
 	onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
 	emptyLabel?: string
+	helpContent?: React.ReactNode
 }) => {
 	if (editable && name) {
 		return (
-			<div className='space-y-0.5 px-3 py-2 rounded-xl bg-[#E2EEE2] border border-[#8C8C8C]/30 focus-within:border-[#48715B] transition-colors duration-200 cursor-text'>
-				<label
-					htmlFor={`${name}-input`}
-					className='text-sm font-medium text-[#48715B] pointer-events-none'
-				>
-					{label}
-				</label>
+			<div className='group relative space-y-0.5 px-3 py-2 rounded-xl bg-[#E2EEE2] border border-[#8C8C8C]/30 focus-within:border-[#48715B] transition-colors duration-200 cursor-text'>
+				<div className='flex items-center justify-between gap-2'>
+					<label
+						htmlFor={`${name}-input`}
+						className='text-sm font-medium text-[#48715B] pointer-events-none'
+					>
+						{label}
+					</label>
+				</div>
 				<div className='flex items-center gap-2'>
 					<input
 						type='text'
@@ -56,8 +68,24 @@ const InfoField = ({
 		)
 	}
 	return (
-		<div className='space-y-0.5 px-3 py-2.5 rounded-xl bg-[#E2EEE2]/60 border border-[#8C8C8C]/15'>
-			<label className='text-sm font-medium text-[#48715B]'>{label}</label>
+		<div className='relative space-y-0.5 px-3 py-2.5 rounded-xl bg-[#E2EEE2]/60 border border-[#8C8C8C]/15'>
+			<div className='flex items-center justify-between gap-2'>
+				<label className='text-sm font-medium text-[#48715B]'>{label}</label>
+				{helpContent ? (
+					<div className='group relative flex items-center'>
+						<button
+							type='button'
+							className='p-1 rounded-md text-[#48715B]/70 hover:text-[#48715B] hover:bg-black/5 focus:outline-none focus:ring-2 focus:ring-[#48715B]/30'
+							aria-label={`${label} guidance`}
+						>
+							<Info className='w-4 h-4' />
+						</button>
+						<div className='pointer-events-auto absolute right-0 top-[calc(100%+8px)] z-50 hidden w-[360px] max-w-[calc(100vw-32px)] rounded-xl border border-[#8C8C8C]/20 bg-white px-4 py-3 text-sm leading-6 text-text-secondary shadow-lg group-hover:block group-focus-within:block'>
+							{helpContent}
+						</div>
+					</div>
+				) : null}
+			</div>
 			<div className='text-lg text-text-secondary'>{value || emptyLabel}</div>
 		</div>
 	)
@@ -67,8 +95,19 @@ const AccountPage = () => {
 	const t = useTranslations('account')
 	const tAuth = useTranslations('auth')
 	const tCommon = useTranslations('common')
+	const nameGuidanceContent = (
+		<div className='space-y-2'>
+			<p>{t('nameGuidanceIntro')}</p>
+			<ul className='list-disc pl-4 space-y-1'>
+				<li>{t('nameGuidanceForeign')}</li>
+				<li>{t('nameGuidanceNoNicknames')}</li>
+				<li>{t('nameGuidanceDenyEntry')}</li>
+			</ul>
+		</div>
+	)
 	const account = useAuthStore(state => state.account)
 	const [isEditing, setIsEditing] = useState(false)
+	const [showIdCard, setShowIdCard] = useState(false)
 	const [formData, setFormData] = useState({
 		first_name: '',
 		last_name: '',
@@ -188,7 +227,12 @@ const AccountPage = () => {
 					)?.response?.data?.errorMessage
 					toast.error(
 						key
-							? tAuth(key as 'invalidOrExpiredOtp' | 'verifyOtpFailed' | 'userNotFound')
+							? tAuth(
+									key as
+										| 'invalidOrExpiredOtp'
+										| 'verifyOtpFailed'
+										| 'userNotFound'
+								)
 							: tAuth('verifyOtpFailed')
 					)
 				},
@@ -386,6 +430,7 @@ const AccountPage = () => {
 								label={t('fullName')}
 								value={fullName}
 								emptyLabel={t('na')}
+								helpContent={nameGuidanceContent}
 							/>
 							<InfoField
 								label={t('fursonaName')}
@@ -411,11 +456,29 @@ const AccountPage = () => {
 								value={getName(account.country || '')}
 								emptyLabel={t('na')}
 							/>
-							<InfoField
-								label={t('idCard')}
-								value={account.id_card}
-								emptyLabel={t('na')}
-							/>
+							<div className='space-y-0.5 px-3 py-2.5 rounded-xl bg-[#E2EEE2]/60 border border-[#8C8C8C]/15'>
+								<label className='text-sm font-medium text-[#48715B]'>
+									{t('idCard')}
+								</label>
+								<div className='flex items-center justify-between gap-2'>
+									<div className='text-lg text-text-secondary'>
+										{(showIdCard ? account.id_card : maskIdCard(account.id_card)) ||
+											t('na')}
+									</div>
+									<button
+										type='button'
+										onClick={() => setShowIdCard(v => !v)}
+										className='p-2 rounded-lg hover:bg-black/5 transition-colors'
+										aria-label={showIdCard ? 'Hide ID card' : 'Show ID card'}
+									>
+										{showIdCard ? (
+											<EyeOff className='w-5 h-5 text-[#48715B]' />
+										) : (
+											<Eye className='w-5 h-5 text-[#48715B]' />
+										)}
+									</button>
+								</div>
+							</div>
 							<InfoField
 								label={t('dateOfBirth')}
 								value={account.date_of_birth}
