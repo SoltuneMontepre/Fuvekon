@@ -21,20 +21,7 @@ export const GoogleRegisterFormSchema = z.object({
 		.max(FORM_CONSTANTS.MAX_NICKNAME_LENGTH, ERROR_MESSAGES.NICKNAME_TOO_LONG),
 	dateOfBirth: z
 		.string()
-		.min(1, ERROR_MESSAGES.REQUIRED_FIELD)
-		.refine(date => {
-			const birthDate = new Date(date)
-			const today = new Date()
-			const age = today.getFullYear() - birthDate.getFullYear()
-			const monthDiff = today.getMonth() - birthDate.getMonth()
-			if (
-				monthDiff < 0 ||
-				(monthDiff === 0 && today.getDate() < birthDate.getDate())
-			) {
-				return age - 1 >= 16
-			}
-			return age >= 16
-		}, 'validation.ageRequirement'),
+		.min(1, ERROR_MESSAGES.REQUIRED_FIELD), // Allow all ages (remove minimum-age restriction).
 	country: z
 		.string()
 		.min(1, ERROR_MESSAGES.REQUIRED_FIELD)
