@@ -275,13 +275,13 @@ const AccountConbookPage = (): React.ReactElement => {
 						onClick={() => setZoomedImageUrl(null)}
 					>
 						{/* <div className='relative w-[80vw] h-[80vh] max-w-[1200px] max-h-[1200px]'>*/}
-						<div className='relative w-full h-full max-w-[1200px] max-h-[1200px]'> 
+						<div className='relative w-3/4 h-3/4 max-w-[1200px] max-h-[1200px]'> 
 							<S3Image
 								src={zoomedImageUrl}
 								alt={t('zoomedPreviewAlt')}
 								fill
 								className='object-contain'
-                                // draggable={false}
+                                draggable={false}
 							/>
 						</div>
 					</div>,
