@@ -35,7 +35,7 @@ const NavBar = (): React.ReactElement => {
 			{/* Instant top progress bar — shows on first paint of pending */}
 			<div
 				aria-hidden='true'
-				className={`fixed top-0 left-0 h-[3px] z-[9999] bg-[#48715B] transition-all duration-300 ease-out ${
+				className={`fixed top-0 left-0 z-[9999] bg-[#48715B] transition-all duration-300 ease-out ${
 					pending ? 'w-3/4 opacity-100' : 'w-full opacity-0'
 				}`}
 				style={{ transitionProperty: 'width, opacity' }}

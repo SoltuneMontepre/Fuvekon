@@ -15,7 +15,7 @@ const AboutPage = (): React.ReactElement => {
 	]
 
 	return (
-		<div className='relative z-10 min-h-screen bg-[#0e2b23] text-white -mt-14 pt-24 pb-24'>
+		<div className='relative z-10 min-h-screen bg-[#0e2b23] text-white -mt-20 pt-24 pb-24'>
 			<div className='max-w-6xl mx-auto px-4 lg:px-8 space-y-16'>
 				{/* Hero / intro */}
 				<section className='grid gap-10 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1.4fr)] items-start'>
