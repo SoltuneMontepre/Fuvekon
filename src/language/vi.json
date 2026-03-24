@@ -749,6 +749,18 @@
 		"joinButton": "Tham gia",
 		"joining": "Đang tham gia...",
 		"noteText": "Lưu ý: Bạn cần có vé đã được duyệt để đăng ký gian hàng. Gian hàng của bạn sẽ cần được quản trị viên xác minh trước khi được hiển thị công khai.",
+		"kickMember": "Mời khỏi gian hàng",
+		"confirmKickMember": "Mời {name} ra khỏi gian hàng này?",
+		"kickMemberSuccess": "Đã mời thành viên khỏi gian hàng.",
+		"kickMemberFailed": "Không thể mời thành viên khỏi gian hàng.",
+		"kickMemberFailedRetry": "Không thể mời thành viên khỏi gian hàng. Vui lòng thử lại.",
+		"leaveBooth": "Rời gian hàng",
+		"leaving": "Đang rời...",
+		"confirmLeaveBooth": "Bạn có chắc muốn rời gian hàng này không?",
+		"leaveSuccess": "Bạn đã rời gian hàng thành công.",
+		"leaveFailed": "Không thể rời gian hàng.",
+		"leaveFailedRetry": "Không thể rời gian hàng. Vui lòng thử lại.",
+		"unknownMember": "thành viên này",
 		"dealer": {
 			"form": {
 				"intro1": "Lộ trình đăng ký gian hàng tại FUVE",

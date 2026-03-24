@@ -750,6 +750,18 @@
 		"joinButton": "Join",
 		"joining": "Joining...",
 		"noteText": "Note: You need an approved ticket to register a booth. Your booth will need to be verified by an administrator before it is shown publicly.",
+		"kickMember": "Kick member",
+		"confirmKickMember": "Kick {name} from this booth?",
+		"kickMemberSuccess": "Member removed from booth.",
+		"kickMemberFailed": "Failed to remove member.",
+		"kickMemberFailedRetry": "Failed to remove member. Please try again.",
+		"leaveBooth": "Leave booth",
+		"leaving": "Leaving...",
+		"confirmLeaveBooth": "Are you sure you want to leave this booth?",
+		"leaveSuccess": "You left the booth successfully.",
+		"leaveFailed": "Failed to leave booth.",
+		"leaveFailedRetry": "Failed to leave booth. Please try again.",
+		"unknownMember": "this member",
 		"dealer": {
 			"form": {
 				"intro1": "How to register a booth at FUVE",

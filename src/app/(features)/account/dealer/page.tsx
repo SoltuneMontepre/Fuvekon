@@ -2,7 +2,12 @@
 
 import React, { useEffect, useState, useMemo, useRef } from 'react'
 import { useTranslations } from 'next-intl'
-import { useGetMyDealer, useEditDealer } from '@/hooks/services/dealer/useDealer'
+import {
+	useGetMyDealer,
+	useEditDealer,
+	useRemoveStaff,
+	useLeaveDealer,
+} from '@/hooks/services/dealer/useDealer'
 import { useAuthStore } from '@/stores/authStore'
 import {
 	Store,
@@ -32,6 +37,9 @@ type DealerEditFormData = {
 	booth_name: string
 	description: string
 }
+type ConfirmAction =
+	| { type: 'kick'; staffUserId: string; staffName: string }
+	| { type: 'leave' }
 
 const DealerPage = () => {
 	const t = useTranslations('dealer')
@@ -41,6 +49,8 @@ const DealerPage = () => {
 	const { data: myDealerData, isLoading: isLoadingDealer } =
 		useGetMyDealer(isDealer)
 	const editDealerMutation = useEditDealer()
+	const removeStaffMutation = useRemoveStaff()
+	const leaveDealerMutation = useLeaveDealer()
 
 	const myDealer = myDealerData?.data
 	const [zoomedImageUrl, setZoomedImageUrl] = useState<string | null>(null)
@@ -48,6 +58,7 @@ const DealerPage = () => {
 	const [isEditing, setIsEditing] = useState(false)
 	const [slots, setSlots] = useState<PriceSheetSlot[]>([{ id: 0, url: '' }])
 	const [priceSheetError, setPriceSheetError] = useState<string | null>(null)
+	const [confirmAction, setConfirmAction] = useState<ConfirmAction | null>(null)
 	const nextSlotId = useRef(1)
 
 	const DealerEditSchema = useMemo(
@@ -301,6 +312,80 @@ const DealerPage = () => {
 		)
 	}
 
+	const handleRemoveStaff = (staffUserId: string) => {
+		removeStaffMutation.mutate(
+			{ staff_user_id: staffUserId },
+			{
+				onSuccess: response => {
+					if (response.isSuccess) {
+						toast.success(t('kickMemberSuccess'))
+						return
+					}
+					toast.error(response.message || t('kickMemberFailed'))
+				},
+				onError: (error: unknown) => {
+					const errorMessage =
+						(
+							error as {
+								response?: { data?: { message?: string } }
+							}
+						)?.response?.data?.message ||
+						(error as { message?: string })?.message ||
+						t('kickMemberFailedRetry')
+					toast.error(errorMessage)
+				},
+			}
+		)
+	}
+
+	const onKickMember = (staff: DealerStaff) => {
+		if (staff.is_owner || staff.user_id === account?.id) return
+		setConfirmAction({
+			type: 'kick',
+			staffUserId: staff.user_id,
+			staffName: staff.user_name || t('unknownMember'),
+		})
+	}
+
+	const onLeaveBooth = () => {
+		if (!account?.id || isOwner || !currentUserStaff) return
+		setConfirmAction({ type: 'leave' })
+	}
+
+	const onConfirmAction = () => {
+		if (!confirmAction) return
+		if (confirmAction.type === 'kick') {
+			handleRemoveStaff(confirmAction.staffUserId)
+			setConfirmAction(null)
+			return
+		}
+
+		leaveDealerMutation.mutate(undefined, {
+			onSuccess: response => {
+				if (response.isSuccess) {
+					toast.success(t('leaveSuccess'))
+					setConfirmAction(null)
+					return
+				}
+				toast.error(response.message || t('leaveFailed'))
+			},
+			onError: (error: unknown) => {
+				const errorMessage =
+					(
+						error as {
+							response?: { data?: { message?: string } }
+						}
+					)?.response?.data?.message ||
+					(error as { message?: string })?.message ||
+					t('leaveFailedRetry')
+				toast.error(errorMessage)
+			},
+		})
+	}
+
+	const isConfirmActionPending =
+		removeStaffMutation.isPending || leaveDealerMutation.isPending
+
 	return (
 		<div className='rounded-2xl sm:rounded-[30px] bg-[#E9F5E7] p-4 sm:p-6 md:p-8 shadow-sm text-text-secondary max-w-full overflow-hidden'>
 			{isClient &&
@@ -317,6 +402,45 @@ const DealerPage = () => {
 								fill
 								className='object-contain'
 							/>
+						</div>
+					</div>,
+					document.body
+				)}
+			{isClient &&
+				confirmAction &&
+				createPortal(
+					<div className='fixed inset-0 z-[1001] flex items-center justify-center bg-black/50 p-4'>
+						<div className='w-full max-w-md rounded-xl border border-[#8C8C8C]/20 bg-white p-5 shadow-2xl'>
+							<h3 className='text-lg font-semibold text-text-primary mb-3'>
+								{confirmAction.type === 'kick'
+									? t('kickMember')
+									: t('leaveBooth')}
+							</h3>
+							<p className='text-sm text-text-secondary mb-5'>
+								{confirmAction.type === 'kick'
+									? t('confirmKickMember', { name: confirmAction.staffName })
+									: t('confirmLeaveBooth')}
+							</p>
+							<div className='flex gap-2'>
+								<button
+									type='button'
+									onClick={() => setConfirmAction(null)}
+									disabled={isConfirmActionPending}
+									className='flex-1 inline-flex items-center justify-center rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed'
+								>
+									{tCommon('cancel')}
+								</button>
+								<button
+									type='button'
+									onClick={onConfirmAction}
+									disabled={isConfirmActionPending}
+									className='flex-1 inline-flex items-center justify-center rounded-lg bg-red-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed'
+								>
+									{isConfirmActionPending
+										? tCommon('processing')
+										: tCommon('confirm')}
+								</button>
+							</div>
 						</div>
 					</div>,
 					document.body
@@ -394,6 +518,18 @@ const DealerPage = () => {
 									>
 										<Pencil className='w-3.5 h-3.5 sm:w-4 sm:h-4' />
 										{tCommon('edit')}
+									</button>
+								)}
+								{!isOwner && currentUserStaff && (
+									<button
+										type='button'
+										onClick={onLeaveBooth}
+										disabled={leaveDealerMutation.isPending}
+										className='inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-600 text-white text-xs sm:text-sm font-medium hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed'
+									>
+										{leaveDealerMutation.isPending
+											? t('leaving')
+											: t('leaveBooth')}
 									</button>
 								)}
 							</div>
@@ -624,6 +760,18 @@ const DealerPage = () => {
 													{t('ownerShort')}
 												</span>
 											)}
+											{isOwner &&
+												!staff.is_owner &&
+												staff.user_id !== account?.id && (
+													<button
+														type='button'
+														onClick={() => onKickMember(staff)}
+														disabled={removeStaffMutation.isPending}
+														className='inline-flex items-center justify-center gap-1 rounded-lg border border-red-300 bg-red-50 px-2.5 py-1.5 text-xs font-medium text-red-700 hover:bg-red-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed'
+													>
+														{t('kickMember')}
+													</button>
+												)}
 										</div>
 									))}
 								</div>

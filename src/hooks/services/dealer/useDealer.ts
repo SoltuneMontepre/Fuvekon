@@ -10,6 +10,7 @@ import type {
 	JoinDealerResponse,
 	RemoveStaffRequest,
 	RemoveStaffResponse,
+	LeaveDealerResponse,
 	GetDealerByIdResponse,
 	EditDealerRequest,
 } from '@/types/api/dealer/dealer'
@@ -43,6 +44,12 @@ const DealerAPI = {
 				data: payload,
 			}
 		)
+		return data
+	},
+	// Leave current dealer booth (for non-owner staff)
+	leaveDealer: async () => {
+		const { data } =
+			await axios.general.delete<ApiResponse<LeaveDealerResponse>>('/dealer/leave')
 		return data
 	},
 
@@ -106,6 +113,22 @@ export function useRemoveStaff() {
 			// Invalidate dealer-related queries
 			queryClient.invalidateQueries({ queryKey: ['dealer'] })
 			queryClient.invalidateQueries({ queryKey: ['admin-dealers'] })
+		},
+	})
+}
+
+// Leave current dealer booth mutation
+export function useLeaveDealer() {
+	const queryClient = getQueryClient()
+
+	return useMutation({
+		mutationFn: () => DealerAPI.leaveDealer(),
+		onSuccess: () => {
+			// Invalidate dealer-related queries
+			queryClient.invalidateQueries({ queryKey: ['dealer'] })
+			queryClient.invalidateQueries({ queryKey: ['admin-dealers'] })
+			// Invalidate account query to update account-related booth state
+			queryClient.invalidateQueries({ queryKey: ['account'] })
 		},
 	})
 }

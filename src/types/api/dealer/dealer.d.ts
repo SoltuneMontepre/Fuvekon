@@ -30,6 +30,8 @@ export type JoinDealerResponse = DealerBoothDetail
 
 export type RemoveStaffResponse = DealerBoothDetail
 
+export type LeaveDealerResponse = null
+
 export type EditDealerResponse = DealerBoothDetail
 
 // Admin responses

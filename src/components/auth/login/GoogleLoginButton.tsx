@@ -27,7 +27,7 @@ const GoogleLoginButton = ({
 
 	return (
 		<div
-			className={`overflow-hidden mx-auto w-full [color-scheme:light] ${className}`}
+			className={`overflow-hidden [color-scheme:light] mx-auto ${className}`}
 			style={disabled ? { opacity: 0.6, pointerEvents: 'none' } : undefined}
 		>
 			<GoogleLogin
@@ -36,8 +36,9 @@ const GoogleLoginButton = ({
 				useOneTap={false}
 				text='signin'
 				shape='rectangular'
-				theme='outline'
+				theme='filled_black'
 				size='large'
+				type='standard'
 			/>
 		</div>
 	)

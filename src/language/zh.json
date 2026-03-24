@@ -691,6 +691,18 @@
 		"joinButton": "加入",
 		"joining": "加入中...",
 		"noteText": "注意：您需要已批准的票才能注册展位。展位需经管理员验证后才会公开显示。",
+		"kickMember": "移除成员",
+		"confirmKickMember": "要将 {name} 移出此展位吗？",
+		"kickMemberSuccess": "成员已从展位移除。",
+		"kickMemberFailed": "移除成员失败。",
+		"kickMemberFailedRetry": "移除成员失败，请重试。",
+		"leaveBooth": "离开展位",
+		"leaving": "离开中...",
+		"confirmLeaveBooth": "确定要离开此展位吗？",
+		"leaveSuccess": "您已成功离开展位。",
+		"leaveFailed": "离开展位失败。",
+		"leaveFailedRetry": "离开展位失败，请重试。",
+		"unknownMember": "该成员",
 		"dealer": {
 			"form": {
 				"intro1": "FUVE 展位报名流程",
