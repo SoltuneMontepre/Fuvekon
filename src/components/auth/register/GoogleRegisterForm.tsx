@@ -78,40 +78,37 @@ const GoogleRegisterForm = (): React.ReactElement => {
 			return
 		}
 
-		googleRegisterMutation.mutate(
-			{
+		try {
+			const responseData = await googleRegisterMutation.mutateAsync({
 				credential,
 				fullName: sanitizeInput(data.fullName),
 				nickname: sanitizeInput(data.nickname),
 				dateOfBirth: data.dateOfBirth,
 				country: sanitizeInput(data.country),
-			},
-			{
-				onError: err => {
-					const axiosData = (
-						err as {
-							response?: {
-								data?: { errorMessage?: string }
-							}
-						}
-					)?.response?.data
-					setError('root', {
-						type: 'manual',
-						message: axiosData?.errorMessage
-							? getAuthErrorMessage(axiosData.errorMessage)
-							: t('registerFailed'),
-					})
-				},
-				onSuccess: responseData => {
-					if (!responseData.isSuccess) {
-						setError('root', {
-							type: 'manual',
-							message: getAuthErrorMessage(responseData.errorMessage),
-						})
-					}
-				},
+			})
+			if (!responseData.isSuccess) {
+				setError('root', {
+					type: 'manual',
+					message: getAuthErrorMessage(responseData.errorMessage),
+				})
+				return
 			}
-		)
+			router.push('/account')
+		} catch (err) {
+			const axiosData = (
+				err as {
+					response?: {
+						data?: { errorMessage?: string }
+					}
+				}
+			)?.response?.data
+			setError('root', {
+				type: 'manual',
+				message: axiosData?.errorMessage
+					? getAuthErrorMessage(axiosData.errorMessage)
+					: t('registerFailed'),
+			})
+		}
 	}
 
 	if (!credential) {

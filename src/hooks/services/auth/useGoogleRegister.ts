@@ -6,7 +6,6 @@ import type { GoogleLoginResponse } from '@/types/api/auth/googleLogin'
 import type { GoogleRegisterRequest } from '@/types/api/auth/googleRegister'
 import { useGetMe } from '@/hooks/services/auth/useAccount'
 import { useAuthStore } from '@/stores/authStore'
-import { useRouter } from 'next/navigation'
 import { logger } from '@/utils/logger'
 
 const GOOGLE_CREDENTIAL_KEY = 'google_register_credential'
@@ -24,7 +23,6 @@ export function clearGoogleCredential() {
 }
 
 export function useGoogleRegister() {
-	const router = useRouter()
 	const { refetch: refetchMe } = useGetMe()
 	const setAccount = useAuthStore(state => state.setAccount)
 
@@ -52,7 +50,6 @@ export function useGoogleRegister() {
 
 				if (meData?.isSuccess && meData.data) {
 					setAccount(meData.data)
-					router.push('/account')
 					return
 				}
 
@@ -63,7 +60,6 @@ export function useGoogleRegister() {
 					)
 					return attemptFetchUser()
 				}
-				router.push('/account')
 			}
 
 			await attemptFetchUser()
