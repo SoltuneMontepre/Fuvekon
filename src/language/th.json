@@ -795,13 +795,11 @@
 	"landing": {
 		"suggestion": "เลื่อนลงเพื่อดูเพิ่มเติม!",
 		"info": {
-			"year": "2026",
-			"day": "25",
-			"month": "เมษายน",
-			"time": "10:00 – 20:00 น.",
-			"timeDetail": "เปิดประตู 10:00 น. งานสิ้นสุด 20:00 น.",
-			"venue": "ชื่อสถานที่",
-			"address": "123 ถนนอีเวนต์ เมือง ประเทศ"
+			"year": "2025",
+			"day": "15",
+			"month": "สิงหาคม",
+			"venue": "Eastin Grand Hotel Saigon",
+			"address": "253 Đ. Nguyễn Văn Trỗi, Phường 10, Phú Nhuận, Hồ Chí Minh, Việt Nam"
 		},
 		"artbook": {
 			"title": "CONBOOK",

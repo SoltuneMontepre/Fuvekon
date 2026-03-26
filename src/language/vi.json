@@ -853,13 +853,11 @@
 	"landing": {
 		"suggestion": "Cuộn xuống để xem thêm!",
 		"info": {
-			"year": "2026",
-			"day": "25",
-			"month": "Tháng Tư",
-			"time": "10:00 – 20:00",
-			"timeDetail": "Mở cửa lúc 10:00. Kết thúc lúc 20:00.",
-			"venue": "Tên Địa Điểm",
-			"address": "123 Đường Sự Kiện, Thành Phố, Quốc Gia"
+			"year": "2025",
+			"day": "15",
+			"month": "Tháng Tám",
+			"venue": "Eastin Grand Hotel Saigon",
+			"address": "253 Đ. Nguyễn Văn Trỗi, Phường 10, Phú Nhuận, Hồ Chí Minh, Việt Nam"
 		},
 		"artbook": {
 			"title": "CONBOOK",

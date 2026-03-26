@@ -7,7 +7,12 @@ import GOHSection from '@/components/landing/GOHSection'
 import HeroSection from '@/components/landing/HeroSection'
 import InfoSection from '@/components/landing/InfoSection'
 import ThemeSection from '@/components/landing/ThemeSection'
-import { GOH_ENABLED, INFO_ENABLED, TICKET_ENABLED } from '@/config/app'
+import {
+	GOH_ENABLED,
+	INFO_ENABLED,
+	INFO_REVEAL_TIME,
+	TICKET_ENABLED,
+} from '@/config/app'
 import { useThemeStore } from '@/config/Providers/ThemeProvider'
 import { useGSAP } from '@gsap/react'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
@@ -31,6 +36,22 @@ const LandingPage = (): React.JSX.Element => {
 	const prefersReducedMotion = useThemeStore(
 		state => state.prefersReducedMotion
 	)
+
+	const [infoVisible, setInfoVisible] = useState(() => {
+		if (typeof window === 'undefined') return false
+		return INFO_ENABLED && Date.now() >= new Date(INFO_REVEAL_TIME).getTime()
+	})
+
+	useEffect(() => {
+		const revealAt = new Date(INFO_REVEAL_TIME).getTime()
+		if (INFO_ENABLED && Date.now() >= revealAt) {
+			setInfoVisible(true)
+			return
+		}
+		const delta = revealAt - Date.now()
+		const timer = setTimeout(() => setInfoVisible(true), delta)
+		return () => clearTimeout(timer)
+	}, [])
 
 	useEffect(() => {
 		window.scrollTo(0, 0)
@@ -271,7 +292,12 @@ const LandingPage = (): React.JSX.Element => {
 	}, [])
 
 	useGSAP(() => {
-		gsap.set('#feat-drum', { x: '-100vw', scale: 0, autoAlpha: 0 })
+		const offScreenX = -(window.innerWidth / 2 + window.innerHeight / 2)
+		gsap.set('#feat-drum', {
+			x: offScreenX,
+			scale: 0,
+			autoAlpha: 0,
+		})
 		gsap.set('#feat-drum-spinner', { rotation: -360 })
 		gsap.set('#feat-drum-line', { rotation: 360 })
 
@@ -347,7 +373,7 @@ const LandingPage = (): React.JSX.Element => {
 			<HeroSection reducedMotion={prefersReducedMotion} />
 
 			{/* Infomation Section */}
-			{INFO_ENABLED && (
+			{infoVisible && (
 				<InfoSection prefersReducedMotion={prefersReducedMotion} />
 			)}
 

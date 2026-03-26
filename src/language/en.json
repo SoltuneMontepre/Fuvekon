@@ -854,13 +854,11 @@
 	"landing": {
 		"suggestion": "Scroll down for more!",
 		"info": {
-			"year": "2026",
-			"day": "25",
-			"month": "April",
-			"time": "10:00 AM – 8:00 PM",
-			"timeDetail": "Doors open at 10:00 AM. Event ends at 8:00 PM.",
-			"venue": "Venue Name Placeholder",
-			"address": "123 Event Street, City, Country"
+			"year": "2025",
+			"day": "15",
+			"month": "August",
+			"venue": "Eastin Grand Hotel Saigon",
+			"address": "253 Đ. Nguyễn Văn Trỗi, Phường 10, Phú Nhuận, Hồ Chí Minh, Việt Nam"
 		},
 		"artbook": {
 			"title": "CONBOOK",

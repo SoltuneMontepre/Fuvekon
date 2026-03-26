@@ -2,7 +2,7 @@
 
 import gsap from '@/common/gsap'
 import { useGSAP } from '@gsap/react'
-import { Clock, MapPin } from 'lucide-react'
+import { MapPin } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import Lightbox from '@/components/common/Lightbox'
 import Image from 'next/image'
@@ -111,18 +111,6 @@ const InfoSection = ({ prefersReducedMotion = false }: InfoSectionProps) => {
 
 						{/* Detail rows */}
 						<div className='flex flex-col gap-5 select-all z-50'>
-							<div className='info-detail flex items-start gap-4'>
-								<Clock className='w-6 h-6 text-primary mt-0.5 shrink-0 drop-shadow' />
-								<div>
-									<p className='text-text font-semibold text-lg leading-snug drop-shadow'>
-										{t('time')}
-									</p>
-									<p className='text-text/75 text-sm mt-0.5'>
-										{t('timeDetail')}
-									</p>
-								</div>
-							</div>
-
 							<div className='info-detail select-all flex items-start gap-4 z-50'>
 								<MapPin className='w-6 h-6 text-primary mt-0.5 shrink-0 drop-shadow' />
 								<div>
