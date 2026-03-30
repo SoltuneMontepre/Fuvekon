@@ -31,6 +31,7 @@ const TicketPage = (): React.ReactElement => {
 	const [isPurchasing, setIsPurchasing] = useState(false)
 
 	const isBlacklisted = account?.is_banned ?? account?.is_blacklisted
+	const isAdmin = account?.role === 'admin'
 	const [showTicketNotAvailable, setShowTicketNotAvailable] = useState(false)
 
 	const handlePurchase = async (tierId: string) => {
@@ -178,7 +179,7 @@ const TicketPage = (): React.ReactElement => {
 						</div>
 					)}
 
-					{account && isBlacklisted && (
+					{account && isBlacklisted && !isAdmin && (
 						<div className='mb-6 text-center'>
 							<p className='text-sm text-red-300 bg-black/40 backdrop-blur-sm inline-block px-5 py-2.5 rounded-xl'>
 								{t('accountRestricted')}
@@ -191,6 +192,7 @@ const TicketPage = (): React.ReactElement => {
 						tiers={tiers}
 						onPurchase={handlePurchase}
 						isPurchasing={purchaseMutation.isPending}
+						bypassPurchaseRestrictions={isAdmin}
 					/>
 
 					{tiers.length === 0 && (

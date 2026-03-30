@@ -3,18 +3,45 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { ArrowUpCircle, Check, X } from 'lucide-react'
-import { useTranslations } from 'next-intl'
+import { useLocale, useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 import { useGetTiers, useUpgradeTicket } from '@/hooks/services/ticket/useTicket'
 import Loading from '@/components/common/Loading'
 import type { TicketTier } from '@/types/models/ticket/ticket'
 
-const formatPrice = (price: number): string => {
+const formatPriceVnd = (price: number): string => {
 	return new Intl.NumberFormat('vi-VN', {
 		style: 'decimal',
 		minimumFractionDigits: 0,
 		maximumFractionDigits: 0,
 	}).format(price)
+}
+
+const formatPriceUsd = (usd: number): string => {
+	return new Intl.NumberFormat('en-US', {
+		style: 'currency',
+		currency: 'USD',
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2,
+	}).format(usd)
+}
+
+const getTierAmountByLocale = (
+	tier: TicketTier | null | undefined,
+	locale: string
+): { value: number; label: string } => {
+	if (!tier) return { value: 0, label: locale === 'vi' ? '0 VND' : '$0.00' }
+
+	if (locale === 'vi') {
+		const vnd = Number(tier.price) || 0
+		return { value: vnd, label: `${formatPriceVnd(vnd)} VND` }
+	}
+
+	const usd = Number(tier.price_usd ?? 0)
+	if (usd > 0) return { value: usd, label: formatPriceUsd(usd) }
+
+	const vnd = Number(tier.price) || 0
+	return { value: vnd, label: `${formatPriceVnd(vnd)} VND` }
 }
 
 interface UpgradeTicketModalProps {
@@ -25,6 +52,7 @@ interface UpgradeTicketModalProps {
 const UpgradeTicketModal = ({ currentTier, onClose }: UpgradeTicketModalProps) => {
 	const t = useTranslations('ticket')
 	const tCommon = useTranslations('common')
+	const locale = useLocale()
 	const router = useRouter()
 	const dialogRef = useRef<HTMLDialogElement>(null)
 
@@ -40,16 +68,18 @@ const UpgradeTicketModal = ({ currentTier, onClose }: UpgradeTicketModalProps) =
 	const [showConfirm, setShowConfirm] = useState(false)
 	const [isUpgrading, setIsUpgrading] = useState(false)
 
-	const currentPrice = Number(currentTier?.price) || 0
+	const currentAmount = getTierAmountByLocale(currentTier, locale)
 	const eligibleTiers = (tiersData?.data ?? []).filter(
 		(tier) =>
-			Number(tier.price) > currentPrice &&
+			// Eligibility is still based on VND price ordering (upgrade logic); display uses locale.
+			Number(tier.price) > Number(currentTier?.price) &&
 			tier.stock > 0 &&
 			tier.is_active &&
 			tier.id !== currentTier.id
 	)
 
-	const priceDifference = selectedTier ? selectedTier.price - currentTier.price : 0
+	const selectedAmount = getTierAmountByLocale(selectedTier, locale)
+	const priceDifference = selectedAmount.value - currentAmount.value
 
 	const handleUpgrade = async () => {
 		if (!selectedTier) return
@@ -95,7 +125,7 @@ const UpgradeTicketModal = ({ currentTier, onClose }: UpgradeTicketModalProps) =
 				<div className='bg-[#d2ddd2] rounded-lg p-3 mb-4'>
 					<p className='text-sm text-[#48715b]'>{t('upgradeCurrentTier')}</p>
 					<p className='font-semibold text-[#154c5b]'>
-						{currentTier.ticket_name} — {formatPrice(currentTier.price)} VND
+						{currentTier.ticket_name} — {currentAmount.label}
 					</p>
 				</div>
 
@@ -112,7 +142,8 @@ const UpgradeTicketModal = ({ currentTier, onClose }: UpgradeTicketModalProps) =
 							<div className='space-y-3'>
 								<p className='text-sm font-medium text-[#154c5b]'>{t('upgradeNewTier')}</p>
 								{eligibleTiers.map((tier) => {
-									const diff = tier.price - currentTier.price
+									const tierAmount = getTierAmountByLocale(tier, locale)
+									const diff = tierAmount.value - currentAmount.value
 									const isSelected = selectedTier?.id === tier.id
 									return (
 										<button
@@ -128,7 +159,7 @@ const UpgradeTicketModal = ({ currentTier, onClose }: UpgradeTicketModalProps) =
 												<div>
 													<p className='font-semibold text-[#154c5b]'>{tier.ticket_name}</p>
 													<p className='text-sm text-[#48715b]'>
-														{formatPrice(tier.price)} VND
+														{tierAmount.label}
 													</p>
 													<p className='text-xs font-medium text-[#c97b2a]'>
 														{tier.stock < 10 ? t('runningOut') : t('ticketsAbundant')}
@@ -137,7 +168,10 @@ const UpgradeTicketModal = ({ currentTier, onClose }: UpgradeTicketModalProps) =
 												<div className='text-right'>
 													<p className='text-sm text-[#48715b]'>{t('upgradePriceDifference')}</p>
 													<p className='font-bold text-[#154c5b] text-lg'>
-														+{formatPrice(diff)} VND
+														{diff >= 0 ? '+' : ''}
+														{locale === 'vi'
+															? `${formatPriceVnd(diff)} VND`
+															: formatPriceUsd(diff)}
 													</p>
 													{isSelected && <Check className='w-5 h-5 text-[#48715b] ml-auto mt-1' />}
 												</div>
@@ -168,13 +202,13 @@ const UpgradeTicketModal = ({ currentTier, onClose }: UpgradeTicketModalProps) =
 								<div>
 									<p className='text-sm text-[#48715b]'>{t('upgradeCurrentTier')}</p>
 									<p className='font-medium text-[#154c5b]'>{currentTier.ticket_name}</p>
-									<p className='text-sm text-[#48715b]'>{formatPrice(currentTier.price)} VND</p>
+									<p className='text-sm text-[#48715b]'>{currentAmount.label}</p>
 								</div>
 								<div>
 									<p className='text-sm text-[#48715b]'>{t('upgradeNewTier')}</p>
 									<p className='font-medium text-[#154c5b]'>{selectedTier?.ticket_name}</p>
 									<p className='text-sm text-[#48715b]'>
-										{formatPrice(selectedTier?.price ?? 0)} VND
+										{selectedAmount.label}
 									</p>
 								</div>
 							</div>
@@ -182,7 +216,10 @@ const UpgradeTicketModal = ({ currentTier, onClose }: UpgradeTicketModalProps) =
 								<div className='flex items-center justify-between'>
 									<p className='font-medium text-[#154c5b]'>{t('upgradePriceDifference')}</p>
 									<p className='font-bold text-[#154c5b] text-xl'>
-										+{formatPrice(priceDifference)} VND
+										{priceDifference >= 0 ? '+' : ''}
+										{locale === 'vi'
+											? `${formatPriceVnd(priceDifference)} VND`
+											: formatPriceUsd(priceDifference)}
 									</p>
 								</div>
 							</div>

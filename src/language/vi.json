@@ -430,6 +430,7 @@
 		"tierName": "Tên loại vé",
 		"tierNamePlaceholder": "vd. Early Bird",
 		"tierPrice": "Giá",
+		"tierPriceUsd": "Giá (USD)",
 		"tierStock": "Số lượng",
 		"tierIsActive": "Đang bán",
 		"tierDescriptionPlaceholder": "Mô tả ngắn (tùy chọn)",

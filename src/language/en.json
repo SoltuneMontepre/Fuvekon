@@ -431,6 +431,7 @@
 		"tierName": "Tier name",
 		"tierNamePlaceholder": "e.g. Early Bird",
 		"tierPrice": "Price",
+		"tierPriceUsd": "Price (USD)",
 		"tierStock": "Stock",
 		"tierIsActive": "Active (available for purchase)",
 		"tierDescriptionPlaceholder": "Short description (optional)",

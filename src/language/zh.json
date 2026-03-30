@@ -404,6 +404,7 @@
 		"tierName": "类型名称",
 		"tierNamePlaceholder": "如：早鸟票",
 		"tierPrice": "价格",
+		"tierPriceUsd": "价格（美元）",
 		"tierStock": "库存",
 		"tierIsActive": "上架（可购买）",
 		"tierDescriptionPlaceholder": "简短描述（选填）",

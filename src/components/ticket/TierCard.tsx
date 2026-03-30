@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { Check } from 'lucide-react'
-import { useTranslations } from 'next-intl'
+import { useLocale, useTranslations } from 'next-intl'
 import type { TicketTier } from '@/types/models/ticket/ticket'
 
 interface TierCardProps {
@@ -14,12 +14,28 @@ interface TierCardProps {
 }
 
 // Format price in VND
-const formatPrice = (price: number): string => {
+const formatPriceVnd = (price: number): string => {
 	return new Intl.NumberFormat('vi-VN', {
 		style: 'decimal',
 		minimumFractionDigits: 0,
 		maximumFractionDigits: 0,
 	}).format(price)
+}
+
+const formatPriceUsd = (usd: number): string => {
+	return new Intl.NumberFormat('en-US', {
+		style: 'currency',
+		currency: 'USD',
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2,
+	}).format(usd)
+}
+
+const getTierPriceLabelByLocale = (tier: TicketTier, locale: string): string => {
+	if (locale === 'vi') return `${formatPriceVnd(Number(tier.price))} VND`
+	const usd = Number(tier.price_usd ?? 0)
+	if (usd > 0) return formatPriceUsd(usd)
+	return `${formatPriceVnd(Number(tier.price))} VND`
 }
 
 const TierCard = ({
@@ -31,6 +47,7 @@ const TierCard = ({
 }: TierCardProps): React.ReactElement => {
 	const t = useTranslations('ticket')
 	const tCommon = useTranslations('common')
+	const locale = useLocale()
 	const isSoldOut = tier.stock <= 0
 	const isClosed = tier.is_active === false
 
@@ -60,8 +77,9 @@ const TierCard = ({
 
 			{/* Price Section */}
 			<div className='bg-[#548780] px-6 py-6 text-center'>
-				<div className='text-4xl font-bold text-[#e2eee2]'>{formatPrice(tier.price)}</div>
-				<div className='text-lg text-[#e2eee2] mt-1'>VND</div>
+				<div className='text-4xl font-bold text-[#e2eee2]'>
+					{getTierPriceLabelByLocale(tier, locale)}
+				</div>
 			</div>
 
 			{/* Benefits List */}

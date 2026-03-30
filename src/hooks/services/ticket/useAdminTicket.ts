@@ -136,6 +136,7 @@ const AdminTicketAPI = {
 		description?: string
 		benefits?: string[]
 		price: number
+		price_usd?: number
 		stock: number
 		is_active?: boolean
 	}) => {
@@ -154,6 +155,7 @@ const AdminTicketAPI = {
 			description?: string
 			benefits?: string[]
 			price?: number
+			price_usd?: number
 			stock?: number
 			is_active?: boolean
 		}
@@ -374,6 +376,7 @@ export function useCreateTier() {
 			description?: string
 			benefits?: string[]
 			price: number
+			price_usd?: number
 			stock: number
 			is_active?: boolean
 		}) => AdminTicketAPI.createTier(payload),
@@ -400,6 +403,7 @@ export function useUpdateTier() {
 				description?: string
 				benefits?: string[]
 				price?: number
+				price_usd?: number
 				stock?: number
 				is_active?: boolean
 			}

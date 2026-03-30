@@ -11,7 +11,7 @@ import {
 	ArrowUpCircle,
 	ShieldCheck,
 } from 'lucide-react'
-import { useTranslations } from 'next-intl'
+import { useLocale, useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 import {
 	useGetMyTicket,
@@ -20,15 +20,31 @@ import {
 } from '@/hooks/services/ticket/useTicket'
 import UpgradeTicketModal from '@/components/ticket/UpgradeTicketModal'
 import Loading from '@/components/common/Loading'
-import type { TicketStatus } from '@/types/models/ticket/ticket'
+import type { TicketStatus, TicketTier } from '@/types/models/ticket/ticket'
 
 // Format price in VND
-const formatPrice = (price: number): string => {
+const formatPriceVnd = (price: number): string => {
 	return new Intl.NumberFormat('vi-VN', {
 		style: 'decimal',
 		minimumFractionDigits: 0,
 		maximumFractionDigits: 0,
 	}).format(price)
+}
+
+const formatPriceUsd = (usd: number): string => {
+	return new Intl.NumberFormat('en-US', {
+		style: 'currency',
+		currency: 'USD',
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2,
+	}).format(usd)
+}
+
+const formatTierPriceByLocale = (tier: TicketTier, locale: string): string => {
+	if (locale === 'vi') return `${formatPriceVnd(Number(tier.price))} VNĐ`
+	const usd = Number(tier.price_usd ?? 0)
+	if (usd > 0) return formatPriceUsd(usd)
+	return `${formatPriceVnd(Number(tier.price))} VND`
 }
 
 // Status display configuration
@@ -147,6 +163,7 @@ const TIER_THEMES: TierTheme[] = [
 
 const MyTicketDisplay = (): React.ReactElement => {
 	const router = useRouter()
+	const locale = useLocale()
 	const t = useTranslations('ticket')
 	const tCommon = useTranslations('common')
 	const [showCancelDialog, setShowCancelDialog] = useState(false)
@@ -316,7 +333,7 @@ const MyTicketDisplay = (): React.ReactElement => {
 									fontSize: '16px',
 								}}
 							>
-								{tier.ticket_name} — {formatPrice(tier.price)} VN{'\u0110'}
+								{tier.ticket_name} — {formatTierPriceByLocale(tier, locale)}
 							</p>
 						)}
 					</div>
@@ -341,7 +358,7 @@ const MyTicketDisplay = (): React.ReactElement => {
 					{tier && (
 						<InfoField
 							label={t('ticketPrice')}
-							value={`${formatPrice(tier.price)} VND`}
+							value={formatTierPriceByLocale(tier, locale)}
 						/>
 					)}
 					<InfoField

@@ -64,6 +64,15 @@ const formatPrice = (price: number): string => {
 	}).format(price)
 }
 
+const formatPriceUsd = (usd: number): string => {
+	return new Intl.NumberFormat('en-US', {
+		style: 'currency',
+		currency: 'USD',
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2,
+	}).format(usd)
+}
+
 // Status display configuration (icons only, labels come from translations)
 const STATUS_ICONS: Record<
 	TicketStatus,
@@ -147,6 +156,7 @@ const TicketManagementPage = (): React.ReactElement => {
 	const [tierDescription, setTierDescription] = useState('')
 	const [tierBenefitsText, setTierBenefitsText] = useState('')
 	const [tierPrice, setTierPrice] = useState('')
+	const [tierPriceUsd, setTierPriceUsd] = useState('')
 	const [tierStock, setTierStock] = useState('')
 	const [tierIsActive, setTierIsActive] = useState(true)
 	// Edit ticket modal state (admin back-door)
@@ -171,6 +181,7 @@ const TicketManagementPage = (): React.ReactElement => {
 	const [editTierDescription, setEditTierDescription] = useState('')
 	const [editTierBenefitsText, setEditTierBenefitsText] = useState('')
 	const [editTierPrice, setEditTierPrice] = useState('')
+	const [editTierPriceUsd, setEditTierPriceUsd] = useState('')
 	const [editTierStock, setEditTierStock] = useState('')
 	const [editTierIsActive, setEditTierIsActive] = useState(true)
 
@@ -458,6 +469,8 @@ const TicketManagementPage = (): React.ReactElement => {
 		const name = tierName.trim()
 		const priceNum = Number(tierPrice)
 		const stockNum = parseInt(tierStock, 10)
+		const priceUsdNum =
+			tierPriceUsd.trim() === '' ? 0 : Number(tierPriceUsd)
 		if (
 			!name ||
 			Number.isNaN(priceNum) ||
@@ -467,6 +480,15 @@ const TicketManagementPage = (): React.ReactElement => {
 		) {
 			toast.error(
 				t('createTierError') || 'Please fill name, price (≥0), and stock (≥0).'
+			)
+			return
+		}
+		if (
+			tierPriceUsd.trim() !== '' &&
+			(Number.isNaN(priceUsdNum) || priceUsdNum < 0)
+		) {
+			toast.error(
+				t('createTierError') || 'Invalid USD price (must be ≥ 0).'
 			)
 			return
 		}
@@ -480,6 +502,7 @@ const TicketManagementPage = (): React.ReactElement => {
 				description: tierDescription.trim() ?? '',
 				benefits,
 				price: priceNum,
+				price_usd: priceUsdNum,
 				stock: stockNum,
 				is_active: tierIsActive,
 			})
@@ -490,6 +513,7 @@ const TicketManagementPage = (): React.ReactElement => {
 			setTierDescription('')
 			setTierBenefitsText('')
 			setTierPrice('')
+			setTierPriceUsd('')
 			setTierStock('')
 			setTierIsActive(true)
 			setShowCreateTierForm(false)
@@ -512,6 +536,7 @@ const TicketManagementPage = (): React.ReactElement => {
 			Array.isArray(tier.benefits) ? tier.benefits.join('\n') : ''
 		)
 		setEditTierPrice(String(tier.price))
+		setEditTierPriceUsd(String(Number(tier.price_usd ?? 0)))
 		setEditTierStock(String(tier.stock))
 		setEditTierIsActive(tier.is_active)
 	}
@@ -519,6 +544,7 @@ const TicketManagementPage = (): React.ReactElement => {
 	const handleUpdateTier = async () => {
 		if (!editTierModal) return
 		const priceNum = Number(editTierPrice)
+		const priceUsdNum = Number(editTierPriceUsd)
 		const stockNum = parseInt(editTierStock, 10)
 		if (
 			Number.isNaN(priceNum) ||
@@ -527,6 +553,10 @@ const TicketManagementPage = (): React.ReactElement => {
 			stockNum < 0
 		) {
 			toast.error(t('createTierError') || 'Invalid price or stock.')
+			return
+		}
+		if (Number.isNaN(priceUsdNum) || priceUsdNum < 0) {
+			toast.error(t('createTierError') || 'Invalid USD price.')
 			return
 		}
 		const benefits = editTierBenefitsText
@@ -541,6 +571,7 @@ const TicketManagementPage = (): React.ReactElement => {
 					description: editTierDescription.trim() || undefined,
 					benefits: benefits.length > 0 ? benefits : undefined,
 					price: priceNum,
+					price_usd: priceUsdNum,
 					stock: stockNum,
 					is_active: editTierIsActive,
 				},
@@ -799,6 +830,20 @@ const TicketManagementPage = (): React.ReactElement => {
 						</div>
 						<div>
 							<label className='block text-sm font-medium text-text-secondary mb-1'>
+								{t('tierPriceUsd')}
+							</label>
+							<input
+								type='number'
+								min={0}
+								step='0.01'
+								value={tierPriceUsd}
+								onChange={e => setTierPriceUsd(e.target.value)}
+								placeholder='0'
+								className='w-full px-3 py-2 border border-[#8C8C8C]/15 rounded-xl focus:outline-none focus:border-[#48715B]'
+							/>
+						</div>
+						<div>
+							<label className='block text-sm font-medium text-text-secondary mb-1'>
 								{t('tierStock')}
 							</label>
 							<input
@@ -846,7 +891,7 @@ const TicketManagementPage = (): React.ReactElement => {
 								onChange={e => setTierBenefitsText(e.target.value)}
 								placeholder={t('tierBenefitsPlaceholder')}
 								rows={3}
-								className='w-full px-3 py-2 border border-[#8C8C8C]/15 rounded-xl focus:outline-none focus:border-[#48715B] resize-none'
+								className='w-full min-h-[4.5rem] max-h-[50vh] px-3 py-2 border border-[#8C8C8C]/15 rounded-xl focus:outline-none focus:border-[#48715B] resize-y overflow-y-auto'
 							/>
 						</div>
 						<div className='md:col-span-2'>
@@ -894,6 +939,9 @@ const TicketManagementPage = (): React.ReactElement => {
 										{t('tierPrice')}
 									</th>
 									<th className='px-4 py-3 text-left text-sm font-semibold text-[#48715B]'>
+										{t('tierPriceUsd')}
+									</th>
+									<th className='px-4 py-3 text-left text-sm font-semibold text-[#48715B]'>
 										{t('tierStock')}
 									</th>
 									<th className='px-4 py-3 text-left text-sm font-semibold text-[#48715B]'>
@@ -929,6 +977,9 @@ const TicketManagementPage = (): React.ReactElement => {
 											</td>
 											<td className='px-4 py-3 text-sm'>
 												{formatPrice(tier.price)} VND
+											</td>
+											<td className='px-4 py-3 text-sm'>
+												{formatPriceUsd(Number(tier.price_usd ?? 0))}
 											</td>
 											<td className='px-4 py-3 text-sm'>
 												{tierStat != null ? tierStat.total_stock : tier.stock}
@@ -1749,7 +1800,7 @@ const TicketManagementPage = (): React.ReactElement => {
 									className='w-full px-3 py-2 border border-[#8C8C8C]/15 rounded-xl focus:outline-none focus:border-[#48715B]'
 								/>
 							</div>
-							<div className='grid grid-cols-2 gap-4'>
+							<div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
 								<div>
 									<label className='block text-sm font-medium text-text-secondary mb-1'>
 										{t('tierPrice')} (VND)
@@ -1763,6 +1814,19 @@ const TicketManagementPage = (): React.ReactElement => {
 									/>
 								</div>
 								<div>
+									<label className='block text-sm font-medium text-text-secondary mb-1'>
+										{t('tierPriceUsd')}
+									</label>
+									<input
+										type='number'
+										min={0}
+										step='0.01'
+										value={editTierPriceUsd}
+										onChange={e => setEditTierPriceUsd(e.target.value)}
+										className='w-full px-3 py-2 border border-[#8C8C8C]/15 rounded-xl focus:outline-none focus:border-[#48715B]'
+									/>
+								</div>
+								<div className='sm:col-span-2'>
 									<label className='block text-sm font-medium text-text-secondary mb-1'>
 										{t('tierStock')}
 									</label>
@@ -1809,7 +1873,7 @@ const TicketManagementPage = (): React.ReactElement => {
 									value={editTierBenefitsText}
 									onChange={e => setEditTierBenefitsText(e.target.value)}
 									rows={3}
-									className='w-full px-3 py-2 border border-[#8C8C8C]/15 rounded-xl focus:outline-none focus:border-[#48715B] resize-none'
+									className='w-full min-h-[4.5rem] max-h-[50vh] px-3 py-2 border border-[#8C8C8C]/15 rounded-xl focus:outline-none focus:border-[#48715B] resize-y overflow-y-auto'
 								/>
 							</div>
 						</div>

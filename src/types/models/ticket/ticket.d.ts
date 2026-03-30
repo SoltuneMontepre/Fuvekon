@@ -9,6 +9,8 @@ export interface TicketTier {
 	description: string
 	benefits: string[]
 	price: number
+	/** Tier price in USD (PayPal / international) */
+	price_usd?: number
 	stock: number
 	is_active: boolean
 	is_visible?: boolean

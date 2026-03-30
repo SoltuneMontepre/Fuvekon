@@ -2,19 +2,35 @@
 
 import React from 'react'
 import { useRouter } from 'next/navigation'
-import { useTranslations } from 'next-intl'
+import { useLocale, useTranslations } from 'next-intl'
 import Image from 'next/image'
 import CollapsibleScroll from '@/components/animated/CollapsibleScroll'
 import { useGetMyTicket } from '@/hooks/services/ticket/useTicket'
 import { useAuthStore } from '@/stores/authStore'
 import type { TicketTier } from '@/types/models/ticket/ticket'
 
-const formatPrice = (price: number): string => {
+const formatPriceVnd = (price: number): string => {
 	return new Intl.NumberFormat('vi-VN', {
 		style: 'decimal',
 		minimumFractionDigits: 0,
 		maximumFractionDigits: 0,
 	}).format(price)
+}
+
+const formatPriceUsd = (usd: number): string => {
+	return new Intl.NumberFormat('en-US', {
+		style: 'currency',
+		currency: 'USD',
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2,
+	}).format(usd)
+}
+
+const formatTierPriceByLocale = (tier: TicketTier, locale: string): string => {
+	if (locale === 'vi') return `${formatPriceVnd(Number(tier.price))} VNĐ`
+	const usd = Number(tier.price_usd ?? 0)
+	if (usd > 0) return formatPriceUsd(usd)
+	return `${formatPriceVnd(Number(tier.price))} VND`
 }
 
 // ── Tier visual config by price rank (0 = cheapest … 3 = most expensive) ──
@@ -86,14 +102,18 @@ type TicketDisplayProps = {
 	tiers: TicketTier[]
 	onPurchase: (tierId: string) => void
 	isPurchasing: boolean
+	/** When true (e.g. admin), UI allows purchase attempts despite blacklist, existing ticket, sold out, or closed tier. */
+	bypassPurchaseRestrictions?: boolean
 }
 
 const TicketDisplay = ({
 	tiers,
 	onPurchase,
 	isPurchasing,
+	bypassPurchaseRestrictions = false,
 }: TicketDisplayProps) => {
 	const router = useRouter()
+	const locale = useLocale()
 	const t = useTranslations('ticket')
 	const tCommon = useTranslations('common')
 	const account = useAuthStore(state => state.account)
@@ -102,7 +122,9 @@ const TicketDisplay = ({
 	const hasActiveTicket =
 		myTicketData?.data && myTicketData.data.status !== 'denied'
 	const isBlacklisted = account?.is_banned ?? account?.is_blacklisted
-	const isDisabled = !!isBlacklisted || !!hasActiveTicket
+	const purchaseBlockedByAccount =
+		!bypassPurchaseRestrictions && (!!isBlacklisted || !!hasActiveTicket)
+	const isDisabled = purchaseBlockedByAccount
 
 	const isTierClosed = (tier: TicketTier) => !tier.is_active
 	const isTierSoldOut = (tier: TicketTier) => tier.stock <= 0
@@ -140,7 +162,13 @@ const TicketDisplay = ({
 					const isTop = rank === TIER_COLORS.length - 1
 					const closed = isTierClosed(tier)
 					const soldOut = isTierSoldOut(tier)
-					const unavailable = closed || soldOut
+					const unavailable =
+						!bypassPurchaseRestrictions && (closed || soldOut)
+					const buttonDisabled = bypassPurchaseRestrictions
+						? isPurchasing
+						: isDisabled || unavailable || isPurchasing
+					const showSoldOutStyling =
+						soldOut && !bypassPurchaseRestrictions
 
 					return (
 						<div
@@ -200,7 +228,7 @@ const TicketDisplay = ({
 													textShadow: colors.priceShadow,
 												}}
 											>
-												{formatPrice(tier.price)} VN{'\u0110'}
+												{formatTierPriceByLocale(tier, locale)}
 											</p>
 										</div>
 									</div>
@@ -270,31 +298,30 @@ const TicketDisplay = ({
 												}
 												if (!unavailable) onPurchase(tier.id)
 											}}
-											disabled={isDisabled || unavailable || isPurchasing}
+											disabled={buttonDisabled}
 											className='w-full py-2.5 px-4 rounded-[6px] font-bold text-sm uppercase tracking-[0.18em] transition-all duration-200 relative overflow-hidden'
 											style={{
-												background: soldOut
+												background: showSoldOutStyling
 													? 'rgba(212,115,138,0.2)'
-													: isDisabled || unavailable || isPurchasing
+													: buttonDisabled
 														? 'rgba(140,140,140,0.15)'
 														: colors.btnBg,
-												color: soldOut
+												color: showSoldOutStyling
 													? '#c25670'
-													: isDisabled || unavailable || isPurchasing
+													: buttonDisabled
 														? '#8C8C8C'
 														: colors.btnColor,
 												border:
-													soldOut || isDisabled || unavailable || isPurchasing
+													showSoldOutStyling || buttonDisabled
 														? 'none'
 														: colors.btnBorder || 'none',
 												boxShadow:
-													soldOut || isDisabled || unavailable || isPurchasing
+													showSoldOutStyling || buttonDisabled
 														? 'none'
 														: colors.btnShadow,
-												cursor:
-													isDisabled || unavailable || isPurchasing
-														? 'not-allowed'
-														: 'pointer',
+												cursor: buttonDisabled
+													? 'not-allowed'
+													: 'pointer',
 											}}
 										>
 											{/* Glass highlight */}
@@ -308,9 +335,9 @@ const TicketDisplay = ({
 											<span className='relative z-[1]'>
 												{isPurchasing
 													? tCommon('processing')
-													: soldOut
+													: soldOut && !bypassPurchaseRestrictions
 														? t('soldOut') + '!!!'
-														: closed
+														: closed && !bypassPurchaseRestrictions
 															? t('closed')
 															: !account
 																? t('loginNow')

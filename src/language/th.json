@@ -404,6 +404,7 @@
 		"tierName": "ชื่อประเภท",
 		"tierNamePlaceholder": "เช่น Early Bird",
 		"tierPrice": "ราคา",
+		"tierPriceUsd": "ราคา (USD)",
 		"tierStock": "จำนวน",
 		"tierIsActive": "เปิดขาย",
 		"tierDescriptionPlaceholder": "คำอธิบายสั้น (ไม่บังคับ)",
