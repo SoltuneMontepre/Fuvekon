@@ -13,9 +13,7 @@ import {
 } from 'lucide-react'
 import { useLocale, useTranslations } from 'next-intl'
 import { toast } from 'sonner'
-import Image from 'next/image'
 import { toBlob } from 'html-to-image'
-import S3Image from '@/components/common/S3Image'
 import { compressImage } from '@/utils/imageCompression'
 import {
 	useGetMyTicket,
@@ -26,6 +24,7 @@ import {
 import { useUploadToS3 } from '@/hooks/services/s3/useUploadToS3'
 import { useUpdateAvatar } from '@/hooks/services/auth/useAccount'
 import UpgradeTicketModal from '@/components/ticket/UpgradeTicketModal'
+import TicketNameCardPreview from '@/components/ticket/TicketNameCardPreview'
 import Loading from '@/components/common/Loading'
 import { useAuthStore } from '@/stores/authStore'
 import type { TicketStatus, TicketTier } from '@/types/models/ticket/ticket'
@@ -215,14 +214,14 @@ const MyTicketDisplay = (): React.ReactElement => {
 	const [isFursuiter, setIsFursuiter] = useState(false)
 	const [isFursuitStaff, setIsFursuitStaff] = useState(false)
 	const [isSavingBadge, setIsSavingBadge] = useState(false)
+	// "Standard" users are neither fursuiters nor fursuit staff.
+	// (This matches the data we already store on the ticket.)
+	const isStandardUser = !isFursuiter && !isFursuitStaff
 	const previewName =
 		badgeName.trim() ||
 		account?.first_name ||
 		ticket?.tier?.ticket_name ||
 		'Guest'
-	const previewNameContainerRef = useRef<HTMLDivElement>(null)
-	const previewNameTextRef = useRef<HTMLDivElement>(null)
-	const [previewNameScale, setPreviewNameScale] = useState(1)
 
 	// Compute tier rank from full tier list
 	const tierTheme = useMemo(() => {
@@ -303,35 +302,6 @@ const MyTicketDisplay = (): React.ReactElement => {
 		}
 	}, [error, t])
 
-	useEffect(() => {
-		const el = previewNameContainerRef.current
-		const textEl = previewNameTextRef.current
-		if (!el || !textEl) return
-
-		const measure = () => {
-			// `scrollWidth` isn't affected by CSS transforms, so this stays correct
-			// even after we've applied a scale.
-			const available = el.getBoundingClientRect().width
-			const needed = textEl.scrollWidth
-			if (!available || !needed) return
-			const scale = Math.max(0.1, Math.min(1, available / needed))
-			setPreviewNameScale(scale)
-		}
-
-		// Measure now and once more on the next frame to catch late layout changes.
-		measure()
-		requestAnimationFrame(() => measure())
-
-		const ro = new ResizeObserver(() => measure())
-		ro.observe(el)
-
-		const fontsReady: Promise<unknown> | undefined =
-			'fonts' in document ? document.fonts.ready : undefined
-		fontsReady?.then(() => measure())
-
-		return () => ro.disconnect()
-	}, [previewName, isLoading, ticket?.id])
-
 	if (isLoading) {
 		return <Loading />
 	}
@@ -375,17 +345,6 @@ const MyTicketDisplay = (): React.ReactElement => {
 	const tier = ticket.tier
 	const isUpgradedTicket = !!ticket.upgraded_from_tier_id
 	const theme = tierTheme
-	const previewNameFontSize = (() => {
-		const normalized = (previewName || '').trim().replace(/\s+/g, ' ')
-		const words = normalized ? normalized.split(' ').length : 0
-		const len = normalized.length
-
-		// Tune thresholds to keep short names punchy, long names readable.
-		if (len > 15 || words >= 5) return 'clamp(15px, 3.4vw, 32px)'
-		if (len > 10 || words >= 4) return 'clamp(16px, 3.8vw, 36px)'
-		if (len > 5 || words >= 3) return 'clamp(22px, 4.3vw, 42px)'
-		return 'clamp(22px, 5.2vw, 50px)'
-	})()
 	const displayName =
 		account?.fursona_name ||
 		account?.first_name ||
@@ -649,31 +608,39 @@ const MyTicketDisplay = (): React.ReactElement => {
 								</div>
 
 								{/* Change avatar (affects namecard preview) */}
-								<div className='mt-4'>
-									<input
-										ref={avatarInputRef}
-										type='file'
-										accept='image/*'
-										onChange={handleAvatarFileChange}
-										disabled={isUploadingAvatar || updateAvatarMutation.isPending}
-										className='hidden'
-									/>
-									<button
-										type='button'
-										onClick={() => avatarInputRef.current?.click()}
-										disabled={!canSaveBadge || isUploadingAvatar || updateAvatarMutation.isPending}
-										className='w-full py-2.5 px-4 rounded-xl btn-outline font-medium transition-colors duration-200'
-									>
-										{isUploadingAvatar || updateAvatarMutation.isPending
-											? tCommon('processing')
-											: safeAccount('changeAvatar', 'Change avatar')}
-									</button>
-									{isUploadingAvatar && avatarUploadProgress > 0 && (
-										<p className='mt-2 text-xs text-text-secondary'>
-											{`${Math.round(avatarUploadProgress)}%`}
-										</p>
-									)}
-								</div>
+								{!isStandardUser && (
+									<div className='mt-4'>
+										<input
+											ref={avatarInputRef}
+											type='file'
+											accept='image/*'
+											onChange={handleAvatarFileChange}
+											disabled={
+												isUploadingAvatar || updateAvatarMutation.isPending
+											}
+											className='hidden'
+										/>
+										<button
+											type='button'
+											onClick={() => avatarInputRef.current?.click()}
+											disabled={
+												!canSaveBadge ||
+												isUploadingAvatar ||
+												updateAvatarMutation.isPending
+											}
+											className='w-full py-2.5 px-4 rounded-xl btn-outline font-medium transition-colors duration-200'
+										>
+											{isUploadingAvatar || updateAvatarMutation.isPending
+												? tCommon('processing')
+												: safeAccount('changeAvatar', 'Change avatar')}
+										</button>
+										{isUploadingAvatar && avatarUploadProgress > 0 && (
+											<p className='mt-2 text-xs text-text-secondary'>
+												{`${Math.round(avatarUploadProgress)}%`}
+											</p>
+										)}
+									</div>
+								)}
 
 								<button
 									onClick={handleSaveBadge}
@@ -697,90 +664,14 @@ const MyTicketDisplay = (): React.ReactElement => {
 
 							{/* Preview */}
 							<div className='rounded-2xl bg-white/60 p-3'>
-								<div
+								<TicketNameCardPreview
 									ref={namecardCaptureRef}
-									className='relative w-full max-w-[420px] mx-auto'
-								>
-									{/* Avatar goes UNDER the badge PNG (PNG transparency will reveal it) */}
-									<div
-										className='absolute overflow-hidden rounded-[10px]'
-										style={{
-											left: '15.5%',
-											top: '29%',
-											width: '53%',
-											height: '35%',
-										}}
-									>
-										<div className='relative w-40 h-50 bg-white'>
-											{account?.avatar ? (
-												<S3Image
-													src={account.avatar}
-													alt={displayName}
-													fill
-													className='object-cover'
-												/>
-											) : (
-												<div className='w-full h-full flex items-center justify-center text-white/60 text-3xl font-bold'>
-													{(displayName || 'U').slice(0, 1).toUpperCase()}
-												</div>
-											)}
-										</div>
-									</div>
-
-									{/* Badge artwork on TOP */}
-									<Image
-										src='/images/ticket/theten.png'
-										alt='Name card preview template'
-										width={652}
-										height={1001}
-										className='relative w-full h-auto rounded-xl z-10'
-										priority={false}
-									/>
-
-									{/* Name + tier overlay on the badge strip */}
-									<div
-										className='absolute z-20 text-left'
-										style={{
-											left: '12%',
-											top: '73.5%',
-										}}
-									>
-										<div
-											className='mb-3 font-semibold uppercase tracking-[0.22em]'
-											style={{
-												color: 'rgba(15, 35, 40, 0.75)',
-												fontSize: 'clamp(10px, 1.6vw, 14px)',
-												lineHeight: 1,
-												textShadow: '0 1px 2px rgba(255,255,255,0.35)',
-												fontFamily: '"Comic Sans MS","Comic Sans",cursive',
-											}}
-										>
-											{ticket.reference_code ? `#${ticket.reference_code}` : ''}
-										</div>
-										<div
-											ref={previewNameContainerRef}
-											className='font-extrabold uppercase w-[50%]'
-											style={{
-												color: 'rgba(245, 240, 230, 0.95)',
-												fontSize: previewNameFontSize,
-												lineHeight: 1.05,
-												whiteSpace: 'nowrap',
-												overflow: 'hidden',
-											}}
-										>
-											<div
-												ref={previewNameTextRef}
-												style={{
-													display: 'inline-block',
-													transform: `scale(${previewNameScale})`,
-													transformOrigin: 'left center',
-												}}
-											>
-												{previewName}
-											</div>
-										</div>
-									</div>
-								</div>
+									tierCodeNumber={tierCodeNumber}
+									avatarUrl={account?.avatar}
+									displayName={displayName}
+									previewName={previewName}
+									referenceCode={ticket.reference_code}
+								/>
 							</div>
 						</div>
 					</div>

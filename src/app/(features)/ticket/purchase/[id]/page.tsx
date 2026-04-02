@@ -26,13 +26,6 @@ const formatPrice = (price: number): string => {
 	}).format(price)
 }
 
-// Bank details (placeholder - should come from config)
-const BANK_DETAILS = {
-	bankName: 'Vietcombank',
-	accountNumber: '1234567890',
-	accountHolder: 'FUVE CONVENTION',
-}
-
 // Reusable info field matching account page style
 const InfoField = ({
 	label,
@@ -336,40 +329,16 @@ const TicketPurchasePage = ({
 								/>
 							</div>
 
-							{/* QR Code + Bank Details */}
+							{/* QR Code (includes Vietcombank + account text) */}
 							<div className='mt-6 pt-6 border-t border-[#48715B]/15'>
-								<div className='flex flex-col md:flex-row gap-6'>
-									<div className='flex-shrink-0 mx-auto md:mx-0'>
-										<div className='w-48 h-48 bg-white rounded-xl border border-[#8C8C8C]/15 p-2 flex items-center justify-center'>
-											<Image
-												src='/images/qr.png'
-												alt={t('qrTransfer')}
-												width={176}
-												height={176}
-												className='w-full h-full object-contain'
-											/>
-										</div>
-									</div>
-
-									<div className='flex-1 space-y-3'>
-										<h4 className='text-lg font-semibold text-text-primary'>
-											{t('bankDetails')}
-										</h4>
-										<InfoField
-											label={t('bankName')}
-											value={BANK_DETAILS.bankName}
-										/>
-										<CopyableField
-											label={t('accountNumber')}
-											value={BANK_DETAILS.accountNumber}
-											field='account'
-											copied={copied}
-											onCopy={copyToClipboard}
-											mono
-										/>
-										<InfoField
-											label={t('accountHolder')}
-											value={BANK_DETAILS.accountHolder}
+								<div className='flex justify-center'>
+									<div className='w-full max-w-[520px]'>
+										<Image
+											src='/images/qr.png'
+											alt={t('qrTransfer')}
+											width={1125}
+											height={1273}
+											className='w-full h-auto object-contain'
 										/>
 									</div>
 								</div>
@@ -422,9 +391,14 @@ const TicketPurchasePage = ({
 				onCancel={() => setShowConfirmDialog(false)}
 				className='bg-white rounded-2xl p-6 w-full max-w-md shadow-2xl backdrop:bg-black/50 m-auto'
 			>
-				<h3 className='text-xl font-semibold text-text-primary mb-4'>{t('confirmPaymentTitle')}</h3>
+				<h3 className='text-xl font-semibold text-text-primary mb-4'>
+					{t('confirmPaymentTitle')}
+				</h3>
 				<p className='text-text-secondary mb-6'>
-					{t('confirmPaymentDesc', { amount: formatPrice(price), code: ticket.reference_code })}
+					{t('confirmPaymentDesc', {
+						amount: formatPrice(price),
+						code: ticket.reference_code,
+					})}
 				</p>
 				<div className='flex gap-3'>
 					<button

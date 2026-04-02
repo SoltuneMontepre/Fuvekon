@@ -79,8 +79,7 @@
 				"title": "FUVE staff member:"
 			},
 			"dev": {
-				"title": "Web Developer:",
-				"lead": "Team lead"
+				"title": "Web Developer:"
 			},
 			"design": {
 				"title": "Web Designer:"
@@ -107,6 +106,8 @@
 		"myDealerBooth": "Gian hàng của tôi",
 		"schedule": "Lịch trình",
 		"about": "Giới thiệu",
+		"aboutPage": "Về FUVE",
+		"tos": "Quy tắc / Điều khoản",
 		"myTicket": "Vé của tôi",
 		"account": "Tài khoản",
 		"changePassword": "Đổi mật khẩu",

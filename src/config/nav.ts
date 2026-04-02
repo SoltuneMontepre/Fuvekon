@@ -41,7 +41,10 @@ const useNavDatas = (): NavData[] => {
 		},
 		{
 			label: t('about'),
-			to: '/about',
+			children: [
+				{ label: t('aboutPage'), to: '/about' },
+				{ label: t('tos'), to: '/tos' },
+			],
 		},
 	]
 }

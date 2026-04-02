@@ -12,6 +12,7 @@ const staticRoutes = [
 	'/dealer',
 	'/schedule',
 	'/about',
+	'/tos',
 ] as const
 
 export default function sitemap(): MetadataRoute.Sitemap {

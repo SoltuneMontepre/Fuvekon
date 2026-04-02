@@ -21,6 +21,7 @@ import { useRouter } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
 import { ArrowUp } from 'lucide-react'
 import TicketSection from '@/components/landing/TicketSection'
+import Footer from '@/components/Footer'
 
 const LandingPage = (): React.JSX.Element => {
 	const router = useRouter()
@@ -427,6 +428,14 @@ const LandingPage = (): React.JSX.Element => {
 			</div>
 
 			{TICKET_ENABLED && <TicketSection id='ticket-section' />}
+
+			{/* Footer (also part of snap sections) */}
+			<div
+				id='footer-section'
+				className='section h-dvh w-dvw flex items-end justify-center pointer-events-auto relative z-30'
+			>
+				<Footer />
+			</div>
 
 			<div className='fixed inset-0 hidden md:flex items-center justify-center pointer-events-none overflow-visible'>
 				<DrumImage id='feat-drum' className='' />

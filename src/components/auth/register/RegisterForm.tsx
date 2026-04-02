@@ -322,7 +322,10 @@ const RegisterForm = (): React.ReactElement => {
 									htmlFor='termsAccepted'
 									className='underline text-xs sm:text-sm text-[#8C8C8C] cursor-pointer'
 								>
-									{t('termsAgreement')}
+									{t('termsAgreement')}{' '}
+									<Link href='/tos' className='underline underline-offset-4'>
+										Terms of Service
+									</Link>
 								</label>
 							</div>
 							{errors.termsAccepted && (

@@ -14,7 +14,7 @@ const NavButtons = ({
 	return (
 		<>
 			<div
-				className={`lg:flex hidden underline underline-offset-5 items-center gap-0 ${className}`}
+				className={`relative lg:flex hidden underline underline-offset-5 items-center gap-0 ${className}`}
 			>
 				{buttons.map(button =>
 					button.to && !button.children ? (
@@ -83,7 +83,7 @@ const CollapsedNavButton = ({ button }: { button: NavData }) => {
 	}, [])
 
 	return (
-		<div className='relative flex-1'>
+		<div className='relative flex-1 z-[999]'>
 			<button
 				ref={buttonRef}
 				className='nav-bg w-full text-center text-bg-secondary underline hover:bg-secondary/20 transition-colors duration-200 underline-offset-5 uppercase'
@@ -96,7 +96,7 @@ const CollapsedNavButton = ({ button }: { button: NavData }) => {
 				<div
 					ref={dropdownRef}
 					style={{ top: dropdownPos.top, left: dropdownPos.left }}
-					className='fixed bg-secondary/20 backdrop-blur rounded-2xl flex flex-col gap-1 z-[9999] min-w-[10rem]'
+					className='fixed bg-secondary/20 backdrop-blur rounded-2xl flex flex-col gap-1 min-w-[10rem]'
 				>
 					{button.children?.map(child => (
 						<NavButton key={child.label} button={child} />

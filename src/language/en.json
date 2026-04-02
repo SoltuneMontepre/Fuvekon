@@ -79,8 +79,7 @@
 				"title": "FUVE staff member:"
 			},
 			"dev": {
-				"title": "Web Developer:",
-				"lead": "Team lead"
+				"title": "Web Developer:"
 			},
 			"design": {
 				"title": "Web Designer:"
@@ -110,6 +109,8 @@
 		"changePassword": "Change Password",
 		"schedule": "Schedule",
 		"about": "About",
+		"aboutPage": "About FUVE",
+		"tos": "Terms / Rules",
 		"admin": "Admin",
 		"scanTicket": "Scan Ticket"
 	},

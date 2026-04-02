@@ -122,8 +122,7 @@ const AboutPage = (): React.ReactElement => {
 								{t('credits.dev.title')}
 							</h3>
 							<p className='text-base leading-relaxed text-white/70'>
-								Bintuc ({t('credits.dev.lead')}), Hatohui, JackWh, Kyros,
-								Makiato
+								Bintuc, Hatohui, JackWh, Kyros, Makiato
 							</p>
 						</div>
 					</div>
