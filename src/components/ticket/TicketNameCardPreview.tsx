@@ -18,9 +18,9 @@ const clamp = (n: number, min: number, max: number) =>
 const TIER_TEMPLATE_SRC: Record<number, string> = {
 	// T1 is present in assets, but name-card editing requires tier >= T2.
 	1: '/images/ticket/thestandard.png',
-	2: '/images/ticket/thesponsor.png',
-	3: '/images/ticket/thesupersponsor.png',
-	4: '/images/ticket/thevip.png',
+	2: '/images/ticket/thevip.png',
+	3: '/images/ticket/thesponsor.png',
+	4: '/images/ticket/thesupersponsor.png',
 	5: '/images/ticket/thegoh.png',
 }
 

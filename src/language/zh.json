@@ -273,6 +273,7 @@
 		"denialReason": "原因",
 		"nameCard": "姓名卡",
 		"nameCardDesc": "编辑您的徽章信息并预览它在门票上的显示效果。",
+		"nameCardStandardNotice": "您的门票包含姓名卡预览。编辑功能将在审核通过后为更高等级门票开放。",
 		"availableAfterApproval": "审核通过后可用",
 		"badgeInfo": "徽章信息",
 		"badgeName": "徽章名称",

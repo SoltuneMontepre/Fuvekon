@@ -275,6 +275,7 @@
 		"denialReason": "Reason",
 		"nameCard": "Name card",
 		"nameCardDesc": "Edit your badge details and preview how it will look on your ticket.",
+		"nameCardStandardNotice": "Your ticket includes a name card preview. Editing is available for higher tiers after approval.",
 		"availableAfterApproval": "Available after approval",
 		"badgeInfo": "Badge Information",
 		"badgeName": "Badge Name",

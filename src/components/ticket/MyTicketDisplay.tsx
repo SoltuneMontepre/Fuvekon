@@ -214,9 +214,6 @@ const MyTicketDisplay = (): React.ReactElement => {
 	const [isFursuiter, setIsFursuiter] = useState(false)
 	const [isFursuitStaff, setIsFursuitStaff] = useState(false)
 	const [isSavingBadge, setIsSavingBadge] = useState(false)
-	// "Standard" users are neither fursuiters nor fursuit staff.
-	// (This matches the data we already store on the ticket.)
-	const isStandardUser = !isFursuiter && !isFursuitStaff
 	const previewName =
 		badgeName.trim() ||
 		account?.first_name ||
@@ -244,6 +241,15 @@ const MyTicketDisplay = (): React.ReactElement => {
 		// Requirement: user has ticket and ticket tier is >= T2
 		return !!ticket && tierCodeNumber >= 2
 	}, [ticket, tierCodeNumber])
+
+	const canViewNameCard = useMemo(() => {
+		// Visible after user confirms payment (and for approved/admin-granted).
+		// Hidden while still pending payment or when ticket is denied.
+		return (
+			!!ticket &&
+			(ticket.status === 'approved' || ticket.status === 'admin_granted')
+		)
+	}, [ticket])
 
 	const canSaveBadge = useMemo(() => {
 		// Backend only allows badge updates when approved.
@@ -526,8 +532,8 @@ const MyTicketDisplay = (): React.ReactElement => {
 					/>
 				</div>
 
-				{/* Name Card Editor (Tier >= T2) */}
-				{canEditNameCard && (
+				{/* Name Card (visible after confirmation) */}
+				{canViewNameCard && (
 					<div
 						className='mt-6 pt-6 border-t space-y-4'
 						style={{ borderColor: `${theme.fieldBorder}` }}
@@ -555,114 +561,129 @@ const MyTicketDisplay = (): React.ReactElement => {
 						</div>
 
 						<div className='grid grid-cols-1 lg:grid-cols-2 gap-5 items-start'>
-							{/* Controls */}
-							<div
-								className='rounded-2xl p-4'
-								style={{
-									background: theme.fieldBg,
-									border: `1px solid ${theme.fieldBorder}`,
-								}}
-							>
-								<label className='block text-sm font-medium text-text-primary mb-2'>
-									{safeTicket('badgeName', 'Badge name')}
-								</label>
-								<input
-									value={badgeName}
-									onChange={e => {
-										setBadgeName(e.target.value)
+							{/* Controls (Tier >= T2) */}
+							{canEditNameCard ? (
+								<div
+									className='rounded-2xl p-4'
+									style={{
+										background: theme.fieldBg,
+										border: `1px solid ${theme.fieldBorder}`,
 									}}
-									disabled={!canSaveBadge || isSavingBadge}
-									placeholder={safeTicket(
-										'badgeNamePlaceholder',
-										'Your display name'
-									)}
-									className='w-full px-4 py-3 rounded-xl border border-black/10 bg-white/80 focus:outline-none focus:ring-2 focus:ring-black/10'
-									maxLength={255}
-								/>
-
-								<div className='mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3'>
-									<label className='flex items-center gap-2 text-sm text-text-secondary select-none'>
-										<input
-											type='checkbox'
-											checked={isFursuiter}
-											onChange={e => {
-												setIsFursuiter(e.target.checked)
-											}}
-											disabled={!canSaveBadge || isSavingBadge}
-											className='accent-black'
-										/>
-										{t('isFursuiter') || 'Fursuiter'}
-									</label>
-									<label className='flex items-center gap-2 text-sm text-text-secondary select-none'>
-										<input
-											type='checkbox'
-											checked={isFursuitStaff}
-											onChange={e => {
-												setIsFursuitStaff(e.target.checked)
-											}}
-											disabled={!canSaveBadge || isSavingBadge}
-											className='accent-black'
-										/>
-										{t('isFursuitStaff') || 'Fursuit staff'}
-									</label>
-								</div>
-
-								{/* Change avatar (affects namecard preview) */}
-								{!isStandardUser && (
-									<div className='mt-4'>
-										<input
-											ref={avatarInputRef}
-											type='file'
-											accept='image/*'
-											onChange={handleAvatarFileChange}
-											disabled={
-												isUploadingAvatar || updateAvatarMutation.isPending
-											}
-											className='hidden'
-										/>
-										<button
-											type='button'
-											onClick={() => avatarInputRef.current?.click()}
-											disabled={
-												!canSaveBadge ||
-												isUploadingAvatar ||
-												updateAvatarMutation.isPending
-											}
-											className='w-full py-2.5 px-4 rounded-xl btn-outline font-medium transition-colors duration-200'
-										>
-											{isUploadingAvatar || updateAvatarMutation.isPending
-												? tCommon('processing')
-												: safeAccount('changeAvatar', 'Change avatar')}
-										</button>
-										{isUploadingAvatar && avatarUploadProgress > 0 && (
-											<p className='mt-2 text-xs text-text-secondary'>
-												{`${Math.round(avatarUploadProgress)}%`}
-											</p>
-										)}
-									</div>
-								)}
-
-								<button
-									onClick={handleSaveBadge}
-									disabled={
-										!canSaveBadge || isSavingBadge || isUploadingNamecard
-									}
-									className='shadow-md mt-4 w-full py-2.5 px-4 text-xl rounded-xl btn-primary font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed'
 								>
-									{isSavingBadge || isUploadingNamecard
-										? tCommon('processing')
-										: safeTicket('saveNameCard', 'Save name card')}
-								</button>
-								{isUploadingNamecard && (
-									<p className='mt-2 text-xs text-text-secondary'>
-										{namecardUploadProgress > 0
-											? `${Math.round(namecardUploadProgress)}%`
-											: ''}
-									</p>
-								)}
-							</div>
+									<label className='block text-sm font-medium text-text-primary mb-2'>
+										{safeTicket('badgeName', 'Badge name')}
+									</label>
+									<input
+										value={badgeName}
+										onChange={e => {
+											setBadgeName(e.target.value)
+										}}
+										disabled={!canSaveBadge || isSavingBadge}
+										placeholder={safeTicket(
+											'badgeNamePlaceholder',
+											'Your display name'
+										)}
+										className='w-full px-4 py-3 rounded-xl border border-black/10 bg-white/80 focus:outline-none focus:ring-2 focus:ring-black/10'
+										maxLength={255}
+									/>
 
-							{/* Preview */}
+									<div className='mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3'>
+										<label className='flex items-center gap-2 text-sm text-text-secondary select-none'>
+											<input
+												type='checkbox'
+												checked={isFursuiter}
+												onChange={e => {
+													setIsFursuiter(e.target.checked)
+												}}
+												disabled={!canSaveBadge || isSavingBadge}
+												className='accent-black'
+											/>
+											{t('isFursuiter') || 'Fursuiter'}
+										</label>
+										<label className='flex items-center gap-2 text-sm text-text-secondary select-none'>
+											<input
+												type='checkbox'
+												checked={isFursuitStaff}
+												onChange={e => {
+													setIsFursuitStaff(e.target.checked)
+												}}
+												disabled={!canSaveBadge || isSavingBadge}
+												className='accent-black'
+											/>
+											{t('isFursuitStaff') || 'Fursuit staff'}
+										</label>
+									</div>
+
+									{/* Change avatar (affects namecard preview) */}
+									{tierCodeNumber >= 2 && (
+										<div className='mt-4'>
+											<input
+												ref={avatarInputRef}
+												type='file'
+												accept='image/*'
+												onChange={handleAvatarFileChange}
+												disabled={
+													isUploadingAvatar || updateAvatarMutation.isPending
+												}
+												className='hidden'
+											/>
+											<button
+												type='button'
+												onClick={() => avatarInputRef.current?.click()}
+												disabled={
+													!canSaveBadge ||
+													isUploadingAvatar ||
+													updateAvatarMutation.isPending
+												}
+												className='w-full py-2.5 px-4 rounded-xl btn-outline font-medium transition-colors duration-200'
+											>
+												{isUploadingAvatar || updateAvatarMutation.isPending
+													? tCommon('processing')
+													: safeAccount('changeAvatar', 'Change avatar')}
+											</button>
+											{isUploadingAvatar && avatarUploadProgress > 0 && (
+												<p className='mt-2 text-xs text-text-secondary'>
+													{`${Math.round(avatarUploadProgress)}%`}
+												</p>
+											)}
+										</div>
+									)}
+
+									<button
+										onClick={handleSaveBadge}
+										disabled={
+											!canSaveBadge || isSavingBadge || isUploadingNamecard
+										}
+										className='shadow-md mt-4 w-full py-2.5 px-4 text-xl rounded-xl btn-primary font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed'
+									>
+										{isSavingBadge || isUploadingNamecard
+											? tCommon('processing')
+											: safeTicket('saveNameCard', 'Save name card')}
+									</button>
+									{isUploadingNamecard && (
+										<p className='mt-2 text-xs text-text-secondary'>
+											{namecardUploadProgress > 0
+												? `${Math.round(namecardUploadProgress)}%`
+												: ''}
+										</p>
+									)}
+								</div>
+							) : (
+								<div
+									className='rounded-2xl p-4 text-sm text-text-secondary'
+									style={{
+										background: theme.fieldBg,
+										border: `1px solid ${theme.fieldBorder}`,
+									}}
+								>
+									{safeTicket(
+										'nameCardStandardNotice',
+										'Your ticket includes a name card preview. Editing is available for higher tiers after approval.'
+									)}
+								</div>
+							)}
+
+							{/* Preview (all tiers, after confirmation) */}
 							<div className='rounded-2xl bg-white/60 p-3'>
 								<TicketNameCardPreview
 									ref={namecardCaptureRef}

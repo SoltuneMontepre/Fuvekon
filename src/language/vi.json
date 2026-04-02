@@ -275,6 +275,7 @@
 		"denialReason": "Lý do",
 		"nameCard": "Thẻ tên",
 		"nameCardDesc": "Chỉnh sửa thông tin badge và xem trước cách hiển thị trên vé của bạn.",
+		"nameCardStandardNotice": "Vé của bạn có xem trước thẻ tên. Tính năng chỉnh sửa chỉ khả dụng cho hạng vé cao hơn sau khi được duyệt.",
 		"availableAfterApproval": "Có thể dùng sau khi được duyệt",
 		"badgeInfo": "Thông tin badge",
 		"badgeName": "Tên badge",
