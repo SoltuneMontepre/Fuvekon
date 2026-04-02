@@ -26,7 +26,10 @@ export interface UploadToS3Options {
 }
 
 export interface UploadToS3Result {
-	uploadFile: (file: File, options?: Partial<PresignRequest>) => Promise<void>
+	uploadFile: (
+		file: File,
+		options?: Partial<PresignRequest>
+	) => Promise<{ fileUrl: string; fileKey: string }>
 	isUploading: boolean
 	progress: number
 	error: Error | null
@@ -106,6 +109,7 @@ export function useUploadToS3(options?: UploadToS3Options): UploadToS3Result {
 			// Step 4: Optionally save file info to DB
 			// This would be a separate API call to your backend
 			// await saveFileInfo({ fileKey, fileUrl, fileName: file.name, ... })
+			return { fileUrl, fileKey }
 		} catch (err) {
 			const error = err instanceof Error ? err : new Error('Upload failed')
 			setError(error)

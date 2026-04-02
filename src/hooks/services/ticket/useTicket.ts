@@ -61,6 +61,7 @@ const TicketAPI = {
 	updateBadgeDetails: async (payload: {
 		con_badge_name: string
 		badge_image?: string
+		namecard_url?: string
 		is_fursuiter: boolean
 		is_fursuit_staff: boolean
 	}) => {
@@ -161,6 +162,7 @@ export function useUpdateBadgeDetails() {
 		mutationFn: (payload: {
 			con_badge_name: string
 			badge_image?: string
+			namecard_url?: string
 			is_fursuiter: boolean
 			is_fursuit_staff: boolean
 		}) => TicketAPI.updateBadgeDetails(payload),

@@ -13,13 +13,21 @@ import {
 } from 'lucide-react'
 import { useLocale, useTranslations } from 'next-intl'
 import { toast } from 'sonner'
+import Image from 'next/image'
+import { toBlob } from 'html-to-image'
+import S3Image from '@/components/common/S3Image'
+import { compressImage } from '@/utils/imageCompression'
 import {
 	useGetMyTicket,
 	useGetTiers,
 	useCancelTicket,
+	useUpdateBadgeDetails,
 } from '@/hooks/services/ticket/useTicket'
+import { useUploadToS3 } from '@/hooks/services/s3/useUploadToS3'
+import { useUpdateAvatar } from '@/hooks/services/auth/useAccount'
 import UpgradeTicketModal from '@/components/ticket/UpgradeTicketModal'
 import Loading from '@/components/common/Loading'
+import { useAuthStore } from '@/stores/authStore'
 import type { TicketStatus, TicketTier } from '@/types/models/ticket/ticket'
 
 // Format price in VND
@@ -166,6 +174,19 @@ const MyTicketDisplay = (): React.ReactElement => {
 	const locale = useLocale()
 	const t = useTranslations('ticket')
 	const tCommon = useTranslations('common')
+	const tAccount = useTranslations('account')
+
+	// next-intl returns the key (e.g. "ticket.nameCard") when missing.
+	// Since that string is truthy, `t(...) || fallback` won't work—use this helper instead.
+	const safeTicket = (key: string, fallback: string) => {
+		const val = t(key)
+		return val === `ticket.${key}` ? fallback : val
+	}
+	const safeAccount = (key: string, fallback: string) => {
+		const val = tAccount(key)
+		return val === `account.${key}` ? fallback : val
+	}
+	const account = useAuthStore(state => state.account)
 	const [showCancelDialog, setShowCancelDialog] = useState(false)
 	const [showUpgradeModal, setShowUpgradeModal] = useState(false)
 	const [isCancelling, setIsCancelling] = useState(false)
@@ -174,8 +195,34 @@ const MyTicketDisplay = (): React.ReactElement => {
 	const { data: ticketData, isLoading, error, refetch } = useGetMyTicket()
 	const { data: tiersData } = useGetTiers()
 	const cancelTicketMutation = useCancelTicket()
+	const updateBadgeMutation = useUpdateBadgeDetails()
+	const updateAvatarMutation = useUpdateAvatar()
+	const namecardCaptureRef = useRef<HTMLDivElement>(null)
+	const [namecardUploadProgress, setNamecardUploadProgress] = useState(0)
+	const { uploadFile: uploadNamecardToS3, isUploading: isUploadingNamecard } =
+		useUploadToS3({
+			onProgress: p => setNamecardUploadProgress(p),
+		})
+	const avatarInputRef = useRef<HTMLInputElement>(null)
+	const [avatarUploadProgress, setAvatarUploadProgress] = useState(0)
+	const { uploadFile: uploadAvatarToS3, isUploading: isUploadingAvatar } =
+		useUploadToS3({
+			onProgress: p => setAvatarUploadProgress(p),
+		})
 
 	const ticket = ticketData?.data
+	const [badgeName, setBadgeName] = useState('')
+	const [isFursuiter, setIsFursuiter] = useState(false)
+	const [isFursuitStaff, setIsFursuitStaff] = useState(false)
+	const [isSavingBadge, setIsSavingBadge] = useState(false)
+	const previewName =
+		badgeName.trim() ||
+		account?.first_name ||
+		ticket?.tier?.ticket_name ||
+		'Guest'
+	const previewNameContainerRef = useRef<HTMLDivElement>(null)
+	const previewNameTextRef = useRef<HTMLDivElement>(null)
+	const [previewNameScale, setPreviewNameScale] = useState(1)
 
 	// Compute tier rank from full tier list
 	const tierTheme = useMemo(() => {
@@ -187,6 +234,29 @@ const MyTicketDisplay = (): React.ReactElement => {
 		const rank = Math.min(Math.max(rankIndex, 0), TIER_THEMES.length - 1)
 		return TIER_THEMES[rank]
 	}, [ticket?.tier, tiersData?.data])
+
+	const tierCodeNumber = useMemo(() => {
+		const code = ticket?.tier?.tier_code ?? ''
+		const match = code.match(/^T(\d+)$/i)
+		return match ? Number(match[1]) : 0
+	}, [ticket?.tier?.tier_code])
+
+	const canEditNameCard = useMemo(() => {
+		// Requirement: user has ticket and ticket tier is >= T2
+		return !!ticket && tierCodeNumber >= 2
+	}, [ticket, tierCodeNumber])
+
+	const canSaveBadge = useMemo(() => {
+		// Backend only allows badge updates when approved.
+		return canEditNameCard && ticket?.status === 'approved'
+	}, [canEditNameCard, ticket?.status])
+
+	useEffect(() => {
+		if (!ticket) return
+		setBadgeName(ticket.con_badge_name || account?.first_name || '')
+		setIsFursuiter(!!ticket.is_fursuiter)
+		setIsFursuitStaff(!!ticket.is_fursuit_staff)
+	}, [ticket, account?.first_name])
 
 	// Sync native dialog open/close state
 	useEffect(() => {
@@ -233,6 +303,35 @@ const MyTicketDisplay = (): React.ReactElement => {
 		}
 	}, [error, t])
 
+	useEffect(() => {
+		const el = previewNameContainerRef.current
+		const textEl = previewNameTextRef.current
+		if (!el || !textEl) return
+
+		const measure = () => {
+			// `scrollWidth` isn't affected by CSS transforms, so this stays correct
+			// even after we've applied a scale.
+			const available = el.getBoundingClientRect().width
+			const needed = textEl.scrollWidth
+			if (!available || !needed) return
+			const scale = Math.max(0.1, Math.min(1, available / needed))
+			setPreviewNameScale(scale)
+		}
+
+		// Measure now and once more on the next frame to catch late layout changes.
+		measure()
+		requestAnimationFrame(() => measure())
+
+		const ro = new ResizeObserver(() => measure())
+		ro.observe(el)
+
+		const fontsReady: Promise<unknown> | undefined =
+			'fonts' in document ? document.fonts.ready : undefined
+		fontsReady?.then(() => measure())
+
+		return () => ro.disconnect()
+	}, [previewName, isLoading, ticket?.id])
+
 	if (isLoading) {
 		return <Loading />
 	}
@@ -276,6 +375,107 @@ const MyTicketDisplay = (): React.ReactElement => {
 	const tier = ticket.tier
 	const isUpgradedTicket = !!ticket.upgraded_from_tier_id
 	const theme = tierTheme
+	const previewNameFontSize = (() => {
+		const normalized = (previewName || '').trim().replace(/\s+/g, ' ')
+		const words = normalized ? normalized.split(' ').length : 0
+		const len = normalized.length
+
+		// Tune thresholds to keep short names punchy, long names readable.
+		if (len > 15 || words >= 5) return 'clamp(15px, 3.4vw, 32px)'
+		if (len > 10 || words >= 4) return 'clamp(16px, 3.8vw, 36px)'
+		if (len > 5 || words >= 3) return 'clamp(22px, 4.3vw, 42px)'
+		return 'clamp(22px, 5.2vw, 50px)'
+	})()
+	const displayName =
+		account?.fursona_name ||
+		account?.first_name ||
+		account?.email?.split('@')[0] ||
+		'User'
+
+	const handleAvatarFileChange = async (
+		e: React.ChangeEvent<HTMLInputElement>
+	) => {
+		const file = e.target.files?.[0]
+		if (avatarInputRef.current) avatarInputRef.current.value = ''
+		if (!file) return
+		if (!file.type.startsWith('image/')) {
+			toast.error(safeAccount('avatarUpdateError', 'Please select an image'))
+			return
+		}
+
+		try {
+			const fileToUpload = await compressImage(file)
+			const uploaded = await uploadAvatarToS3(fileToUpload, {
+				folder: 'user-uploads',
+			})
+			await updateAvatarMutation.mutateAsync({ avatar: uploaded.fileUrl })
+			toast.success(
+				safeAccount(
+					'avatarUpdateSuccess',
+					'Profile photo updated successfully!'
+				)
+			)
+		} catch {
+			toast.error(
+				safeAccount(
+					'avatarUpdateError',
+					'Failed to update profile photo. Please try again.'
+				)
+			)
+		}
+	}
+
+	const handleSaveBadge = async () => {
+		if (!canSaveBadge) return
+		const name = badgeName.trim()
+		if (!name) {
+			toast.error(t('badgeNameRequired') || 'Please enter a badge name')
+			return
+		}
+		setIsSavingBadge(true)
+		try {
+			let namecardUrl: string | undefined
+
+			try {
+				const node = namecardCaptureRef.current
+				if (node && ticket?.reference_code) {
+					const blob = await toBlob(node, {
+						cacheBust: true,
+						pixelRatio: 2,
+					})
+
+					if (blob) {
+						const file = new File(
+							[blob],
+							`namecard-${ticket.reference_code}.png`,
+							{
+								type: 'image/png',
+							}
+						)
+
+						const uploaded = await uploadNamecardToS3(file, {
+							folder: 'namecards',
+						})
+						namecardUrl = uploaded.fileUrl
+					}
+				}
+			} catch {
+				// Non-blocking: still save text/flags even if image capture/upload fails.
+			}
+
+			await updateBadgeMutation.mutateAsync({
+				con_badge_name: name,
+				namecard_url: namecardUrl,
+				is_fursuiter: isFursuiter,
+				is_fursuit_staff: isFursuitStaff,
+			})
+			toast.success(t('badgeUpdated') || 'Name card updated')
+		} catch {
+			toast.error(t('badgeUpdateError') || 'Failed to update name card')
+		} finally {
+			setIsSavingBadge(false)
+		}
+	}
 
 	// Themed info field
 	const InfoField = ({ label, value }: { label: string; value: string }) => (
@@ -366,6 +566,225 @@ const MyTicketDisplay = (): React.ReactElement => {
 						value={new Date(ticket.created_at).toLocaleDateString('vi-VN')}
 					/>
 				</div>
+
+				{/* Name Card Editor (Tier >= T2) */}
+				{canEditNameCard && (
+					<div
+						className='mt-6 pt-6 border-t space-y-4'
+						style={{ borderColor: `${theme.fieldBorder}` }}
+					>
+						<div className='flex items-start justify-between gap-3'>
+							<div>
+								<h3 className='text-lg font-semibold text-text-primary'>
+									{safeTicket('nameCard', 'Name card')}
+								</h3>
+								<p className='text-sm text-text-secondary'>
+									{safeTicket(
+										'nameCardDesc',
+										'Edit your badge details and preview how it will look on your ticket.'
+									)}
+								</p>
+							</div>
+							{!canSaveBadge && (
+								<span className='text-xs font-medium px-3 py-1 rounded-full bg-amber-100 text-amber-700'>
+									{safeTicket(
+										'availableAfterApproval',
+										'Available after approval'
+									)}
+								</span>
+							)}
+						</div>
+
+						<div className='grid grid-cols-1 lg:grid-cols-2 gap-5 items-start'>
+							{/* Controls */}
+							<div
+								className='rounded-2xl p-4'
+								style={{
+									background: theme.fieldBg,
+									border: `1px solid ${theme.fieldBorder}`,
+								}}
+							>
+								<label className='block text-sm font-medium text-text-primary mb-2'>
+									{safeTicket('badgeName', 'Badge name')}
+								</label>
+								<input
+									value={badgeName}
+									onChange={e => {
+										setBadgeName(e.target.value)
+									}}
+									disabled={!canSaveBadge || isSavingBadge}
+									placeholder={safeTicket(
+										'badgeNamePlaceholder',
+										'Your display name'
+									)}
+									className='w-full px-4 py-3 rounded-xl border border-black/10 bg-white/80 focus:outline-none focus:ring-2 focus:ring-black/10'
+									maxLength={255}
+								/>
+
+								<div className='mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3'>
+									<label className='flex items-center gap-2 text-sm text-text-secondary select-none'>
+										<input
+											type='checkbox'
+											checked={isFursuiter}
+											onChange={e => {
+												setIsFursuiter(e.target.checked)
+											}}
+											disabled={!canSaveBadge || isSavingBadge}
+											className='accent-black'
+										/>
+										{t('isFursuiter') || 'Fursuiter'}
+									</label>
+									<label className='flex items-center gap-2 text-sm text-text-secondary select-none'>
+										<input
+											type='checkbox'
+											checked={isFursuitStaff}
+											onChange={e => {
+												setIsFursuitStaff(e.target.checked)
+											}}
+											disabled={!canSaveBadge || isSavingBadge}
+											className='accent-black'
+										/>
+										{t('isFursuitStaff') || 'Fursuit staff'}
+									</label>
+								</div>
+
+								{/* Change avatar (affects namecard preview) */}
+								<div className='mt-4'>
+									<input
+										ref={avatarInputRef}
+										type='file'
+										accept='image/*'
+										onChange={handleAvatarFileChange}
+										disabled={isUploadingAvatar || updateAvatarMutation.isPending}
+										className='hidden'
+									/>
+									<button
+										type='button'
+										onClick={() => avatarInputRef.current?.click()}
+										disabled={!canSaveBadge || isUploadingAvatar || updateAvatarMutation.isPending}
+										className='w-full py-2.5 px-4 rounded-xl btn-outline font-medium transition-colors duration-200'
+									>
+										{isUploadingAvatar || updateAvatarMutation.isPending
+											? tCommon('processing')
+											: safeAccount('changeAvatar', 'Change avatar')}
+									</button>
+									{isUploadingAvatar && avatarUploadProgress > 0 && (
+										<p className='mt-2 text-xs text-text-secondary'>
+											{`${Math.round(avatarUploadProgress)}%`}
+										</p>
+									)}
+								</div>
+
+								<button
+									onClick={handleSaveBadge}
+									disabled={
+										!canSaveBadge || isSavingBadge || isUploadingNamecard
+									}
+									className='shadow-md mt-4 w-full py-2.5 px-4 text-xl rounded-xl btn-primary font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed'
+								>
+									{isSavingBadge || isUploadingNamecard
+										? tCommon('processing')
+										: safeTicket('saveNameCard', 'Save name card')}
+								</button>
+								{isUploadingNamecard && (
+									<p className='mt-2 text-xs text-text-secondary'>
+										{namecardUploadProgress > 0
+											? `${Math.round(namecardUploadProgress)}%`
+											: ''}
+									</p>
+								)}
+							</div>
+
+							{/* Preview */}
+							<div className='rounded-2xl bg-white/60 p-3'>
+								<div
+									ref={namecardCaptureRef}
+									className='relative w-full max-w-[420px] mx-auto'
+								>
+									{/* Avatar goes UNDER the badge PNG (PNG transparency will reveal it) */}
+									<div
+										className='absolute overflow-hidden rounded-[10px]'
+										style={{
+											left: '15.5%',
+											top: '29%',
+											width: '53%',
+											height: '35%',
+										}}
+									>
+										<div className='relative w-40 h-50 bg-white'>
+											{account?.avatar ? (
+												<S3Image
+													src={account.avatar}
+													alt={displayName}
+													fill
+													className='object-cover'
+												/>
+											) : (
+												<div className='w-full h-full flex items-center justify-center text-white/60 text-3xl font-bold'>
+													{(displayName || 'U').slice(0, 1).toUpperCase()}
+												</div>
+											)}
+										</div>
+									</div>
+
+									{/* Badge artwork on TOP */}
+									<Image
+										src='/images/ticket/theten.png'
+										alt='Name card preview template'
+										width={652}
+										height={1001}
+										className='relative w-full h-auto rounded-xl z-10'
+										priority={false}
+									/>
+
+									{/* Name + tier overlay on the badge strip */}
+									<div
+										className='absolute z-20 text-left'
+										style={{
+											left: '12%',
+											top: '73.5%',
+										}}
+									>
+										<div
+											className='mb-3 font-semibold uppercase tracking-[0.22em]'
+											style={{
+												color: 'rgba(15, 35, 40, 0.75)',
+												fontSize: 'clamp(10px, 1.6vw, 14px)',
+												lineHeight: 1,
+												textShadow: '0 1px 2px rgba(255,255,255,0.35)',
+												fontFamily: '"Comic Sans MS","Comic Sans",cursive',
+											}}
+										>
+											{ticket.reference_code ? `#${ticket.reference_code}` : ''}
+										</div>
+										<div
+											ref={previewNameContainerRef}
+											className='font-extrabold uppercase w-[50%]'
+											style={{
+												color: 'rgba(245, 240, 230, 0.95)',
+												fontSize: previewNameFontSize,
+												lineHeight: 1.05,
+												whiteSpace: 'nowrap',
+												overflow: 'hidden',
+											}}
+										>
+											<div
+												ref={previewNameTextRef}
+												style={{
+													display: 'inline-block',
+													transform: `scale(${previewNameScale})`,
+													transformOrigin: 'left center',
+												}}
+											>
+												{previewName}
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				)}
 
 				{/* Status-specific content */}
 				{ticket.status === 'pending' && (

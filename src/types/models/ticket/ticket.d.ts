@@ -24,6 +24,7 @@ export interface UserTicket {
 	ticket_number: number
 	con_badge_name?: string
 	badge_image?: string
+	namecard_url?: string
 	is_fursuiter: boolean
 	is_fursuit_staff: boolean
 	is_checked_in: boolean
