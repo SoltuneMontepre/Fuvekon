@@ -262,24 +262,26 @@ const AdminDashboardPage: React.FC = () => {
 			{(stats?.pending_over_24_hours ?? 0) > 0 && (
 				<section className='mb-8'>
 					<div
-						className='flex items-center gap-3 rounded-xl border border-amber-200 bg-amber-50/80 p-4'
+						className='flex flex-col gap-3 rounded-xl border border-amber-200 bg-amber-50/80 p-4 sm:flex-row sm:items-center'
 						role='alert'
 					>
-						<AlertCircle className='h-6 w-6 shrink-0 text-amber-600' />
-						<div className='min-w-0 flex-1'>
-							<p className='font-medium text-amber-800'>
-								{stats?.pending_over_24_hours} vé đang chờ duyệt quá 24 giờ
-							</p>
-							<p className='text-sm text-amber-700'>
-								Xem và xử lý tại Quản lý vé.
-							</p>
+						<div className='flex items-start gap-3 sm:min-w-0 sm:flex-1'>
+							<AlertCircle className='mt-0.5 h-6 w-6 shrink-0 text-amber-600' />
+							<div className='min-w-0 flex-1'>
+								<p className='font-medium text-amber-800'>
+									{stats?.pending_over_24_hours} vé đang chờ duyệt quá 24 giờ
+								</p>
+								<p className='text-sm text-amber-700'>
+									Xem và xử lý tại Quản lý vé.
+								</p>
+							</div>
 						</div>
 						<button
 							type='button'
 							onClick={() =>
 								window.location.assign('/admin/tickets?status=pending')
 							}
-							className='shrink-0 rounded-xl bg-amber-200/80 px-4 py-2.5 text-sm font-medium text-amber-900 transition-colors hover:bg-amber-300/80'
+							className='w-full shrink-0 rounded-xl bg-amber-200/80 px-4 py-2.5 text-center text-sm font-medium text-amber-900 transition-colors hover:bg-amber-300/80 sm:w-auto'
 						>
 							Xem ngay
 						</button>
@@ -305,8 +307,8 @@ const AdminDashboardPage: React.FC = () => {
 					<h2 className='mb-4 text-lg font-semibold text-text-primary'>
 						Thống kê theo loại vé
 					</h2>
-					<div className='overflow-hidden rounded-xl border border-[#8C8C8C]/15'>
-						<table className='w-full'>
+					<div className='overflow-x-auto rounded-xl border border-[#8C8C8C]/15'>
+						<table className='w-full min-w-[520px]'>
 							<thead>
 								<tr className='border-b border-[#48715B]/15'>
 									<th className='px-4 py-3 text-left text-sm font-semibold text-[#48715B]'>

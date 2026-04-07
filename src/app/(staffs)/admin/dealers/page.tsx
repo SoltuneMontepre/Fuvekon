@@ -143,7 +143,7 @@ const DealerManagementPage = (): React.ReactElement => {
 			</div>
 
 			{/* Statistics Cards */}
-			<div className='grid grid-cols-2 md:grid-cols-3 gap-4 mt-6'>
+			<div className='mt-6 grid grid-cols-1 gap-4 sm:grid-cols-3'>
 				<div className='rounded-xl bg-[#E2EEE2]/60 border border-[#8C8C8C]/15 p-4'>
 					<p className='text-sm font-medium text-[#48715B]'>{t('totalDealers', 'Tổng số Dealer')}</p>
 					<p className='text-2xl font-bold text-text-primary'>{stats.total}</p>
@@ -160,7 +160,7 @@ const DealerManagementPage = (): React.ReactElement => {
 
 			{/* Filters */}
 			<div className='mt-6 rounded-xl bg-[#E2EEE2]/60 border border-[#8C8C8C]/15 p-4'>
-				<div className='flex flex-wrap gap-4 items-center'>
+				<div className='flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-center'>
 					<div className='flex-1 min-w-[200px]'>
 						<div className='relative'>
 							<Search className='absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[#8C8C8C]' />
@@ -212,7 +212,86 @@ const DealerManagementPage = (): React.ReactElement => {
 					</div>
 				) : (
 					<>
-						<div className='overflow-x-auto rounded-xl border border-[#8C8C8C]/15 bg-white/50'>
+						{/* Mobile cards */}
+						<div className='grid grid-cols-1 gap-3 md:hidden'>
+							{filteredDealers.map((dealer: DealerBoothDetail) => (
+								<div
+									key={dealer.id}
+									className='rounded-xl border border-[#8C8C8C]/15 bg-white/50 p-4'
+								>
+									<div className='flex items-start gap-2'>
+										<Store className='mt-0.5 h-5 w-5 shrink-0 text-[#48715B]' />
+										<div className='min-w-0 flex-1'>
+											<p className='font-semibold text-text-primary'>
+												{dealer.booth_name || '–'}
+											</p>
+											{dealer.booth_number ? (
+												<p className='mt-1 font-mono text-sm text-text-secondary'>
+													#{dealer.booth_number}
+												</p>
+											) : (
+												<p className='mt-1 text-sm text-[#8C8C8C]'>Chưa gán số booth</p>
+											)}
+											<p className='mt-2 line-clamp-3 text-sm text-text-secondary'>
+												{dealer.description || '–'}
+											</p>
+											<div className='mt-3'>
+												<span
+													className={`inline-flex items-center gap-1 rounded-full px-2 py-1 text-xs font-medium ${
+														dealer.is_verified
+															? 'bg-green-100 text-green-700'
+															: 'bg-yellow-100 text-yellow-700'
+													}`}
+												>
+													{dealer.is_verified ? (
+														<CheckCircle className='h-3.5 w-3.5' />
+													) : (
+														<AlertCircle className='h-3.5 w-3.5' />
+													)}
+													{dealer.is_verified
+														? t('verified', 'Đã xác minh')
+														: t('unverified', 'Chưa xác minh')}
+												</span>
+											</div>
+											<p className='mt-2 text-xs text-[#8C8C8C]'>
+												{formatDateTime(dealer.created_at)}
+											</p>
+										</div>
+									</div>
+									<div className='mt-4 flex flex-wrap justify-end gap-2 border-t border-[#48715B]/10 pt-3'>
+										{!dealer.is_verified ? (
+											<>
+												<button
+													type='button'
+													onClick={() => handleVerify(dealer)}
+													disabled={verifyMutation.isPending || denyMutation.isPending}
+													className='inline-flex min-h-[44px] items-center gap-1 rounded-xl border border-emerald-400 bg-emerald-50 px-3 py-2 text-sm font-medium text-emerald-700 hover:bg-emerald-100 disabled:cursor-not-allowed disabled:opacity-50'
+												>
+													<Shield className='h-4 w-4' />
+													{t('verify', 'Xác minh')}
+												</button>
+												<button
+													type='button'
+													onClick={() => handleDeny(dealer)}
+													disabled={denyMutation.isPending || verifyMutation.isPending}
+													className='inline-flex min-h-[44px] items-center gap-1 rounded-xl border border-red-400 bg-red-50 px-3 py-2 text-sm font-medium text-red-700 hover:bg-red-100 disabled:cursor-not-allowed disabled:opacity-50'
+												>
+													<XCircle className='h-4 w-4' />
+													{t('denyDealer', 'Deny')}
+												</button>
+											</>
+										) : (
+											<span className='inline-flex items-center gap-1 text-sm text-emerald-600'>
+												<CheckCircle className='h-4 w-4' />
+												{t('verified', 'Đã xác minh')}
+											</span>
+										)}
+									</div>
+								</div>
+							))}
+						</div>
+
+						<div className='hidden overflow-x-auto rounded-xl border border-[#8C8C8C]/15 bg-white/50 md:block'>
 							<table className='w-full'>
 								<thead>
 									<tr className='border-b border-[#48715B]/15 bg-[#E2EEE2]/40'>
@@ -338,11 +417,11 @@ const DealerManagementPage = (): React.ReactElement => {
 
 						{/* Pagination */}
 						{pagination && pagination.totalPages > 1 && (
-							<div className='mt-4 px-4 py-3 rounded-xl bg-[#E2EEE2]/40 border border-[#8C8C8C]/15 flex items-center justify-between'>
+							<div className='mt-4 flex flex-col gap-3 rounded-xl border border-[#8C8C8C]/15 bg-[#E2EEE2]/40 px-4 py-3 sm:flex-row sm:items-center sm:justify-between'>
 								<p className='text-sm text-text-secondary'>
 									{tCommon('page')} {pagination.currentPage} / {pagination.totalPages}
 								</p>
-								<div className='flex gap-2'>
+								<div className='flex justify-end gap-2 sm:justify-start'>
 									<button
 										onClick={() => handlePageChange(pagination.currentPage - 1)}
 										disabled={pagination.currentPage <= 1}

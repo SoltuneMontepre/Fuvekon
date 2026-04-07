@@ -83,7 +83,7 @@ export default function AdminDashboardUsersPage(): React.ReactElement {
 				<h2 className='mb-4 text-lg font-semibold text-text-primary'>
 					Tài khoản theo quốc gia
 				</h2>
-				<div className='overflow-hidden rounded-xl border border-[#8C8C8C]/15 bg-white/50'>
+				<div className='overflow-x-auto rounded-xl border border-[#8C8C8C]/15 bg-white/50'>
 					{countByCountryLoading ? (
 						<div className='py-10 text-center text-text-secondary'>Đang tải…</div>
 					) : topCountries.length === 0 ? (
@@ -95,7 +95,7 @@ export default function AdminDashboardUsersPage(): React.ReactElement {
 							<div className='border-b border-[#48715B]/15 px-4 py-2 text-sm text-[#48715B]'>
 								Top {topCountries.length} • Tổng: {totalByCountry} tài khoản
 							</div>
-							<table className='w-full'>
+							<table className='w-full min-w-[280px]'>
 								<thead>
 									<tr className='border-b border-[#48715B]/15'>
 										<th className='px-4 py-3 text-left text-sm font-semibold text-[#48715B]'>
@@ -136,7 +136,7 @@ export default function AdminDashboardUsersPage(): React.ReactElement {
 						</span>
 					)}
 				</div>
-				<div className='overflow-hidden rounded-xl border border-[#8C8C8C]/15 bg-white/50'>
+				<div className='overflow-x-auto rounded-xl border border-[#8C8C8C]/15 bg-white/50'>
 					{countByAgeRangeLoading ? (
 						<div className='py-10 text-center text-text-secondary'>Đang tải…</div>
 					) : ageBuckets.length === 0 ? (

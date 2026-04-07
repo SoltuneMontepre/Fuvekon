@@ -1099,7 +1099,7 @@ const TicketManagementPage = (): React.ReactElement => {
 
 			{/* Summary statistics cards */}
 			{!statsLoading && stats && (
-				<div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-6'>
+				<div className='mb-6 grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-6'>
 					<div className='rounded-lg p-4 shadow-sm border border-[#8C8C8C]/15'>
 						<p className='text-sm text-[#8C8C8C]'>
 							{t('totalTickets')}

@@ -106,6 +106,7 @@ const AccountPage = () => {
 		</div>
 	)
 	const account = useAuthStore(state => state.account)
+	const isVerified = Boolean(account?.is_verified)
 	const [isEditing, setIsEditing] = useState(false)
 	const [showIdCard, setShowIdCard] = useState(false)
 	const [formData, setFormData] = useState({
@@ -124,6 +125,10 @@ const AccountPage = () => {
 
 	const handleAvatarUploadSuccess = useCallback(
 		(fileUrl: string) => {
+			if (!isVerified) {
+				toast.error(tAuth('userNotVerified'))
+				return
+			}
 			updateAvatarMutation.mutate(
 				{ avatar: fileUrl },
 				{
@@ -138,10 +143,14 @@ const AccountPage = () => {
 				}
 			)
 		},
-		[updateAvatarMutation, t]
+		[updateAvatarMutation, t, isVerified, tAuth]
 	)
 
 	const handleAvatarRemove = useCallback(() => {
+		if (!isVerified) {
+			toast.error(tAuth('userNotVerified'))
+			return
+		}
 		updateAvatarMutation.mutate(
 			{ avatar: '' },
 			{
@@ -155,7 +164,7 @@ const AccountPage = () => {
 				},
 			}
 		)
-	}, [updateAvatarMutation, t])
+	}, [updateAvatarMutation, t, isVerified, tAuth])
 
 	const handleInputChange = useCallback(
 		(e: React.ChangeEvent<HTMLInputElement>) => {
@@ -182,6 +191,11 @@ const AccountPage = () => {
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [account?.id]) // Only sync when account ID changes (new account loaded), not on every account update
+
+	// Safety: never allow editing while unverified
+	useEffect(() => {
+		if (!isVerified && isEditing) setIsEditing(false)
+	}, [isVerified, isEditing])
 
 	if (!account) {
 		return (
@@ -264,6 +278,10 @@ const AccountPage = () => {
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault()
+		if (!isVerified) {
+			toast.error(tAuth('userNotVerified'))
+			return
+		}
 
 		updateMeMutation.mutate(
 			{
@@ -301,12 +319,12 @@ const AccountPage = () => {
 			<div className='flex flex-col items-center gap-3 pb-6 border-b border-[#48715B]/15'>
 				<UserAvatar
 					account={account}
-					uploadable
-					onUploadSuccess={handleAvatarUploadSuccess}
+					uploadable={isVerified}
+					onUploadSuccess={isVerified ? handleAvatarUploadSuccess : undefined}
 					onUploadError={error =>
 						toast.error(t('uploadError', { message: error.message }))
 					}
-					onRemove={handleAvatarRemove}
+					onRemove={isVerified ? handleAvatarRemove : undefined}
 				/>
 				<div className='text-center'>
 					<p className='text-xl font-semibold text-text-primary leading-tight'>
@@ -545,28 +563,38 @@ const AccountPage = () => {
 				{/* Edit / Save actions */}
 				<div className='mt-6 pt-5 border-t border-[#48715B]/15'>
 					{!isEditing ? (
-						<button
-							type='button'
-							onClick={() => {
-								setFormData({
-									first_name: account.first_name || '',
-									last_name: account.last_name || '',
-									fursona_name: account.fursona_name || '',
-									country: account.country || '',
-									id_card: account.id_card || '',
-									date_of_birth: account.date_of_birth || '',
-								})
-								setIsEditing(true)
-							}}
-							className='shadow-md w-full py-2.5 px-4 text-xl rounded-xl btn-primary font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-dark-surface'
-						>
-							{t('editInfo')}
-						</button>
+						<>
+							{!isVerified ? (
+								<div className='mb-3 flex items-start gap-2 rounded-xl border border-amber-200 dark:border-amber-800/50 bg-amber-50/50 dark:bg-amber-900/10 px-4 py-3 text-sm text-text-secondary dark:text-dark-text-secondary'>
+									<AlertCircle className='mt-0.5 h-4 w-4 shrink-0 text-amber-700 dark:text-amber-300' />
+									<span>{tAuth('userNotVerified')}</span>
+								</div>
+							) : null}
+							<button
+								type='button'
+								disabled={!isVerified}
+								onClick={() => {
+									if (!isVerified) return
+									setFormData({
+										first_name: account.first_name || '',
+										last_name: account.last_name || '',
+										fursona_name: account.fursona_name || '',
+										country: account.country || '',
+										id_card: account.id_card || '',
+										date_of_birth: account.date_of_birth || '',
+									})
+									setIsEditing(true)
+								}}
+								className='shadow-md w-full py-2.5 px-4 text-xl rounded-xl btn-primary font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-dark-surface disabled:opacity-50 disabled:cursor-not-allowed'
+							>
+								{t('editInfo')}
+							</button>
+						</>
 					) : (
 						<div className='flex gap-3'>
 							<button
 								type='submit'
-								disabled={updateMeMutation.isPending}
+								disabled={updateMeMutation.isPending || !isVerified}
 								className='shadow-md flex-1 py-2.5 px-4 text-xl rounded-xl btn-primary font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-dark-surface disabled:opacity-50 disabled:cursor-not-allowed'
 							>
 								{updateMeMutation.isPending
@@ -576,7 +604,7 @@ const AccountPage = () => {
 							<button
 								type='button'
 								onClick={handleCancel}
-								disabled={updateMeMutation.isPending}
+								disabled={updateMeMutation.isPending || !isVerified}
 								className='shadow-md flex-1 py-2.5 px-4 text-xl rounded-xl btn-primary font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 dark:focus:ring-offset-dark-surface disabled:opacity-50 disabled:cursor-not-allowed'
 							>
 								{tCommon('cancel')}

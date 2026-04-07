@@ -237,13 +237,13 @@ const AdminUserDetailPage = ({
 
 			<div className='rounded-xl border border-[#8C8C8C]/15 overflow-hidden'>
 				{/* Header */}
-				<div className='bg-[#E2EEE2]/60 px-6 py-4 border-b border-[#48715B]/15 flex items-center justify-between'>
-					<h1 className='text-xl font-bold text-text-primary josefin flex items-center gap-2'>
-						<UserCircle className='w-6 h-6' />
+				<div className='flex flex-col gap-4 border-b border-[#48715B]/15 bg-[#E2EEE2]/60 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6'>
+					<h1 className='josefin flex items-center gap-2 text-lg font-bold text-text-primary sm:text-xl'>
+						<UserCircle className='h-6 w-6 shrink-0' />
 						{t('userDetail') || 'User Detail'}
 					</h1>
 					{!isEditing ? (
-						<div className='flex items-center gap-2'>
+						<div className='flex flex-wrap items-center gap-2 sm:justify-end'>
 							{isBanned ? (
 								<button
 									type='button'
@@ -286,12 +286,12 @@ const AdminUserDetailPage = ({
 							</button>
 						</div>
 					) : (
-						<div className='flex items-center gap-2'>
+						<div className='flex flex-wrap items-center gap-2 sm:justify-end'>
 							<button
 								type='button'
 								onClick={() => setIsEditing(false)}
 								disabled={updateUser.isPending}
-								className='flex items-center gap-2 px-4 py-2.5 rounded-xl border border-[#8C8C8C]/40 text-text-secondary hover:bg-[#E2EEE2] transition-colors disabled:opacity-50'
+								className='flex items-center gap-2 rounded-xl border border-[#8C8C8C]/40 px-4 py-2.5 text-text-secondary transition-colors hover:bg-[#E2EEE2] disabled:opacity-50'
 							>
 								<X className='w-4 h-4' />
 								{tCommon('cancel') || 'Cancel'}
@@ -311,7 +311,7 @@ const AdminUserDetailPage = ({
 					)}
 				</div>
 
-				<div className='p-6 space-y-6'>
+				<div className='space-y-6 p-4 sm:p-6'>
 					{isEditing ? (
 						/* Edit form */
 						<div className='space-y-4 max-w-xl'>
