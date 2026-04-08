@@ -28,7 +28,13 @@ const NavButtons = ({
 	)
 }
 
-const NavButton = ({ button }: { button: NavData }) => {
+const NavButton = ({
+	button,
+	onNavigate,
+}: {
+	button: NavData
+	onNavigate?: () => void
+}) => {
 	const [shouldPrefetch, setShouldPrefetch] = useState(false)
 
 	return (
@@ -37,6 +43,7 @@ const NavButton = ({ button }: { button: NavData }) => {
 			href={button.to ?? '/'}
 			prefetch={shouldPrefetch ? true : false}
 			onMouseEnter={() => setShouldPrefetch(true)}
+			onClick={() => onNavigate?.()}
 		>
 			<NavButtonInner label={button.label} />
 		</Link>
@@ -82,6 +89,13 @@ const CollapsedNavButton = ({ button }: { button: NavData }) => {
 		return () => document.removeEventListener('mousedown', handleClickOutside)
 	}, [])
 
+	useEffect(() => {
+		if (!isOpen) return
+		const close = () => setIsOpen(false)
+		window.addEventListener('scroll', close, { passive: true })
+		return () => window.removeEventListener('scroll', close)
+	}, [isOpen])
+
 	return (
 		<div className='relative flex-1 z-[999]'>
 			<button
@@ -96,10 +110,14 @@ const CollapsedNavButton = ({ button }: { button: NavData }) => {
 				<div
 					ref={dropdownRef}
 					style={{ top: dropdownPos.top, left: dropdownPos.left }}
-					className='fixed bg-secondary/20 backdrop-blur rounded-2xl flex flex-col gap-1 min-w-[10rem]'
+					className='fixed bg-secondary/60 backdrop-blur rounded-2xl flex flex-col gap-1 min-w-[10rem]'
 				>
 					{button.children?.map(child => (
-						<NavButton key={child.label} button={child} />
+						<NavButton
+							key={child.label}
+							button={child}
+							onNavigate={() => setIsOpen(false)}
+						/>
 					))}
 				</div>
 			)}

@@ -1,5 +1,6 @@
 import CollapsibleScroll from '@/components/animated/CollapsibleScroll'
 import Separator from '@/components/common/scroll/Separator'
+import TosSectionNav from '@/components/info/TosSectionNav'
 import React from 'react'
 
 type RuleBlock = {
@@ -557,100 +558,118 @@ const blocks: RuleBlock[] = [
 	},
 ]
 
+const tosNavGroups = [
+	{
+		headingId: 'rule-attendee',
+		headingLabel: 'Người tham gia / Attendee',
+		sections: blocks.slice(0, 7).map(b => ({ id: b.id, title: b.title })),
+	},
+	{
+		headingId: 'rule-dealer',
+		headingLabel: 'Người bán hàng / Dealer',
+		sections: blocks.slice(7).map(b => ({ id: b.id, title: b.title })),
+	},
+]
+
 const TosPage = (): React.ReactElement => {
 	return (
 		<div className='min-h-screen relative z-10 py-12 px-4 sm:px-10 md:px-20'>
-			<CollapsibleScroll
-				initialOpen
-				openable={false}
-				className='lg:w-5xl mx-auto  md:w-3xl'
-			>
-				<div className='pt-2'>
-					<h3 className="scroll-title pt-6 josefin bg-[url('/textures/asfalt-dark.png')] bg-primary bg-clip-text text-transparent">
-						QUY TẮC CỦA SỰ KIỆN / EVENT RULE
-					</h3>
-					<p className='text-text-secondary text-sm mt-1'>
-						Last updated: April 2, 2026
-					</p>
+			<div className='mx-auto flex w-full max-w-7xl flex-col gap-8 lg:flex-row lg:items-start lg:gap-10'>
+				<TosSectionNav groups={tosNavGroups} />
+				<div className='min-w-0 flex-1'>
+					<CollapsibleScroll
+						initialOpen
+						openable={false}
+						className='md:max-w-3xl lg:max-w-5xl mx-auto w-full'
+					>
+						<div className='pt-2'>
+							<h3 className="scroll-title pt-6 josefin bg-[url('/textures/asfalt-dark.png')] bg-primary bg-clip-text text-transparent">
+								QUY TẮC CỦA SỰ KIỆN / EVENT RULE
+							</h3>
+							<p className='text-text-secondary text-sm mt-1'>
+								Last updated: April 2, 2026
+							</p>
+						</div>
+
+						<Separator className='w-[95%] mx-auto' />
+
+						<div className='text-text-primary text-md font-sm space-y-6'>
+							<div className='space-y-2'>
+								<p>
+									<strong>[VIE]</strong> Để đảm bảo mang lại trải nghiệm tốt
+									nhất cho tất cả người tham gia, FUVE có những quy tắc ứng xử
+									dành cho tất cả mọi người. Khi tham gia sự kiện bạn bắt buộc
+									phải tuân thủ quy tắc của sự kiện.
+								</p>
+								<p>
+									<strong>[ENG]</strong> To ensure the best experience for all
+									participants, FUVE has a code of conduct for everyone. When
+									participating in the event, you are required to comply with the
+									event rules.
+								</p>
+							</div>
+
+							<div id='rule-attendee' className='scroll-mt-24 space-y-2'>
+								<p className='font-bold'>
+									QUY ĐỊNH DÀNH CHO NGƯỜI THAM GIA / RULE FOR ATTENDEE
+								</p>
+							</div>
+
+							{blocks.slice(0, 7).map(block => (
+								<section
+									key={block.id}
+									id={block.id}
+									className='space-y-2 scroll-mt-24'
+								>
+									<p className='font-bold'>{block.title}</p>
+									<div className='space-y-2'>
+										<p className='text-xs uppercase tracking-[0.2em] text-text-secondary'>
+											[VIE]
+										</p>
+										<div className='space-y-1'>{block.vie}</div>
+									</div>
+									<div className='space-y-2'>
+										<p className='text-xs uppercase tracking-[0.2em] text-text-secondary'>
+											[ENG]
+										</p>
+										<div className='space-y-1'>{block.eng}</div>
+									</div>
+								</section>
+							))}
+
+							<div id='rule-dealer' className='scroll-mt-24 space-y-2 pt-2'>
+								<p className='font-bold'>
+									QUY ĐỊNH DÀNH CHO NGƯỜI BÁN HÀNG / RULE FOR DEALER
+								</p>
+							</div>
+
+							{blocks.slice(7).map(block => (
+								<section
+									key={block.id}
+									id={block.id}
+									className='space-y-2 scroll-mt-24'
+								>
+									<p className='font-bold'>{block.title}</p>
+									<div className='space-y-2'>
+										<p className='text-xs uppercase tracking-[0.2em] text-text-secondary'>
+											[VIE]
+										</p>
+										<div className='space-y-1'>{block.vie}</div>
+									</div>
+									<div className='space-y-2'>
+										<p className='text-xs uppercase tracking-[0.2em] text-text-secondary'>
+											[ENG]
+										</p>
+										<div className='space-y-1'>{block.eng}</div>
+									</div>
+								</section>
+							))}
+						</div>
+
+						<div className='pb-5' />
+					</CollapsibleScroll>
 				</div>
-
-				<Separator className='w-[95%] mx-auto' />
-
-				<div className='text-text-primary text-md font-sm space-y-6'>
-					<div className='space-y-2'>
-						<p>
-							<strong>[VIE]</strong> Để đảm bảo mang lại trải nghiệm tốt nhất
-							cho tất cả người tham gia, FUVE có những quy tắc ứng xử dành cho
-							tất cả mọi người. Khi tham gia sự kiện bạn bắt buộc phải tuân thủ
-							quy tắc của sự kiện.
-						</p>
-						<p>
-							<strong>[ENG]</strong> To ensure the best experience for all
-							participants, FUVE has a code of conduct for everyone. When
-							participating in the event, you are required to comply with the
-							event rules.
-						</p>
-					</div>
-
-					<div id='rule-attendee' className='space-y-2'>
-						<p className='font-bold'>
-							QUY ĐỊNH DÀNH CHO NGƯỜI THAM GIA / RULE FOR ATTENDEE
-						</p>
-					</div>
-
-					{blocks.slice(0, 7).map(block => (
-						<section
-							key={block.id}
-							id={block.id}
-							className='space-y-2 scroll-mt-24'
-						>
-							<p className='font-bold'>{block.title}</p>
-							<div className='space-y-2'>
-								<p className='text-xs uppercase tracking-[0.2em] text-text-secondary'>
-									[VIE]
-								</p>
-								<div className='space-y-1'>{block.vie}</div>
-							</div>
-							<div className='space-y-2'>
-								<p className='text-xs uppercase tracking-[0.2em] text-text-secondary'>
-									[ENG]
-								</p>
-								<div className='space-y-1'>{block.eng}</div>
-							</div>
-						</section>
-					))}
-
-					<div id='rule-dealer' className='space-y-2 pt-2'>
-						<p className='font-bold'>
-							QUY ĐỊNH DÀNH CHO NGƯỜI BÁN HÀNG / RULE FOR DEALER
-						</p>
-					</div>
-
-					{blocks.slice(7).map(block => (
-						<section
-							key={block.id}
-							id={block.id}
-							className='space-y-2 scroll-mt-24'
-						>
-							<p className='font-bold'>{block.title}</p>
-							<div className='space-y-2'>
-								<p className='text-xs uppercase tracking-[0.2em] text-text-secondary'>
-									[VIE]
-								</p>
-								<div className='space-y-1'>{block.vie}</div>
-							</div>
-							<div className='space-y-2'>
-								<p className='text-xs uppercase tracking-[0.2em] text-text-secondary'>
-									[ENG]
-								</p>
-								<div className='space-y-1'>{block.eng}</div>
-							</div>
-						</section>
-					))}
-				</div>
-
-				<div className='pb-5' />
-			</CollapsibleScroll>
+			</div>
 		</div>
 	)
 }

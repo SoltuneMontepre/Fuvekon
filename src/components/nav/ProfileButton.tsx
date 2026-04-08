@@ -114,6 +114,9 @@ const ProfileButton = (): React.ReactElement => {
 				: []),
 	]
 
+	const menuLinkClass =
+		'flex items-center gap-2 px-4 py-2 text-sm transition-colors text-[#154c5b] dark:text-dark-text hover:bg-[#48715B]/10 dark:hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#48715B]/30 dark:focus-visible:ring-white/30'
+
 	return (
 		<div>
 			<button
@@ -142,14 +145,16 @@ const ProfileButton = (): React.ReactElement => {
 			{isOpen && (
 				<div
 					ref={dropdownRef}
-					className='fixed w-48 bg-white rounded-lg shadow-lg py-2 z-[9999]'
+					className='fixed z-[9999] w-48 overflow-hidden rounded-xl border border-[#8C8C8C]/20 bg-main/95 py-2 shadow-2xl backdrop-blur-md dark:border-dark-border'
 					style={{ top: dropdownPos.top, right: dropdownPos.right }}
 				>
-					<div className='px-4 py-2 border-b border-gray-100'>
-						<p className='text-sm font-medium text-[#154c5b] truncate'>
+					<div className='border-b border-[#8C8C8C]/20 px-4 py-2 dark:border-dark-border'>
+						<p className='truncate text-sm font-medium text-[#48715B] dark:text-dark-text'>
 							{displayName}
 						</p>
-						<p className='text-xs text-gray-500 truncate'>{account?.email}</p>
+						<p className='truncate text-xs text-text-secondary dark:text-dark-text-secondary'>
+							{account?.email}
+						</p>
 					</div>
 
 					{isAccountRoute ? (
@@ -164,10 +169,10 @@ const ProfileButton = (): React.ReactElement => {
 										key={item.href}
 										href={item.href}
 										onClick={() => setIsOpen(false)}
-										className={`flex items-center gap-2 px-4 py-2 text-sm transition-colors ${
+										className={`${menuLinkClass} ${
 											active
-												? 'bg-[#48715B]/10 text-[#48715B] font-semibold'
-												: 'text-[#154c5b] hover:bg-gray-50'
+												? 'bg-[#48715B]/10 font-semibold text-[#48715B] dark:bg-white/15 dark:text-white'
+												: ''
 										}`}
 									>
 										<Icon className='size-4' />
@@ -182,7 +187,7 @@ const ProfileButton = (): React.ReactElement => {
 						<Link
 							href='/account'
 							onClick={() => setIsOpen(false)}
-							className='flex items-center gap-2 px-4 py-2 text-sm text-[#154c5b] hover:bg-gray-50 transition-colors'
+							className={menuLinkClass}
 						>
 							<UserCircle className='size-4' />
 							{tNav('account')}
@@ -191,7 +196,7 @@ const ProfileButton = (): React.ReactElement => {
 						<Link
 							href='/account/ticket'
 							onClick={() => setIsOpen(false)}
-							className='flex items-center gap-2 px-4 py-2 text-sm text-[#154c5b] hover:bg-gray-50 transition-colors'
+							className={menuLinkClass}
 						>
 							<Ticket className='size-4' />
 							{tNav('myTicket')}
@@ -201,7 +206,7 @@ const ProfileButton = (): React.ReactElement => {
 							<Link
 								href='/admin'
 								onClick={() => setIsOpen(false)}
-								className='flex items-center gap-2 px-4 py-2 text-sm text-[#154c5b] hover:bg-gray-50 transition-colors'
+								className={menuLinkClass}
 							>
 								<LayoutDashboard className='size-4' />
 								{tNav('admin') || 'Admin'}
@@ -211,7 +216,7 @@ const ProfileButton = (): React.ReactElement => {
 							<Link
 								href='/admin/scan-ticket'
 								onClick={() => setIsOpen(false)}
-								className='flex items-center gap-2 px-4 py-2 text-sm text-[#154c5b] hover:bg-gray-50 transition-colors'
+								className={menuLinkClass}
 							>
 								<ScanLine className='size-4' />
 								{tNav('scanTicket') || 'Quét vé'}
@@ -219,11 +224,11 @@ const ProfileButton = (): React.ReactElement => {
 						)}
 					</div>
 
-					<div className='border-t border-gray-100 mt-1 pt-1'>
+					<div className='mt-1 border-t border-[#8C8C8C]/20 pt-1 dark:border-dark-border'>
 						<button
 							onClick={handleLogout}
 							disabled={logoutMutation.isPending}
-							className='flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors w-full disabled:opacity-50'
+							className='flex w-full items-center gap-2 px-4 py-2 text-sm text-red-600 transition-colors hover:bg-red-500/10 dark:text-red-400 dark:hover:bg-red-500/15 disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-red-500/30'
 						>
 							<LogOut className='size-4' />
 							{logoutMutation.isPending ? t('loggingOut') : t('logout')}
